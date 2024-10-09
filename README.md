@@ -109,9 +109,9 @@ Before building the project, ensure that the following dependencies are installe
 
 First, clone the repository to your local machine:
 
-```bash
-git clone https://github.com/yourusername/yolos-onnxruntime-opencv-cpp.git
-cd yolos-onnxruntime-opencv-cpp
+```bash 
+git clone https://github.com/Geekgineer/YOLOs-CPP
+cd YOLOs-CPP
 ```
 
 ### Configure
@@ -179,7 +179,7 @@ To perform real-time object detection using a usb cam:
 ./run_camera.sh 
 ```
 
-This command will activate your usb cam and display the video feed with real-time object detection.
+This command will activate your usb and display the video feed with real-time object detection.
 
 ### Models
 
@@ -219,8 +219,8 @@ Contributions are welcome! Please follow these steps to contribute:
 1. **Fork the Repository**: Click the "Fork" button at the top-right corner of this repository to create a personal copy.
 2. **Clone Your Fork**:
     ```bash
-    git clone https://github.com/yourusername/yolos-onnxruntime-opencv-cpp.git
-    cd yolos-onnxruntime-opencv-cpp
+    git clone https://github.com/Geekgineer/YOLOs-CPP
+    cd YOLOs-CPP
     ```
 3. **Create a New Branch**:
     ```bash
