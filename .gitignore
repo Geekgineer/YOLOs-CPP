@@ -1,0 +1,51 @@
+# Ignore build directories
+/build
+/build/*
+
+# CMake files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+Makefile2
+*.cmake
+
+# Ignore compiled object files and binaries
+*.o
+*.out
+*.exe
+*.so
+*.a
+*.dSYM
+
+# Ignore logs
+*.log
+
+# Ignore temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# Ignore environment files
+.env
+
+# Ignore any data that should not be version controlled
+# data/*.mp4
+# data/*.jpg
+# data/*.png
+# data/cover.png
+
+# Ignore external libraries or packages
+onnxruntime*
+
+
+# Ignore any additional files you want to exclude
+*.tgz
+*.zip
+*.rar
+*.7z
+
+# Ignore any IDE-specific files 
+.idea/
+.vscode/
