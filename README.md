@@ -14,7 +14,7 @@
 
 **YOLOs-CPP** provides single c++ headers with high-performance application designed for real-time object detection using various YOLO (You Only Look Once) models from [Ultralytics](https://github.com/ultralytics/ultralytics). Leveraging the power of [ONNX Runtime](https://github.com/microsoft/onnxruntime) and [OpenCV](https://opencv.org/), this project provides seamless integration with unified YOLOv(5,7,8,10,11) implementation for image, video, and live camera inference. Whether you're developing for research, production, or hobbyist projects, this application offers flexibility and efficiency also provide.
 
-*Example of object detection output with bounding boxes and labels.*
+*Video example of object detection output with bounding boxes and labels. [Click on image!]*
 
 <a href="https://www.youtube.com/watch?v=Ax5vaYJ-mVQ">
     <img src="https://img.youtube.com/vi/Ax5vaYJ-mVQ/maxresdefault.jpg" alt="Watch the Demo Video" width="800" />
