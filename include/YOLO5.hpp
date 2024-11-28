@@ -115,6 +115,34 @@ struct Detection {
 namespace utils {
 
     /**
+     * @brief A robust implementation of a clamp function.
+     *        Restricts a value to lie within a specified range [low, high].
+     *
+     * @tparam T The type of the value to clamp. Should be an arithmetic type (int, float, etc.).
+     * @param value The value to clamp.
+     * @param low The lower bound of the range.
+     * @param high The upper bound of the range.
+     * @return const T& The clamped value, constrained to the range [low, high].
+     *
+     * @note If low > high, the function swaps the bounds automatically to ensure valid behavior.
+     */
+    template <typename T>
+    typename std::enable_if<std::is_arithmetic<T>::value, T>::type
+    inline clamp(const T &value, const T &low, const T &high)
+    {
+        // Ensure the range [low, high] is valid; swap if necessary
+        T validLow = low < high ? low : high;
+        T validHigh = low < high ? high : low;
+
+        // Clamp the value to the range [validLow, validHigh]
+        if (value < validLow)
+            return validLow;
+        if (value > validHigh)
+            return validHigh;
+        return value;
+    }
+
+    /**
      * @brief Loads class names from a specified file path.
      * 
      * @param path Path to the file containing class names.
@@ -263,10 +291,10 @@ namespace utils {
         result.height = static_cast<int>(std::round(coords.height / gain));
 
         if (p_Clip) {
-            result.x = std::clamp(result.x, 0, imageOriginalShape.width);
-            result.y = std::clamp(result.y, 0, imageOriginalShape.height);
-            result.width = std::clamp(result.width, 0, imageOriginalShape.width - result.x);
-            result.height = std::clamp(result.height, 0, imageOriginalShape.height - result.y);
+            result.x = utils::clamp(result.x, 0, imageOriginalShape.width);
+            result.y = utils::clamp(result.y, 0, imageOriginalShape.height);
+            result.width = utils::clamp(result.width, 0, imageOriginalShape.width - result.x);
+            result.height = utils::clamp(result.height, 0, imageOriginalShape.height - result.y);
         }
         return result;
     }
@@ -504,7 +532,9 @@ namespace utils {
         DEBUG_PRINT("Bounding boxes with masks drawn successfully.");
     }
 
-}
+
+
+};
 
 /**
  * @brief YOLO5Detector class handles loading the YOLOv5 model, preprocessing images, running inference,
