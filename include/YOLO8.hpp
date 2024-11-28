@@ -39,7 +39,6 @@
 #include "tools/Debug.hpp"
 #include "tools/ScopedTimer.hpp"
 
-
 /**
  * @brief Confidence threshold for filtering detections.
  */
@@ -50,13 +49,13 @@ const float CONFIDENCE_THRESHOLD = 0.4f;
  */
 const float IOU_THRESHOLD = 0.45f;
 
-
 /**
  * @brief Struct to represent a bounding box.
  */
 
 // Struct to represent a bounding box
-struct BoundingBox {
+struct BoundingBox
+{
     int x;
     int y;
     int width;
@@ -68,7 +67,8 @@ struct BoundingBox {
 
     float area() const { return static_cast<float>(width * height); }
 
-    BoundingBox intersect(const BoundingBox &other) const {
+    BoundingBox intersect(const BoundingBox &other) const
+    {
         int xStart = std::max(x, other.x);
         int yStart = std::max(y, other.y);
         int xEnd = std::min(x + width, other.x + other.width);
@@ -82,7 +82,8 @@ struct BoundingBox {
 /**
  * @brief Struct to represent a detection.
  */
-struct Detection {
+struct Detection
+{
     BoundingBox box;
     float conf{};
     int classId{};
@@ -92,26 +93,61 @@ struct Detection {
  * @namespace utils
  * @brief Namespace containing utility functions for the YOLO8Detector.
  */
-namespace utils {
+namespace utils
+{
+
+    /**
+     * @brief A robust implementation of a clamp function.
+     *        Restricts a value to lie within a specified range [low, high].
+     *
+     * @tparam T The type of the value to clamp. Should be an arithmetic type (int, float, etc.).
+     * @param value The value to clamp.
+     * @param low The lower bound of the range.
+     * @param high The upper bound of the range.
+     * @return const T& The clamped value, constrained to the range [low, high].
+     *
+     * @note If low > high, the function swaps the bounds automatically to ensure valid behavior.
+     */
+    template <typename T>
+    typename std::enable_if<std::is_arithmetic<T>::value, T>::type
+    inline clamp(const T &value, const T &low, const T &high)
+    {
+        // Ensure the range [low, high] is valid; swap if necessary
+        T validLow = low < high ? low : high;
+        T validHigh = low < high ? high : low;
+
+        // Clamp the value to the range [validLow, validHigh]
+        if (value < validLow)
+            return validLow;
+        if (value > validHigh)
+            return validHigh;
+        return value;
+    }
+
     /**
      * @brief Loads class names from a given file path.
-     * 
+     *
      * @param path Path to the file containing class names.
      * @return std::vector<std::string> Vector of class names.
      */
-    std::vector<std::string> getClassNames(const std::string &path) {
+    std::vector<std::string> getClassNames(const std::string &path)
+    {
         std::vector<std::string> classNames;
         std::ifstream infile(path);
 
-        if (infile) {
+        if (infile)
+        {
             std::string line;
-            while (getline(infile, line)) {
+            while (getline(infile, line))
+            {
                 // Remove carriage return if present (for Windows compatibility)
                 if (!line.empty() && line.back() == '\r')
                     line.pop_back();
                 classNames.emplace_back(line);
             }
-        } else {
+        }
+        else
+        {
             std::cerr << "ERROR: Failed to access class name path: " << path << std::endl;
         }
 
@@ -121,18 +157,18 @@ namespace utils {
 
     /**
      * @brief Computes the product of elements in a vector.
-     * 
+     *
      * @param vector Vector of integers.
      * @return size_t Product of all elements.
      */
-    size_t vectorProduct(const std::vector<int64_t> &vector) {
+    size_t vectorProduct(const std::vector<int64_t> &vector)
+    {
         return std::accumulate(vector.begin(), vector.end(), 1ull, std::multiplies<size_t>());
     }
 
-
     /**
      * @brief Resizes an image with letterboxing to maintain aspect ratio.
-     * 
+     *
      * @param image Input image.
      * @param outImage Output resized and padded image.
      * @param newShape Desired output size.
@@ -142,19 +178,21 @@ namespace utils {
      * @param scaleUp Whether to allow scaling up of the image.
      * @param stride Stride size for padding alignment.
      */
-    inline void letterBox(const cv::Mat& image, cv::Mat& outImage,
-                        const cv::Size& newShape,
-                        const cv::Scalar& color = cv::Scalar(114, 114, 114),
-                        bool auto_ = true,
-                        bool scaleFill = false,
-                        bool scaleUp = true,
-                        int stride = 32) {
+    inline void letterBox(const cv::Mat &image, cv::Mat &outImage,
+                          const cv::Size &newShape,
+                          const cv::Scalar &color = cv::Scalar(114, 114, 114),
+                          bool auto_ = true,
+                          bool scaleFill = false,
+                          bool scaleUp = true,
+                          int stride = 32)
+    {
         // Calculate the scaling ratio to fit the image within the new shape
         float ratio = std::min(static_cast<float>(newShape.height) / image.rows,
-                            static_cast<float>(newShape.width) / image.cols);
+                               static_cast<float>(newShape.width) / image.cols);
 
         // Prevent scaling up if not allowed
-        if (!scaleUp) {
+        if (!scaleUp)
+        {
             ratio = std::min(ratio, 1.0f);
         }
 
@@ -166,19 +204,24 @@ namespace utils {
         int dw = newShape.width - newUnpadW;
         int dh = newShape.height - newUnpadH;
 
-        if (auto_) {
+        if (auto_)
+        {
             // Ensure padding is a multiple of stride for model compatibility
             dw = (dw % stride) / 2;
             dh = (dh % stride) / 2;
-        } else if (scaleFill) {
+        }
+        else if (scaleFill)
+        {
             // Scale to fill without maintaining aspect ratio
             newUnpadW = newShape.width;
             newUnpadH = newShape.height;
             ratio = std::min(static_cast<float>(newShape.width) / image.cols,
-                            static_cast<float>(newShape.height) / image.rows);
+                             static_cast<float>(newShape.height) / image.rows);
             dw = 0;
             dh = 0;
-        } else {
+        }
+        else
+        {
             // Evenly distribute padding on both sides
             // Calculate separate padding for left/right and top/bottom to handle odd padding
             int padLeft = dw / 2;
@@ -187,9 +230,12 @@ namespace utils {
             int padBottom = dh - padTop;
 
             // Resize the image if the new dimensions differ
-            if (image.cols != newUnpadW || image.rows != newUnpadH) {
+            if (image.cols != newUnpadW || image.rows != newUnpadH)
+            {
                 cv::resize(image, outImage, cv::Size(newUnpadW, newUnpadH), 0, 0, cv::INTER_LINEAR);
-            } else {
+            }
+            else
+            {
                 // Avoid unnecessary copying if dimensions are the same
                 outImage = image;
             }
@@ -200,9 +246,12 @@ namespace utils {
         }
 
         // Resize the image if the new dimensions differ
-        if (image.cols != newUnpadW || image.rows != newUnpadH) {
+        if (image.cols != newUnpadW || image.rows != newUnpadH)
+        {
             cv::resize(image, outImage, cv::Size(newUnpadW, newUnpadH), 0, 0, cv::INTER_LINEAR);
-        } else {
+        }
+        else
+        {
             // Avoid unnecessary copying if dimensions are the same
             outImage = image;
         }
@@ -219,7 +268,7 @@ namespace utils {
 
     /**
      * @brief Scales detection coordinates back to the original image size.
-     * 
+     *
      * @param imageShape Shape of the resized image used for inference.
      * @param bbox Detection bounding box to be scaled.
      * @param imageOriginalShape Original image size before resizing.
@@ -227,7 +276,8 @@ namespace utils {
      * @return BoundingBox Scaled bounding box.
      */
     BoundingBox scaleCoords(const cv::Size &imageShape, BoundingBox coords,
-                            const cv::Size &imageOriginalShape, bool p_Clip) {
+                            const cv::Size &imageOriginalShape, bool p_Clip)
+    {
         BoundingBox result;
         float gain = std::min(static_cast<float>(imageShape.height) / static_cast<float>(imageOriginalShape.height),
                               static_cast<float>(imageShape.width) / static_cast<float>(imageOriginalShape.width));
@@ -240,26 +290,27 @@ namespace utils {
         result.width = static_cast<int>(std::round(coords.width / gain));
         result.height = static_cast<int>(std::round(coords.height / gain));
 
-        if (p_Clip) {
-            result.x = std::clamp(result.x, 0, imageOriginalShape.width);
-            result.y = std::clamp(result.y, 0, imageOriginalShape.height);
-            result.width = std::clamp(result.width, 0, imageOriginalShape.width - result.x);
-            result.height = std::clamp(result.height, 0, imageOriginalShape.height - result.y);
+        if (p_Clip)
+        {
+            result.x = utils::clamp(result.x, 0, imageOriginalShape.width);
+            result.y = utils::clamp(result.y, 0, imageOriginalShape.height);
+            result.width = utils::clamp(result.width, 0, imageOriginalShape.width - result.x);
+            result.height = utils::clamp(result.height, 0, imageOriginalShape.height - result.y);
         }
         return result;
     }
 
     /**
      * @brief Extracts the best class information from a detection row.
-     * 
+     *
      * @param p_Mat Row data containing class scores.
      * @param numClasses Number of classes.
      * @param bestConf Reference to store the best confidence score.
      * @param bestClassId Reference to store the best class ID.
      */
     void getBestClassInfo(const std::vector<float> &p_Mat, const int &numClasses,
-                          float &bestConf, int &bestClassId) 
-                          
+                          float &bestConf, int &bestClassId)
+
     {
         bestClassId = 0;
         bestConf = 0;
@@ -272,12 +323,11 @@ namespace utils {
                 bestClassId = i;
             }
         }
-    
     }
 
     /**
      * @brief Performs Non-Maximum Suppression (NMS) on the bounding boxes.
-     * 
+     *
      * @param boundingBoxes Vector of bounding boxes.
      * @param scores Vector of confidence scores corresponding to each bounding box.
      * @param scoreThreshold Confidence threshold to filter boxes.
@@ -285,16 +335,17 @@ namespace utils {
      * @param indices Output vector of indices that survive NMS.
      */
     // Optimized Non-Maximum Suppression Function
-    void NMSBoxes(const std::vector<BoundingBox>& boundingBoxes,
-                const std::vector<float>& scores,
-                float scoreThreshold,
-                float nmsThreshold,
-                std::vector<int>& indices)
+    void NMSBoxes(const std::vector<BoundingBox> &boundingBoxes,
+                  const std::vector<float> &scores,
+                  float scoreThreshold,
+                  float nmsThreshold,
+                  std::vector<int> &indices)
     {
         indices.clear();
 
         const size_t numBoxes = boundingBoxes.size();
-        if (numBoxes == 0) {
+        if (numBoxes == 0)
+        {
             DEBUG_PRINT("No bounding boxes to process in NMS");
             return;
         }
@@ -303,27 +354,32 @@ namespace utils {
         // and create a list of indices sorted by descending scores
         std::vector<int> sortedIndices;
         sortedIndices.reserve(numBoxes);
-        for (size_t i = 0; i < numBoxes; ++i) {
-            if (scores[i] >= scoreThreshold) {
+        for (size_t i = 0; i < numBoxes; ++i)
+        {
+            if (scores[i] >= scoreThreshold)
+            {
                 sortedIndices.push_back(static_cast<int>(i));
             }
         }
 
         // If no boxes remain after thresholding
-        if (sortedIndices.empty()) {
+        if (sortedIndices.empty())
+        {
             DEBUG_PRINT("No bounding boxes above score threshold");
             return;
         }
 
         // Sort the indices based on scores in descending order
         std::sort(sortedIndices.begin(), sortedIndices.end(),
-                [&scores](int idx1, int idx2) {
-                    return scores[idx1] > scores[idx2];
-                });
+                  [&scores](int idx1, int idx2)
+                  {
+                      return scores[idx1] > scores[idx2];
+                  });
 
         // Step 2: Precompute the areas of all boxes
         std::vector<float> areas(numBoxes, 0.0f);
-        for (size_t i = 0; i < numBoxes; ++i) {
+        for (size_t i = 0; i < numBoxes; ++i)
+        {
             areas[i] = boundingBoxes[i].width * boundingBoxes[i].height;
         }
 
@@ -331,16 +387,18 @@ namespace utils {
         std::vector<bool> suppressed(numBoxes, false);
 
         // Step 4: Iterate through the sorted list and suppress boxes with high IoU
-        for (size_t i = 0; i < sortedIndices.size(); ++i) {
+        for (size_t i = 0; i < sortedIndices.size(); ++i)
+        {
             int currentIdx = sortedIndices[i];
-            if (suppressed[currentIdx]) {
+            if (suppressed[currentIdx])
+            {
                 continue;
             }
 
             // Select the current box as a valid detection
             indices.push_back(currentIdx);
 
-            const BoundingBox& currentBox = boundingBoxes[currentIdx];
+            const BoundingBox &currentBox = boundingBoxes[currentIdx];
             const float x1_max = currentBox.x;
             const float y1_max = currentBox.y;
             const float x2_max = currentBox.x + currentBox.width;
@@ -348,13 +406,15 @@ namespace utils {
             const float area_current = areas[currentIdx];
 
             // Compare IoU of the current box with the rest
-            for (size_t j = i + 1; j < sortedIndices.size(); ++j) {
+            for (size_t j = i + 1; j < sortedIndices.size(); ++j)
+            {
                 int compareIdx = sortedIndices[j];
-                if (suppressed[compareIdx]) {
+                if (suppressed[compareIdx])
+                {
                     continue;
                 }
 
-                const BoundingBox& compareBox = boundingBoxes[compareIdx];
+                const BoundingBox &compareBox = boundingBoxes[compareIdx];
                 const float x1 = std::max(x1_max, static_cast<float>(compareBox.x));
                 const float y1 = std::max(y1_max, static_cast<float>(compareBox.y));
                 const float x2 = std::min(x2_max, static_cast<float>(compareBox.x + compareBox.width));
@@ -363,7 +423,8 @@ namespace utils {
                 const float interWidth = x2 - x1;
                 const float interHeight = y2 - y1;
 
-                if (interWidth <= 0 || interHeight <= 0) {
+                if (interWidth <= 0 || interHeight <= 0)
+                {
                     continue;
                 }
 
@@ -371,7 +432,8 @@ namespace utils {
                 const float unionArea = area_current + areas[compareIdx] - intersection;
                 const float iou = (unionArea > 0.0f) ? (intersection / unionArea) : 0.0f;
 
-                if (iou > nmsThreshold) {
+                if (iou > nmsThreshold)
+                {
                     suppressed[compareIdx] = true;
                 }
             }
@@ -380,27 +442,29 @@ namespace utils {
         DEBUG_PRINT("NMS completed with " + std::to_string(indices.size()) + " indices remaining");
     }
 
-
     /**
      * @brief Generates a vector of colors for each class name.
-     * 
+     *
      * @param classNames Vector of class names.
      * @param seed Seed for random color generation to ensure reproducibility.
      * @return std::vector<cv::Scalar> Vector of colors.
      */
-    inline std::vector<cv::Scalar> generateColors(const std::vector<std::string> &classNames, int seed = 42) {
+    inline std::vector<cv::Scalar> generateColors(const std::vector<std::string> &classNames, int seed = 42)
+    {
         // Static cache to store colors based on class names to avoid regenerating
         static std::unordered_map<size_t, std::vector<cv::Scalar>> colorCache;
 
         // Compute a hash key based on class names to identify unique class configurations
         size_t hashKey = 0;
-        for (const auto& name : classNames) {
+        for (const auto &name : classNames)
+        {
             hashKey ^= std::hash<std::string>{}(name) + 0x9e3779b9 + (hashKey << 6) + (hashKey >> 2);
         }
 
         // Check if colors for this class configuration are already cached
         auto it = colorCache.find(hashKey);
-        if (it != colorCache.end()) {
+        if (it != colorCache.end())
+        {
             return it->second;
         }
 
@@ -408,10 +472,11 @@ namespace utils {
         std::vector<cv::Scalar> colors;
         colors.reserve(classNames.size());
 
-        std::mt19937 rng(seed); // Initialize random number generator with fixed seed
+        std::mt19937 rng(seed);                         // Initialize random number generator with fixed seed
         std::uniform_int_distribution<int> uni(0, 255); // Define distribution for color values
 
-        for (size_t i = 0; i < classNames.size(); ++i) {
+        for (size_t i = 0; i < classNames.size(); ++i)
+        {
             colors.emplace_back(cv::Scalar(uni(rng), uni(rng), uni(rng))); // Generate random BGR color
         }
 
@@ -423,16 +488,18 @@ namespace utils {
 
     /**
      * @brief Draws bounding boxes and labels on the image based on detections.
-     * 
+     *
      * @param image Image on which to draw.
      * @param detections Vector of detections.
      * @param classNames Vector of class names corresponding to object IDs.
      * @param colors Vector of colors for each class.
      */
     inline void drawBoundingBox(cv::Mat &image, const std::vector<Detection> &detections,
-                                const std::vector<std::string> &classNames, const std::vector<cv::Scalar> &colors) {
+                                const std::vector<std::string> &classNames, const std::vector<cv::Scalar> &colors)
+    {
         // Iterate through each detection to draw bounding boxes and labels
-        for (const auto& detection : detections) {
+        for (const auto &detection : detections)
+        {
             // Skip detections below the confidence threshold
             if (detection.conf <= CONFIDENCE_THRESHOLD)
                 continue;
@@ -442,7 +509,7 @@ namespace utils {
                 continue;
 
             // Select color based on object ID for consistent coloring
-            const cv::Scalar& color = colors[detection.classId % colors.size()];
+            const cv::Scalar &color = colors[detection.classId % colors.size()];
 
             // Draw the bounding box rectangle
             cv::rectangle(image, cv::Point(detection.box.x, detection.box.y),
@@ -476,7 +543,7 @@ namespace utils {
 
     /**
      * @brief Draws bounding boxes and semi-transparent masks on the image based on detections.
-     * 
+     *
      * @param image Image on which to draw.
      * @param detections Vector of detections.
      * @param classNames Vector of class names corresponding to object IDs.
@@ -485,9 +552,11 @@ namespace utils {
      */
     inline void drawBoundingBoxMask(cv::Mat &image, const std::vector<Detection> &detections,
                                     const std::vector<std::string> &classNames, const std::vector<cv::Scalar> &classColors,
-                                    float maskAlpha = 0.4f) {
+                                    float maskAlpha = 0.4f)
+    {
         // Validate input image
-        if (image.empty()) {
+        if (image.empty())
+        {
             std::cerr << "ERROR: Empty image provided to drawBoundingBoxMask." << std::endl;
             return;
         }
@@ -503,17 +572,20 @@ namespace utils {
         cv::Mat maskImage(image.size(), image.type(), cv::Scalar::all(0));
 
         // Pre-filter detections to include only those above the confidence threshold and with valid class IDs
-        std::vector<const Detection*> filteredDetections;
-        for (const auto& detection : detections) {
-            if (detection.conf > CONFIDENCE_THRESHOLD && 
-                detection.classId >= 0 && 
-                static_cast<size_t>(detection.classId) < classNames.size()) {
+        std::vector<const Detection *> filteredDetections;
+        for (const auto &detection : detections)
+        {
+            if (detection.conf > CONFIDENCE_THRESHOLD &&
+                detection.classId >= 0 &&
+                static_cast<size_t>(detection.classId) < classNames.size())
+            {
                 filteredDetections.emplace_back(&detection);
             }
         }
 
         // Draw filled rectangles on the mask image for the semi-transparent overlay
-        for (const auto* detection : filteredDetections) {
+        for (const auto *detection : filteredDetections)
+        {
             cv::Rect box(detection->box.x, detection->box.y, detection->box.width, detection->box.height);
             const cv::Scalar &color = classColors[detection->classId];
             cv::rectangle(maskImage, box, color, cv::FILLED);
@@ -523,7 +595,8 @@ namespace utils {
         cv::addWeighted(maskImage, maskAlpha, image, 1.0f, 0, image);
 
         // Draw bounding boxes and labels on the original image
-        for (const auto* detection : filteredDetections) {
+        for (const auto *detection : filteredDetections)
+        {
             cv::Rect box(detection->box.x, detection->box.y, detection->box.width, detection->box.height);
             const cv::Scalar &color = classColors[detection->classId];
             cv::rectangle(image, box, color, 2, cv::LINE_AA);
@@ -545,59 +618,91 @@ namespace utils {
 
         DEBUG_PRINT("Bounding boxes and masks drawn on image.");
     }
+
+    /**
+     * @brief A robust implementation of a clamp function.
+     *        Restricts a value to lie within a specified range [low, high].
+     *
+     * @tparam T The type of the value to clamp. Should be an arithmetic type (int, float, etc.).
+     * @param value The value to clamp.
+     * @param low The lower bound of the range.
+     * @param high The upper bound of the range.
+     * @return const T& The clamped value, constrained to the range [low, high].
+     *
+     * @note If low > high, the function swaps the bounds automatically to ensure valid behavior.
+     */
+    template <typename T>
+    typename std::enable_if<std::is_arithmetic<T>::value, T>::type
+    inline clamp(const T &value, const T &low, const T &high)
+    {
+        // Ensure the range [low, high] is valid; swap if necessary
+        T validLow = low < high ? low : high;
+        T validHigh = low < high ? high : low;
+
+        // Clamp the value to the range [validLow, validHigh]
+        if (value < validLow)
+            return validLow;
+        if (value > validHigh)
+            return validHigh;
+        return value;
+    }
+
 };
 
 /**
  * @brief YOLO8Detector class handles loading the YOLO model, preprocessing images, running inference, and postprocessing results.
  */
-class YOLO8Detector {
+class YOLO8Detector
+{
 public:
     /**
      * @brief Constructor to initialize the YOLO detector with model and label paths.
-     * 
+     *
      * @param modelPath Path to the ONNX model file.
      * @param labelsPath Path to the file containing class labels.
      * @param useGPU Whether to use GPU for inference (default is false).
      */
     YOLO8Detector(const std::string &modelPath, const std::string &labelsPath, bool useGPU = false);
-    
+
     /**
      * @brief Runs detection on the provided image.
-     * 
+     *
      * @param image Input image for detection.
      * @param confThreshold Confidence threshold to filter detections (default is 0.4).
      * @param iouThreshold IoU threshold for Non-Maximum Suppression (default is 0.45).
      * @return std::vector<Detection> Vector of detections.
      */
     std::vector<Detection> detect(const cv::Mat &image, float confThreshold = 0.4f, float iouThreshold = 0.45f);
-    
+
     /**
      * @brief Draws bounding boxes on the image based on detections.
-     * 
+     *
      * @param image Image on which to draw.
      * @param detections Vector of detections.
      */
-    void drawBoundingBox(cv::Mat &image, const std::vector<Detection> &detections) const {
+    void drawBoundingBox(cv::Mat &image, const std::vector<Detection> &detections) const
+    {
         utils::drawBoundingBox(image, detections, classNames, classColors);
     }
-    
+
     /**
      * @brief Draws bounding boxes and semi-transparent masks on the image based on detections.
-     * 
+     *
      * @param image Image on which to draw.
      * @param detections Vector of detections.
      * @param maskAlpha Alpha value for mask transparency (default is 0.4).
      */
-    void drawBoundingBoxMask(cv::Mat &image, const std::vector<Detection> &detections, float maskAlpha = 0.4f) const {
+    void drawBoundingBoxMask(cv::Mat &image, const std::vector<Detection> &detections, float maskAlpha = 0.4f) const
+    {
         utils::drawBoundingBoxMask(image, detections, classNames, classColors, maskAlpha);
     }
 
 private:
-    Ort::Env env{nullptr};                         // ONNX Runtime environment
-    Ort::SessionOptions sessionOptions{nullptr};   // Session options for ONNX Runtime
-    Ort::Session session{nullptr};                 // ONNX Runtime session for running inference
-    bool isDynamicInputShape{};                    // Flag indicating if input shape is dynamic
-    cv::Size inputImageShape;                      // Expected input image shape for the model
+    Ort::Env env{nullptr};                       // ONNX Runtime environment
+    Ort::SessionOptions sessionOptions{nullptr}; // Session options for ONNX Runtime
+    Ort::Session session{nullptr};               // ONNX Runtime session for running inference
+    bool isDynamicInputShape{};                  // Flag indicating if input shape is dynamic
+    cv::Size inputImageShape;                    // Expected input image shape for the model
 
     // Vectors to hold allocated input and output node names
     std::vector<Ort::AllocatedStringPtr> inputNodeNameAllocatedStrings;
@@ -605,24 +710,24 @@ private:
     std::vector<Ort::AllocatedStringPtr> outputNodeNameAllocatedStrings;
     std::vector<const char *> outputNames;
 
-    size_t numInputNodes, numOutputNodes;          // Number of input and output nodes in the model
+    size_t numInputNodes, numOutputNodes; // Number of input and output nodes in the model
 
-    std::vector<std::string> classNames;            // Vector of class names loaded from file
-    std::vector<cv::Scalar> classColors;            // Vector of colors for each class
+    std::vector<std::string> classNames; // Vector of class names loaded from file
+    std::vector<cv::Scalar> classColors; // Vector of colors for each class
 
     /**
      * @brief Preprocesses the input image for model inference.
-     * 
+     *
      * @param image Input image.
      * @param blob Reference to pointer where preprocessed data will be stored.
      * @param inputTensorShape Reference to vector representing input tensor shape.
      * @return cv::Mat Resized image after preprocessing.
      */
     cv::Mat preprocess(const cv::Mat &image, float *&blob, std::vector<int64_t> &inputTensorShape);
-    
+
     /**
      * @brief Postprocesses the model output to extract detections.
-     * 
+     *
      * @param originalImageSize Size of the original input image.
      * @param resizedImageShape Size of the image after preprocessing.
      * @param outputTensors Vector of output tensors from the model.
@@ -631,12 +736,12 @@ private:
      * @return std::vector<Detection> Vector of detections.
      */
     std::vector<Detection> postprocess(const cv::Size &originalImageSize, const cv::Size &resizedImageShape,
-                                      const std::vector<Ort::Value> &outputTensors,
-                                      float confThreshold, float iouThreshold);
-    
+                                       const std::vector<Ort::Value> &outputTensors,
+                                       float confThreshold, float iouThreshold);
+
     /**
      * @brief Extracts the best class information from a detection row.
-     * 
+     *
      * @param p_Mat Row data containing class scores.
      * @param numClasses Number of classes.
      * @param bestConf Reference to store the best confidence score.
@@ -647,7 +752,8 @@ private:
 };
 
 // Implementation of YOLO8Detector constructor
-YOLO8Detector::YOLO8Detector(const std::string &modelPath, const std::string &labelsPath, bool useGPU) {
+YOLO8Detector::YOLO8Detector(const std::string &modelPath, const std::string &labelsPath, bool useGPU)
+{
     // Initialize ONNX Runtime environment with warning level
     env = Ort::Env(ORT_LOGGING_LEVEL_WARNING, "ONNX_DETECTION");
     sessionOptions = Ort::SessionOptions();
@@ -662,11 +768,15 @@ YOLO8Detector::YOLO8Detector(const std::string &modelPath, const std::string &la
     OrtCUDAProviderOptions cudaOption;
 
     // Configure session options based on whether GPU is to be used and available
-    if (useGPU && cudaAvailable != availableProviders.end()) {
+    if (useGPU && cudaAvailable != availableProviders.end())
+    {
         std::cout << "Inference device: GPU" << std::endl;
         sessionOptions.AppendExecutionProvider_CUDA(cudaOption); // Append CUDA execution provider
-    } else {
-        if (useGPU) {
+    }
+    else
+    {
+        if (useGPU)
+        {
             std::cout << "GPU is not supported by your ONNXRuntime build. Fallback to CPU." << std::endl;
         }
         std::cout << "Inference device: CPU" << std::endl;
@@ -698,9 +808,12 @@ YOLO8Detector::YOLO8Detector(const std::string &modelPath, const std::string &la
     outputNames.push_back(outputNodeNameAllocatedStrings.back().get());
 
     // Set the expected input image shape based on the model's input tensor
-    if (inputTensorShapeVec.size() >= 4) {
+    if (inputTensorShapeVec.size() >= 4)
+    {
         inputImageShape = cv::Size(static_cast<int>(inputTensorShapeVec[3]), static_cast<int>(inputTensorShapeVec[2]));
-    } else {
+    }
+    else
+    {
         throw std::runtime_error("Invalid input tensor shape.");
     }
 
@@ -716,7 +829,8 @@ YOLO8Detector::YOLO8Detector(const std::string &modelPath, const std::string &la
 }
 
 // Preprocess function implementation
-cv::Mat YOLO8Detector::preprocess(const cv::Mat &image, float *&blob, std::vector<int64_t> &inputTensorShape) {
+cv::Mat YOLO8Detector::preprocess(const cv::Mat &image, float *&blob, std::vector<int64_t> &inputTensorShape)
+{
     ScopedTimer timer("preprocessing");
 
     cv::Mat resizedImage;
@@ -735,7 +849,8 @@ cv::Mat YOLO8Detector::preprocess(const cv::Mat &image, float *&blob, std::vecto
 
     // Split the image into separate channels and store in the blob
     std::vector<cv::Mat> chw(resizedImage.channels());
-    for (int i = 0; i < resizedImage.channels(); ++i) {
+    for (int i = 0; i < resizedImage.channels(); ++i)
+    {
         chw[i] = cv::Mat(resizedImage.rows, resizedImage.cols, CV_32FC1, blob + i * resizedImage.cols * resizedImage.rows);
     }
     cv::split(resizedImage, chw); // Split channels into the blob
@@ -750,25 +865,27 @@ std::vector<Detection> YOLO8Detector::postprocess(
     const cv::Size &resizedImageShape,
     const std::vector<Ort::Value> &outputTensors,
     float confThreshold,
-    float iouThreshold
-) {
+    float iouThreshold)
+{
     ScopedTimer timer("postprocessing");
 
     std::vector<Detection> detections;
 
     // Retrieve raw output data from the first output tensor
-    const float* rawOutput = outputTensors[0].GetTensorData<float>();
+    const float *rawOutput = outputTensors[0].GetTensorData<float>();
     const std::vector<int64_t> outputShape = outputTensors[0].GetTensorTypeAndShapeInfo().GetShape();
     const size_t num_features = outputShape[1];
     const size_t num_detections = outputShape[2];
 
     // Early exit if no detections
-    if (num_detections == 0) {
+    if (num_detections == 0)
+    {
         return detections;
     }
 
     const int numClasses = static_cast<int>(num_features) - 4;
-    if (numClasses <= 0) {
+    if (numClasses <= 0)
+    {
         // Invalid number of classes
         return detections;
     }
@@ -784,9 +901,10 @@ std::vector<Detection> YOLO8Detector::postprocess(
     nms_boxes.reserve(num_detections);
 
     // Constants for indexing
-    const float* ptr = rawOutput;
+    const float *ptr = rawOutput;
 
-    for (size_t d = 0; d < num_detections; ++d) {
+    for (size_t d = 0; d < num_detections; ++d)
+    {
         // Extract bounding box coordinates
         float centerX = ptr[0 * num_detections + d];
         float centerY = ptr[1 * num_detections + d];
@@ -798,16 +916,19 @@ std::vector<Detection> YOLO8Detector::postprocess(
         int classId = 0;
 
         // Find the class with the highest confidence
-        for (int c = 1; c < numClasses; ++c) {
+        for (int c = 1; c < numClasses; ++c)
+        {
             float classConf = ptr[(4 + c) * num_detections + d];
-            if (classConf > objConf) {
+            if (classConf > objConf)
+            {
                 objConf = classConf;
                 classId = c;
             }
         }
 
         // Filter out low-confidence detections
-        if (objConf > confThreshold) {
+        if (objConf > confThreshold)
+        {
             // Convert center coordinates to top-left
             float left = centerX - width / 2.0f;
             float top = centerY - height / 2.0f;
@@ -817,8 +938,7 @@ std::vector<Detection> YOLO8Detector::postprocess(
                 resizedImageShape,
                 BoundingBox(left, top, width, height),
                 originalImageSize,
-                true
-            );
+                true);
 
             // Round coordinates and adjust for class ID to prevent NMS overlap between classes
             BoundingBox roundedBox;
@@ -846,12 +966,12 @@ std::vector<Detection> YOLO8Detector::postprocess(
 
     // Collect final detections
     detections.reserve(indices.size());
-    for (const int idx : indices) {
+    for (const int idx : indices)
+    {
         detections.emplace_back(Detection{
             boxes[idx],
             confs[idx],
-            classIds[idx]
-        });
+            classIds[idx]});
     }
 
     return detections;
@@ -859,13 +979,16 @@ std::vector<Detection> YOLO8Detector::postprocess(
 
 // Implementation of getBestClassInfo
 void YOLO8Detector::getBestClassInfo(const std::vector<float> &p_Mat, const int &numClasses,
-                                      float &bestConf, int &bestClassId) {
+                                     float &bestConf, int &bestClassId)
+{
     bestClassId = 0;
     bestConf = 0.0f;
 
-    for (int i = 0; i < numClasses; ++i) {
+    for (int i = 0; i < numClasses; ++i)
+    {
         float classConf = p_Mat[i + 4]; // Assuming first 4 elements are bbox coordinates
-        if (classConf > bestConf) {
+        if (classConf > bestConf)
+        {
             bestConf = classConf;
             bestClassId = i;
         }
@@ -873,10 +996,11 @@ void YOLO8Detector::getBestClassInfo(const std::vector<float> &p_Mat, const int 
 }
 
 // Detect function implementation
-std::vector<Detection> YOLO8Detector::detect(const cv::Mat& image, float confThreshold, float iouThreshold) {
+std::vector<Detection> YOLO8Detector::detect(const cv::Mat &image, float confThreshold, float iouThreshold)
+{
     ScopedTimer timer("Overall detection");
 
-    float* blobPtr = nullptr; // Pointer to hold preprocessed image data
+    float *blobPtr = nullptr; // Pointer to hold preprocessed image data
     // Define the shape of the input tensor (batch size, channels, height, width)
     std::vector<int64_t> inputTensorShape = {1, 3, inputImageShape.height, inputImageShape.width};
 
@@ -900,8 +1024,7 @@ std::vector<Detection> YOLO8Detector::detect(const cv::Mat& image, float confThr
         inputTensorValues.data(),
         inputTensorSize,
         inputTensorShape.data(),
-        inputTensorShape.size()
-    );
+        inputTensorShape.size());
 
     // Run the inference session with the input tensor and retrieve output tensors
     std::vector<Ort::Value> outputTensors = session.Run(
@@ -910,8 +1033,7 @@ std::vector<Detection> YOLO8Detector::detect(const cv::Mat& image, float confThr
         &inputTensor,
         numInputNodes,
         outputNames.data(),
-        numOutputNodes
-    );
+        numOutputNodes);
 
     // Determine the resized image shape based on input tensor shape
     cv::Size resizedImageShape(static_cast<int>(inputTensorShape[3]), static_cast<int>(inputTensorShape[2]));
