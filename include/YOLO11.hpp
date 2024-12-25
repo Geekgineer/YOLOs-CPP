@@ -816,6 +816,8 @@ std::vector<Detection> YOLO11Detector::postprocess(
 
     // Constants for indexing
     const float* ptr = rawOutput;
+    // To track the highest total confidence score for a specific detection among all possible classes.
+    float maxConf = 0.0f;
 
     for (size_t d = 0; d < num_detections; ++d) {
         // Extract bounding box coordinates
@@ -828,14 +830,15 @@ std::vector<Detection> YOLO11Detector::postprocess(
         float objConf = ptr[4 * num_detections + d];
         int classId = 0;
 
-        // Find the class with the highest confidence
-        for (int c = 1; c < numClasses; ++c) {
+        for (int c = 0; c < numClasses; ++c) {
             float classConf = ptr[(4 + c) * num_detections + d];
-            if (classConf > objConf) {
-                objConf = classConf;
+            float totalConf = objConf * classConf; // Combine objectness and class confidence
+            if (totalConf > confThreshold && totalConf > maxConf) {
+                maxConf = totalConf;
                 classId = c;
             }
         }
+
 
         // Filter out low-confidence detections
         if (objConf > confThreshold) {
