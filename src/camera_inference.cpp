@@ -128,9 +128,27 @@ int main()
         processedQueue.set_finished();
     });
 
+    std::pair<cv::Mat, std::vector<Detection>> item;
+
+    #ifdef __APPLE__
+    // For macOS, ensure UI runs on the main thread
+    while (!stopFlag.load() && processedQueue.dequeue(item))
+    {
+        cv::Mat displayFrame = item.first;
+        detector.drawBoundingBoxMask(displayFrame, item.second);
+
+        cv::imshow("Detections", displayFrame);
+        if (cv::waitKey(1) == 'q')
+        {
+            stopFlag.store(true);
+            frameQueue.set_finished();
+            processedQueue.set_finished();
+            break;
+        }
+    }
+    #else
     // Display thread: Show processed frames
     std::thread displayThread([&]() {
-        std::pair<cv::Mat, std::vector<Detection>> item;
         while (!stopFlag.load() && processedQueue.dequeue(item))
         {
             cv::Mat displayFrame = item.first;
@@ -148,11 +166,12 @@ int main()
             }
         }
     });
+    displayThread.join();
+    #endif
 
     // Join all threads
     producer.join();
     consumer.join();
-    displayThread.join();
 
     // Release resources
     cap.release();
