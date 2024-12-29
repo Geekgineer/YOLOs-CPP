@@ -38,20 +38,26 @@ target_link_libraries(image_inference ${OpenCV_LIBS})
 target_link_libraries(camera_inference ${OpenCV_LIBS})
 target_link_libraries(video_inference ${OpenCV_LIBS})
 
-if (WIN32)
+if(UNIX)
+    message(STATUS "We are building on Linux!")
+    # Specific Linux build commands or flags
+    target_link_libraries(image_inference "${ONNXRUNTIME_DIR}/lib/libonnxruntime.so")
+    target_link_libraries(camera_inference "${ONNXRUNTIME_DIR}/lib/libonnxruntime.so")
+    target_link_libraries(video_inference "${ONNXRUNTIME_DIR}/lib/libonnxruntime.so")
+endif(UNIX)
+
+if(APPLE)
+    message(STATUS "We are building on macOS!")
+    # Specific macOS build commands or flags
+    target_link_libraries(image_inference "${ONNXRUNTIME_DIR}/lib/libonnxruntime.dylib")
+    target_link_libraries(camera_inference "${ONNXRUNTIME_DIR}/lib/libonnxruntime.dylib")
+    target_link_libraries(video_inference "${ONNXRUNTIME_DIR}/lib/libonnxruntime.dylib")
+endif(APPLE)
+
+if(WIN32)
+    message(STATUS "We are building on Windows!")
+    # Specific Windows build commands or flags
     target_link_libraries(image_inference "${ONNXRUNTIME_DIR}/lib/onnxruntime.lib")
     target_link_libraries(camera_inference "${ONNXRUNTIME_DIR}/lib/onnxruntime.lib")
     target_link_libraries(video_inference "${ONNXRUNTIME_DIR}/lib/onnxruntime.lib")
 endif(WIN32)
-
-if (LINUX)
-    target_link_libraries(image_inference "${ONNXRUNTIME_DIR}/lib/libonnxruntime.so")
-    target_link_libraries(camera_inference "${ONNXRUNTIME_DIR}/lib/libonnxruntime.so")
-    target_link_libraries(video_inference "${ONNXRUNTIME_DIR}/lib/libonnxruntime.so")
-endif(LINUX)
-
-if (APPLE)
-target_link_libraries(image_inference "${ONNXRUNTIME_DIR}/lib/libonnxruntime.dylib")
-target_link_libraries(camera_inference "${ONNXRUNTIME_DIR}/lib/libonnxruntime.dylib")
-target_link_libraries(video_inference "${ONNXRUNTIME_DIR}/lib/libonnxruntime.dylib")
-endif(APPLE)
