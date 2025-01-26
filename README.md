@@ -12,19 +12,35 @@
 
 ## Overview
 
-**YOLOs-CPP** provides single c++ headers with high-performance application designed for real-time object detection using various YOLO (You Only Look Once) models from [Ultralytics](https://github.com/ultralytics/ultralytics). Leveraging the power of [ONNX Runtime](https://github.com/microsoft/onnxruntime) and [OpenCV](https://opencv.org/), this project provides seamless integration with unified YOLOv(5,7,8,10,11) implementation for image, video, and live camera inference. Whether you're developing for research, production, or hobbyist projects, this application offers flexibility and efficiency also provide.
+**YOLOs-CPP** provides single c++ headers with high-performance application designed for real-time object detection and segmentation using various YOLO (You Only Look Once) models from [Ultralytics](https://github.com/ultralytics/ultralytics). Leveraging the power of [ONNX Runtime](https://github.com/microsoft/onnxruntime) and [OpenCV](https://opencv.org/), this project provides seamless integration with unified YOLOv(5,7,8,10,11) implementation for image, video, and live camera inference. Whether you're developing for research, production, or hobbyist projects, this application offers flexibility and efficiency.
 
-*Video example of object detection output with bounding boxes and labels. [Click on image!]*
+
+## News 
+
+#### 📌 Pinned
+
+* [2025.01.26] 🔥🔥🔥  YOLOS-CPP Provide now segmentation headers for YOLOv8 and YOLOv11 also quantized models.
+
+* [2024.10.23] 🚀🚀🚀 YOLOS-CPP Project lunch with support for detection headers.
+
+
+*Video example of object detection output with segmentation masks, bounding boxes and labels. [Click on image!]*
 
 <a href="https://www.youtube.com/watch?v=Ax5vaYJ-mVQ">
-    <img src="https://img.youtube.com/vi/Ax5vaYJ-mVQ/maxresdefault.jpg" alt="Watch the Demo Video" width="800" />
+    <img src="data/SIG_experience_center_seg_processed.gif" alt="Watch the Demo Video" width="800" />
 </a>
 
+<a href="https://www.youtube.com/watch?v=Ax5vaYJ-mVQ">
+    <img src="data/SIG_experience_center_seg_processed-2.gif" alt="Watch the Demo Video" width="800" />
+</a>
 
 [Vidoe source](https://www.youtube.com/watch?v=dSI0_QjS3VU)
 
 
+
 ### Integration in your c++ projects
+
+## Detection Example
 
 ```cpp
 
@@ -62,6 +78,48 @@ int main()
     return 0;
 }
 
+
+```
+
+## Segmentation Example
+
+```cpp
+
+// Include necessary headers
+#include <opencv2/opencv.hpp>
+#include <iostream>
+#include <string>
+
+// Include the YOLOv11 Segmentation header
+#include "YOLO11Seg.hpp"
+
+int main()
+{
+    // Configuration parameters
+    const std::string labelsPath = "../models/coco.names";       // Path to class labels
+    const std::string modelPath  = "../models/yolo11n-seg.onnx";     // Path to YOLO11 model
+    const std::string imagePath  = "../data/dogs.jpg";           // Path to input image
+    bool isGPU = true;                                           // Set to false for CPU processing
+
+    // Initialize the YOLO11 segmentor
+    YOLOv11SegDetector segmentor(modelPath, labelsPath, isGPU);
+
+    // Load an image
+    cv::Mat image = cv::imread(imagePath);
+
+    // Perform object segmentation to get segmentation masks and bboxs
+    std::vector<Segmentation> results = detector.segment(img, 0.2f, 0.45f);
+
+    // Draw bounding boxes on the image
+    segmentor.drawSegmentations(image, results);          // Masks only
+    // segmentor.drawSegmentationsAndBoxes(image, results); // Masks and Detections
+
+    // Display the annotated image
+    cv::imshow("YOLO11 Segmentation and Detections", image);
+    cv::waitKey(0); // Wait indefinitely until a key is pressed
+
+    return 0;
+}
 
 ```
 
@@ -191,13 +249,17 @@ The project includes various pertained standard YOLO models stored in the `model
 | **Standard Models**    | yolo5-n6.onnx              |
 |                  | yolo7-tiny.onnx            |
 |                  | yolo8n.onnx                |
+|                  | yolo8n-seg.onnx                |
 |                  | yolo10n.onnx               |
 |                  | yolo11n.onnx               |
+|                  | yolo11n-seg.onnx               |
 | **Quantized Models**   | yolo5-n6_uint8.onnx         |
 |                  | yolo7-tiny-uint8.onnx      |
 |                  | yolo8n_uint8.onnx          |
+|                  | yolo8n-seg_uint8.onnx          |
 |                  | yolo10n_uint8.onnx         |
 |                  | yolo11n_uint8.onnx         |
+|                  | yolo11n-seg_uint8.onnx         |
 
 You can use your custom yolo version with custom classes also!
 
@@ -210,6 +272,12 @@ The quantized_models directory includes quantized versions of the YOLO models op
 
 > Note: Quantized models offer reduced model size and potentially faster inference with a slight trade-off in accuracy.
 
+
+## Support the Project
+
+If you find **YOLOs-CPP** useful and would like to support its development, you can buy me a coffee ☕! Your support helps me to continue maintaining and improving this project.
+
+<a href="https://www.buymeacoffee.com/geekgineer" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
 
 ### Contributing
