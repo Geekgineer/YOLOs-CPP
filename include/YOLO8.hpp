@@ -618,35 +618,6 @@ namespace utils
 
         DEBUG_PRINT("Bounding boxes and masks drawn on image.");
     }
-
-    /**
-     * @brief A robust implementation of a clamp function.
-     *        Restricts a value to lie within a specified range [low, high].
-     *
-     * @tparam T The type of the value to clamp. Should be an arithmetic type (int, float, etc.).
-     * @param value The value to clamp.
-     * @param low The lower bound of the range.
-     * @param high The upper bound of the range.
-     * @return const T& The clamped value, constrained to the range [low, high].
-     *
-     * @note If low > high, the function swaps the bounds automatically to ensure valid behavior.
-     */
-    template <typename T>
-    typename std::enable_if<std::is_arithmetic<T>::value, T>::type
-    inline clamp(const T &value, const T &low, const T &high)
-    {
-        // Ensure the range [low, high] is valid; swap if necessary
-        T validLow = low < high ? low : high;
-        T validHigh = low < high ? high : low;
-
-        // Clamp the value to the range [validLow, validHigh]
-        if (value < validLow)
-            return validLow;
-        if (value > validHigh)
-            return validHigh;
-        return value;
-    }
-
 };
 
 /**
