@@ -44,9 +44,9 @@
 // #include "YOLO5.hpp"  // Uncomment for YOLOv5
 // #include "YOLO7.hpp"  // Uncomment for YOLOv7
 // #include "YOLO8.hpp"  // Uncomment for YOLOv8
-#include "YOLO9.hpp"  // Uncomment for YOLOv9
+// #include "YOLO9.hpp"  // Uncomment for YOLOv9
 // #include "YOLO10.hpp" // Uncomment for YOLOv10
-// #include "YOLO11.hpp" // Uncomment for YOLOv11
+#include "YOLO11.hpp" // Uncomment for YOLOv11
 
 int main()
 {
@@ -64,19 +64,19 @@ int main()
     // const std::string modelPath = "../models/yolo5-n6.onnx";      // YOLOv5
     // const std::string modelPath = "../models/yolo7-tiny.onnx";       // YOLOv7
     // const std::string modelPath = "../models/yolo8n.onnx"; // YOLOv8
-    const std::string modelPath = "../models/yolov9s.onnx"; // YOLOv9 
+    // const std::string modelPath = "../models/yolov9s.onnx"; // YOLOv9 
     // const std::string modelPath = "../models/yolo10n.onnx"; // YOLOv10 
     // const std::string modelPath = "../quantized_models/yolo10n_uint8.onnx"; // Quantized YOLOv10
-    // const std::string modelPath = "../models/yolo11n.onnx"; // YOLOv11 
+    const std::string modelPath = "../models/yolo11n.onnx"; // YOLOv11 
 
     // Initialize the YOLO detector with the chosen model and labels
     bool isGPU = false; // Set to false for CPU processing
     // YOLO7Detector detector(modelPath, labelsPath, isGPU);
     // YOLO5Detector detector(modelPath, labelsPath, isGPU);  // Uncomment for YOLOv5
     // YOLO8Detector detector(modelPath, labelsPath, isGPU);  // Uncomment for YOLOv8
-    YOLO9Detector detector(modelPath, labelsPath, isGPU); // Uncomment for YOLOv9
+    // YOLO9Detector detector(modelPath, labelsPath, isGPU); // Uncomment for YOLOv9
     // YOLO10Detector detector(modelPath, labelsPath, isGPU); // Uncomment for YOLOv10
-    // YOLO11Detector detector(modelPath, labelsPath, isGPU); // Uncomment for YOLOv11
+    YOLO11Detector detector(modelPath, labelsPath, isGPU); // Uncomment for YOLOv11
 
     // Load an image
     cv::Mat image = cv::imread(imagePath);
