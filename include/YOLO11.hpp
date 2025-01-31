@@ -66,17 +66,17 @@ struct BoundingBox {
     BoundingBox(int x_, int y_, int width_, int height_)
         : x(x_), y(y_), width(width_), height(height_) {}
 
-    float area() const { return static_cast<float>(width * height); }
+    // float area() const { return static_cast<float>(width * height); }
 
-    BoundingBox intersect(const BoundingBox &other) const {
-        int xStart = std::max(x, other.x);
-        int yStart = std::max(y, other.y);
-        int xEnd = std::min(x + width, other.x + other.width);
-        int yEnd = std::min(y + height, other.y + other.height);
-        int intersectWidth = std::max(0, xEnd - xStart);
-        int intersectHeight = std::max(0, yEnd - yStart);
-        return BoundingBox{xStart, yStart, intersectWidth, intersectHeight};
-    }
+    // BoundingBox intersect(const BoundingBox &other) const {
+    //     int xStart = std::max(x, other.x);
+    //     int yStart = std::max(y, other.y);
+    //     int xEnd = std::min(x + width, other.x + other.width);
+    //     int yEnd = std::min(y + height, other.y + other.height);
+    //     int intersectWidth = std::max(0, xEnd - xStart);
+    //     int intersectHeight = std::max(0, yEnd - yStart);
+    //     return BoundingBox{xStart, yStart, intersectWidth, intersectHeight};
+    // }
 };
 
 /**
@@ -279,31 +279,31 @@ namespace utils {
         return result;
     }
 
-    /**
-     * @brief Extracts the best class information from a detection row.
-     * 
-     * @param p_Mat Row data containing class scores.
-     * @param numClasses Number of classes.
-     * @param bestConf Reference to store the best confidence score.
-     * @param bestClassId Reference to store the best class ID.
-     */
-    void getBestClassInfo(const std::vector<float> &p_Mat, const int &numClasses,
-                          float &bestConf, int &bestClassId) 
+    // /**
+    //  * @brief Extracts the best class information from a detection row.
+    //  * 
+    //  * @param p_Mat Row data containing class scores.
+    //  * @param numClasses Number of classes.
+    //  * @param bestConf Reference to store the best confidence score.
+    //  * @param bestClassId Reference to store the best class ID.
+    //  */
+    // void getBestClassInfo(const std::vector<float> &p_Mat, const int &numClasses,
+    //                       float &bestConf, int &bestClassId) 
                           
-    {
-        bestClassId = 0;
-        bestConf = 0;
+    // {
+    //     bestClassId = 0;
+    //     bestConf = 0;
 
-        for (int i = 0; i < numClasses; i++)
-        {
-            if (p_Mat[i + 4] > bestConf)
-            {
-                bestConf = p_Mat[i + 4];
-                bestClassId = i;
-            }
-        }
+    //     for (int i = 0; i < numClasses; i++)
+    //     {
+    //         if (p_Mat[i + 4] > bestConf)
+    //         {
+    //             bestConf = p_Mat[i + 4];
+    //             bestClassId = i;
+    //         }
+    //     }
     
-    }
+    // }
 
     /**
      * @brief Performs Non-Maximum Suppression (NMS) on the bounding boxes.
@@ -665,16 +665,16 @@ private:
                                       const std::vector<Ort::Value> &outputTensors,
                                       float confThreshold, float iouThreshold);
     
-    /**
-     * @brief Extracts the best class information from a detection row.
-     * 
-     * @param p_Mat Row data containing class scores.
-     * @param numClasses Number of classes.
-     * @param bestConf Reference to store the best confidence score.
-     * @param bestClassId Reference to store the best class ID.
-     */
-    void getBestClassInfo(const std::vector<float> &p_Mat, const int &numClasses,
-                          float &bestConf, int &bestClassId);
+    // /**
+    //  * @brief Extracts the best class information from a detection row.
+    //  * 
+    //  * @param p_Mat Row data containing class scores.
+    //  * @param numClasses Number of classes.
+    //  * @param bestConf Reference to store the best confidence score.
+    //  * @param bestClassId Reference to store the best class ID.
+    //  */
+    // void getBestClassInfo(const std::vector<float> &p_Mat, const int &numClasses,
+    //                       float &bestConf, int &bestClassId);
 };
 
 // Implementation of YOLO11Detector constructor
@@ -826,22 +826,20 @@ std::vector<Detection> YOLO11Detector::postprocess(
         float width = ptr[2 * num_detections + d];
         float height = ptr[3 * num_detections + d];
 
-        // Initialize object confidence and class ID
-        float objConf = ptr[4 * num_detections + d];
-        int classId = 0;
-
-        for (int c = 0; c < numClasses; ++c) {
-            float classConf = ptr[(4 + c) * num_detections + d];
-            float totalConf = objConf * classConf; // Combine objectness and class confidence
-            if (totalConf > confThreshold && totalConf > maxConf) {
-                maxConf = totalConf;
+        // Find class with maximum score
+        int classId = -1;
+        float maxScore = -FLT_MAX;
+        for(int c = 0; c < numClasses; ++c) {
+            const float score = ptr[d + (4 + c) * num_detections];
+            if(score > maxScore) {
+                maxScore = score;
                 classId = c;
             }
         }
 
 
         // Filter out low-confidence detections
-        if (objConf > confThreshold) {
+        if (maxScore > confThreshold) {
             // Convert center coordinates to top-left
             float left = centerX - width / 2.0f;
             float top = centerY - height / 2.0f;
@@ -869,7 +867,7 @@ std::vector<Detection> YOLO11Detector::postprocess(
             // Append to NMS containers
             nms_boxes.emplace_back(nmsBox);
             boxes.emplace_back(roundedBox);
-            confs.emplace_back(objConf);
+            confs.emplace_back(maxScore);
             classIds.emplace_back(classId);
         }
     }
@@ -891,20 +889,20 @@ std::vector<Detection> YOLO11Detector::postprocess(
     return detections;
 }
 
-// Implementation of getBestClassInfo
-void YOLO11Detector::getBestClassInfo(const std::vector<float> &p_Mat, const int &numClasses,
-                                      float &bestConf, int &bestClassId) {
-    bestClassId = 0;
-    bestConf = 0.0f;
+// // Implementation of getBestClassInfo
+// void YOLO11Detector::getBestClassInfo(const std::vector<float> &p_Mat, const int &numClasses,
+//                                       float &bestConf, int &bestClassId) {
+//     bestClassId = 0;
+//     bestConf = 0.0f;
 
-    for (int i = 0; i < numClasses; ++i) {
-        float classConf = p_Mat[i + 4]; // Assuming first 4 elements are bbox coordinates
-        if (classConf > bestConf) {
-            bestConf = classConf;
-            bestClassId = i;
-        }
-    }
-}
+//     for (int i = 0; i < numClasses; ++i) {
+//         float classConf = p_Mat[i + 4]; // Assuming first 4 elements are bbox coordinates
+//         if (classConf > bestConf) {
+//             bestConf = classConf;
+//             bestClassId = i;
+//         }
+//     }
+// }
 
 // Detect function implementation
 std::vector<Detection> YOLO11Detector::detect(const cv::Mat& image, float confThreshold, float iouThreshold) {
