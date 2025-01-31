@@ -19,6 +19,8 @@
 
 #### 📌 Pinned
 
+* [2025.01.31] 🎯🎯🎯 YOLOs-CPP now supports YOLOv9 for Segmentation. Thanks to [Mohamed Samir](https://github.com/mohamedsamirx).
+
 * [2025.01.29] 🎯🎯🎯 YOLOs-CPP now supports YOLOv9 for object detection. Thanks to [Mohamed Samir](https://github.com/mohamedsamirx).
 
 * [2025.01.26] 🔥🔥🔥  YOLOS-CPP Provide now segmentation headers for YOLOv8 and YOLOv11 also quantized models.
@@ -110,7 +112,7 @@ int main()
     cv::Mat image = cv::imread(imagePath);
 
     // Perform object segmentation to get segmentation masks and bboxs
-    std::vector<Segmentation> results = detector.segment(img, 0.2f, 0.45f);
+    std::vector<Segmentation> results = segmentor.segment(image, 0.2f, 0.45f);
 
     // Draw bounding boxes on the image
     segmentor.drawSegmentations(image, results);          // Masks only
@@ -248,6 +250,7 @@ The project includes various pertained standard YOLO models stored in the `model
 |                  | yolo8n.onnx                |
 |                  | yolo8n-seg.onnx                |
 |                  | yolov9s.onnx               |
+|                  | yolov9c-seg.onnx           |
 |                  | yolo10n.onnx               |
 |                  | yolo11n.onnx               |
 |                  | yolo11n-seg.onnx               |
