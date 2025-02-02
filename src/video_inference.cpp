@@ -104,7 +104,7 @@ int main()
     // const std::string modelPath = "../models/yolo11n.onnx"; // YOLOv11
 
     // Initialize the YOLO detector
-    bool isGPU = false; // Set to false for CPU processing
+    bool isGPU = true; // Set to false for CPU processing
     YOLO9Detector detector(modelPath, labelsPath, isGPU); // YOLOv9
     // YOLO11Detector detector(modelPath, labelsPath, isGPU); // YOLOv11
 
