@@ -62,8 +62,10 @@ elif [[ "$architecture" == "x86_64" ]]; then
         ONNXRUNTIME_ARCH="x86_64"
     fi
 elif [[ "$architecture" == arm* ]]; then
+    ONNXRUNTIME_GPU=0
     ONNXRUNTIME_ARCH="arm"
 elif [[ "$architecture" == i*86 ]]; then
+    ONNXRUNTIME_GPU=0
     ONNXRUNTIME_ARCH="x86"
 else
     echo "Unsupported architecture: $architecture"
