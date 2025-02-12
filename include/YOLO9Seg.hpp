@@ -1,16 +1,12 @@
 #pragma once
 
 // ====================================================
-// Single YOLOv9 Segmentation and Detection Header File
+// Single YOLOv9 Segmentation Header File
 // ====================================================
 //
-// This header defines the YOLOv9SegDetector class for performing object detection 
-// and segmentation using the YOLOv9 model. It includes necessary libraries, 
-// utility structures, and helper functions to facilitate model inference 
-// and result post-processing.
-//
-// Author: Mohamed Samir, https://www.linkedin.com/in/mohamed-samir-7a730b237/
-// Date: 31.01.2025
+// This header defines the YOLOv9SegDetector class for performing Semantic segmentation
+// using the YOLOv9 model. It includes necessary libraries, utility structures, 
+//and helper functions to facilitate model inference and result post-processing.
 //
 // ====================================================
 
