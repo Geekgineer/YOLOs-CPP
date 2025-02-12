@@ -7,10 +7,6 @@
 // This header defines the YOLO9Detector class for performing object detection using the YOLOv9 model.
 // It includes necessary libraries, utility structures, and helper functions to facilitate model inference
 // and result postprocessing.
-//
-// Author: Mohamed Samir, https://www.linkedin.com/in/mohamed-samir-7a730b237/
-// Date: 29.01.2025
-//
 // ================================
 
 /**
