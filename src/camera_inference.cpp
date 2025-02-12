@@ -58,9 +58,10 @@
 // Uncomment the version
 // #include "YOLO5.hpp"
 // #include "YOLO7.hpp"
-#include "YOLO9.hpp"
+// #include "YOLO9.hpp"
 // #include "YOLO8.hpp"
 // #include "YOLO10.hpp"
+#include "YOLO11.hpp" 
 
 
 // Include the bounded queue
@@ -76,13 +77,17 @@ int main()
     // const std::string modelPath = "../models/yolo7-tiny.onnx"; 
     // std::string modelPath = "../models/yolo8n.onnx"; 
     // std::string modelPath = "../models/yolo8n.onnx"; 
-    const std::string modelPath = "../models/yolov9s.onnx"; 
+    // const std::string modelPath = "../models/yolov9s.onnx"; 
     // std::string modelPath = "../models/yolo10n_uint8.onnx"; 
+    const std::string modelPath = "../models/yolo11n.onnx";
+
 
     const std::string videoSource = "/dev/video0"; // your usb cam device
 
     // Initialize YOLO detector
-    YOLO9Detector detector(modelPath, labelsPath, isGPU);
+    // YOLO9Detector detector(modelPath, labelsPath, isGPU);
+    YOLO11Detector detector(modelPath, labelsPath, isGPU);
+
 
     // Open video capture
     cv::VideoCapture cap;
