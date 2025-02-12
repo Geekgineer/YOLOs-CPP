@@ -50,9 +50,9 @@
 // #include "YOLO5.hpp"  // Uncomment for YOLOv5
 // #include "YOLO7.hpp"  // Uncomment for YOLOv7
 // #include "YOLO8.hpp"  // Uncomment for YOLOv8
-#include "YOLO9.hpp"  // Uncomment for YOLOv9
+// #include "YOLO9.hpp"  // Uncomment for YOLOv9
 // #include "YOLO10.hpp" // Uncomment for YOLOv10
-// #include "YOLO11.hpp" // Uncomment for YOLOv10
+#include "YOLO11.hpp" // Uncomment for YOLOv10
 
 // Thread-safe queue implementation
 template <typename T>
@@ -100,13 +100,13 @@ int main()
     const std::string outputPath = "../data/SIG_experience_center_processed.mp4"; // Output video path
 
     // Model paths for different YOLO versions
-    const std::string modelPath = "../models/yolov9s.onnx"; // YOLOv9
-    // const std::string modelPath = "../models/yolo11n.onnx"; // YOLOv11
+    // const std::string modelPath = "../models/yolov9s.onnx"; // YOLOv9
+    const std::string modelPath = "../models/yolo11n.onnx"; // YOLOv11
 
     // Initialize the YOLO detector
     bool isGPU = true; // Set to false for CPU processing
-    YOLO9Detector detector(modelPath, labelsPath, isGPU); // YOLOv9
-    // YOLO11Detector detector(modelPath, labelsPath, isGPU); // YOLOv11
+    // YOLO9Detector detector(modelPath, labelsPath, isGPU); // YOLOv9
+    YOLO11Detector detector(modelPath, labelsPath, isGPU); // YOLOv11
 
     // Open the video file
     cv::VideoCapture cap(videoPath);

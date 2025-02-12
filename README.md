@@ -19,7 +19,7 @@
 
 #### 📌 Pinned
 
-* [2025.01.29] 🎯🎯🎯 YOLOs-CPP now supports YOLOv9 for object detection. Thanks to [Mohamed Samir](https://github.com/mohamedsamirx).
+* [2025.01.29] 🎯🎯🎯 YOLOs-CPP now supports YOLOv9 for object detection.
 
 * [2025.01.26] 🔥🔥🔥  YOLOS-CPP Provide now segmentation headers for YOLOv8 and YOLOv11 also quantized models.
 
