@@ -65,18 +65,6 @@ struct BoundingBox {
     BoundingBox() : x(0), y(0), width(0), height(0) {}
     BoundingBox(int x_, int y_, int width_, int height_)
         : x(x_), y(y_), width(width_), height(height_) {}
-
-    float area() const { return static_cast<float>(width * height); }
-
-    BoundingBox intersect(const BoundingBox &other) const {
-        int xStart = std::max(x, other.x);
-        int yStart = std::max(y, other.y);
-        int xEnd = std::min(x + width, other.x + other.width);
-        int yEnd = std::min(y + height, other.y + other.height);
-        int intersectWidth = std::max(0, xEnd - xStart);
-        int intersectHeight = std::max(0, yEnd - yStart);
-        return BoundingBox{xStart, yStart, intersectWidth, intersectHeight};
-    }
 };
 
 /**
@@ -277,32 +265,6 @@ namespace utils {
             result.height = utils::clamp(result.height, 0, imageOriginalShape.height - result.y);
         }
         return result;
-    }
-
-    /**
-     * @brief Extracts the best class information from a detection row.
-     * 
-     * @param p_Mat Row data containing class scores.
-     * @param numClasses Number of classes.
-     * @param bestConf Reference to store the best confidence score.
-     * @param bestClassId Reference to store the best class ID.
-     */
-    void getBestClassInfo(const std::vector<float> &p_Mat, const int &numClasses,
-                          float &bestConf, int &bestClassId) 
-                          
-    {
-        bestClassId = 0;
-        bestConf = 0;
-
-        for (int i = 0; i < numClasses; i++)
-        {
-            if (p_Mat[i + 4] > bestConf)
-            {
-                bestConf = p_Mat[i + 4];
-                bestClassId = i;
-            }
-        }
-    
     }
 
     /**
@@ -665,16 +627,6 @@ private:
                                       const std::vector<Ort::Value> &outputTensors,
                                       float confThreshold, float iouThreshold);
     
-    /**
-     * @brief Extracts the best class information from a detection row.
-     * 
-     * @param p_Mat Row data containing class scores.
-     * @param numClasses Number of classes.
-     * @param bestConf Reference to store the best confidence score.
-     * @param bestClassId Reference to store the best class ID.
-     */
-    void getBestClassInfo(const std::vector<float> &p_Mat, const int &numClasses,
-                          float &bestConf, int &bestClassId);
 };
 
 // Implementation of YOLO11Detector constructor
@@ -775,7 +727,7 @@ cv::Mat YOLO11Detector::preprocess(const cv::Mat &image, float *&blob, std::vect
 
     return resizedImage;
 }
-
+// Postprocess function to convert raw model output into detections
 std::vector<Detection> YOLO11Detector::postprocess(
     const cv::Size &originalImageSize,
     const cv::Size &resizedImageShape,
@@ -783,13 +735,13 @@ std::vector<Detection> YOLO11Detector::postprocess(
     float confThreshold,
     float iouThreshold
 ) {
-    ScopedTimer timer("postprocessing");
+    ScopedTimer timer("postprocessing"); // Measure postprocessing time
 
     std::vector<Detection> detections;
-
-    // Retrieve raw output data from the first output tensor
-    const float* rawOutput = outputTensors[0].GetTensorData<float>();
+    const float* rawOutput = outputTensors[0].GetTensorData<float>(); // Extract raw output data from the first output tensor
     const std::vector<int64_t> outputShape = outputTensors[0].GetTensorTypeAndShapeInfo().GetShape();
+
+    // Determine the number of features and detections
     const size_t num_features = outputShape[1];
     const size_t num_detections = outputShape[2];
 
@@ -798,13 +750,14 @@ std::vector<Detection> YOLO11Detector::postprocess(
         return detections;
     }
 
+    // Calculate number of classes based on output shape
     const int numClasses = static_cast<int>(num_features) - 4;
     if (numClasses <= 0) {
         // Invalid number of classes
         return detections;
     }
 
-    // Preallocate memory to avoid dynamic resizing
+    // Reserve memory for efficient appending
     std::vector<BoundingBox> boxes;
     boxes.reserve(num_detections);
     std::vector<float> confs;
@@ -816,37 +769,32 @@ std::vector<Detection> YOLO11Detector::postprocess(
 
     // Constants for indexing
     const float* ptr = rawOutput;
-    // To track the highest total confidence score for a specific detection among all possible classes.
-    float maxConf = 0.0f;
 
     for (size_t d = 0; d < num_detections; ++d) {
-        // Extract bounding box coordinates
+        // Extract bounding box coordinates (center x, center y, width, height)
         float centerX = ptr[0 * num_detections + d];
         float centerY = ptr[1 * num_detections + d];
         float width = ptr[2 * num_detections + d];
         float height = ptr[3 * num_detections + d];
 
-        // Initialize object confidence and class ID
-        float objConf = ptr[4 * num_detections + d];
-        int classId = 0;
-
+        // Find class with the highest confidence score
+        int classId = -1;
+        float maxScore = -FLT_MAX;
         for (int c = 0; c < numClasses; ++c) {
-            float classConf = ptr[(4 + c) * num_detections + d];
-            float totalConf = objConf * classConf; // Combine objectness and class confidence
-            if (totalConf > confThreshold && totalConf > maxConf) {
-                maxConf = totalConf;
+            const float score = ptr[d + (4 + c) * num_detections];
+            if (score > maxScore) {
+                maxScore = score;
                 classId = c;
             }
         }
 
-
-        // Filter out low-confidence detections
-        if (objConf > confThreshold) {
-            // Convert center coordinates to top-left
+        // Proceed only if confidence exceeds threshold
+        if (maxScore > confThreshold) {
+            // Convert center coordinates to top-left (x1, y1)
             float left = centerX - width / 2.0f;
             float top = centerY - height / 2.0f;
 
-            // Scale coordinates to original image size
+            // Scale to original image size
             BoundingBox scaledBox = utils::scaleCoords(
                 resizedImageShape,
                 BoundingBox(left, top, width, height),
@@ -854,56 +802,43 @@ std::vector<Detection> YOLO11Detector::postprocess(
                 true
             );
 
-            // Round coordinates and adjust for class ID to prevent NMS overlap between classes
+            // Round coordinates for integer pixel positions
             BoundingBox roundedBox;
             roundedBox.x = std::round(scaledBox.x);
             roundedBox.y = std::round(scaledBox.y);
             roundedBox.width = std::round(scaledBox.width);
             roundedBox.height = std::round(scaledBox.height);
 
-            // Adjusted box for NMS to differentiate classes
+            // Adjust NMS box coordinates to prevent overlap between classes
             BoundingBox nmsBox = roundedBox;
-            nmsBox.x += classId * 7680; // Assuming 7680 is larger than image width
+            nmsBox.x += classId * 7680; // Arbitrary offset to differentiate classes
             nmsBox.y += classId * 7680;
 
-            // Append to NMS containers
+            // Add to respective containers
             nms_boxes.emplace_back(nmsBox);
             boxes.emplace_back(roundedBox);
-            confs.emplace_back(objConf);
+            confs.emplace_back(maxScore);
             classIds.emplace_back(classId);
         }
     }
 
-    // Perform Non-Maximum Suppression (NMS)
+    // Apply Non-Maximum Suppression (NMS) to eliminate redundant detections
     std::vector<int> indices;
     utils::NMSBoxes(nms_boxes, confs, confThreshold, iouThreshold, indices);
 
-    // Collect final detections
+    // Collect filtered detections into the result vector
     detections.reserve(indices.size());
     for (const int idx : indices) {
         detections.emplace_back(Detection{
-            boxes[idx],
-            confs[idx],
-            classIds[idx]
+            boxes[idx],       // Bounding box
+            confs[idx],       // Confidence score
+            classIds[idx]     // Class ID
         });
     }
 
+    DEBUG_PRINT("Postprocessing completed") // Debug log for completion
+
     return detections;
-}
-
-// Implementation of getBestClassInfo
-void YOLO11Detector::getBestClassInfo(const std::vector<float> &p_Mat, const int &numClasses,
-                                      float &bestConf, int &bestClassId) {
-    bestClassId = 0;
-    bestConf = 0.0f;
-
-    for (int i = 0; i < numClasses; ++i) {
-        float classConf = p_Mat[i + 4]; // Assuming first 4 elements are bbox coordinates
-        if (classConf > bestConf) {
-            bestConf = classConf;
-            bestClassId = i;
-        }
-    }
 }
 
 // Detect function implementation
