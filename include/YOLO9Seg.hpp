@@ -8,6 +8,11 @@
 // using the YOLOv9 model. It includes necessary libraries, utility structures, 
 //and helper functions to facilitate model inference and result post-processing.
 //
+// Authors: 
+// 1- Abdalrahman M. Amer, www.linkedin.com/in/abdalrahman-m-amer
+// 2- Mohamed Samir, www.linkedin.com/in/mohamed-samir-7a730b237/
+//
+// Date: 25.01.2025
 // ====================================================
 
 
