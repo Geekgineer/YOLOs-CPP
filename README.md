@@ -21,6 +21,8 @@
 
 * [2025.01.29] 🎯🎯🎯 YOLOs-CPP now supports YOLOv9 for object detection.
 
+* [2025.01.26] 💥💥💥  YOLOS-CPP Provide now segmentation headers for YOLOv9.
+
 * [2025.01.26] 🔥🔥🔥  YOLOS-CPP Provide now segmentation headers for YOLOv8 and YOLOv11 also quantized models.
 
 * [2024.10.23] 🚀🚀🚀 YOLOS-CPP Project lunch with support for detection headers.
