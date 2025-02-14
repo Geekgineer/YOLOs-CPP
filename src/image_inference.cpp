@@ -1,9 +1,9 @@
 /**
  * @file image_inference.cpp
- * @brief Object detection in a static image using YOLO models (v5, v7, v8, v10).
+ * @brief Object detection in a static image using YOLO models (v5, v7, v8, v9, v10).
  * 
  * This file implements an object detection application that utilizes YOLO 
- * (You Only Look Once) models, specifically versions 5, 7, 8, and 10. 
+ * (You Only Look Once) models, specifically versions 5, 7, 8, 9, and 10. 
  * The application loads a specified image, processes it to detect objects, 
  * and displays the results with bounding boxes around detected objects.
  *
@@ -44,6 +44,7 @@
 // #include "YOLO5.hpp"  // Uncomment for YOLOv5
 // #include "YOLO7.hpp"  // Uncomment for YOLOv7
 // #include "YOLO8.hpp"  // Uncomment for YOLOv8
+// #include "YOLO9.hpp"  // Uncomment for YOLOv9
 // #include "YOLO10.hpp" // Uncomment for YOLOv10
 #include "YOLO11.hpp" // Uncomment for YOLOv11
 
@@ -52,7 +53,7 @@ int main()
 
     // Paths to the model, labels, and test image
     const std::string labelsPath = "../models/coco.names";
-    const std::string imagePath = "../data/dogs.jpg";           // Primary image path
+    const std::string imagePath = "../data/dog.jpg";           // Primary image path
 
     // Uncomment the desired image path for testing
     // const std::string imagePath = "../data/happy_dogs.jpg";  // Alternate image
@@ -63,7 +64,9 @@ int main()
     // const std::string modelPath = "../models/yolo5-n6.onnx";      // YOLOv5
     // const std::string modelPath = "../models/yolo7-tiny.onnx";       // YOLOv7
     // const std::string modelPath = "../models/yolo8n.onnx"; // YOLOv8
-    // const std::string modelPath = "../quantized_models/yolo10n_uint8.onnx"; // Quantized YOLOv10 
+    // const std::string modelPath = "../models/yolov9s.onnx"; // YOLOv9 
+    // const std::string modelPath = "../models/yolo10n.onnx"; // YOLOv10 
+    // const std::string modelPath = "../quantized_models/yolo10n_uint8.onnx"; // Quantized YOLOv10
     const std::string modelPath = "../models/yolo11n.onnx"; // YOLOv11 
 
     // Initialize the YOLO detector with the chosen model and labels
@@ -71,6 +74,7 @@ int main()
     // YOLO7Detector detector(modelPath, labelsPath, isGPU);
     // YOLO5Detector detector(modelPath, labelsPath, isGPU);  // Uncomment for YOLOv5
     // YOLO8Detector detector(modelPath, labelsPath, isGPU);  // Uncomment for YOLOv8
+    // YOLO9Detector detector(modelPath, labelsPath, isGPU); // Uncomment for YOLOv9
     // YOLO10Detector detector(modelPath, labelsPath, isGPU); // Uncomment for YOLOv10
     YOLO11Detector detector(modelPath, labelsPath, isGPU); // Uncomment for YOLOv11
 
@@ -81,6 +85,8 @@ int main()
         std::cerr << "Error: Could not open or find the image!\n";
         return -1;
     }
+
+    
 
     // Detect objects in the image and measure execution time
     auto start = std::chrono::high_resolution_clock::now();

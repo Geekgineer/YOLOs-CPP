@@ -12,12 +12,14 @@
 
 ## Overview
 
-**YOLOs-CPP** provides single c++ headers with high-performance application designed for real-time object detection and segmentation using various YOLO (You Only Look Once) models from [Ultralytics](https://github.com/ultralytics/ultralytics). Leveraging the power of [ONNX Runtime](https://github.com/microsoft/onnxruntime) and [OpenCV](https://opencv.org/), this project provides seamless integration with unified YOLOv(5,7,8,10,11) implementation for image, video, and live camera inference. Whether you're developing for research, production, or hobbyist projects, this application offers flexibility and efficiency.
+**YOLOs-CPP** provides single c++ headers with high-performance application designed for real-time object detection and segmentation using various YOLO (You Only Look Once) models from [Ultralytics](https://github.com/ultralytics/ultralytics). Leveraging the power of [ONNX Runtime](https://github.com/microsoft/onnxruntime) and [OpenCV](https://opencv.org/), this project provides seamless integration with unified YOLOv(5,7,8,9,10,11) implementation for image, video, and live camera inference. Whether you're developing for research, production, or hobbyist projects, this application offers flexibility and efficiency.
 
 
 ## News 
 
 #### 📌 Pinned
+
+* [2025.01.29] 🎯🎯🎯 YOLOs-CPP now supports YOLOv9 for object detection.
 
 * [2025.01.26] 💥💥💥  YOLOS-CPP Provide now segmentation headers for YOLOv9.
 
@@ -130,7 +132,7 @@ int main()
 ## Features
 
 
-- **Multiple YOLO Models**: Supports YOLOv5, YOLOv7, YOLOv8, YOLOv10, and YOLOv11 with standard and quantized ONNX models for flexibility in use cases.
+- **Multiple YOLO Models**: Supports YOLOv5, YOLOv7, YOLOv8, YOLOv9, YOLOv10, and YOLOv11 with standard and quantized ONNX models for flexibility in use cases.
   
 - **ONNX Runtime Integration**: Leverages ONNX Runtime for optimized inference on both CPU and GPU, ensuring high performance.
   - **Dynamic Shapes Handling**: Adapts automatically to varying input sizes for improved versatility.
@@ -224,11 +226,6 @@ To perform object detection on a video file:
 ./run_video.sh 
 ```
 
-**Example:**
-```bash
-./run_video.sh 
-```
-
 The above command will process [SIG_experience_center.mp4](data/SIG_experience_center.mp4) using the YOLO11n model and save the output video with detected objects.
 
 #### Run Camera Inference
@@ -252,6 +249,7 @@ The project includes various pertained standard YOLO models stored in the `model
 |                  | yolo7-tiny.onnx            |
 |                  | yolo8n.onnx                |
 |                  | yolo8n-seg.onnx                |
+|                  | yolov9s.onnx               |
 |                  | yolo10n.onnx               |
 |                  | yolo11n.onnx               |
 |                  | yolo11n-seg.onnx               |
