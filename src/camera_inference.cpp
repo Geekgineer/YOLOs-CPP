@@ -1,10 +1,10 @@
 /**
  * @file camera_inference.cpp
- * @brief Real-time object detection using YOLO models (v5, v7, v8, v9, v10) with camera input.
+ * @brief Real-time object detection using YOLO models (v5, v7, v8, v9, v10, v11, v12) with camera input.
  * 
  * This file serves as the main entry point for a real-time object detection 
  * application that utilizes YOLO (You Only Look Once) models, specifically 
- * versions 5, 7, 8, 9, and 10. The application captures video frames from a 
+ * versions 5, 7, 8, 9, 10, 11 and 12. The application captures video frames from a 
  * specified camera device, processes those frames to detect objects, and 
  * displays the results with bounding boxes around detected objects.
  *
@@ -61,7 +61,8 @@
 // #include "YOLO9.hpp"
 // #include "YOLO8.hpp"
 // #include "YOLO10.hpp"
-#include "YOLO11.hpp" 
+// #include "YOLO11.hpp" 
+#include "YOLO12.hpp" 
 
 
 // Include the bounded queue
@@ -79,14 +80,18 @@ int main()
     // std::string modelPath = "../models/yolo8n.onnx"; 
     // const std::string modelPath = "../models/yolov9s.onnx"; 
     // std::string modelPath = "../models/yolo10n_uint8.onnx"; 
-    const std::string modelPath = "../models/yolo11n.onnx";
+    // const std::string modelPath = "../models/yolo11n.onnx";
+    const std::string modelPath = "../models/yolo12n.onnx";
+
+
+
 
 
     const std::string videoSource = "/dev/video0"; // your usb cam device
 
     // Initialize YOLO detector
     // YOLO9Detector detector(modelPath, labelsPath, isGPU);
-    YOLO11Detector detector(modelPath, labelsPath, isGPU);
+    YOLO12Detector detector(modelPath, labelsPath, isGPU);
 
 
     // Open video capture
