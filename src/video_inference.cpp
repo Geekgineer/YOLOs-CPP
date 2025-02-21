@@ -1,9 +1,9 @@
 /**
  * @file video_inference.cpp
- * @brief Object detection in a video stream using YOLO models (v5, v7, v8, v9, v10).
+ * @brief Object detection in a video stream using YOLO models (v5, v7, v8, v9, v10, v11, v12).
  * 
  * This file implements an object detection application that utilizes YOLO 
- * (You Only Look Once) models, specifically versions 5, 7, 8, 9, and 10. 
+ * (You Only Look Once) models, specifically versions 5, 7, 8, 9, 10, 11 and 12. 
  * The application processes a video stream to detect objects and saves 
  * the results to a new video file with bounding boxes around detected objects.
  *
@@ -52,7 +52,9 @@
 // #include "YOLO8.hpp"  // Uncomment for YOLOv8
 // #include "YOLO9.hpp"  // Uncomment for YOLOv9
 // #include "YOLO10.hpp" // Uncomment for YOLOv10
-#include "YOLO11.hpp" // Uncomment for YOLOv10
+// #include "YOLO11.hpp" // Uncomment for YOLOv11
+#include "YOLO12.hpp" // Uncomment for YOLOv12
+
 
 // Thread-safe queue implementation
 template <typename T>
@@ -101,12 +103,17 @@ int main()
 
     // Model paths for different YOLO versions
     // const std::string modelPath = "../models/yolov9s.onnx"; // YOLOv9
-    const std::string modelPath = "../models/yolo11n.onnx"; // YOLOv11
+    // const std::string modelPath = "../models/yolo11n.onnx"; // YOLOv11
+    const std::string modelPath = "../models/yolo12n.onnx"; // YOLOv12
+
+
 
     // Initialize the YOLO detector
     bool isGPU = true; // Set to false for CPU processing
     // YOLO9Detector detector(modelPath, labelsPath, isGPU); // YOLOv9
-    YOLO11Detector detector(modelPath, labelsPath, isGPU); // YOLOv11
+    // YOLO11Detector detector(modelPath, labelsPath, isGPU); // YOLOv11
+    YOLO12Detector detector(modelPath, labelsPath, isGPU); // YOLOv12
+
 
     // Open the video file
     cv::VideoCapture cap(videoPath);
