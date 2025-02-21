@@ -1,9 +1,9 @@
 /**
  * @file image_inference.cpp
- * @brief Object detection in a static image using YOLO models (v5, v7, v8, v9, v10).
+ * @brief Object detection in a static image using YOLO models (v5, v7, v8, v9, v10, v11, v12).
  * 
  * This file implements an object detection application that utilizes YOLO 
- * (You Only Look Once) models, specifically versions 5, 7, 8, 9, and 10. 
+ * (You Only Look Once) models, specifically versions 5, 7, 8, 9, 10, 11 and 12. 
  * The application loads a specified image, processes it to detect objects, 
  * and displays the results with bounding boxes around detected objects.
  *
@@ -46,10 +46,12 @@
 // #include "YOLO8.hpp"  // Uncomment for YOLOv8
 // #include "YOLO9.hpp"  // Uncomment for YOLOv9
 // #include "YOLO10.hpp" // Uncomment for YOLOv10
-#include "YOLO11.hpp" // Uncomment for YOLOv11
+// #include "YOLO11.hpp" // Uncomment for YOLOv11
+#include "YOLO12.hpp" // Uncomment for YOLOv12
 
-int main()
-{
+
+
+int main(){
 
     // Paths to the model, labels, and test image
     const std::string labelsPath = "../models/coco.names";
@@ -67,7 +69,10 @@ int main()
     // const std::string modelPath = "../models/yolov9s.onnx"; // YOLOv9 
     // const std::string modelPath = "../models/yolo10n.onnx"; // YOLOv10 
     // const std::string modelPath = "../quantized_models/yolo10n_uint8.onnx"; // Quantized YOLOv10
-    const std::string modelPath = "../models/yolo11n.onnx"; // YOLOv11 
+    // const std::string modelPath = "../models/yolo11n.onnx"; // YOLOv11 
+    const std::string modelPath = "../models/yolo12n.onnx"; // YOLOv12 
+
+
 
     // Initialize the YOLO detector with the chosen model and labels
     bool isGPU = true; // Set to false for CPU processing
@@ -76,7 +81,9 @@ int main()
     // YOLO8Detector detector(modelPath, labelsPath, isGPU);  // Uncomment for YOLOv8
     // YOLO9Detector detector(modelPath, labelsPath, isGPU); // Uncomment for YOLOv9
     // YOLO10Detector detector(modelPath, labelsPath, isGPU); // Uncomment for YOLOv10
-    YOLO11Detector detector(modelPath, labelsPath, isGPU); // Uncomment for YOLOv11
+    // YOLO11Detector detector(modelPath, labelsPath, isGPU); // Uncomment for YOLOv11
+    YOLO12Detector detector(modelPath, labelsPath, isGPU); // Uncomment for YOLOv12
+
 
     // Load an image
     cv::Mat image = cv::imread(imagePath);
