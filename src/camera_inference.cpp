@@ -56,13 +56,13 @@
 #include <opencv2/highgui/highgui.hpp>
 
 // Uncomment the version
-// #include "YOLO5.hpp"
-// #include "YOLO7.hpp"
-// #include "YOLO9.hpp"
-// #include "YOLO8.hpp"
-// #include "YOLO10.hpp"
-// #include "YOLO11.hpp" 
-#include "YOLO12.hpp" 
+// #include "det/YOLO5.hpp"
+// #include "det/YOLO7.hpp"
+// #include "det/YOLO9.hpp"
+// #include "det/YOLO8.hpp"
+// #include "det/YOLO10.hpp"
+// #include "det/YOLO11.hpp" 
+#include "det/YOLO12.hpp" 
 
 
 // Include the bounded queue
