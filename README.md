@@ -15,19 +15,19 @@
 **YOLOs-CPP** provides single c++ headers with high-performance application designed for real-time object detection and segmentation using various YOLO (You Only Look Once) models from [Ultralytics](https://github.com/ultralytics/ultralytics). Leveraging the power of [ONNX Runtime](https://github.com/microsoft/onnxruntime) and [OpenCV](https://opencv.org/), this project provides seamless integration with unified YOLOv(5,7,8,9,10,11,12) implementation for image, video, and live camera inference. Whether you're developing for research, production, or hobbyist projects, this application offers flexibility and efficiency.
 
 
-## News 
+## 📰 Latest Updates
 
 #### 📌 Pinned
 
-* [2025.02.19] 🌪️🌪️🌪️ YOLOs-CPP now supports YOLOv12 for object detection.
+* **[2025.02.19]** 🌪️🌪️🌪️ YOLOs-CPP now supports YOLOv12 for object detection.
 
-* [2025.01.29] 🎯🎯🎯 YOLOs-CPP now supports YOLOv9 for object detection.
+* **[2025.01.29]** 🎯🎯🎯 YOLOs-CPP now supports YOLOv9 for object detection.
 
-* [2025.01.26] 💥💥💥  YOLOS-CPP Provide now segmentation headers for YOLOv9.
+* **[2025.01.26]** 💥💥💥  YOLOs-CPP Provide now segmentation headers for YOLOv9.
 
-* [2025.01.26] 🔥🔥🔥  YOLOS-CPP Provide now segmentation headers for YOLOv8 and YOLOv11 also quantized models.
+* **[2025.01.26]** 🔥🔥🔥  YOLOs-CPP Provide now segmentation headers for YOLOv8 and YOLOv11 also quantized models.
 
-* [2024.10.23] 🚀🚀🚀 YOLOS-CPP Project lunch with support for detection headers.
+* **[2024.10.23]** 🚀🚀🚀 YOLOs-CPP Project lunch with support for detection headers.
 
 
 *Video example of object detection output with segmentation masks, bounding boxes and labels. [Click on image!]*
@@ -55,7 +55,7 @@
 #include <iostream>
 #include <string>
 
-#include "YOLO11.hpp" // Ensure YOLO11.hpp or other version is in your include path
+#include "det/YOLO11.hpp" // Ensure YOLO11.hpp or other version is in your include path
 
 int main()
 {
@@ -97,7 +97,7 @@ int main()
 #include <string>
 
 // Include the YOLOv11 Segmentation header
-#include "YOLO11Seg.hpp"
+#include "seg/YOLO11Seg.hpp"
 
 int main()
 {
@@ -156,7 +156,6 @@ int main()
 - **Easy-to-Use Scripts**: Includes shell scripts for straightforward building and running of different inference modes.
 
 
-
 ## Requirements
 
 Before building the project, ensure that the following dependencies are installed on your system:
@@ -191,8 +190,6 @@ cd YOLOs-CPP
     [video_inference.cpp](src/video_inference.cpp)
 
 4. Optional: control the debugging and timing using [Config.hpp](tools/Config.hpp)
-
-
 
 
 
@@ -240,10 +237,12 @@ To perform real-time object detection using a usb cam:
 
 This command will activate your usb and display the video feed with real-time object detection.
 
-### Models
+### YOLOs Models
+While ONNX provides a cross-platform format for model compatibility, exporting the model directly for the target device or optimizing it for specific hardware can significantly improve performance. To achieve the best inference speed and resource efficiency, it's generally recommended to tailor the export process to the hardware on which the model will run.
+
+The project includes several pre-trained and pre-exported standard YOLO models, located in `models` and `quantized_models` [Cloud Drive](https://mega.nz/folder/TvgXVRQJ#6M0IZdMOvKlKY9-dx7Uu7Q) directories. However, it’s not recommended to use these directly. Instead, you should always export your PyTorch models using the [export_onnx.py](./models/export_onnx.py) script.
 
 
-The project includes various pertained standard YOLO models stored in the `models` and `quantized_models` directories:
 
 | Model Type       | Model Name                |
 |------------------|---------------------------|
@@ -264,7 +263,8 @@ The project includes various pertained standard YOLO models stored in the `model
 |                  | yolo11n_uint8.onnx         |
 |                  | yolo11n-seg_uint8.onnx         |
 
-You can use your custom yolo version with custom classes also!
+You can also use your custom YOLO version with your own custom classes!
+
 
 **Class Names:**
 - coco.names: Contains the list of class labels used by the models.
@@ -274,13 +274,6 @@ You can use your custom yolo version with custom classes also!
 The quantized_models directory includes quantized versions of the YOLO models optimized for lower precision inference. Additionally, the `quantized_models/yolos_quantization.py` script can be used to perform custom quantization on your custom YOLOs models.
 
 > Note: Quantized models offer reduced model size and potentially faster inference with a slight trade-off in accuracy.
-
-
-## Support the Project
-
-If you find **YOLOs-CPP** useful and would like to support its development, you can buy me a coffee ☕! Your support helps me to continue maintaining and improving this project.
-
-<a href="https://www.buymeacoffee.com/geekgineer" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
 
 ### Contributing

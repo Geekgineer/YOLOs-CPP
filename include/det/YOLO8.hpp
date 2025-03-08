@@ -733,7 +733,7 @@ YOLO8Detector::YOLO8Detector(const std::string &modelPath, const std::string &la
     sessionOptions.SetIntraOpNumThreads(std::min(6, static_cast<int>(std::thread::hardware_concurrency())));
     sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
 
-    // Retrieve available execution providers (e.g., CPU, CUDA)
+    // Retrieve available execution providers (e.g., CPU, CUDA, TRT)
     std::vector<std::string> availableProviders = Ort::GetAvailableProviders();
     auto cudaAvailable = std::find(availableProviders.begin(), availableProviders.end(), "CUDAExecutionProvider");
     OrtCUDAProviderOptions cudaOption;

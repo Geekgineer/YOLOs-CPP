@@ -47,13 +47,13 @@
 #include <atomic>
 #include <condition_variable>
 
-// #include "YOLO5.hpp"  // Uncomment for YOLOv5
-// #include "YOLO7.hpp"  // Uncomment for YOLOv7
-// #include "YOLO8.hpp"  // Uncomment for YOLOv8
-// #include "YOLO9.hpp"  // Uncomment for YOLOv9
-// #include "YOLO10.hpp" // Uncomment for YOLOv10
-// #include "YOLO11.hpp" // Uncomment for YOLOv11
-#include "YOLO12.hpp" // Uncomment for YOLOv12
+// #include "det/YOLO5.hpp"  // Uncomment for YOLOv5
+// #include "det/YOLO7.hpp"  // Uncomment for YOLOv7
+// #include "det/YOLO8.hpp"  // Uncomment for YOLOv8
+// #include "det/YOLO9.hpp"  // Uncomment for YOLOv9
+// #include "det/YOLO10.hpp" // Uncomment for YOLOv10
+// #include "det/YOLO11.hpp" // Uncomment for YOLOv11
+#include "det/YOLO12.hpp" // Uncomment for YOLOv12
 
 
 // Thread-safe queue implementation
