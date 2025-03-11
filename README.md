@@ -19,6 +19,8 @@
 
 #### 📌 Pinned
 
+* **[2025.02.11]** 💯💯💯 YOLOs-CPP now supports OBB format.
+
 * **[2025.02.19]** 🌪️🌪️🌪️ YOLOs-CPP now supports YOLOv12 for object detection.
 
 * **[2025.01.29]** 🎯🎯🎯 YOLOs-CPP now supports YOLOv9 for object detection.
@@ -38,6 +40,10 @@
 
 <a href="https://www.youtube.com/watch?v=Ax5vaYJ-mVQ">
     <img src="data/SIG_experience_center_seg_processed-2.gif" alt="Watch the Demo Video" width="800" />
+</a>
+
+<a>
+    <img src="data/final_test_output.gif" alt="Watch the Demo Video" width="800" />
 </a>
 
 [Vidoe source](https://www.youtube.com/watch?v=dSI0_QjS3VU)
@@ -129,6 +135,47 @@ int main()
 
 ```
 
+## Oriented Detection Example
+
+```cpp
+
+// Include necessary headers
+#include <opencv2/opencv.hpp>
+#include <iostream>
+#include <string>
+
+// Include the YOLOv11 OBB header
+#include "obb/YOLO11-OBB.hpp" 
+
+int main()
+{
+    // Configuration parameters
+    const std::string labelsPath = "../models/Dota.names";       // Path to class labels
+    const std::string modelPath  = "../models/yolo11n-obb.onnx";     // Path to YOLO11-OBB model
+    const std::string imagePath  = "../data/frame_37.jpg";           // Path to input image
+    bool isGPU = true;                                           // Set to false for CPU processing
+
+    // Initialize the YOLO11 Detector
+    YOLO11OBBDetector detector(modelPath, labelsPath, isGPU);
+
+    // Load an image
+    cv::Mat image = cv::imread(imagePath);
+
+    // Perform object detection to get oriented bounding boxes
+    std::vector<Detection> results = detector.detect(image);
+
+    // Draw bounding boxes on the image
+    detector.drawBoundingBox(image, results);  
+
+    // Display the annotated image
+    cv::imshow("YOLO11 Oriented object Detections", image);
+    cv::waitKey(0); // Wait indefinitely until a key is pressed
+
+    return 0;
+}
+
+```
+
 > **Note:** For more usage, check the source files: [camera_inference.cpp](src/camera_inference.cpp), [image_inference.cpp](src/image_inference.cpp), [video_inference.cpp](src/video_inference.cpp).
 
 ## Features
@@ -150,6 +197,8 @@ int main()
 - **Real-Time Inference**: Capable of processing images, videos, and live camera feeds instantly.
 
 - **Efficient Detection Handling**: Employs Non-Maximum Suppression (NMS) for effective processing (note: some models are NMS free e.g. YOLO10).
+
+- **Efficient Oriented Detection Handling**: Employs Rotated Non-Maximum Suppression (NMS) for effective Oriented Bounding Box processing.
 
 - **Cross-Platform Support**: Fully compatible with Linux, macOS, and Windows environments.
 
@@ -250,10 +299,12 @@ The project includes several pre-trained and pre-exported standard YOLO models, 
 |                  | yolo7-tiny.onnx            |
 |                  | yolo8n.onnx                |
 |                  | yolo8n-seg.onnx                |
+|                  | yolo8n-obb.onnx                |
 |                  | yolov9s.onnx               |
 |                  | yolo10n.onnx               |
 |                  | yolo11n.onnx               |
 |                  | yolo11n-seg.onnx               |
+|                  | yolo11n-obb.onnx               |
 |                  | yolo12n.onnx               |
 | **Quantized Models**   | yolo5-n6_uint8.onnx         |
 |                  | yolo7-tiny-uint8.onnx      |
@@ -268,6 +319,7 @@ You can also use your custom YOLO version with your own custom classes!
 
 **Class Names:**
 - coco.names: Contains the list of class labels used by the models.
+- Dota.names: Contains the list of class labels used by the OBB models.
 
 ### Quantization
 
