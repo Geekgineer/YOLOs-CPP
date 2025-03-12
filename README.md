@@ -43,7 +43,7 @@
 </a>
 
 <a>
-    <img src="data/final_test_output.gif" alt="Watch the Demo Video" width="800" />
+    <img src="data/final_test_output_1024.gif" alt="Watch the Demo Video" width="800" />
 </a>
 
 [Vidoe source](https://www.youtube.com/watch?v=dSI0_QjS3VU)
