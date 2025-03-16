@@ -11,13 +11,13 @@
 
 
 ## Overview
-
-**YOLOs-CPP** provides single c++ headers with high-performance application designed for real-time object detection and segmentation using various YOLO (You Only Look Once) models from [Ultralytics](https://github.com/ultralytics/ultralytics). Leveraging the power of [ONNX Runtime](https://github.com/microsoft/onnxruntime) and [OpenCV](https://opencv.org/), this project provides seamless integration with unified YOLOv(5,7,8,9,10,11,12) implementation for image, video, and live camera inference. Whether you're developing for research, production, or hobbyist projects, this application offers flexibility and efficiency.
-
+**YOLOs-CPP** provides single C++ headers with a high-performance application designed for real-time object detection, segmentation, oriented object detection (OBB), and pose estimation using various YOLO (You Only Look Once) models from [Ultralytics](https://github.com/ultralytics/ultralytics). Leveraging the power of [ONNX Runtime](https://github.com/microsoft/onnxruntime) and [OpenCV](https://opencv.org/), this project provides seamless integration with a unified YOLOv(5,7,8,9,10,11,12) implementation for image, video, and live camera inference. Whether you're developing for research, production, or hobbyist projects, this application offers flexibility and efficiency.
 
 ## 📰 Latest Updates
 
 #### 📌 Pinned
+
+* **[2025.03.16]** 🤖🤖🤖 YOLOs-CPP now supports pose estimation.
 
 * **[2025.02.11]** 💯💯💯 YOLOs-CPP now supports OBB format.
 
@@ -29,25 +29,33 @@
 
 * **[2025.01.26]** 🔥🔥🔥  YOLOs-CPP Provide now segmentation headers for YOLOv8 and YOLOv11 also quantized models.
 
-* **[2024.10.23]** 🚀🚀🚀 YOLOs-CPP Project lunch with support for detection headers.
+* **[2024.10.23]** 🚀🚀🚀 YOLOs-CPP Project launch with support for detection headers.
 
 
 *Video example of object detection output with segmentation masks, bounding boxes and labels. [Click on image!]*
 
-<a href="https://www.youtube.com/watch?v=Ax5vaYJ-mVQ">
-    <img src="data/SIG_experience_center_seg_processed.gif" alt="Watch the Demo Video" width="800" />
-</a>
-
-<a href="https://www.youtube.com/watch?v=Ax5vaYJ-mVQ">
-    <img src="data/SIG_experience_center_seg_processed-2.gif" alt="Watch the Demo Video" width="800" />
-</a>
-
-<a>
-    <img src="data/final_test_output_1024.gif" alt="Watch the Demo Video" width="800" />
-</a>
-
-[Vidoe source](https://www.youtube.com/watch?v=dSI0_QjS3VU)
-
+<table>
+  <tr>
+    <td>
+      <a href="https://www.youtube.com/watch?v=Ax5vaYJ-mVQ">
+        <img src="data/SIG_experience_center_seg_processed.gif" alt="Watch the Demo Video" width="400" height="225"/>
+      </a>
+    </td>
+    <td>
+      <a href="https://www.youtube.com/watch?v=Ax5vaYJ-mVQ">
+        <img src="data/SIG_experience_center_seg_processed-2.gif" alt="Watch the Demo Video" width="400" height="225"/>
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="data/final_test_output_1024_compressed.gif" alt="Demo GIF" width="400" height="225"/>
+    </td>
+    <td>
+          <img src="data/dance_output.gif" alt="Demo GIF" width="400" height="225"/>
+    </td>
+  </tr>
+</table>
 
 
 ### Integration in your c++ projects
@@ -176,6 +184,48 @@ int main()
 
 ```
 
+## Pose Estimation Example
+
+```cpp
+// Include necessary headers
+#include <opencv2/opencv.hpp>
+#include <iostream>
+#include <string>
+
+// Include the YOLO11-POSE Pose header
+#include "pose/YOLO11-POSE.hpp" 
+
+int main()
+{
+    // Configuration parameters
+    const std::string labelsPath = "../models/coco.names";       // Path to class labels
+    const std::string modelPath  = "../models/yolo11n-pose.onnx"; // Path to YOLO11 Pose model
+    const std::string imagePath  = "../data/person.jpg";         // Path to input image
+    bool isGPU = true;                                           // Set to false for CPU processing
+
+    // Initialize the YOLO11 pose detector
+    YOLO11POSEDetector poseDetector(modelPath, labelsPath, isGPU);
+
+    // Load an image
+    cv::Mat image = cv::imread(imagePath);
+
+    // Perform pose estimation
+    std::vector<PoseDetection> poses = poseDetector.detect(image);
+
+    // Draw keypoints and skeletons on the image
+    poseDetector.drawBoundingBox(image, poses);
+
+    // Display the annotated image
+    cv::imshow("YOLO11 Pose Estimation", image);
+    cv::waitKey(0); // Wait indefinitely until a key is pressed
+
+    return 0;
+}
+
+```
+
+
+
 > **Note:** For more usage, check the source files: [camera_inference.cpp](src/camera_inference.cpp), [image_inference.cpp](src/image_inference.cpp), [video_inference.cpp](src/video_inference.cpp).
 
 ## Features
@@ -199,6 +249,8 @@ int main()
 - **Efficient Detection Handling**: Employs Non-Maximum Suppression (NMS) for effective processing (note: some models are NMS free e.g. YOLO10).
 
 - **Efficient Oriented Detection Handling**: Employs Rotated Non-Maximum Suppression (NMS) for effective Oriented Bounding Box processing.
+
+- **Efficient Pose Estimation Handling**: Optimizes keypoint-based filtering and Non-Maximum Suppression (NMS) for accurate and reliable pose estimation.
 
 - **Cross-Platform Support**: Fully compatible with Linux, macOS, and Windows environments.
 
@@ -259,22 +311,23 @@ After building the project, you can perform object detection on images, videos, 
 #### Run Image Inference
 
 To perform object detection on a single image:
+Ensure you have an input image (e.g., dog.jpg) in the correct directory before running the script:
 
 ```bash
 ./run_image.sh 
 ```
+This command will process the specified image using a YOLO model and display the output with detected bounding boxes and labels.
 
-This command will process dog.jpg using e.g. YOLOv5-n6 model and display the output image with detected bounding boxes and labels.
 
 #### Run Video Inference
 
 To perform object detection on a video file:
+Make sure you have a video file available before running:
 
 ```bash
 ./run_video.sh 
 ```
-
-The above command will process [SIG_experience_center.mp4](data/SIG_experience_center.mp4) using the YOLO11n model and save the output video with detected objects.
+The script will process the provided video using the YOLO model and save the output with detected objects.
 
 #### Run Camera Inference
 
@@ -292,7 +345,6 @@ While ONNX provides a cross-platform format for model compatibility, exporting t
 The project includes several pre-trained and pre-exported standard YOLO models, located in `models` and `quantized_models` [Cloud Drive](https://mega.nz/folder/TvgXVRQJ#6M0IZdMOvKlKY9-dx7Uu7Q) directories. However, it’s not recommended to use these directly. Instead, you should always export your PyTorch models using the [export_onnx.py](./models/export_onnx.py) script.
 
 
-
 | Model Type       | Model Name                |
 |------------------|---------------------------|
 | **Standard Models**    | yolo5-n6.onnx              |
@@ -300,11 +352,13 @@ The project includes several pre-trained and pre-exported standard YOLO models, 
 |                  | yolo8n.onnx                |
 |                  | yolo8n-seg.onnx                |
 |                  | yolo8n-obb.onnx                |
+|                  | yolov8n-pose.onnx               |
 |                  | yolov9s.onnx               |
 |                  | yolo10n.onnx               |
 |                  | yolo11n.onnx               |
 |                  | yolo11n-seg.onnx               |
 |                  | yolo11n-obb.onnx               |
+|                  | yolo11n-pose.onnx              |
 |                  | yolo12n.onnx               |
 | **Quantized Models**   | yolo5-n6_uint8.onnx         |
 |                  | yolo7-tiny-uint8.onnx      |
