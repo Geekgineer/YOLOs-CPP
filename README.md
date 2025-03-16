@@ -49,7 +49,7 @@
   </tr>
   <tr>
     <td>
-      <img src="data/final_test_output_1024_compressed.gif" alt="Demo GIF" width="400" height="225"/>
+      <img src="data/final_test_compressed_output.gif" alt="Demo GIF" width="400" height="225"/>
     </td>
     <td>
           <img src="data/dance_output.gif" alt="Demo GIF" width="400" height="225"/>
