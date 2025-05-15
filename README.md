@@ -13,11 +13,16 @@
 ## Overview
 **YOLOs-CPP** provides single C++ headers with a high-performance application designed for real-time object detection, segmentation, oriented object detection (OBB), and pose estimation using various YOLO (You Only Look Once) models from [Ultralytics](https://github.com/ultralytics/ultralytics). Leveraging the power of [ONNX Runtime](https://github.com/microsoft/onnxruntime) and [OpenCV](https://opencv.org/), this project provides seamless integration with a unified YOLOv(5,7,8,9,10,11,12) implementation for image, video, and live camera inference. Whether you're developing for research, production, or hobbyist projects, this application offers flexibility and efficiency.
 
-## 📰 Latest Updates
+## 
 
-#### 📌 Pinned
+#### 📰 Latest Updates 📌 Pinned
 
-* **[2025.03.16]** 🤖🤖🤖 YOLOs-CPP now supports pose estimation.
+
+* **[2025.05.15]** 🪡🪡🪡 YOLOs-CPP now supports classification.
+
+* **[2025.04.04]** ✊✊✊ [Depths-CPP](https://github.com/Geekgineer/Depths-CPP) New Similar project for real-time metric depth estimation.
+
+* **[2025.03.16]** 👥👥👥 YOLOs-CPP now supports pose estimation.
 
 * **[2025.02.11]** 💯💯💯 YOLOs-CPP now supports OBB format.
 
@@ -25,11 +30,16 @@
 
 * **[2025.01.29]** 🎯🎯🎯 YOLOs-CPP now supports YOLOv9 for object detection.
 
-* **[2025.01.26]** 💥💥💥  YOLOs-CPP Provide now segmentation headers for YOLOv9.
+* **[2025.01.26]** 💥💥💥 YOLOs-CPP Provide now segmentation headers for YOLOv9.
 
-* **[2025.01.26]** 🔥🔥🔥  YOLOs-CPP Provide now segmentation headers for YOLOv8 and YOLOv11 also quantized models.
+* **[2025.01.26]** 🔥🔥🔥 YOLOs-CPP Provide now segmentation headers for YOLOv8 and YOLOv11 also quantized models.
 
 * **[2024.10.23]** 🚀🚀🚀 YOLOs-CPP Project launch with support for detection headers.
+
+#### 🛠️ Open Tasks for Contribution
+
+* [ ] Benchmarking
+* [ ] Write documentation
 
 
 *Video example of object detection output with segmentation masks, bounding boxes and labels. [Click on image!]*
