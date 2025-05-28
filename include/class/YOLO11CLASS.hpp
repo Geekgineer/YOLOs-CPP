@@ -459,142 +459,93 @@ ClassificationResult YOLO11Classifier::postprocess(const std::vector<Ort::Value>
         std::cerr << "Error: No output tensors for postprocessing." << std::endl;
         return {};
     }
-    if (numClasses_ <= 0 && classNames_.empty()) {
-        std::cerr << "Error: Number of classes is unknown and no class names loaded. Cannot postprocess." << std::endl;
-        return {};
-    }
-    
-    int currentNumClasses = numClasses_ > 0 ? numClasses_ : static_cast<int>(classNames_.size());
-    if (currentNumClasses <= 0) {
-        std::cerr << "Error: Effective number of classes is zero or negative. Cannot determine output scores." << std::endl;
-        return {};
-    }
 
     const float* rawOutput = outputTensors[0].GetTensorData<float>();
-    const std::vector<int64_t> outputShape = outputTensors[0].GetTensorTypeAndShapeInfo().GetShape();
-    size_t numScores = utils::vectorProduct(outputShape);
-
-    // === BEGIN EXTENDED DEBUGGING: Inspect output tensor metadata ===
-    DEBUG_PRINT("Postprocessing: currentNumClasses = " << currentNumClasses);
-    std::ostringstream oss_shape_debug;
-    oss_shape_debug << "[";
-    for(size_t i=0; i<outputShape.size(); ++i) oss_shape_debug << outputShape[i] << (i==outputShape.size()-1 ? "" : ", ");
-    oss_shape_debug << "]";
-    DEBUG_PRINT("Postprocessing: Output tensor shape = " << oss_shape_debug.str() << ", total numScores = " << numScores);
-    // === END EXTENDED DEBUGGING ===
-
-
-    if (outputShape.empty() || !( (outputShape.size() == 2 && static_cast<int>(outputShape[1]) == currentNumClasses && outputShape[0] > 0) ||
-                                  (outputShape.size() == 1 && static_cast<int>(outputShape[0]) == currentNumClasses) ) ) {
-        std::ostringstream oss_shape_err;
-        oss_shape_err << "[";
-        for(size_t i=0; i<outputShape.size(); ++i) oss_shape_err << outputShape[i] << (i==outputShape.size()-1 ? "" : ", ");
-        oss_shape_err << "]";
-        std::cerr << "Warning: Output tensor shape " << oss_shape_err.str()
-                  << " does not strictly match expected pattern for " << currentNumClasses << " classes. "
-                  << "Proceeding by assuming the flat tensor of size " << numScores << " contains the scores." << std::endl;
-        
-        if (static_cast<int>(numScores) != currentNumClasses && outputShape.size() > 1 && static_cast<int>(numScores / outputShape[0]) == currentNumClasses) {
-             DEBUG_PRINT("Output tensor seems batched. Using scores from the first batch item (numScores will be treated as currentNumClasses for the loop).");
-             // This case implies numScores for the first item is currentNumClasses.
-        } else if (static_cast<int>(numScores) != currentNumClasses) {
-             std::cerr << "Error: Total number of scores (" << numScores << ") in output tensor does not match number of classes (" << currentNumClasses << ")." << std::endl;
-             return {};
-        }
-    }
-    
-    // === BEGIN DEBUGGING: Inspect raw output scores ===
     if (!rawOutput) {
         std::cerr << "Error: rawOutput pointer is null." << std::endl;
         return {};
     }
-    DEBUG_PRINT("First few raw output scores (logits) from model:");
-    std::ostringstream oss_raw_scores;
-    for (int k = 0; k < std::min(10, static_cast<int>(numScores)); ++k) { // Use numScores for safety here
-        oss_raw_scores << rawOutput[k];
-        if (std::isnan(rawOutput[k])) oss_raw_scores << "(NaN!)";
-        if (std::isinf(rawOutput[k])) oss_raw_scores << "(Inf!)";
-        oss_raw_scores << " ";
+
+    const std::vector<int64_t> outputShape = outputTensors[0].GetTensorTypeAndShapeInfo().GetShape();
+    size_t numScores = utils::vectorProduct(outputShape);
+
+    // Debug output shape
+    std::ostringstream oss_shape;
+    oss_shape << "Output tensor shape: [";
+    for (size_t i = 0; i < outputShape.size(); ++i) {
+        oss_shape << outputShape[i] << (i == outputShape.size() - 1 ? "" : ", ");
     }
-    DEBUG_PRINT(oss_raw_scores.str());
-    // === END DEBUGGING ===
+    oss_shape << "]";
+    DEBUG_PRINT(oss_shape.str());
 
+    // Determine the effective number of classes
+    int currentNumClasses = numClasses_ > 0 ? numClasses_ : static_cast<int>(classNames_.size());
+    if (currentNumClasses <= 0) {
+        std::cerr << "Error: No valid number of classes determined." << std::endl;
+        return {};
+    }
+
+    // Debug first few raw scores
+    std::ostringstream oss_scores;
+    oss_scores << "First few raw scores: ";
+    for (size_t i = 0; i < std::min(size_t(5), numScores); ++i) {
+        oss_scores << rawOutput[i] << " ";
+    }
+    DEBUG_PRINT(oss_scores.str());
+
+    // Find maximum score and its corresponding class
     int bestClassId = -1;
-    float maxLogit = -FLT_MAX; 
+    float maxScore = -std::numeric_limits<float>::infinity();
+    std::vector<float> scores(currentNumClasses);
 
-    for (int i = 0; i < currentNumClasses; ++i) { // Loop up to currentNumClasses
-        if (i >= static_cast<int>(numScores)) { // Boundary check if numScores was smaller than currentNumClasses (should have been caught)
-            std::cerr << "Error: Trying to access rawOutput[" << i << "] but numScores is only " << numScores << std::endl;
-            break; 
+    // Handle different output shapes
+    if (outputShape.size() == 2 && outputShape[0] == 1) {
+        // Case 1: [1, num_classes] shape
+        for (int i = 0; i < currentNumClasses && i < static_cast<int>(outputShape[1]); ++i) {
+            scores[i] = rawOutput[i];
+            if (scores[i] > maxScore) {
+                maxScore = scores[i];
+                bestClassId = i;
+            }
         }
-
-        float currentLogit = rawOutput[i];
-        if (std::isnan(currentLogit)) {
-            // DEBUG_PRINT("Skipping NaN logit at index " << i); // Optional: too verbose if many NaNs
-            continue; // Skip NaN values, they cannot be compared.
-        }
-        if (std::isinf(currentLogit) && currentLogit < 0) { // -Infinity
-            // DEBUG_PRINT("Skipping -Inf logit at index " << i); // Optional
-            continue; // Skip -Infinity as it won't be > maxLogit unless maxLogit is also -Inf
-        }
-
-        if (currentLogit > maxLogit) {
-            maxLogit = currentLogit;
-            bestClassId = i;
+    } else if (outputShape.size() == 1 || (outputShape.size() == 2 && outputShape[0] > 1)) {
+        // Case 2: [num_classes] shape or [batch_size, num_classes] shape (take first batch)
+        for (int i = 0; i < currentNumClasses && i < static_cast<int>(numScores); ++i) {
+            scores[i] = rawOutput[i];
+            if (scores[i] > maxScore) {
+                maxScore = scores[i];
+                bestClassId = i;
+            }
         }
     }
 
     if (bestClassId == -1) {
-        std::cerr << "Error: Could not determine best class ID from output scores (maxLogit found: " << maxLogit <<"). All valid scores might have been too low or problematic." << std::endl;
-        return {}; 
+        std::cerr << "Error: Could not determine best class ID." << std::endl;
+        return {};
     }
 
-    // ... (rest of the softmax and result creation logic, which is fine if bestClassId is valid) ...
+    // Apply softmax to get probabilities
+    float sumExp = 0.0f;
     std::vector<float> probabilities(currentNumClasses);
-    float sum_exp_logits = 0.0f;
-
-    // Re-calculate maxLogit from *valid* scores only for stable softmax, if necessary, 
-    // or use the maxLogit found above if it's not -FLT_MAX (meaning at least one valid score was found).
-    // If maxLogit is still -FLT_MAX, it means all scores were NaN or <= -FLT_MAX.
-    // The check `if (bestClassId == -1)` should have caught this.
-    // So, if we are here, bestClassId is valid and maxLogit is a valid (non -FLT_MAX) number.
-
+    
+    // Compute softmax with numerical stability
     for (int i = 0; i < currentNumClasses; ++i) {
-        if (i >= static_cast<int>(numScores)) break; // Should not happen if initial checks are okay
-        float logit_val = rawOutput[i];
-        if (std::isnan(logit_val)) {
-            probabilities[i] = 0; // Treat NaN as zero probability contribution
-        } else {
-             // Subtracting maxLogit (the actual max *valid* logit) for numerical stability in exp()
-            probabilities[i] = std::exp(logit_val - maxLogit);
-        }
-        sum_exp_logits += probabilities[i]; // Sum up valid contributions
+        probabilities[i] = std::exp(scores[i] - maxScore);
+        sumExp += probabilities[i];
     }
 
-    float confidence = 0.0f;
-    if (sum_exp_logits > std::numeric_limits<float>::epsilon()) { 
-        // Get probability of the best class (use rawOutput[bestClassId] for its logit)
-        float best_class_logit = rawOutput[bestClassId];
-        if (std::isnan(best_class_logit)) { // Should not happen if bestClassId was chosen correctly
-            confidence = 0.0f;
-            DEBUG_PRINT("Warning: Logit for bestClassId " << bestClassId << " is NaN during confidence calculation.");
-        } else {
-            confidence = std::exp(best_class_logit - maxLogit) / sum_exp_logits;
-        }
-    } else {
-        confidence = (currentNumClasses == 1 && !std::isnan(rawOutput[0])) ? 1.0f : 0.0f;
-        DEBUG_PRINT("Warning: Sum of exponentiated logits is near zero during softmax. Confidence might be inaccurate.");
-    }
+    // Calculate final confidence
+    float confidence = sumExp > 0 ? probabilities[bestClassId] / sumExp : 0.0f;
 
+    // Get class name
     std::string className = "Unknown";
     if (bestClassId >= 0 && static_cast<size_t>(bestClassId) < classNames_.size()) {
         className = classNames_[bestClassId];
-    } else if (bestClassId >= 0) { 
+    } else if (bestClassId >= 0) {
         className = "ClassID_" + std::to_string(bestClassId);
-        DEBUG_PRINT("Using fallback ClassID name for ID: " << bestClassId);
     }
 
-    DEBUG_PRINT("Postprocessing completed. Best Class ID: " << bestClassId << ", Name: \"" << className << "\", Confidence: " << std::fixed << std::setprecision(4) << confidence);
+    DEBUG_PRINT("Best class ID: " << bestClassId << ", Name: " << className << ", Confidence: " << confidence);
     return ClassificationResult(bestClassId, confidence, className);
 }
 
