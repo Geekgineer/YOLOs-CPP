@@ -47,14 +47,36 @@
 #include <atomic>
 #include <condition_variable>
 
-// #include "det/YOLO5.hpp"  // Uncomment for YOLOv5
-// #include "det/YOLO7.hpp"  // Uncomment for YOLOv7
-// #include "det/YOLO8.hpp"  // Uncomment for YOLOv8
-// #include "det/YOLO9.hpp"  // Uncomment for YOLOv9
-// #include "det/YOLO10.hpp" // Uncomment for YOLOv10
-// #include "det/YOLO11.hpp" // Uncomment for YOLOv11
-#include "det/YOLO12.hpp" // Uncomment for YOLOv12
+// Uncomment the version
+//#define YOLO5 // Uncomment for YOLOv5
+//#define YOLO7 // Uncomment for YOLOv7
+//#define YOLO8 // Uncomment for YOLOv8
+//#define YOLO9 // Uncomment for YOLOv9
+//#define YOLO10 // Uncomment for YOLOv10
+//#define YOLO11 // Uncomment for YOLOv11
+#define YOLO12 // Uncomment for YOLOv12
 
+#ifdef YOLO5
+    #include "det/YOLO5.hpp"
+#endif
+#ifdef YOLO7
+    #include "det/YOLO7.hpp"
+#endif
+#ifdef YOLO8
+    #include "det/YOLO8.hpp"
+#endif
+#ifdef YOLO9
+    #include "det/YOLO9.hpp"
+#endif
+#ifdef YOLO10
+    #include "det/YOLO10.hpp"
+#endif
+#ifdef YOLO11
+    #include "det/YOLO11.hpp"
+#endif
+#ifdef YOLO12
+    #include "det/YOLO12.hpp"
+#endif
 
 // Thread-safe queue implementation
 template <typename T>
@@ -102,18 +124,28 @@ int main()
     const std::string outputPath = "../data/SIG_experience_center_processed.mp4"; // Output video path
 
     // Model paths for different YOLO versions
-    // const std::string modelPath = "../models/yolov9s.onnx"; // YOLOv9
-    // const std::string modelPath = "../models/yolo11n.onnx"; // YOLOv11
-    const std::string modelPath = "../models/yolo12n.onnx"; // YOLOv12
-
+    #ifdef YOLO9
+        const std::string modelPath = "../models/yolov9s.onnx";
+    #endif
+    #ifdef YOLO11
+        const std::string modelPath = "../models/yolo11n.onnx";
+    #endif
+    #ifdef YOLO12
+        const std::string modelPath = "../models/yolo12n.onnx";
+    #endif
 
 
     // Initialize the YOLO detector
     bool isGPU = true; // Set to false for CPU processing
-    // YOLO9Detector detector(modelPath, labelsPath, isGPU); // YOLOv9
-    // YOLO11Detector detector(modelPath, labelsPath, isGPU); // YOLOv11
-    YOLO12Detector detector(modelPath, labelsPath, isGPU); // YOLOv12
-
+    #ifdef YOLO9
+        YOLO9Detector detector(modelPath, labelsPath, isGPU);
+    #endif
+    #ifdef YOLO11
+        YOLO11Detector detector(modelPath, labelsPath, isGPU);
+    #endif
+    #ifdef YOLO12
+        YOLO12Detector detector(modelPath, labelsPath, isGPU);
+    #endif
 
     // Open the video file
     cv::VideoCapture cap(videoPath);
