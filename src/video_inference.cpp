@@ -124,8 +124,20 @@ int main()
     const std::string outputPath = "../data/SIG_experience_center_processed.mp4"; // Output video path
 
     // Model paths for different YOLO versions
+    #ifdef YOLO5
+        std::string modelPath = "../models/yolo5-n6.onnx";
+    #endif
+    #ifdef YOLO7
+        const std::string modelPath = "../models/yolo7-tiny.onnx";
+    #endif
+    #ifdef YOLO8
+        std::string modelPath = "../models/yolo8n.onnx";
+    #endif
     #ifdef YOLO9
         const std::string modelPath = "../models/yolov9s.onnx";
+    #endif
+    #ifdef YOLO10
+        std::string modelPath = "../models/yolo10n_uint8.onnx";
     #endif
     #ifdef YOLO11
         const std::string modelPath = "../models/yolo11n.onnx";
