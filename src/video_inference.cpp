@@ -137,6 +137,15 @@ int main()
 
     // Initialize the YOLO detector
     bool isGPU = true; // Set to false for CPU processing
+    #ifdef YOLO5
+        YOLO5Detector detector(modelPath, labelsPath, isGPU);
+    #endif
+    #ifdef YOLO7
+        YOLO7Detector detector(modelPath, labelsPath, isGPU);
+    #endif
+    #ifdef YOLO8
+        YOLO8Detector detector(modelPath, labelsPath, isGPU);
+    #endif
     #ifdef YOLO9
         YOLO9Detector detector(modelPath, labelsPath, isGPU);
     #endif
