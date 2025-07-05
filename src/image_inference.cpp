@@ -41,14 +41,36 @@
 #include <iostream>
 #include <string>
 
-// #include "det/YOLO5.hpp"  // Uncomment for YOLOv5
-// #include "det/YOLO7.hpp"  // Uncomment for YOLOv7
-// #include "det/YOLO8.hpp"  // Uncomment for YOLOv8
-// #include "det/YOLO9.hpp"  // Uncomment for YOLOv9
-// #include "det/YOLO10.hpp" // Uncomment for YOLOv10
-// #include "det/YOLO11.hpp" // Uncomment for YOLOv11
-#include "det/YOLO12.hpp" // Uncomment for YOLOv12
+// Uncomment the version
+//#define YOLO5 // Uncomment for YOLOv5
+//#define YOLO7 // Uncomment for YOLOv7
+//#define YOLO8 // Uncomment for YOLOv8
+//#define YOLO9 // Uncomment for YOLOv9
+//#define YOLO10 // Uncomment for YOLOv10
+//#define YOLO11 // Uncomment for YOLOv11
+#define YOLO12 // Uncomment for YOLOv12
 
+#ifdef YOLO5
+    #include "det/YOLO5.hpp"
+#endif
+#ifdef YOLO7
+    #include "det/YOLO7.hpp"
+#endif
+#ifdef YOLO8
+    #include "det/YOLO8.hpp"
+#endif
+#ifdef YOLO9
+    #include "det/YOLO9.hpp"
+#endif
+#ifdef YOLO10
+    #include "det/YOLO10.hpp"
+#endif
+#ifdef YOLO11
+    #include "det/YOLO11.hpp"
+#endif
+#ifdef YOLO12
+    #include "det/YOLO12.hpp"
+#endif
 
 
 int main(){
@@ -62,27 +84,53 @@ int main(){
     // const std::string imagePath = "../data/desk.jpg";        // Another alternate image
 
     // Model paths for different YOLO versions
-    // Uncomment the desired model path for testing
-    // const std::string modelPath = "../models/yolo5-n6.onnx";      // YOLOv5
-    // const std::string modelPath = "../models/yolo7-tiny.onnx";       // YOLOv7
-    // const std::string modelPath = "../models/yolo8n.onnx"; // YOLOv8
-    // const std::string modelPath = "../models/yolov9s.onnx"; // YOLOv9 
-    // const std::string modelPath = "../models/yolo10n.onnx"; // YOLOv10 
-    // const std::string modelPath = "../quantized_models/yolo10n_uint8.onnx"; // Quantized YOLOv10
-    // const std::string modelPath = "../models/yolo11n.onnx"; // YOLOv11 
-    const std::string modelPath = "../models/yolo12n.onnx"; // YOLOv12 
+    #ifdef YOLO5
+        std::string modelPath = "../models/yolo5-n6.onnx";
+    #endif
+    #ifdef YOLO7
+        const std::string modelPath = "../models/yolo7-tiny.onnx";
+    #endif
+    #ifdef YOLO8
+        std::string modelPath = "../models/yolo8n.onnx";
+    #endif
+    #ifdef YOLO9
+        const std::string modelPath = "../models/yolov9s.onnx";
+    #endif
+    #ifdef YOLO10
+        std::string modelPath = "../models/yolo10n_uint8.onnx";
+    #endif
+    #ifdef YOLO11
+        const std::string modelPath = "../models/yolo11n.onnx";
+    #endif
+    #ifdef YOLO12
+        const std::string modelPath = "../models/yolo12n.onnx";
+    #endif
 
 
 
     // Initialize the YOLO detector with the chosen model and labels
     bool isGPU = true; // Set to false for CPU processing
-    // YOLO7Detector detector(modelPath, labelsPath, isGPU);
-    // YOLO5Detector detector(modelPath, labelsPath, isGPU);  // Uncomment for YOLOv5
-    // YOLO8Detector detector(modelPath, labelsPath, isGPU);  // Uncomment for YOLOv8
-    // YOLO9Detector detector(modelPath, labelsPath, isGPU); // Uncomment for YOLOv9
-    // YOLO10Detector detector(modelPath, labelsPath, isGPU); // Uncomment for YOLOv10
-    // YOLO11Detector detector(modelPath, labelsPath, isGPU); // Uncomment for YOLOv11
-    YOLO12Detector detector(modelPath, labelsPath, isGPU); // Uncomment for YOLOv12
+    #ifdef YOLO5
+        YOLO5Detector detector(modelPath, labelsPath, isGPU);
+    #endif
+    #ifdef YOLO7
+        YOLO7Detector detector(modelPath, labelsPath, isGPU);
+    #endif
+    #ifdef YOLO8
+        YOLO8Detector detector(modelPath, labelsPath, isGPU);
+    #endif
+    #ifdef YOLO9
+        YOLO9Detector detector(modelPath, labelsPath, isGPU);
+    #endif
+    #ifdef YOLO10
+        YOLO10Detector detector(modelPath, labelsPath, isGPU);
+    #endif
+    #ifdef YOLO11
+        YOLO11Detector detector(modelPath, labelsPath, isGPU);
+    #endif
+    #ifdef YOLO12
+        YOLO12Detector detector(modelPath, labelsPath, isGPU);
+    #endif
 
 
     // Load an image
