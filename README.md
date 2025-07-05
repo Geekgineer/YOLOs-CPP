@@ -349,6 +349,57 @@ To perform real-time object detection using a usb cam:
 
 This command will activate your usb and display the video feed with real-time object detection.
 
+## Run on Docker
+you can run project by docker Desktop
+
+### Docker Installation
+
+Before running the project with Docker, you need to install Docker Desktop on your system:
+
+1. **Download Docker Desktop**:
+   - Visit the official Docker website: [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
+   - Click "Download for [Your Operating System]"
+   - Choose the appropriate version for your system (Windows, macOS, or Linux)
+
+2. **Install Docker Desktop**:
+   - **Windows**: Run the downloaded `.exe` file and follow the installation wizard
+   - **macOS**: Open the downloaded `.dmg` file and drag Docker to Applications
+   - **Linux**: Follow the distribution-specific installation instructions
+
+3. **Start Docker Desktop**:
+   - Launch Docker Desktop from your applications menu
+   - Wait for Docker to start (you'll see the Docker icon in your system tray)
+   - Ensure Docker is running before proceeding with the project
+
+4. **Verify Installation**:
+   ```bash
+   docker --version
+   docker-compose --version
+   ```
+
+Once Docker is installed and running, you can proceed with the Docker-based execution of the project.
+
+### after run docker
+1. build docker image
+    ```bash
+   docker build -t yolos-cpp -f docker/Dockerfile .
+   ```
+2. install VcXsrv on windows:
+- Make sure VcXsrv is actually running on your Windows machine.
+- Check VcXsrv Configuration
+Start VcXsrv and make sure:
+- Display number is set to 0
+- "Disable access control" is checked
+
+3. run this command for opencv imshow:
+    ```bash
+      $env:DISPLAY = "host.docker. internal:0.0"
+    ```
+4. run the image:
+    ```bash
+    docker run --rm -it -e DISPLAY=host.docker.internal:0.0 yolos-cpp
+    ```
+
 ### YOLOs Models
 While ONNX provides a cross-platform format for model compatibility, exporting the model directly for the target device or optimizing it for specific hardware can significantly improve performance. To achieve the best inference speed and resource efficiency, it's generally recommended to tailor the export process to the hardware on which the model will run.
 
