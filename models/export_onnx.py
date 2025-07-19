@@ -1,7 +1,3 @@
 from ultralytics import YOLO
-
-# Load the YOLOv11n model
-model = YOLO("yolo11l.pt")
-
-# Export the model to ONNX format
-model.export(format="onnx")
+model = YOLO("yolo12n.pt")
+model.export(format="onnx", dynamic=True)
