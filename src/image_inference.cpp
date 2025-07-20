@@ -47,8 +47,8 @@
 // #define YOLO8 // Uncomment for YOLOv8
 //#define YOLO9 // Uncomment for YOLOv9
 //#define YOLO10 // Uncomment for YOLOv10
-//#define YOLO11 // Uncomment for YOLOv11
-#define YOLO12 // Uncomment for YOLOv12
+#define YOLO11 // Uncomment for YOLOv11
+// #define YOLO12 // Uncomment for YOLOv12
 
 #ifdef YOLO5
     #include "det/YOLO5.hpp"
@@ -77,7 +77,7 @@ int main(){
 
     // Paths to the model, labels, and test image
     const std::string labelsPath = "../models/coco.names";
-    const std::string imagePath = "../data/dog.png";           // Primary image path
+    const std::string imagePath = "../data/dog.jpg";           // Primary image path
 
     // Uncomment the desired image path for testing
     // const std::string imagePath = "../data/happy_dogs.jpg";  // Alternate image

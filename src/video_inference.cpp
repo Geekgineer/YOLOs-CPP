@@ -53,8 +53,8 @@
 //#define YOLO8 // Uncomment for YOLOv8
 //#define YOLO9 // Uncomment for YOLOv9
 //#define YOLO10 // Uncomment for YOLOv10
-//#define YOLO11 // Uncomment for YOLOv11
-#define YOLO12 // Uncomment for YOLOv12
+#define YOLO11 // Uncomment for YOLOv11
+// #define YOLO12 // Uncomment for YOLOv12
 
 #ifdef YOLO5
     #include "det/YOLO5.hpp"

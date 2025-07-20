@@ -1,7 +1,5 @@
-# =================================================================================================
-# Stage 1: Build Stage - Installs all dependencies and compiles the project
-# =================================================================================================
-FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 AS builder
+# Use a CUDA 12.x and cuDNN 9 base image for the builder stage
+FROM nvidia/cuda:12.4.1-cudnn9-devel-ubuntu22.04 AS builder
 
 # Set environment variables to prevent interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
@@ -11,7 +9,7 @@ ENV TZ=Etc/UTC
 ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 
-# Install system dependencies in a single layer to keep the image lean
+# Install system dependencies. libopencv-dev on Ubuntu 22.04 installs version 4.5.x
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
@@ -22,12 +20,12 @@ RUN apt-get update && \
     libopencv-dev && \
     rm -rf /var/lib/apt/lists/*
 
-# --- Install ONNX Runtime ---
+# --- Install ONNX Runtime v1.20.0 ---
 WORKDIR /opt
-RUN wget https://github.com/microsoft/onnxruntime/releases/download/v1.18.0/onnxruntime-linux-x64-gpu-1.18.0.tgz && \
-    tar -xvf onnxruntime-linux-x64-gpu-1.18.0.tgz && \
-    mv onnxruntime-linux-x64-gpu-1.18.0 onnxruntime && \
-    rm onnxruntime-linux-x64-gpu-1.18.0.tgz
+RUN wget https://github.com/microsoft/onnxruntime/releases/download/v1.20.0/onnxruntime-linux-x64-gpu-1.20.0.tgz && \
+    tar -xvf onnxruntime-linux-x64-gpu-1.20.0.tgz && \
+    mv onnxruntime-linux-x64-gpu-1.20.0 onnxruntime && \
+    rm onnxruntime-linux-x64-gpu-1.20.0.tgz
 
 # Set the library path so the system can find the ONNX Runtime .so files
 ENV LD_LIBRARY_PATH=/opt/onnxruntime/lib:/usr/local/cuda/lib64:$LD_LIBRARY_PATH
@@ -36,15 +34,15 @@ ENV LD_LIBRARY_PATH=/opt/onnxruntime/lib:/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 WORKDIR /app
 COPY . .
 
+# Build the project with Release configuration
 RUN cmake -S . -B build \
-      -D CMAKE_BUILD_TYPE=Release \
-      -D ONNXRUNTIME_DIR=/opt/onnxruntime && \
+    -D CMAKE_BUILD_TYPE=Release \
+    -D ONNXRUNTIME_DIR=/opt/onnxruntime && \
     cmake --build build --config Release -j$(nproc)
 
-# =================================================================================================
-# Stage 2: Final Stage - Creates the final runnable image
-# =================================================================================================
-FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
+# --- Final Production Image ---
+# Use the smaller -runtime image for the final stage to reduce image size.
+FROM nvidia/cuda:12.4.1-cudnn9-runtime-ubuntu22.04
 
 # Set environment variables again for the final image
 ENV DEBIAN_FRONTEND=noninteractive
@@ -53,9 +51,13 @@ ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 ENV LD_LIBRARY_PATH=/opt/onnxruntime/lib:/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
-# Install OpenCV runtime libraries
+
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends libopencv-dev && \
+    apt-get install -y --no-install-recommends \
+    libopencv-core4.5d \
+    libopencv-imgproc4.5d \
+    libopencv-highgui4.5d \
+    libopencv-videoio4.5d && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy the pre-built ONNX Runtime and the compiled project from the builder stage
@@ -66,13 +68,11 @@ COPY --from=builder /app/data ./data
 COPY --from=builder /app/models ./models
 COPY --from=builder /app/run_*.sh .
 
-# Security: Create a non-root user, add to video group, and give ownership of the app directory
+# Create a non-root user for security
 RUN useradd -ms /bin/bash yolouser && \
     usermod -aG video yolouser && \
     chown -R yolouser:yolouser /app
 
-# Switch to the non-root user
 USER yolouser
 
-# Set the default command to an interactive bash shell
 CMD ["/bin/bash"]
