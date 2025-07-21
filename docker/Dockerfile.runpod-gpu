@@ -34,12 +34,11 @@ RUN apt-get update && apt-get install -y \
     python3-numpy \
     libtbb2 \
     libtbb-dev \
-    libjasper-dev \
-    libdc1394-22-dev \
     htop \
     sysstat \
     procps \
     vim \
+    python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
 # Install OpenCV with CUDA support
@@ -69,15 +68,15 @@ RUN cd /tmp && \
     ldconfig && \
     cd / && rm -rf /tmp/opencv*
 
-# Install ONNX Runtime (GPU version)
-RUN cd /workspace && \
+# Create workspace and install ONNX Runtime (GPU version)
+RUN mkdir -p /workspace && cd /workspace && \
     wget https://github.com/microsoft/onnxruntime/releases/download/v1.20.1/onnxruntime-linux-x64-gpu-1.20.1.tgz && \
     tar -xzf onnxruntime-linux-x64-gpu-1.20.1.tgz && \
     rm onnxruntime-linux-x64-gpu-1.20.1.tgz
 
 # Set up environment variables
 ENV ONNXRUNTIME_DIR=/workspace/onnxruntime-linux-x64-gpu-1.20.1
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ONNXRUNTIME_DIR/lib:/usr/local/cuda/lib64
+ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}:$ONNXRUNTIME_DIR/lib:/usr/local/cuda/lib64"
 
 # Create workspace structure
 WORKDIR /workspace
