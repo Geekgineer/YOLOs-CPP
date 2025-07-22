@@ -629,25 +629,57 @@ private:
     
 };
 
-// Implementation of YOLO11Detector constructor
+// Implementation of YOLO11Detector constructor with RTX 4090 optimizations
 YOLO11Detector::YOLO11Detector(const std::string &modelPath, const std::string &labelsPath, bool useGPU) {
-    // Initialize ONNX Runtime environment with warning level
-    env = Ort::Env(ORT_LOGGING_LEVEL_WARNING, "ONNX_DETECTION");
+    // Initialize ONNX Runtime environment with reduced logging for performance
+    env = Ort::Env(ORT_LOGGING_LEVEL_ERROR, "ONNX_DETECTION");
     sessionOptions = Ort::SessionOptions();
 
-    // Set number of intra-op threads for parallelism
-    sessionOptions.SetIntraOpNumThreads(std::min(6, static_cast<int>(std::thread::hardware_concurrency())));
+    // Optimized thread configuration for GPU inference
+    if (useGPU) {
+        sessionOptions.SetIntraOpNumThreads(1);  // Let CUDA handle parallelism
+        sessionOptions.SetInterOpNumThreads(1);  // Reduce CPU-GPU synchronization
+    } else {
+        sessionOptions.SetIntraOpNumThreads(std::min(6, static_cast<int>(std::thread::hardware_concurrency())));
+    }
+    
     sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
+    sessionOptions.SetExecutionMode(ExecutionMode::ORT_SEQUENTIAL);
+    
+    // Enable memory optimizations
+    sessionOptions.EnableMemPattern();
+    sessionOptions.EnableCpuMemArena();
+    
+    // Performance optimizations
+    sessionOptions.AddConfigEntry("session.disable_prepacking", "0");
+    sessionOptions.AddConfigEntry("session.use_env_allocators", "1");
 
     // Retrieve available execution providers (e.g., CPU, CUDA)
     std::vector<std::string> availableProviders = Ort::GetAvailableProviders();
     auto cudaAvailable = std::find(availableProviders.begin(), availableProviders.end(), "CUDAExecutionProvider");
-    OrtCUDAProviderOptions cudaOption;
 
     // Configure session options based on whether GPU is to be used and available
     if (useGPU && cudaAvailable != availableProviders.end()) {
-        std::cout << "Inference device: GPU" << std::endl;
-        sessionOptions.AppendExecutionProvider_CUDA(cudaOption); // Append CUDA execution provider
+        std::cout << "Inference device: GPU (RTX 4090 Optimized)" << std::endl;
+        
+        // RTX 4090 optimized CUDA configuration
+        OrtCUDAProviderOptions cudaOptions;
+        cudaOptions.device_id = 0;
+        cudaOptions.arena_extend_strategy = 1;  // Extend by larger chunks for RTX 4090
+        cudaOptions.gpu_mem_limit = SIZE_MAX;   // Use all available GPU memory (24GB on RTX 4090)
+        cudaOptions.cudnn_conv_algo_search = OrtCudnnConvAlgoSearchExhaustive;
+        cudaOptions.do_copy_in_default_stream = 1;
+        cudaOptions.has_user_compute_stream = 0;
+        cudaOptions.default_memory_arena_cfg = nullptr;
+        
+        sessionOptions.AppendExecutionProvider_CUDA(cudaOptions);
+        
+        // Additional RTX 4090 specific optimizations
+        sessionOptions.AddConfigEntry("ep.cuda.enable_cuda_graph", "1");
+        sessionOptions.AddConfigEntry("ep.cuda.cuda_graph_enable_building", "1");
+        sessionOptions.AddConfigEntry("ep.cuda.prefer_nhwc", "1");
+        sessionOptions.AddConfigEntry("ep.cuda.enable_skip_layer_norm_strict_mode", "0");
+        
     } else {
         if (useGPU) {
             std::cout << "GPU is not supported by your ONNXRuntime build. Fallback to CPU." << std::endl;
