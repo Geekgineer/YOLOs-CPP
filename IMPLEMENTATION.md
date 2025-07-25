@@ -14,9 +14,8 @@
 - ✅ **Resource Utilization**: CPU%, GPU%, memory usage tracking
 - ✅ **Precision Timing**: High-resolution timing with multiple measurement methods
 
-### 3. **RunPod Cloud Integration**
-- ✅ **Docker Containers**: Separate CPU-only and GPU-enabled containers
-- ✅ **Automated Setup Script**: `runpod_setup.sh` for complete environment setup
+### 3. **Cloud Integration**
+- ✅ **Automated Setup Script**: Complete environment setup for cloud deployment
 - ✅ **Environment Detection**: Auto-detects GPU availability and configures accordingly
 - ✅ **Model Management**: Automated model download and dependency installation
 
@@ -56,16 +55,142 @@
 
 ### Automation Scripts
 - `benchmark/run_automated_benchmark.sh` - Complete benchmark automation
-- `benchmark/runpod_setup.sh` - RunPod deployment automation
 - `benchmark/analyze_results.py` - Analysis and visualization tool
 - `benchmark/requirements.txt` - Python dependencies
 
-### Docker Integration
-- `docker/Dockerfile.runpod-cpu` - CPU-only RunPod container
-- `docker/Dockerfile.runpod-gpu` - GPU-enabled RunPod container
-
 ### Documentation
 - `BENCHMARK_README.md` - Comprehensive documentation update
+
+## 🚀 **Cloud Setup Guide for Fresh Linux Systems**
+
+### **YOLOS-CPP GPU Benchmark Guide**
+
+This guide explains the complete setup process for deploying YOLOs-CPP on a fresh Linux system with NVIDIA GPU support (tested with RTX 4090, using CUDA 12.x, cuDNN, and ONNX Runtime GPU).
+
+#### **1. Prerequisites**
+
+Ensure your system meets the following requirements:
+- Ubuntu 22.04+
+- NVIDIA GPU with recent driver (e.g., RTX 4090)
+- CUDA Toolkit 12.x
+- cuDNN for CUDA 12.x
+- CMake 3.18+
+- OpenCV development libraries
+- Git & Python3
+
+#### **2. Verify Environment**
+
+Use the following commands to verify your environment:
+```bash
+nvidia-smi
+nvcc --version
+gcc --version
+```
+
+#### **3. Install Build Tools & OpenCV**
+
+Update your system and install necessary tools:
+```bash
+sudo apt update && sudo apt install -y cmake git libopencv-dev python3-pip
+```
+
+#### **4. (Optional) Install cuDNN**
+
+Download the cuDNN `.deb` files from NVIDIA's archive. Then, install them using the following commands:
+```bash
+sudo dpkg -i cudnn-local-repo-ubuntu2204-9.10.2_1.0-1_amd64.deb
+sudo cp /var/cudnn-local-repo-ubuntu2204-9.10.2/*.gpg /usr/share/keyrings/
+sudo apt-key add /usr/share/keyrings/*.gpg
+sudo apt update
+sudo apt install -y libcudnn9-cuda-12=9.10.2.21-1 libcudnn9-dev-cuda-12=9.10.2.21-1 libcudnn9-headers-cuda-12=9.10.2.21-1
+sudo ldconfig
+```
+
+#### **5. Clone the Project**
+
+Clone the YOLOS-CPP repository:
+```bash
+git clone https://github.com/Elbhnasy/YOLOs-CPP.git
+cd YOLOs-CPP
+```
+
+#### **6. ONNX Runtime GPU Setup**
+
+Download and extract the ONNX Runtime GPU package:
+```bash
+wget https://github.com/microsoft/onnxruntime/releases/download/v1.20.1/onnxruntime-linux-x64-gpu-1.20.1.tgz
+tar -xzf onnxruntime-linux-x64-gpu-1.20.1.tgz
+```
+
+#### **7. Build YOLOS-CPP**
+
+You can build the project automatically or manually:
+
+**Automated build:**
+```bash
+./build.sh
+```
+
+**Manual build:**
+```bash
+mkdir -p build && cd build
+cmake .. -DONNXRUNTIME_DIR=../onnxruntime-linux-x64-gpu-1.20.1 -DCMAKE_BUILD_TYPE=Release
+make -j$(nproc)
+cd ..
+```
+
+#### **8. Export YOLO ONNX Models**
+
+Navigate to the `models` directory, install `ultralytics`, and export the ONNX models:
+```bash
+cd models/
+pip install ultralytics
+python export_onnx.py
+cd ..
+```
+
+#### **9. Prepare Data**
+
+Ensure that `dog.jpg` and `dogs.mp4` are present in the `data/` directory.
+
+#### **10. Run Benchmarks**
+
+Run benchmarks either automatically or manually:
+
+**Automated:**
+```bash
+cd benchmark/
+./run_automated_benchmark.sh
+```
+
+**Manual:**
+- Image benchmark:
+  ```bash
+  ./comprehensive_bench image yolo11 detection ../models/yolo11n.onnx ../models/coco.names ../data/dog.jpg --gpu --iterations=100
+  ```
+- Video benchmark:
+  ```bash
+  ./comprehensive_bench video yolo11 detection ../models/yolo11n.onnx ../models/coco.names ../data/dogs.mp4 --gpu
+  ```
+
+#### **11. Analyze Results**
+
+Benchmark results are saved as CSV files in the `results/` folder.
+
+#### **Troubleshooting**
+
+- If binaries are missing, ensure CMake was configured correctly
+- For best performance, use the ONNX Runtime GPU package
+- Check CUDA installation with `nvidia-smi` and `nvcc --version`
+
+#### **References**
+
+- [YOLOs-CPP Repository](https://github.com/Elbhnasy/YOLOs-CPP)
+- [ONNX Runtime Releases](https://github.com/microsoft/onnxruntime/releases)
+- [Ultralytics YOLO](https://github.com/ultralytics/ultralytics)
+- [NVIDIA cuDNN Archive](https://developer.nvidia.com/rdp/cudnn-archive)
+
+---
 
 ## 🚀 **Final Commands to Run the Project**
 
@@ -120,19 +245,7 @@ cd benchmark
 ./comprehensive_bench camera yolo11 detection ../models/yolo11n.onnx ../models/coco.names --cpu --iterations=100
 ```
 
-### **Step 4: RunPod Cloud Deployment**
-```bash
-# Build GPU-enabled container
-docker build -f docker/Dockerfile.runpod-gpu -t yolos-benchmark-gpu .
-
-# Build CPU-only container
-docker build -f docker/Dockerfile.runpod-cpu -t yolos-benchmark-cpu .
-
-# Deploy to RunPod (inside container)
-./runpod_setup.sh
-```
-
-### **Step 5: Analysis and Visualization**
+### **Step 4: Analysis and Visualization**
 ```bash
 # Analyze latest results
 python3 analyze_results.py ../results/image_benchmark_*.csv --output-dir ../results/analysis
@@ -225,7 +338,7 @@ yolo8,detection,GPU,gpu,1,fp32,98.234,0.000,45.123,0.000,45.123,22.156,1.234,145
 - ✅ **Automated Pipeline**: Complete `run_automated_benchmark.sh` execution
 - ✅ **CSV Output**: Enhanced format with 22+ comprehensive metrics
 - ✅ **Analysis Tools**: Python visualization and reporting
-- ✅ **RunPod Integration**: Docker containers for cloud deployment
+- ✅ **Cloud Integration**: Ready for cloud deployment
 - ✅ **Error Handling**: Robust error handling and graceful degradation
 
 ### Performance Characteristics ✅ **VALIDATED**
@@ -300,7 +413,7 @@ public:
 
 ### Architecture Benefits
 - **Modular Design**: Easy to add new models and metrics
-- **Cloud Ready**: RunPod integration for scalable benchmarking
+- **Cloud Ready**: Optimized for scalable cloud benchmarking
 - **Professional Quality**: Industry-standard metrics and reporting
 - **Extensible**: Clean abstractions for future enhancements
 
@@ -319,20 +432,6 @@ public:
 1. **🚀 Quick Start**: Run `./run_automated_benchmark.sh` for complete benchmarking
 2. **📊 Get Results**: Comprehensive CSV output with 22+ metrics per benchmark
 3. **🔍 Analyze Performance**: Automated charts and cost-efficiency analysis
-4. **☁️ Deploy to Cloud**: RunPod-ready Docker containers for scalable benchmarking
+4. **☁️ Deploy to Cloud**: Ready for cloud deployment and scalable benchmarking
 5. **🎯 Monitor Resources**: Real-time CPU/GPU/memory utilization tracking
 
-### **Key Success Metrics**
-- ✅ **Image Benchmarks**: 10.6 FPS (CPU), ~22 FPS (GPU) with YOLO11n
-- ✅ **Video Benchmarks**: 7.84 FPS processing 303-frame videos
-- ✅ **System Monitoring**: <5% performance overhead with comprehensive metrics
-- ✅ **Automation**: Complete pipeline from execution to analysis
-- ✅ **Cloud Ready**: Docker containers with automated setup scripts
-
-### **Next Steps**
-- Deploy to RunPod for large-scale benchmarking
-- Test with additional YOLO models (YOLO8 full integration)
-- Extend to batch processing and accuracy evaluation
-- Scale across multiple cloud instances for comprehensive analysis
-
-**Framework Status**: ✅ **COMPLETE** - Ready for production use with comprehensive benchmarking capabilities, system monitoring, cloud deployment support, and professional analysis tools.

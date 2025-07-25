@@ -1,5 +1,8 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.5.0)
 project(yolo_ort)
+
+# Set policy to avoid interprocedural optimization warnings
+cmake_policy(SET CMP0069 NEW)
 
 option(ONNXRUNTIME_DIR "Path to built ONNX Runtime directory." STRING)
 message(STATUS "ONNXRUNTIME_DIR: ${ONNXRUNTIME_DIR}")
