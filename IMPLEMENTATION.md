@@ -124,8 +124,6 @@ tar -xzf onnxruntime-linux-x64-gpu-1.20.1.tgz
 
 #### **7. Build YOLOS-CPP**
 
-**Important**: Make sure you have completed step 6 (ONNX Runtime GPU Setup) before building.
-
 You can build the project automatically or manually:
 
 **Automated build:**
@@ -135,23 +133,6 @@ You can build the project automatically or manually:
 
 **Manual build:**
 ```bash
-mkdir -p build && cd build
-cmake .. -DONNXRUNTIME_DIR=../onnxruntime-linux-x64-gpu-1.20.1 -DCMAKE_BUILD_TYPE=Release
-make -j$(nproc)
-cd ..
-```
-
-**If you get "onnxruntime_cxx_api.h: No such file or directory" error:**
-```bash
-# Verify ONNX Runtime directory exists
-ls -la onnxruntime-linux-x64-gpu-1.20.1/include/
-
-# If missing, download and extract ONNX Runtime GPU
-wget https://github.com/microsoft/onnxruntime/releases/download/v1.20.1/onnxruntime-linux-x64-gpu-1.20.1.tgz
-tar -xzf onnxruntime-linux-x64-gpu-1.20.1.tgz
-
-# Clean and rebuild
-rm -rf build/
 mkdir -p build && cd build
 cmake .. -DONNXRUNTIME_DIR=../onnxruntime-linux-x64-gpu-1.20.1 -DCMAKE_BUILD_TYPE=Release
 make -j$(nproc)
