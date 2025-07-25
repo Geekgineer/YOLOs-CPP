@@ -91,19 +91,19 @@ gcc --version
 
 Update your system and install necessary tools:
 ```bash
-sudo apt update && sudo apt install -y cmake git libopencv-dev python3-pip
+apt update && apt install -y cmake git libopencv-dev python3-pip
 ```
 
 #### **4. (Optional) Install cuDNN**
 
 Download the cuDNN `.deb` files from NVIDIA's archive. Then, install them using the following commands:
 ```bash
-sudo dpkg -i cudnn-local-repo-ubuntu2204-9.10.2_1.0-1_amd64.deb
-sudo cp /var/cudnn-local-repo-ubuntu2204-9.10.2/*.gpg /usr/share/keyrings/
-sudo apt-key add /usr/share/keyrings/*.gpg
-sudo apt update
-sudo apt install -y libcudnn9-cuda-12=9.10.2.21-1 libcudnn9-dev-cuda-12=9.10.2.21-1 libcudnn9-headers-cuda-12=9.10.2.21-1
-sudo ldconfig
+dpkg -i cudnn-local-repo-ubuntu2204-9.10.2_1.0-1_amd64.deb
+cp /var/cudnn-local-repo-ubuntu2204-9.10.2/*.gpg /usr/share/keyrings/
+apt-key add /usr/share/keyrings/*.gpg
+apt update
+apt install -y libcudnn9-cuda-12=9.10.2.21-1 libcudnn9-dev-cuda-12=9.10.2.21-1 libcudnn9-headers-cuda-12=9.10.2.21-1
+ldconfig
 ```
 
 #### **5. Clone the Project**
@@ -124,6 +124,8 @@ tar -xzf onnxruntime-linux-x64-gpu-1.20.1.tgz
 
 #### **7. Build YOLOS-CPP**
 
+**Important**: Make sure you have completed step 6 (ONNX Runtime GPU Setup) before building.
+
 You can build the project automatically or manually:
 
 **Automated build:**
@@ -137,6 +139,37 @@ mkdir -p build && cd build
 cmake .. -DONNXRUNTIME_DIR=../onnxruntime-linux-x64-gpu-1.20.1 -DCMAKE_BUILD_TYPE=Release
 make -j$(nproc)
 cd ..
+```
+
+**If you get "onnxruntime_cxx_api.h: No such file or directory" error:**
+```bash
+# Verify ONNX Runtime directory exists
+ls -la onnxruntime-linux-x64-gpu-1.20.1/include/
+
+# If missing, download and extract ONNX Runtime GPU
+wget https://github.com/microsoft/onnxruntime/releases/download/v1.20.1/onnxruntime-linux-x64-gpu-1.20.1.tgz
+tar -xzf onnxruntime-linux-x64-gpu-1.20.1.tgz
+
+# Clean and rebuild
+rm -rf build/
+mkdir -p build && cd build
+cmake .. -DONNXRUNTIME_DIR=../onnxruntime-linux-x64-gpu-1.20.1 -DCMAKE_BUILD_TYPE=Release
+make -j$(nproc)
+cd ..
+```
+
+**If comprehensive_bench is not in benchmark directory, copy it manually:**
+```bash
+# Build comprehensive_bench specifically
+cd build && make comprehensive_bench
+cp comprehensive_bench ../benchmark/
+cd ../benchmark && ls -la comprehensive_bench
+```
+
+**Alternative copy method:**
+```bash
+# From project root
+cp build/comprehensive_bench benchmark/
 ```
 
 #### **8. Export YOLO ONNX Models**
@@ -163,6 +196,11 @@ cd benchmark/
 ./run_automated_benchmark.sh
 ```
 
+**Check benchmark directory contents:**
+```bash
+ls -la
+```
+
 **Manual:**
 - Image benchmark:
   ```bash
@@ -176,6 +214,21 @@ cd benchmark/
 #### **11. Analyze Results**
 
 Benchmark results are saved as CSV files in the `results/` folder.
+
+**View benchmark results:**
+```bash
+# Navigate to project root
+cd /path/to/YOLOs-CPP
+
+# Check image benchmark results (first 5 lines)
+head -5 results/image_benchmark_*.csv
+
+# Check video benchmark results (first 5 lines)  
+head -5 results/video_benchmark_*.csv
+
+# List all result files
+ls -la results/
+```
 
 #### **Troubleshooting**
 

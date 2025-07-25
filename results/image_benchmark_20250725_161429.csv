@@ -1,0 +1,85 @@
+timestamp,model_type,task_type,environment,device,threads,precision,load_ms,preprocess_ms,inference_ms,postprocess_ms,total_ms,fps,memory_mb,system_memory_mb,cpu_usage_%,gpu_usage_%,gpu_memory_mb,latency_avg_ms,latency_min_ms,latency_max_ms,map_score,frame_count,cpu_name,gpu_name
+20250725_161429,Note: Using YOLO11 detector for YOLO8 model (compatibility mode),AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: CPU,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo8,detection,CPU,cpu,1,fp32,57.618,0.000,93.089,0.000,93.089,10.742,0.000,-260.137,4.066,0.000,0.000,93.090,64.396,114.821,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Note: Using YOLO11 detector for YOLO8 model (compatibility mode),AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: CPU,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo8,detection,CPU,cpu,4,fp32,62.694,0.000,101.454,0.000,101.454,9.857,0.039,52.559,4.254,0.000,0.000,101.455,93.338,112.187,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Note: Using YOLO11 detector for YOLO8 model (compatibility mode),AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: CPU,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo8,detection,CPU,cpu,8,fp32,69.714,0.000,82.890,0.000,82.890,12.064,0.176,112.199,3.912,0.000,0.000,82.891,71.467,111.874,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Note: Using YOLO11 detector for YOLO8 model (compatibility mode),AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: GPU (RTX 4090 Optimized),AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo8,detection,GPU,gpu,1,fp32,557.303,0.000,12.183,0.000,12.183,82.084,0.000,2669.793,-nan,7.780,731.000,12.183,6.155,20.154,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Note: Using YOLO11 detector for YOLO8 model (compatibility mode),AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: CPU,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo8,detection,CPU,cpu,1,fp32,84.662,0.000,98.671,0.000,98.671,10.135,1.156,-2853.426,91.314,0.000,0.000,98.673,68.472,144.723,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Note: Using YOLO11 detector for YOLO8 model (compatibility mode),AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: CPU,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo8,detection,CPU,cpu,4,fp32,63.595,0.000,99.900,0.000,99.900,10.010,0.000,29.430,22.299,0.000,0.000,99.901,67.602,136.370,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Note: Using YOLO11 detector for YOLO8 model (compatibility mode),AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: CPU,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo8,detection,CPU,cpu,8,fp32,62.126,0.000,90.685,0.000,90.685,11.027,0.262,12.035,4.961,0.000,0.000,90.685,68.584,113.406,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Note: Using YOLO11 detector for YOLO8 model (compatibility mode),AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: GPU (RTX 4090 Optimized),AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo8,detection,GPU,gpu,1,fp32,489.037,0.000,12.700,0.000,12.701,78.737,0.000,246.992,1.515,5.640,731.000,12.701,10.917,29.490,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Note: Using YOLO11 detector for YOLO8 model (compatibility mode),AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: CPU,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo8,detection,CPU,cpu,1,fp32,57.366,0.000,79.467,0.000,79.467,12.584,0.402,262.770,6.075,0.000,0.000,79.467,57.332,121.704,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Note: Using YOLO11 detector for YOLO8 model (compatibility mode),AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: CPU,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo8,detection,CPU,cpu,4,fp32,60.530,0.000,101.834,0.000,101.834,9.820,1.359,-70.531,5.438,0.000,0.000,101.835,94.322,121.925,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Note: Using YOLO11 detector for YOLO8 model (compatibility mode),AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: CPU,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo8,detection,CPU,cpu,8,fp32,65.989,0.000,103.105,0.000,103.105,9.699,0.000,-28.102,5.446,0.000,0.000,103.106,89.284,117.449,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Note: Using YOLO11 detector for YOLO8 model (compatibility mode),AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: GPU (RTX 4090 Optimized),AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo8,detection,GPU,gpu,1,fp32,419.480,0.000,12.180,0.000,12.180,82.104,0.000,200.551,1.726,5.480,731.000,12.180,10.935,21.002,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: CPU,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo11,detection,CPU,cpu,1,fp32,65.412,0.000,97.688,0.000,97.688,10.237,0.000,-29.695,5.676,0.000,0.000,97.688,90.056,108.119,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: CPU,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo11,detection,CPU,cpu,4,fp32,63.901,0.000,80.136,0.000,80.136,12.479,0.031,-27.445,5.657,0.000,0.000,80.136,58.980,107.401,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: CPU,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo11,detection,CPU,cpu,8,fp32,66.665,0.000,98.793,0.000,98.793,10.122,0.094,49.438,5.827,0.000,0.000,98.794,84.567,110.249,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: GPU (RTX 4090 Optimized),AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo11,detection,GPU,gpu,1,fp32,697.720,0.000,14.155,0.000,14.155,70.646,0.000,87.824,2.272,12.520,749.000,14.155,11.583,16.528,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: CPU,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo11,detection,CPU,cpu,1,fp32,63.461,0.000,76.172,0.000,76.172,13.128,0.000,87.410,5.306,0.000,0.000,76.173,57.157,111.741,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: CPU,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo11,detection,CPU,cpu,4,fp32,61.910,0.000,97.311,0.000,97.311,10.276,0.000,-35.289,5.349,0.000,0.000,97.312,86.967,113.058,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: CPU,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo11,detection,CPU,cpu,8,fp32,69.137,0.000,94.104,0.000,94.104,10.627,0.656,-49.656,5.519,0.000,0.000,94.104,84.960,112.202,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: GPU (RTX 4090 Optimized),AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo11,detection,GPU,gpu,1,fp32,406.017,0.000,12.387,0.000,12.387,80.730,0.000,263.184,1.706,5.850,749.000,12.387,11.001,22.359,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: CPU,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo11,detection,CPU,cpu,1,fp32,66.275,0.000,95.460,0.000,95.460,10.476,0.000,-48.348,5.733,0.000,0.000,95.461,80.768,115.122,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: CPU,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo11,detection,CPU,cpu,4,fp32,65.200,0.000,78.918,0.000,78.918,12.671,0.000,156.922,5.553,0.000,0.000,78.919,58.121,123.269,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: CPU,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo11,detection,CPU,cpu,8,fp32,70.426,0.000,94.931,0.000,94.931,10.534,0.391,-148.516,5.501,0.000,0.000,94.931,86.626,114.633,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Inference device: GPU (RTX 4090 Optimized),AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,Model loaded successfully with 1 input nodes and 1 output nodes.,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
+20250725_161429,yolo11,detection,GPU,gpu,1,fp32,407.239,0.000,15.681,0.000,15.681,63.773,0.000,239.395,1.732,5.865,749.000,15.681,11.167,48.291,0.000,0,AMD_EPYC_7543_32-Core_Processor,NVIDIA_GeForce_RTX_5090
