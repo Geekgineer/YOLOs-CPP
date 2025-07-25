@@ -1,53 +1,140 @@
-# YOLOs-CPP Enhanced Benchmark Implementation Summary
+# YOLOs-CPP Implementation Steps
 
-## 🎯 **What Was Implemented**
+## 🚀 Build and Setup
 
-### 1. **Enhanced System Monitoring**
-- ✅ **CPU Usage Tracking**: Real-time CPU utilization monitoring via `/proc/stat`
-- ✅ **GPU Usage Tracking**: NVIDIA GPU utilization and memory monitoring via `nvidia-smi`
-- ✅ **System Memory Monitoring**: Memory usage tracking via `/proc/meminfo`
-- ✅ **Latency Statistics**: Min/max/average latency measurements using `cv::TickMeter`
+### 1. Clone and Build
+```bash
+git clone https://github.com/Elbhnasy/YOLOs-CPP.git
+cd YOLOs-CPP
+./build.sh
+```
 
-### 2. **Advanced Performance Metrics**
-- ✅ **Enhanced CSV Output**: 20+ metrics per benchmark run
-- ✅ **Environment Detection**: Automatic CPU/GPU environment identification
-- ✅ **Resource Utilization**: CPU%, GPU%, memory usage tracking
-- ✅ **Precision Timing**: High-resolution timing with multiple measurement methods
+### 2. Verify Build
+```bash
+ls build/
+# Should show: yolo_performance_analyzer, yolo_benchmark_suite, image_inference, video_inference, camera_inference
+```
 
-### 3. **Cloud Integration**
-- ✅ **Automated Setup Script**: Complete environment setup for cloud deployment
-- ✅ **Environment Detection**: Auto-detects GPU availability and configures accordingly
-- ✅ **Model Management**: Automated model download and dependency installation
+## 📊 Benchmark Tools
 
-### 4. **Comprehensive Automation**
-- ✅ **Automated Benchmark Script**: `run_automated_benchmark.sh` for complete pipeline
-- ✅ **Multiple Test Configurations**: 50/100/200 iterations, 1/4/8 threads
-- ✅ **Result Management**: Timestamped results with automatic file organization
-- ✅ **Error Handling**: Robust error handling and timeout management
+### 3. YOLO Benchmark Suite (Multi-Backend Comparison)
+```bash
+# Basic benchmark with default settings
+./build/yolo_benchmark_suite models/yolo11n.onnx models/coco.names
 
-### 5. **Analysis and Visualization**
-- ✅ **Python Analysis Tool**: `analyze_results.py` with comprehensive charts
-- ✅ **Cost-Efficiency Analysis**: Performance per dollar calculations
-- ✅ **Comparison Charts**: FPS, latency, memory, resource usage visualization
-- ✅ **Automated Reports**: Markdown reports with key insights and recommendations
+# Custom input and runs
+./build/yolo_benchmark_suite models/yolo11n.onnx models/coco.names --input data/dog.jpg --runs 50
 
-## 📊 **Enhanced Metrics Collected**
+# Adjust parameters
+./build/yolo_benchmark_suite models/yolo11n.onnx models/coco.names --image-size 416 --runs 100 --warmup 10
+```
 
-| Metric | Description | Use Case |
-|--------|-------------|----------|
-| `load_ms` | Model loading time | Startup performance |
-| `inference_ms` | Average inference time | Core performance |
-| `fps` | Frames per second | Throughput measurement |
-| `latency_avg_ms` | Average latency | Real-time suitability |
-| `latency_min_ms` | Minimum latency | Best-case performance |
-| `latency_max_ms` | Maximum latency | Worst-case scenarios |
-| `cpu_usage_%` | CPU utilization | Resource monitoring |
-| `gpu_usage_%` | GPU utilization | GPU efficiency |
-| `gpu_memory_mb` | GPU memory usage | Memory optimization |
-| `system_memory_mb` | System memory usage | Overall resource impact |
-| `environment` | CPU/GPU environment | Configuration tracking |
+### 4. YOLO Performance Analyzer (Advanced Comprehensive)
+```bash
+# Single image benchmark
+./build/yolo_performance_analyzer image yolo11 detection models/yolo11n.onnx models/coco.names data/dog.jpg --cpu --iterations=100
 
-## 🏗️ **Key Files Created/Updated**
+# Video benchmark
+./build/yolo_performance_analyzer video yolo11 detection models/yolo11n.onnx models/coco.names data/dogs.mp4 --cpu
+
+# Camera benchmark (30 seconds)
+./build/yolo_performance_analyzer camera yolo11 detection models/yolo11n.onnx models/coco.names 0 --cpu --duration=30
+
+# Automated comprehensive testing (runs all configurations)
+./build/yolo_performance_analyzer comprehensive
+```
+
+## 🎯 Usage Examples
+
+### 5. Basic Inference
+```bash
+# Image inference
+./build/image_inference models/yolo11n.onnx models/coco.names data/dog.jpg
+
+# Video inference
+./build/video_inference models/yolo11n.onnx models/coco.names data/dogs.mp4
+
+# Camera inference
+./build/camera_inference models/yolo11n.onnx models/coco.names 0
+```
+
+### 6. Advanced Performance Analysis
+```bash
+# GPU benchmark (if CUDA available)
+./build/yolo_performance_analyzer image yolo11 detection models/yolo11n.onnx models/coco.names data/dog.jpg --gpu --iterations=200
+
+# Multi-threading test
+./build/yolo_performance_analyzer image yolo11 detection models/yolo11n.onnx models/coco.names data/dog.jpg --cpu --threads=4
+
+# Quantized model test
+./build/yolo_performance_analyzer image yolo11 detection models/yolo11n.onnx models/coco.names data/dog.jpg --cpu --quantized
+```
+
+## 📈 Results Analysis
+
+### 7. CSV Output Format
+Results are saved to `results/` directory with comprehensive metrics:
+- Model loading time, inference time, FPS
+- CPU/GPU usage, memory consumption
+- Latency statistics (min/max/avg)
+- System resource monitoring
+
+### 8. Available Models
+```bash
+# Check available models
+ls models/
+# Should show: yolo11n.onnx, yolov8n.onnx, coco.names, etc.
+```
+
+## 🔧 Build Targets
+
+### 9. Available Build Targets
+- `yolo_performance_analyzer` - Advanced comprehensive benchmarking
+- `yolo_benchmark_suite` - Multi-backend comparison tool
+- `image_inference` - Single image inference
+- `video_inference` - Video processing
+- `camera_inference` - Real-time camera processing
+
+### 10. Project Structure
+```
+YOLOs-CPP/
+├── benchmark/
+│   ├── yolo_performance_analyzer.cpp
+│   └── yolo_benchmark_suite.cpp
+├── src/
+│   ├── image_inference.cpp
+│   ├── video_inference.cpp
+│   └── camera_inference.cpp
+├── include/
+│   └── det/YOLO11.hpp
+├── models/
+│   ├── yolo11n.onnx
+│   └── coco.names
+├── data/
+│   ├── dog.jpg
+│   └── dogs.mp4
+└── results/
+    └── [benchmark results]
+```
+
+## ✅ Verification Steps
+
+### 11. Test Installation
+```bash
+# Test simple benchmark
+./build/yolo_benchmark_suite models/yolo11n.onnx models/coco.names --runs 3
+
+# Test comprehensive analyzer
+./build/yolo_performance_analyzer image yolo11 detection models/yolo11n.onnx models/coco.names data/dog.jpg --cpu --iterations=5
+
+# Check results directory
+ls results/
+```
+
+### 12. Expected Output
+- YOLO Benchmark Suite: Multi-backend comparison table
+- YOLO Performance Analyzer: CSV output with detailed metrics
+- Results saved to timestamped files in `results/` directory
 
 ### Core Benchmark Files
 - `benchmark/bench.cpp` - Enhanced with system monitoring and multi-model support

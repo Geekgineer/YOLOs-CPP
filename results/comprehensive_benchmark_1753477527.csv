@@ -1,0 +1,5 @@
+model_type,task_type,environment,device,threads,precision,load_ms,preprocess_ms,inference_ms,postprocess_ms,total_ms,fps,memory_mb,system_memory_mb,cpu_usage_%,gpu_usage_%,gpu_memory_mb,latency_avg_ms,latency_min_ms,latency_max_ms,map_score,frame_count
+yolo11,detection,CPU,cpu,1,fp32,116.317,0.000,92.295,0.000,92.295,10.835,0.262,4.820,-nan,0.000,47.000,92.296,78.492,121.889,0.000,50
+yolo11,detection,CPU,cpu,1,fp32,55.758,0.000,86.447,0.000,86.447,11.568,0.375,-6.445,-nan,0.000,47.000,86.449,69.382,105.724,0.000,100
+yolo8,detection,CPU,cpu,1,fp32,53.394,0.000,98.855,0.000,98.855,10.116,0.000,217.719,-nan,0.000,47.000,98.857,74.777,146.166,0.000,50
+yolo8,detection,CPU,cpu,1,fp32,42.852,0.000,89.006,0.000,89.006,11.235,0.000,-129.867,-nan,0.000,47.000,89.007,68.057,130.861,0.000,100
