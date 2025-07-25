@@ -173,8 +173,7 @@ Run benchmarks either automatically or manually:
 
 **Automated:**
 ```bash
-cd benchmark/
-./run_automated_benchmark.sh
+./benchmark/comprehensive_bench comprehensive
 ```
 
 **Check benchmark directory contents:**
