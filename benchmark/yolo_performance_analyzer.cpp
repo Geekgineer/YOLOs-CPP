@@ -36,7 +36,7 @@ struct BenchmarkConfig {
     std::string task_type;       // "detection", "segmentation", "obb", "pose"
     std::string model_path;
     std::string labels_path;
-    bool use_gpu = true;
+    bool use_gpu = false;  // Default to CPU
     int thread_count = 1;
     bool quantized = false;
     std::string precision = "fp32";
@@ -151,11 +151,29 @@ double getCurrentMemoryUsageMB() {
 class DetectorFactory {
 public:
     static std::unique_ptr<YOLO11Detector> createDetector(const BenchmarkConfig& config) {
+        // Auto-detect quantized models from file path
+        bool is_quantized = config.model_path.find("quantized") != std::string::npos;
+        
         if (config.model_type == "yolo11" && config.task_type == "detection") {
+            if (is_quantized) {
+                std::cout << "Note: Testing YOLO11 quantized model (75% smaller size)" << std::endl;
+            }
             return std::make_unique<YOLO11Detector>(config.model_path, config.labels_path, config.use_gpu);
         }
         else if (config.model_type == "yolo8" && config.task_type == "detection") {
-            std::cout << "Note: Using YOLO11 detector for YOLO8 model (compatibility mode)" << std::endl;
+            if (is_quantized) {
+                std::cout << "Note: Testing YOLO8 quantized model (75% smaller size)" << std::endl;
+            } else {
+                std::cout << "Note: Using YOLO11 detector for YOLO8 model (compatibility mode)" << std::endl;
+            }
+            return std::make_unique<YOLO11Detector>(config.model_path, config.labels_path, config.use_gpu);
+        }
+        else if (config.model_type == "yolo11_quantized" && config.task_type == "detection") {
+            std::cout << "Note: Testing YOLO11 quantized model (75% smaller size)" << std::endl;
+            return std::make_unique<YOLO11Detector>(config.model_path, config.labels_path, config.use_gpu);
+        }
+        else if (config.model_type == "yolo8_quantized" && config.task_type == "detection") {
+            std::cout << "Note: Testing YOLO8 quantized model (75% smaller size)" << std::endl;
             return std::make_unique<YOLO11Detector>(config.model_path, config.labels_path, config.use_gpu);
         }
         else {
@@ -561,13 +579,15 @@ int main(int argc, char** argv) {
             // Create results directory
             std::filesystem::create_directories("results");
             
-            // Test configurations focusing on available models
+            // Test configurations focusing on available models (original + quantized)
             std::vector<std::tuple<std::string, std::string, std::string>> test_configs = {
                 {"yolo11", "detection", "models/yolo11n.onnx"},
                 {"yolo8", "detection", "models/yolov8n.onnx"},
+                {"yolo11_quantized", "detection", "quantized_models/yolo11n_quantized.onnx"},
+                {"yolo8_quantized", "detection", "quantized_models/yolov8n_quantized.onnx"},
             };
             
-            std::vector<bool> gpu_configs = {false}; // CPU only
+            std::vector<bool> gpu_configs = {false, true}; // CPU and GPU
             std::vector<int> iteration_configs = {50, 100};
             
             // Create CSV results file

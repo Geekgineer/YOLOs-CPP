@@ -222,15 +222,12 @@ ls results/
 
 ## 🚀 **Cloud Setup Guide for Fresh Linux Systems**
 
-### **YOLOS-CPP GPU Benchmark Guide**
-
-This guide explains the complete setup process for deploying YOLOs-CPP on a fresh Linux system with NVIDIA GPU support (tested with RTX 4090, using CUDA 12.x, cuDNN, and ONNX Runtime GPU).
 
 #### **1. Prerequisites**
 
 Ensure your system meets the following requirements:
 - Ubuntu 22.04+
-- NVIDIA GPU with recent driver (e.g., RTX 4090)
+- NVIDIA GPU with recent driver (e.g., RTX)
 - CUDA Toolkit 12.x
 - cuDNN for CUDA 12.x
 - CMake 3.18+
