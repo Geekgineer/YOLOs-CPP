@@ -1,0 +1,45 @@
+# Ignore version control
+.git
+.gitignore
+
+# Ignore Python cache and artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore build artifacts
+build/
+*.o
+*.obj
+*.so
+*.dll
+*.exe
+*.out
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore data and output files
+*.gif
+*.png
+*.jpg
+*.jpeg
+*.mp4
+*.avi
+*.pt
+
+# Ignore other unnecessary files
+*.log
+onnxruntime*
+
+# Ignore any additional files you want to exclude
+*.tgz
+*.zip
+*.rar
+*.7z
+
+# Ignore any IDE-specific files 
+.idea/
+.vscode/
