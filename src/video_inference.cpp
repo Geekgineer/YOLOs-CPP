@@ -53,8 +53,8 @@
 //#define YOLO8 // Uncomment for YOLOv8
 //#define YOLO9 // Uncomment for YOLOv9
 //#define YOLO10 // Uncomment for YOLOv10
-//#define YOLO11 // Uncomment for YOLOv11
-#define YOLO12 // Uncomment for YOLOv12
+#define YOLO11 // Uncomment for YOLOv11
+// #define YOLO12 // Uncomment for YOLOv12
 
 #ifdef YOLO5
     #include "det/YOLO5.hpp"
@@ -120,8 +120,8 @@ int main()
 {
     // Paths to the model, labels, input video, and output video
     const std::string labelsPath = "../models/coco.names";
-    const std::string videoPath = "../data/SIG_experience_center.mp4"; // Input video path
-    const std::string outputPath = "../data/SIG_experience_center_processed.mp4"; // Output video path
+    const std::string videoPath = "../data/dogs.mp4"; // Input video path
+    const std::string outputPath = "../data/dogs_processed.mp4"; // Output video path
 
     // Model paths for different YOLO versions
     #ifdef YOLO5
