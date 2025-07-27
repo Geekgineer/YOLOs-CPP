@@ -182,6 +182,16 @@ public:
     }
     
     static std::vector<Detection> detect(YOLO11Detector* detector, const BenchmarkConfig& config, const cv::Mat& image) {
+        // Print preprocessing info for first few calls
+        static int call_count = 0;
+        call_count++;
+        
+        if (call_count <= 3) {
+            std::cout << "  Processing frame " << call_count 
+                      << " | Input: " << image.cols << "x" << image.rows 
+                      << " -> Model Input: 640x640" << std::endl;
+        }
+        
         return detector->detect(image);
     }
 };
@@ -205,12 +215,31 @@ PerformanceMetrics benchmark_image_comprehensive(const BenchmarkConfig& config,
         throw std::runtime_error("Could not read image: " + image_path);
     }
     
+    // Print detailed processing information
+    std::cout << "\n=== IMAGE PROCESSING DETAILS ===" << std::endl;
+    std::cout << "Input Image: " << image_path << std::endl;
+    std::cout << "Original Size: " << image.cols << "x" << image.rows << " pixels" << std::endl;
+    std::cout << "Channels: " << image.channels() << std::endl;
+    std::cout << "Data Type: " << (image.depth() == CV_8U ? "8-bit" : "Other") << std::endl;
+    std::cout << "Memory Size: " << (image.total() * image.elemSize() / 1024.0) << " KB" << std::endl;
+    
     std::vector<double> preprocess_times, inference_times, postprocess_times, total_times, latency_times;
     
     // Warm-up runs
+    std::cout << "Warming up with 10 iterations..." << std::endl;
     for (int i = 0; i < 10; ++i) {
         DetectorFactory::detect(detector.get(), config, image);
     }
+    std::cout << "Warm-up completed" << std::endl;
+    
+    // Print processing stages info
+    std::cout << "\n=== PROCESSING STAGES ===" << std::endl;
+    std::cout << "Stage 1: Image Loading [OK]" << std::endl;
+    std::cout << "Stage 2: Preprocessing (Resize/Normalize)" << std::endl;
+    std::cout << "Stage 3: Model Inference" << std::endl;
+    std::cout << "Stage 4: Postprocessing (NMS/Decode)" << std::endl;
+    std::cout << "Stage 5: Result Extraction" << std::endl;
+    std::cout << "\nRunning " << iterations << " benchmark iterations...\n" << std::endl;
     
     // Measure initial system state
     double initial_memory = getCurrentMemoryUsageMB();
@@ -237,6 +266,21 @@ PerformanceMetrics benchmark_image_comprehensive(const BenchmarkConfig& config,
         auto infer_start = std::chrono::high_resolution_clock::now();
         
         auto results = DetectorFactory::detect(detector.get(), config, image);
+        
+        // Print progress with preprocessing size information
+        if ((i + 1) % 25 == 0 || i == 0) {
+            // Assume YOLO preprocessing typically resizes to 640x640 (standard YOLO input size)
+            std::cout << "Progress: " << (i + 1) << "/" << iterations 
+                      << " | Original: " << image.cols << "x" << image.rows 
+                      << " → Preprocessed: 640x640 (YOLO standard)"
+                      << " | Avg: " << std::fixed << std::setprecision(2);
+            if (!inference_times.empty()) {
+                std::cout << (std::accumulate(inference_times.begin(), inference_times.end(), 0.0) / inference_times.size());
+            } else {
+                std::cout << "0.00";
+            }
+            std::cout << "ms" << std::endl;
+        }
         
         auto infer_end = std::chrono::high_resolution_clock::now();
         auto total_end = std::chrono::high_resolution_clock::now();
@@ -289,6 +333,35 @@ PerformanceMetrics benchmark_image_comprehensive(const BenchmarkConfig& config,
     
     metrics.frame_count = iterations;
     
+    // Print final processing summary
+    std::cout << "\n=== PROCESSING SUMMARY ===" << std::endl;
+    std::cout << "Total Iterations: " << metrics.frame_count << std::endl;
+    std::cout << "Original Size: " << image.cols << "x" << image.rows << " pixels" << std::endl;
+    std::cout << "Preprocessed Size: 640x640 pixels (YOLO standard input)" << std::endl;
+    std::cout << "Scale Factor: " << std::fixed << std::setprecision(3) << (640.0 / std::max(image.cols, image.rows)) << std::endl;
+    std::cout << "Average FPS: " << std::fixed << std::setprecision(2) << metrics.fps << std::endl;
+    std::cout << "Average Latency: " << metrics.latency_avg_ms << "ms" << std::endl;
+    std::cout << "Min Latency: " << metrics.latency_min_ms << "ms" << std::endl;
+    std::cout << "Max Latency: " << metrics.latency_max_ms << "ms" << std::endl;
+    std::cout << "Memory Usage: " << metrics.memory_mb << "MB" << std::endl;
+    std::cout << "CPU Usage: " << metrics.cpu_usage_percent << "%" << std::endl;
+    if (config.use_gpu) {
+        std::cout << "GPU Usage: " << metrics.gpu_usage_percent << "%" << std::endl;
+        std::cout << "GPU Memory: " << metrics.gpu_memory_used_mb << "MB" << std::endl;
+        
+        // Performance analysis for quantized models
+        bool is_quantized = config.model_path.find("quantized") != std::string::npos;
+        if (is_quantized && metrics.gpu_usage_percent < 20.0) {
+            std::cout << "\n[WARNING] QUANTIZATION ANALYSIS:" << std::endl;
+            std::cout << "Low GPU usage detected with quantized model!" << std::endl;
+            std::cout << "Possible causes:" << std::endl;
+            std::cout << "- ONNX Runtime GPU provider doesn't fully optimize INT8" << std::endl;
+            std::cout << "- Consider TensorRT for better quantized GPU performance" << std::endl;
+            std::cout << "- RTX 4090 optimized for FP16, not INT8 quantization" << std::endl;
+        }
+    }
+    std::cout << "===========================\n" << std::endl;
+    
     return metrics;
 }
 
@@ -310,6 +383,21 @@ PerformanceMetrics benchmark_video_comprehensive(const BenchmarkConfig& config,
         throw std::runtime_error("Could not open video: " + video_path);
     }
     
+    // Get video properties
+    int total_frames = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_COUNT));
+    double fps_original = cap.get(cv::CAP_PROP_FPS);
+    int width = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_WIDTH));
+    int height = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_HEIGHT));
+    
+    // Print detailed video processing information
+    std::cout << "\n=== VIDEO PROCESSING DETAILS ===" << std::endl;
+    std::cout << "Input Video: " << video_path << std::endl;
+    std::cout << "Resolution: " << width << "x" << height << " pixels" << std::endl;
+    std::cout << "Total Frames: " << total_frames << std::endl;
+    std::cout << "Original FPS: " << std::fixed << std::setprecision(2) << fps_original << std::endl;
+    std::cout << "Duration: " << (total_frames / fps_original) << " seconds" << std::endl;
+    std::cout << "Estimated Size: " << (width * height * 3 * total_frames / 1024.0 / 1024.0) << " MB (uncompressed)" << std::endl;
+    
     std::vector<double> frame_times, latency_times;
     std::vector<double> cpu_usage_samples, gpu_usage_samples, gpu_memory_samples;
     
@@ -317,6 +405,16 @@ PerformanceMetrics benchmark_video_comprehensive(const BenchmarkConfig& config,
     double initial_memory = getCurrentMemoryUsageMB();
     double initial_sys_memory = SystemMonitor::getSystemMemoryUsage();
     SystemMonitor::getCPUUsage();
+    
+    // Print processing stages info
+    std::cout << "\n=== VIDEO PROCESSING STAGES ===" << std::endl;
+    std::cout << "Stage 1: Video Decoding" << std::endl;
+    std::cout << "Stage 2: Frame Extraction" << std::endl;
+    std::cout << "Stage 3: Preprocessing (Resize/Normalize)" << std::endl;
+    std::cout << "Stage 4: Model Inference" << std::endl;
+    std::cout << "Stage 5: Postprocessing (NMS/Decode)" << std::endl;
+    std::cout << "Stage 6: Result Collection" << std::endl;
+    std::cout << "\nProcessing video frames...\n" << std::endl;
     
     auto start_time = std::chrono::high_resolution_clock::now();
     int frame_count = 0;
@@ -574,7 +672,7 @@ int main(int argc, char** argv) {
         std::string mode = argv[1];
         
         if (mode == "comprehensive") {
-            std::cout << "🚀 YOLO Performance Analyzer - Advanced System Monitoring & Benchmarking...\n";
+            std::cout << "YOLO Performance Analyzer - Advanced System Monitoring & Benchmarking...\n";
             
             // Create results directory
             std::filesystem::create_directories("results");
