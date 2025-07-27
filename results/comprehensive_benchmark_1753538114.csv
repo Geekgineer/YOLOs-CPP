@@ -1,9 +1,0 @@
-model_type,task_type,environment,device,threads,precision,load_ms,preprocess_ms,inference_ms,postprocess_ms,total_ms,fps,memory_mb,system_memory_mb,cpu_usage_%,gpu_usage_%,gpu_memory_mb,latency_avg_ms,latency_min_ms,latency_max_ms,map_score,frame_count
-yolo11,detection,CPU,cpu,1,fp32,78.015,0.000,104.087,0.000,104.087,9.607,0.809,109.961,-nan,0.000,48.000,104.089,73.874,182.822,0.000,50
-yolo11,detection,CPU,cpu,1,fp32,40.696,0.000,80.231,0.000,80.231,12.464,0.000,10.828,58.005,0.000,48.000,80.233,67.280,133.017,0.000,100
-yolo8,detection,CPU,cpu,1,fp32,48.951,0.000,81.804,0.000,81.804,12.224,0.000,128.289,-nan,0.000,48.000,81.806,55.608,118.498,0.000,50
-yolo8,detection,CPU,cpu,1,fp32,26.984,0.000,65.154,0.000,65.154,15.348,0.000,4.324,-nan,0.000,48.000,65.155,47.986,98.591,0.000,100
-yolo11_quantized,detection,CPU,cpu,1,fp32,109.337,0.000,79.788,0.000,79.788,12.533,0.000,-39.172,-nan,0.000,48.000,79.789,65.014,154.566,0.000,50
-yolo11_quantized,detection,CPU,cpu,1,fp32,73.460,0.000,74.456,0.000,74.456,13.431,0.000,-0.141,-nan,0.000,48.000,74.457,64.809,112.659,0.000,100
-yolo8_quantized,detection,CPU,cpu,1,fp32,75.013,0.000,116.562,0.000,116.562,8.579,0.000,86.328,-nan,0.000,48.000,116.564,76.560,186.753,0.000,50
-yolo8_quantized,detection,CPU,cpu,1,fp32,70.945,0.000,112.980,0.000,112.980,8.851,0.000,100.379,59.809,0.000,48.000,112.982,92.323,173.077,0.000,100
