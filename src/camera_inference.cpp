@@ -49,6 +49,7 @@
 
 
 #include <iostream>
+#include <string>
 #include <vector>
 #include <thread>
 #include <atomic>
@@ -61,8 +62,8 @@
 //#define YOLO8
 //#define YOLO9
 //#define YOLO10
-//#define YOLO11
-#define YOLO12
+#define YOLO11
+//#define YOLO12
 
 #ifdef YOLO5
     #include "det/YOLO5.hpp"
@@ -90,39 +91,44 @@
 // Include the bounded queue
 #include "tools/BoundedThreadSafeQueue.hpp"
 
-int main()
+int main(int argc, char* argv[])
 {
     // Configuration parameters
     const bool isGPU = true;
-    const std::string labelsPath = "../models/coco.names";
+    const std::string labelsPath = "models/coco.names";
+    
+    // Default video source
+    std::string videoSource = "/dev/video0"; // your usb cam device
+    
+    // If an argument is provided, use it as the video source
+    if (argc > 1) {
+        videoSource = argv[1];
+    } else {
+        std::cout << "Usage: " << argv[0] << " [video_source]\n";
+        std::cout << "No video source provided. Using default: " << videoSource << std::endl;
+    }
 
     #ifdef YOLO5
-        std::string modelPath = "../models/yolo5-n6.onnx";
+        const std::string modelPath = "models/yolo5-n6.onnx";
     #endif
     #ifdef YOLO7
-        const std::string modelPath = "../models/yolo7-tiny.onnx";
+        const std::string modelPath = "models/yolo7-tiny.onnx";
     #endif
     #ifdef YOLO8
-        std::string modelPath = "../models/yolo8n.onnx";
+        const std::string modelPath = "models/yolo8n.onnx";
     #endif
     #ifdef YOLO9
-        const std::string modelPath = "../models/yolov9s.onnx";
+        const std::string modelPath = "models/yolov9s.onnx";
     #endif
     #ifdef YOLO10
-        std::string modelPath = "../models/yolo10n_uint8.onnx";
+        const std::string modelPath = "models/yolo10n_uint8.onnx";
     #endif
     #ifdef YOLO11
-        const std::string modelPath = "../models/yolo11n.onnx";
+        const std::string modelPath = "models/yolo11n.onnx";
     #endif
     #ifdef YOLO12
-        const std::string modelPath = "../models/yolo12n.onnx";
+        const std::string modelPath = "models/yolo12n.onnx";
     #endif
-
-
-
-
-
-    const std::string videoSource = "/dev/video0"; // your usb cam device
 
     // Initialize YOLO detector
     #ifdef YOLO5
@@ -245,3 +251,4 @@ int main()
 
     return 0;
 }
+
