@@ -119,7 +119,7 @@ chmod +x build.sh
 
 # Verify build success
 ls -la build/
-# Should show: yolo_performance_analyzer, yolo_benchmark_suite, etc.
+# Should show: yolo_performance_analyzer, image_inference, video_inference, camera_inference
 ```
 
 ### 4. Prepare Test Data (Server Environment)

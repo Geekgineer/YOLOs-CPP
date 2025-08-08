@@ -1,6 +1,6 @@
 # YOLO Benchmarking Tools
 
-This directory contains professional benchmarking tools for YOLO models with advanced system monitoring and performance analysis.
+This directory contains a professional benchmarking tool for YOLO models with advanced system monitoring and performance analysis.
 
 ## Platform Support
 
@@ -15,10 +15,13 @@ For GPU benchmarking on Linux:
 - cuDNN library (optional, for optimized performance)
 - See `../BENCHMARK.md` for detailed installation instructions
 
-## Tools
+## Tool
 
-### 1. YOLO Performance Analyzer (`yolo_performance_analyzer`)
+### YOLO Performance Analyzer (`yolo_performance_analyzer`)
 **Professional comprehensive benchmarking tool with advanced system monitoring**
+
+**Description:**
+This tool consolidates all benchmarking functionality into a single, powerful application. It replaces the need for multiple tools by providing comprehensive performance analysis with various modes and backend support.
 
 **Features:**
 - Multiple modes: `image`, `video`, `camera`, `comprehensive`
@@ -27,6 +30,10 @@ For GPU benchmarking on Linux:
 - Automated comprehensive testing
 - Latency analysis (min/max/average)
 - Real-time resource monitoring
+- Multi-backend support (ONNX Runtime + OpenCV DNN)
+- Statistical analysis (mean, std deviation)
+- Flexible configuration options
+- Cross-platform support (Linux, macOS, Windows)
 
 **Usage:**
 ```bash
@@ -38,41 +45,22 @@ For GPU benchmarking on Linux:
 
 # Automated comprehensive testing (all combinations)
 ./build/yolo_performance_analyzer comprehensive
+
+# Quick benchmark with custom parameters
+./build/yolo_performance_analyzer image yolo11 detection models/yolo11n.onnx models/coco.names data/dog.jpg --gpu --iterations=50
 ```
 
-### 2. YOLO Benchmark Suite (`yolo_benchmark_suite`)
-**Professional multi-backend benchmarking tool for quick performance comparison**
 
-**Features:**
-- Multi-backend support (ONNX Runtime + OpenCV DNN)
-- Quick performance comparison
-- Clean tabular output
-- Statistical analysis (mean, std deviation)
-- Flexible configuration options
-
-**Usage:**
-```bash
-# Basic benchmark
-./build/yolo_benchmark_suite models/yolo11n.onnx models/coco.names
-
-# Custom configuration
-./build/yolo_benchmark_suite models/yolo11n.onnx models/coco.names --input data/dog.jpg --runs 50 --warmup 10
-```
-
-## Build Targets
+## Build Target
 
 ```bash
-# Build all tools
+# Build the benchmarking tool
 ./build.sh
 
-# Individual targets (after CMake configuration)
+# Individual target (after CMake configuration)
 make yolo_performance_analyzer
-make yolo_benchmark_suite
 ```
 
 ## Output
 
-- **Performance Analyzer**: Generates timestamped CSV files in `results/` directory
-- **Benchmark Suite**: Displays formatted results table in terminal
-
-Both tools support professional workflows and provide detailed performance insights for YOLO model optimization.
+**Performance Analyzer**: Generates timestamped CSV files in `results/` directory with comprehensive performance metrics and detailed analysis for YOLO model optimization.

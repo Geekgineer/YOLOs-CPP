@@ -22,7 +22,7 @@ case "$(uname -s)" in
         ONNXRUNTIME_ARCHIVE_EXTENSION="zip"
         ;;
     *)
-        echo "❌ Unsupported platform: $(uname -s)"
+        echo "Unsupported platform: $(uname -s)"
         echo "Supported platforms: Linux, macOS, Windows"
         exit 1
         ;;
@@ -37,7 +37,7 @@ case "$(uname -m)" in
         ONNXRUNTIME_ARCH="arm64"
         ;;
     *)
-        echo "❌ Unsupported architecture: $(uname -m)"
+        echo " Unsupported architecture: $(uname -m)"
         echo "Supported architectures: x86_64, aarch64"
         exit 1
         ;;
@@ -47,9 +47,9 @@ esac
 ONNXRUNTIME_GPU=0
 if [[ "$ONNXRUNTIME_PLATFORM" == "linux" ]] && command -v nvidia-smi >/dev/null 2>&1; then
     ONNXRUNTIME_GPU=1
-    echo "🔥 GPU support detected, using ONNX Runtime GPU"
+    echo "GPU support detected, using ONNX Runtime GPU"
 else
-    echo "💻 Using ONNX Runtime CPU"
+    echo "Using ONNX Runtime CPU"
 fi
 
 # Construct download URL and paths
@@ -76,18 +76,18 @@ fi
 
 # Download and extract ONNX Runtime only if not already present
 if [ ! -d "$ONNXRUNTIME_DIR" ]; then
-    echo "📥 Downloading ONNX Runtime from $ONNXRUNTIME_URL ..."
+    echo "Downloading ONNX Runtime from $ONNXRUNTIME_URL ..."
     
     if command -v curl >/dev/null 2>&1; then
         curl -L -o "${ONNXRUNTIME_FILE}" "$ONNXRUNTIME_URL"
     elif command -v wget >/dev/null 2>&1; then
         wget -O "${ONNXRUNTIME_FILE}" "$ONNXRUNTIME_URL"
     else
-        echo "❌ Neither curl nor wget found. Please install one of them."
+        echo "Neither curl nor wget found. Please install one of them."
         exit 1
     fi
     
-    echo "📦 Extracting ONNX Runtime ..."
+    echo "Extracting ONNX Runtime ..."
     if [[ "$ONNXRUNTIME_ARCHIVE_EXTENSION" == "tgz" ]]; then
         tar -xzf "${ONNXRUNTIME_FILE}" -C "$CURRENT_DIR"
     elif [[ "$ONNXRUNTIME_ARCHIVE_EXTENSION" == "zip" ]]; then
@@ -95,14 +95,14 @@ if [ ! -d "$ONNXRUNTIME_DIR" ]; then
     fi
     rm -f "${ONNXRUNTIME_FILE}"
 else
-    echo "✅ ONNX Runtime already exists. Skipping download."
+    echo "ONNX Runtime already exists. Skipping download."
 fi
 
 BUILD_DIR="${CURRENT_DIR}/build"
 mkdir -p "$BUILD_DIR"
 cd "$BUILD_DIR"
 
-echo "🔧 Configuring CMake with platform optimizations..."
+echo "Configuring CMake with platform optimizations..."
 
 # Platform-specific optimizations
 CMAKE_ARGS=()
@@ -134,11 +134,10 @@ echo "🔨 Building YOLOs-CPP..."
 echo "Using $(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4) CPU cores for parallel compilation..."
 cmake --build . --config Release -- -j$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)
 
-echo "✅ Build completed successfully!"
+echo "Build completed successfully!"
 echo ""
-echo "🎯 Available executables:"
+echo "Available executables:"
 echo "  • ./build/yolo_performance_analyzer - Advanced benchmarking tool"
-echo "  • ./build/yolo_benchmark_suite - Quick comparison tool"
 echo "  • ./build/image_inference - Single image inference"
 echo "  • ./build/video_inference - Video processing"
 echo "  • ./build/camera_inference - Real-time camera inference"
