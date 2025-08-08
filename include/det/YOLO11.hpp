@@ -631,10 +631,13 @@ private:
 
 YOLO11Detector::YOLO11Detector(const std::string &modelPath, const std::string &labelsPath, bool useGPU) {
     // Initialize ONNX Runtime environment with reduced logging for performance
+    // Note: These optimizations are designed for YOLO11 but can be extended to other YOLO models
+    // by applying similar thread configurations and memory optimizations in their respective headers
     env = Ort::Env(ORT_LOGGING_LEVEL_ERROR, "ONNX_DETECTION");
     sessionOptions = Ort::SessionOptions();
 
     // Optimized thread configuration for GPU inference
+    // TODO: Consider extracting these optimizations to a shared base class for all YOLO models
     if (useGPU) {
         sessionOptions.SetIntraOpNumThreads(1);  // Let CUDA handle parallelism
         sessionOptions.SetInterOpNumThreads(1);  // Reduce CPU-GPU synchronization

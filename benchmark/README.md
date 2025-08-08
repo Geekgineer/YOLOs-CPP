@@ -1,6 +1,19 @@
 # YOLO Benchmarking Tools
 
-This directory contains professional benchmarking tools for YOLO models.
+This directory contains professional benchmarking tools for YOLO models with advanced system monitoring and performance analysis.
+
+## Platform Support
+
+- **Linux**: Full support with GPU acceleration (CUDA + cuDNN)
+- **macOS**: CPU-only support (Apple Silicon and Intel)
+- **Windows**: Experimental support with CPU/GPU
+
+## Prerequisites
+
+For GPU benchmarking on Linux:
+- NVIDIA GPU with CUDA Toolkit 12.x
+- cuDNN library (optional, for optimized performance)
+- See `../BENCHMARK.md` for detailed installation instructions
 
 ## Tools
 
