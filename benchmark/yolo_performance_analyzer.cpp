@@ -1,797 +1,633 @@
-/*
- * YOLO Performance Analyzer
- * Professional comprehensive benchmarking tool with advanced system monitoring
- * Supports image, video, camera, and automated comprehensive testing modes
- */
-
-#include <iostream>
-#include <vector>
-#include <string>
-#include <numeric>
 #include <algorithm>
-#include <memory>
 #include <chrono>
-#include <thread>
-#include <fstream>
-#include <map>
-#include <sys/resource.h>
-#include <iomanip>
 #include <filesystem>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <map>
+#include <memory>
+#include <numeric>
+#include <sstream>
+#include <string>
+#include <thread>
+#include <vector>
+#include <cstdio>
 #include <ctime>
 
 #include <opencv2/opencv.hpp>
 
-// Use existing project headers
+// Project headers
 #include "det/YOLO11.hpp"
 #include "tools/ScopedTimer.hpp"
 
-// System monitoring includes
-#include <sys/stat.h>
-#include <sstream>
-#include <unistd.h>
+// ---------- Logging control ----------
+#ifdef DEBUG
+  #define DBG_STDOUT 1
+#else
+  #define DBG_STDOUT 0
+#endif
 
-// Benchmark configuration structure
+#if DBG_STDOUT
+  #define DEBUG_LOG(x) do { std::cout << x; } while(0)
+#else
+  #define DEBUG_LOG(x) do {} while(0)
+#endif
+
+#ifdef _WIN32
+  #define NOMINMAX
+  #include <windows.h>
+  #include <psapi.h>
+  #pragma comment(lib, "psapi.lib")
+#else
+  #include <sys/resource.h>
+  #include <sys/stat.h>
+  #include <unistd.h>
+#endif
+
 struct BenchmarkConfig {
-    std::string model_type;      // "yolo5", "yolo8", "yolo11", etc.
-    std::string task_type;       // "detection", "segmentation", "obb", "pose"
-    std::string model_path;
-    std::string labels_path;
-    bool use_gpu = false;  // Default to CPU
-    int thread_count = 1;
-    bool quantized = false;
-    std::string precision = "fp32";
+  std::string model_type;
+  std::string task_type;
+  std::string model_path;
+  std::string labels_path;
+  bool use_gpu = false;
+  int thread_count = 1;
+  bool quantized = false;
+  std::string precision = "fp32";
 };
 
-// Performance metrics structure with enhanced system monitoring
 struct PerformanceMetrics {
-    double load_time_ms = 0.0;
-    double preprocess_avg_ms = 0.0;
-    double inference_avg_ms = 0.0;
-    double postprocess_avg_ms = 0.0;
-    double total_avg_ms = 0.0;
-    double fps = 0.0;
-    double memory_mb = 0.0;
-    double map_score = 0.0;
-    int frame_count = 0;
-    
-    // Enhanced system monitoring
-    double cpu_usage_percent = 0.0;
-    double gpu_usage_percent = 0.0;
-    double gpu_memory_used_mb = 0.0;
-    double gpu_memory_total_mb = 0.0;
-    double system_memory_used_mb = 0.0;
-    double latency_avg_ms = 0.0;
-    double latency_min_ms = 0.0;
-    double latency_max_ms = 0.0;
-    std::string environment_type = "CPU";
+  double load_time_ms = 0.0;
+  double preprocess_avg_ms = 0.0;
+  double inference_avg_ms = 0.0;
+  double postprocess_avg_ms = 0.0;
+  double total_avg_ms = 0.0;
+  double fps = 0.0;
+  double memory_mb = 0.0;
+  double map_score = 0.0;
+  int frame_count = 0;
+
+  // Extra monitoring
+  double cpu_usage_percent = 0.0;
+  double gpu_usage_percent = 0.0;
+  double gpu_memory_used_mb = 0.0;
+  double gpu_memory_total_mb = 0.0;
+  double system_memory_used_mb = 0.0;
+  double latency_avg_ms = 0.0;
+  double latency_min_ms = 0.0;
+  double latency_max_ms = 0.0;
+  std::string environment_type = "CPU";
 };
 
-// System monitoring utilities
+// ----------------- Monitoring -----------------
 struct SystemMonitor {
-    static double getCPUUsage() {
-        static unsigned long long lastTotalUser = 0, lastTotalUserLow = 0, lastTotalSys = 0, lastTotalIdle = 0;
-        
-        std::ifstream file("/proc/stat");
-        std::string line;
-        std::getline(file, line);
-        
-        unsigned long long totalUser, totalUserLow, totalSys, totalIdle, total;
-        std::sscanf(line.c_str(), "cpu %llu %llu %llu %llu", &totalUser, &totalUserLow, &totalSys, &totalIdle);
-        
-        if (lastTotalUser == 0) {
-            lastTotalUser = totalUser;
-            lastTotalUserLow = totalUserLow;
-            lastTotalSys = totalSys;
-            lastTotalIdle = totalIdle;
-            return 0.0;
-        }
-        
-        total = (totalUser - lastTotalUser) + (totalUserLow - lastTotalUserLow) + (totalSys - lastTotalSys);
-        double percent = total;
-        total += (totalIdle - lastTotalIdle);
-        percent /= total;
-        percent *= 100;
-        
-        lastTotalUser = totalUser;
-        lastTotalUserLow = totalUserLow;
-        lastTotalSys = totalSys;
-        lastTotalIdle = totalIdle;
-        
-        return percent;
+  static double getCPUUsage() {
+#ifdef _WIN32
+    return 0.0;
+#else
+    static unsigned long long lastUser = 0, lastUserLow = 0, lastSys = 0, lastIdle = 0;
+    std::ifstream file("/proc/stat");
+    std::string line; if (!std::getline(file, line)) return 0.0;
+    unsigned long long user, userLow, sys, idle;
+    if (std::sscanf(line.c_str(), "cpu %llu %llu %llu %llu", &user, &userLow, &sys, &idle) != 4) return 0.0;
+    if (lastUser == 0) { lastUser = user; lastUserLow = userLow; lastSys = sys; lastIdle = idle; return 0.0; }
+    auto total = (user - lastUser) + (userLow - lastUserLow) + (sys - lastSys);
+    double percent = static_cast<double>(total);
+    total += (idle - lastIdle);
+    if (total == 0) return 0.0;
+    percent = (percent / total) * 100.0;
+    lastUser = user; lastUserLow = userLow; lastSys = sys; lastIdle = idle;
+    return percent;
+#endif
+  }
+
+  static std::pair<double, double> getGPUUsage() {
+#ifdef _WIN32
+    return {0.0, 0.0};
+#else
+    FILE* pipe = popen("nvidia-smi --query-gpu=utilization.gpu,memory.used --format=csv,noheader,nounits 2>/dev/null", "r");
+    if (!pipe) return {0.0, 0.0};
+    char buffer[256]; std::string result;
+    while (fgets(buffer, sizeof buffer, pipe) != nullptr) result += buffer;
+    pclose(pipe);
+    if (result.empty()) return {0.0, 0.0};
+    double gpu_util = 0.0, gpu_mem = 0.0;
+    if (std::sscanf(result.c_str(), "%lf, %lf", &gpu_util, &gpu_mem) != 2) return {0.0, 0.0};
+    return {gpu_util, gpu_mem};
+#endif
+  }
+
+  static double getSystemMemoryUsage() {
+#ifdef _WIN32
+    MEMORYSTATUSEX statex{}; statex.dwLength = sizeof(statex);
+    if (!GlobalMemoryStatusEx(&statex)) return 0.0;
+    DWORDLONG total = statex.ullTotalPhys, avail = statex.ullAvailPhys;
+    if (total < avail) return 0.0;
+    return static_cast<double>(total - avail) / (1024.0 * 1024.0);
+#else
+    std::ifstream file("/proc/meminfo"); std::string line;
+    unsigned long memTotal = 0, memFree = 0, buffers = 0, cached = 0;
+    while (std::getline(file, line)) {
+      if (line.rfind("MemTotal:", 0) == 0) std::sscanf(line.c_str(), "MemTotal: %lu kB", &memTotal);
+      else if (line.rfind("MemFree:", 0) == 0) std::sscanf(line.c_str(), "MemFree: %lu kB", &memFree);
+      else if (line.rfind("Buffers:", 0) == 0) std::sscanf(line.c_str(), "Buffers: %lu kB", &buffers);
+      else if (line.rfind("Cached:", 0) == 0) std::sscanf(line.c_str(), "Cached: %lu kB", &cached);
     }
-    
-    static std::pair<double, double> getGPUUsage() {
-        FILE* pipe = popen("nvidia-smi --query-gpu=utilization.gpu,memory.used --format=csv,noheader,nounits 2>/dev/null", "r");
-        if (!pipe) return {0.0, 0.0};
-        
-        char buffer[128];
-        std::string result = "";
-        while (fgets(buffer, sizeof buffer, pipe) != nullptr) {
-            result += buffer;
-        }
-        pclose(pipe);
-        
-        if (result.empty()) return {0.0, 0.0};
-        
-        double gpu_util = 0.0, gpu_mem = 0.0;
-        std::sscanf(result.c_str(), "%lf, %lf", &gpu_util, &gpu_mem);
-        return {gpu_util, gpu_mem};
-    }
-    
-    static double getSystemMemoryUsage() {
-        std::ifstream file("/proc/meminfo");
-        std::string line;
-        unsigned long memTotal = 0, memFree = 0, buffers = 0, cached = 0;
-        
-        while (std::getline(file, line)) {
-            if (line.find("MemTotal:") == 0) {
-                std::sscanf(line.c_str(), "MemTotal: %lu kB", &memTotal);
-            } else if (line.find("MemFree:") == 0) {
-                std::sscanf(line.c_str(), "MemFree: %lu kB", &memFree);
-            } else if (line.find("Buffers:") == 0) {
-                std::sscanf(line.c_str(), "Buffers: %lu kB", &buffers);
-            } else if (line.find("Cached:") == 0) {
-                std::sscanf(line.c_str(), "Cached: %lu kB", &cached);
-            }
-        }
-        
-        double usedMB = (memTotal - memFree - buffers - cached) / 1024.0;
-        return usedMB;
-    }
+    return static_cast<double>(memTotal - memFree - buffers - cached) / 1024.0;
+#endif
+  }
 };
 
-// Memory measurement utility
 double getCurrentMemoryUsageMB() {
-    struct rusage usage;
-    getrusage(RUSAGE_SELF, &usage);
-    return usage.ru_maxrss / 1024.0;
+#ifdef _WIN32
+  PROCESS_MEMORY_COUNTERS_EX pmc{};
+  if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc))) {
+    return static_cast<double>(pmc.WorkingSetSize) / (1024.0 * 1024.0);
+  }
+  return 0.0;
+#else
+  struct rusage usage{};
+  if (getrusage(RUSAGE_SELF, &usage) == 0) {
+#if defined(__APPLE__)
+    return static_cast<double>(usage.ru_maxrss) / (1024.0 * 1024.0);
+#else
+    return static_cast<double>(usage.ru_maxrss) / 1024.0;
+#endif
+  }
+  return 0.0;
+#endif
 }
 
-// Detector factory
+// ----------------- Detector wrapper -----------------
 class DetectorFactory {
 public:
-    static std::unique_ptr<YOLO11Detector> createDetector(const BenchmarkConfig& config) {
-        // Auto-detect quantized models from file path
-        bool is_quantized = config.model_path.find("quantized") != std::string::npos;
-        
-        if (config.model_type == "yolo11" && config.task_type == "detection") {
-            if (is_quantized) {
-                std::cout << "Note: Testing YOLO11 quantized model (75% smaller size)" << std::endl;
-            }
-            return std::make_unique<YOLO11Detector>(config.model_path, config.labels_path, config.use_gpu);
-        }
-        else if (config.model_type == "yolo8" && config.task_type == "detection") {
-            if (is_quantized) {
-                std::cout << "Note: Testing YOLO8 quantized model (75% smaller size)" << std::endl;
-            } else {
-                std::cout << "Note: Using YOLO11 detector for YOLO8 model (compatibility mode)" << std::endl;
-            }
-            return std::make_unique<YOLO11Detector>(config.model_path, config.labels_path, config.use_gpu);
-        }
-        else if (config.model_type == "yolo11_quantized" && config.task_type == "detection") {
-            std::cout << "Note: Testing YOLO11 quantized model (75% smaller size)" << std::endl;
-            return std::make_unique<YOLO11Detector>(config.model_path, config.labels_path, config.use_gpu);
-        }
-        else if (config.model_type == "yolo8_quantized" && config.task_type == "detection") {
-            std::cout << "Note: Testing YOLO8 quantized model (75% smaller size)" << std::endl;
-            return std::make_unique<YOLO11Detector>(config.model_path, config.labels_path, config.use_gpu);
-        }
-        else {
-            throw std::runtime_error("Unsupported model type: " + config.model_type + " with task: " + config.task_type);
-        }
+  static std::unique_ptr<YOLO11Detector> createDetector(const BenchmarkConfig& config) {
+    bool is_quantized = config.model_path.find("quantized") != std::string::npos;
+
+    if (config.model_type == "yolo11" && config.task_type == "detection") {
+      if (is_quantized) DEBUG_LOG("Note: Testing YOLO11 quantized model (smaller size)\n");
+      return std::make_unique<YOLO11Detector>(config.model_path, config.labels_path, config.use_gpu);
+    } else if (config.model_type == "yolo8" && config.task_type == "detection") {
+      if (is_quantized) DEBUG_LOG("Note: Testing YOLO8 quantized model (smaller size)\n");
+      else DEBUG_LOG("Note: Using YOLO11 detector for YOLO8 model (compat mode)\n");
+      return std::make_unique<YOLO11Detector>(config.model_path, config.labels_path, config.use_gpu);
+    } else if (config.model_type == "yolo11_quantized" && config.task_type == "detection") {
+      DEBUG_LOG("Note: Testing YOLO11 quantized model (smaller size)\n");
+      return std::make_unique<YOLO11Detector>(config.model_path, config.labels_path, config.use_gpu);
+    } else if (config.model_type == "yolo8_quantized" && config.task_type == "detection") {
+      DEBUG_LOG("Note: Testing YOLO8 quantized model (smaller size)\n");
+      return std::make_unique<YOLO11Detector>(config.model_path, config.labels_path, config.use_gpu);
     }
-    
-    static std::vector<Detection> detect(YOLO11Detector* detector, const BenchmarkConfig& config, const cv::Mat& image) {
-        // Print preprocessing info for first few calls
-        static int call_count = 0;
-        call_count++;
-        
-        if (call_count <= 3) {
-            std::cout << "  Processing frame " << call_count 
-                      << " | Input: " << image.cols << "x" << image.rows 
-                      << " -> Model Input: 640x640" << std::endl;
-        }
-        
-        return detector->detect(image);
+
+    throw std::runtime_error("Unsupported model type: " + config.model_type + " with task: " + config.task_type);
+  }
+
+  static std::vector<Detection> detect(YOLO11Detector* detector, const BenchmarkConfig&, const cv::Mat& image) {
+    static int call_count = 0; call_count++;
+    if (call_count <= 3) {
+      DEBUG_LOG("  Processing frame " << call_count << " | Input: " << image.cols << "x" << image.rows
+                 << " -> Model Input: 640x640\n");
     }
+    return detector->detect(image);
+  }
 };
 
-// Enhanced image benchmark
+// ----------------- Bench: Image -----------------
 PerformanceMetrics benchmark_image_comprehensive(const BenchmarkConfig& config,
-                                               const std::string& image_path,
-                                               int iterations = 100) {
-    PerformanceMetrics metrics;
-    metrics.environment_type = config.use_gpu ? "GPU" : "CPU";
-    
-    // Measure model loading time
-    auto load_start = std::chrono::high_resolution_clock::now();
-    auto detector = DetectorFactory::createDetector(config);
-    auto load_end = std::chrono::high_resolution_clock::now();
-    metrics.load_time_ms = std::chrono::duration<double, std::milli>(load_end - load_start).count();
-    
-    // Load test image
-    cv::Mat image = cv::imread(image_path);
-    if (image.empty()) {
-        throw std::runtime_error("Could not read image: " + image_path);
-    }
-    
-    // Print detailed processing information
-    std::cout << "\n=== IMAGE PROCESSING DETAILS ===" << std::endl;
-    std::cout << "Input Image: " << image_path << std::endl;
-    std::cout << "Original Size: " << image.cols << "x" << image.rows << " pixels" << std::endl;
-    std::cout << "Channels: " << image.channels() << std::endl;
-    std::cout << "Data Type: " << (image.depth() == CV_8U ? "8-bit" : "Other") << std::endl;
-    std::cout << "Memory Size: " << (image.total() * image.elemSize() / 1024.0) << " KB" << std::endl;
-    
-    std::vector<double> preprocess_times, inference_times, postprocess_times, total_times, latency_times;
-    
-    // Warm-up runs
-    std::cout << "Warming up with 10 iterations..." << std::endl;
-    for (int i = 0; i < 10; ++i) {
-        DetectorFactory::detect(detector.get(), config, image);
-    }
-    std::cout << "Warm-up completed" << std::endl;
-    
-    // Print processing stages info
-    std::cout << "\n=== PROCESSING STAGES ===" << std::endl;
-    std::cout << "Stage 1: Image Loading [OK]" << std::endl;
-    std::cout << "Stage 2: Preprocessing (Resize/Normalize)" << std::endl;
-    std::cout << "Stage 3: Model Inference" << std::endl;
-    std::cout << "Stage 4: Postprocessing (NMS/Decode)" << std::endl;
-    std::cout << "Stage 5: Result Extraction" << std::endl;
-    std::cout << "\nRunning " << iterations << " benchmark iterations...\n" << std::endl;
-    
-    // Measure initial system state
-    double initial_memory = getCurrentMemoryUsageMB();
-    double initial_sys_memory = SystemMonitor::getSystemMemoryUsage();
-    SystemMonitor::getCPUUsage(); // Initialize CPU monitoring
-    
-    // Enhanced benchmark runs
-    std::vector<double> cpu_usage_samples, gpu_usage_samples, gpu_memory_samples;
-    
-    for (int i = 0; i < iterations; ++i) {
-        // Monitor system resources
-        double cpu_usage = SystemMonitor::getCPUUsage();
-        auto gpu_stats = SystemMonitor::getGPUUsage();
-        
-        cpu_usage_samples.push_back(cpu_usage);
-        gpu_usage_samples.push_back(gpu_stats.first);
-        gpu_memory_samples.push_back(gpu_stats.second);
-        
-        // Time the detection
-        cv::TickMeter tm;
-        tm.start();
-        
-        auto total_start = std::chrono::high_resolution_clock::now();
-        auto infer_start = std::chrono::high_resolution_clock::now();
-        
-        auto results = DetectorFactory::detect(detector.get(), config, image);
-        
-        // Print progress with preprocessing size information
-        if ((i + 1) % 25 == 0 || i == 0) {
-            // Assume YOLO preprocessing typically resizes to 640x640 (standard YOLO input size)
-            std::cout << "Progress: " << (i + 1) << "/" << iterations 
-                      << " | Original: " << image.cols << "x" << image.rows 
-                      << " → Preprocessed: 640x640 (YOLO standard)"
-                      << " | Avg: " << std::fixed << std::setprecision(2);
-            if (!inference_times.empty()) {
-                std::cout << (std::accumulate(inference_times.begin(), inference_times.end(), 0.0) / inference_times.size());
-            } else {
-                std::cout << "0.00";
-            }
-            std::cout << "ms" << std::endl;
-        }
-        
-        auto infer_end = std::chrono::high_resolution_clock::now();
-        auto total_end = std::chrono::high_resolution_clock::now();
-        
-        tm.stop();
-        
-        double infer_time = std::chrono::duration<double, std::milli>(infer_end - infer_start).count();
-        double total_time = std::chrono::duration<double, std::milli>(total_end - total_start).count();
-        double latency = tm.getTimeMilli();
-        
-        preprocess_times.push_back(0.0);
-        inference_times.push_back(infer_time);
-        postprocess_times.push_back(0.0);
-        total_times.push_back(total_time);
-        latency_times.push_back(latency);
-    }
-    
-    // Calculate final memory usage
-    double final_memory = getCurrentMemoryUsageMB();
-    double final_sys_memory = SystemMonitor::getSystemMemoryUsage();
-    metrics.memory_mb = final_memory - initial_memory;
-    metrics.system_memory_used_mb = final_sys_memory - initial_sys_memory;
-    
-    // Calculate statistics
-    auto calc_avg = [](const std::vector<double>& values) {
-        return std::accumulate(values.begin(), values.end(), 0.0) / values.size();
-    };
-    
-    auto calc_min_max = [](const std::vector<double>& values) {
-        auto minmax = std::minmax_element(values.begin(), values.end());
-        return std::make_pair(*minmax.first, *minmax.second);
-    };
-    
-    metrics.preprocess_avg_ms = calc_avg(preprocess_times);
-    metrics.inference_avg_ms = calc_avg(inference_times);
-    metrics.postprocess_avg_ms = calc_avg(postprocess_times);
-    metrics.total_avg_ms = calc_avg(total_times);
-    metrics.fps = 1000.0 / metrics.total_avg_ms;
-    
-    // Enhanced latency statistics
-    metrics.latency_avg_ms = calc_avg(latency_times);
-    auto latency_minmax = calc_min_max(latency_times);
-    metrics.latency_min_ms = latency_minmax.first;
-    metrics.latency_max_ms = latency_minmax.second;
-    
-    // System resource statistics
-    metrics.cpu_usage_percent = calc_avg(cpu_usage_samples);
-    metrics.gpu_usage_percent = calc_avg(gpu_usage_samples);
-    metrics.gpu_memory_used_mb = calc_avg(gpu_memory_samples);
-    
-    metrics.frame_count = iterations;
-    
-    // Print final processing summary
-    std::cout << "\n=== PROCESSING SUMMARY ===" << std::endl;
-    std::cout << "Total Iterations: " << metrics.frame_count << std::endl;
-    std::cout << "Original Size: " << image.cols << "x" << image.rows << " pixels" << std::endl;
-    std::cout << "Preprocessed Size: 640x640 pixels (YOLO standard input)" << std::endl;
-    std::cout << "Scale Factor: " << std::fixed << std::setprecision(3) << (640.0 / std::max(image.cols, image.rows)) << std::endl;
-    std::cout << "Average FPS: " << std::fixed << std::setprecision(2) << metrics.fps << std::endl;
-    std::cout << "Average Latency: " << metrics.latency_avg_ms << "ms" << std::endl;
-    std::cout << "Min Latency: " << metrics.latency_min_ms << "ms" << std::endl;
-    std::cout << "Max Latency: " << metrics.latency_max_ms << "ms" << std::endl;
-    std::cout << "Memory Usage: " << metrics.memory_mb << "MB" << std::endl;
-    std::cout << "CPU Usage: " << metrics.cpu_usage_percent << "%" << std::endl;
-    if (config.use_gpu) {
-        std::cout << "GPU Usage: " << metrics.gpu_usage_percent << "%" << std::endl;
-        std::cout << "GPU Memory: " << metrics.gpu_memory_used_mb << "MB" << std::endl;
-        
-        // Performance analysis for quantized models
-        bool is_quantized = config.model_path.find("quantized") != std::string::npos;
-        if (is_quantized && metrics.gpu_usage_percent < 20.0) {
-            std::cout << "\n[WARNING] QUANTIZATION ANALYSIS:" << std::endl;
-            std::cout << "Low GPU usage detected with quantized model!" << std::endl;
-            std::cout << "Possible causes:" << std::endl;
-            std::cout << "- ONNX Runtime GPU provider doesn't fully optimize INT8" << std::endl;
-            std::cout << "- Consider TensorRT for better quantized GPU performance" << std::endl;
-            std::cout << "- RTX 4090 optimized for FP16, not INT8 quantization" << std::endl;
-        }
-    }
-    std::cout << "===========================\n" << std::endl;
-    
-    return metrics;
+                                                 const std::string& image_path,
+                                                 int iterations = 100) {
+  PerformanceMetrics metrics;
+  metrics.environment_type = config.use_gpu ? "GPU" : "CPU";
+
+  auto load_start = std::chrono::high_resolution_clock::now();
+  auto detector   = DetectorFactory::createDetector(config);
+  auto load_end   = std::chrono::high_resolution_clock::now();
+  metrics.load_time_ms = std::chrono::duration<double, std::milli>(load_end - load_start).count();
+
+  cv::Mat image = cv::imread(image_path);
+  if (image.empty()) throw std::runtime_error("Could not read image: " + image_path);
+
+  std::vector<double> preprocess_times, inference_times, postprocess_times, total_times, latency_times;
+
+  for (int i = 0; i < 10; ++i) DetectorFactory::detect(detector.get(), config, image); // warmup
+
+  double initial_memory = getCurrentMemoryUsageMB();
+  double initial_sys_memory = SystemMonitor::getSystemMemoryUsage();
+  SystemMonitor::getCPUUsage();
+
+  std::vector<double> cpu_samples, gpu_samples, gpu_mem_samples;
+
+  for (int i = 0; i < iterations; ++i) {
+    double cpu = SystemMonitor::getCPUUsage();
+    auto gpu   = SystemMonitor::getGPUUsage();
+    cpu_samples.push_back(cpu);
+    gpu_samples.push_back(gpu.first);
+    gpu_mem_samples.push_back(gpu.second);
+
+    cv::TickMeter tm; tm.start();
+    auto total_start = std::chrono::high_resolution_clock::now();
+    auto infer_start = std::chrono::high_resolution_clock::now();
+    auto results     = DetectorFactory::detect(detector.get(), config, image); (void)results;
+    auto infer_end   = std::chrono::high_resolution_clock::now();
+    auto total_end   = std::chrono::high_resolution_clock::now();
+    tm.stop();
+
+    double infer_ms  = std::chrono::duration<double, std::milli>(infer_end - infer_start).count();
+    double total_ms  = std::chrono::duration<double, std::milli>(total_end - total_start).count();
+    double latency   = tm.getTimeMilli();
+
+    preprocess_times.push_back(0.0);
+    inference_times.push_back(infer_ms);
+    postprocess_times.push_back(0.0);
+    total_times.push_back(total_ms);
+    latency_times.push_back(latency);
+  }
+
+  double final_memory = getCurrentMemoryUsageMB();
+  double final_sys_memory = SystemMonitor::getSystemMemoryUsage();
+  metrics.memory_mb = final_memory - initial_memory;
+  metrics.system_memory_used_mb = final_sys_memory - initial_sys_memory;
+
+  auto avg    = [](const std::vector<double>& v){ return v.empty()? 0.0 : std::accumulate(v.begin(), v.end(), 0.0)/v.size(); };
+  auto minmax = [](const std::vector<double>& v){ if (v.empty()) return std::make_pair(0.0,0.0); auto mm = std::minmax_element(v.begin(), v.end()); return std::make_pair(*mm.first, *mm.second); };
+
+  metrics.preprocess_avg_ms = avg(preprocess_times);
+  metrics.inference_avg_ms  = avg(inference_times);
+  metrics.postprocess_avg_ms= avg(postprocess_times);
+  metrics.total_avg_ms      = avg(total_times);
+  metrics.fps               = (metrics.total_avg_ms > 0.0) ? (1000.0 / metrics.total_avg_ms) : 0.0;
+
+  metrics.latency_avg_ms = avg(latency_times);
+  auto lat = minmax(latency_times);
+  metrics.latency_min_ms = lat.first;
+  metrics.latency_max_ms = lat.second;
+
+  metrics.cpu_usage_percent = avg(cpu_samples);
+  metrics.gpu_usage_percent = avg(gpu_samples);
+  metrics.gpu_memory_used_mb= avg(gpu_mem_samples);
+
+  metrics.frame_count = iterations;
+  return metrics;
 }
 
-// Enhanced video benchmark
+// ----------------- Bench: Video file -----------------
 PerformanceMetrics benchmark_video_comprehensive(const BenchmarkConfig& config,
-                                               const std::string& video_path) {
-    PerformanceMetrics metrics;
-    metrics.environment_type = config.use_gpu ? "GPU" : "CPU";
-    
-    // Measure model loading time
-    auto load_start = std::chrono::high_resolution_clock::now();
-    auto detector = DetectorFactory::createDetector(config);
-    auto load_end = std::chrono::high_resolution_clock::now();
-    metrics.load_time_ms = std::chrono::duration<double, std::milli>(load_end - load_start).count();
-    
-    // Open video
-    cv::VideoCapture cap(video_path);
-    if (!cap.isOpened()) {
-        throw std::runtime_error("Could not open video: " + video_path);
-    }
-    
-    // Get video properties
-    int total_frames = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_COUNT));
-    double fps_original = cap.get(cv::CAP_PROP_FPS);
-    int width = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_WIDTH));
-    int height = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_HEIGHT));
-    
-    // Print detailed video processing information
-    std::cout << "\n=== VIDEO PROCESSING DETAILS ===" << std::endl;
-    std::cout << "Input Video: " << video_path << std::endl;
-    std::cout << "Resolution: " << width << "x" << height << " pixels" << std::endl;
-    std::cout << "Total Frames: " << total_frames << std::endl;
-    std::cout << "Original FPS: " << std::fixed << std::setprecision(2) << fps_original << std::endl;
-    std::cout << "Duration: " << (total_frames / fps_original) << " seconds" << std::endl;
-    std::cout << "Estimated Size: " << (width * height * 3 * total_frames / 1024.0 / 1024.0) << " MB (uncompressed)" << std::endl;
-    
-    std::vector<double> frame_times, latency_times;
-    std::vector<double> cpu_usage_samples, gpu_usage_samples, gpu_memory_samples;
-    
-    // Measure initial system state
-    double initial_memory = getCurrentMemoryUsageMB();
-    double initial_sys_memory = SystemMonitor::getSystemMemoryUsage();
-    SystemMonitor::getCPUUsage();
-    
-    // Print processing stages info
-    std::cout << "\n=== VIDEO PROCESSING STAGES ===" << std::endl;
-    std::cout << "Stage 1: Video Decoding" << std::endl;
-    std::cout << "Stage 2: Frame Extraction" << std::endl;
-    std::cout << "Stage 3: Preprocessing (Resize/Normalize)" << std::endl;
-    std::cout << "Stage 4: Model Inference" << std::endl;
-    std::cout << "Stage 5: Postprocessing (NMS/Decode)" << std::endl;
-    std::cout << "Stage 6: Result Collection" << std::endl;
-    std::cout << "\nProcessing video frames...\n" << std::endl;
-    
-    auto start_time = std::chrono::high_resolution_clock::now();
-    int frame_count = 0;
-    cv::Mat frame;
-    
-    while (cap.read(frame) && !frame.empty()) {
-        // Monitor system resources
-        double cpu_usage = SystemMonitor::getCPUUsage();
-        auto gpu_stats = SystemMonitor::getGPUUsage();
-        
-        cpu_usage_samples.push_back(cpu_usage);
-        gpu_usage_samples.push_back(gpu_stats.first);
-        gpu_memory_samples.push_back(gpu_stats.second);
-        
-        // Time frame processing
-        cv::TickMeter tm;
-        tm.start();
-        
-        auto frame_start = std::chrono::high_resolution_clock::now();
-        auto results = DetectorFactory::detect(detector.get(), config, frame);
-        auto frame_end = std::chrono::high_resolution_clock::now();
-        
-        tm.stop();
-        
-        double frame_time = std::chrono::duration<double, std::milli>(frame_end - frame_start).count();
-        double latency = tm.getTimeMilli();
-        
-        frame_times.push_back(frame_time);
-        latency_times.push_back(latency);
-        
-        frame_count++;
-    }
-    
-    auto end_time = std::chrono::high_resolution_clock::now();
-    double total_time = std::chrono::duration<double, std::milli>(end_time - start_time).count();
-    
-    double final_memory = getCurrentMemoryUsageMB();
-    double final_sys_memory = SystemMonitor::getSystemMemoryUsage();
-    metrics.memory_mb = final_memory - initial_memory;
-    metrics.system_memory_used_mb = final_sys_memory - initial_sys_memory;
-    
-    // Calculate statistics
-    auto calc_avg = [](const std::vector<double>& values) {
-        return std::accumulate(values.begin(), values.end(), 0.0) / values.size();
-    };
-    
-    auto calc_min_max = [](const std::vector<double>& values) {
-        auto minmax = std::minmax_element(values.begin(), values.end());
-        return std::make_pair(*minmax.first, *minmax.second);
-    };
-    
-    metrics.frame_count = frame_count;
-    metrics.total_avg_ms = calc_avg(frame_times);
-    metrics.fps = (frame_count * 1000.0) / total_time;
-    
-    // Enhanced latency statistics
-    metrics.latency_avg_ms = calc_avg(latency_times);
-    auto latency_minmax = calc_min_max(latency_times);
-    metrics.latency_min_ms = latency_minmax.first;
-    metrics.latency_max_ms = latency_minmax.second;
-    
-    // System resource statistics
-    metrics.cpu_usage_percent = calc_avg(cpu_usage_samples);
-    metrics.gpu_usage_percent = calc_avg(gpu_usage_samples);
-    metrics.gpu_memory_used_mb = calc_avg(gpu_memory_samples);
-    
-    return metrics;
+                                                 const std::string& video_path) {
+  PerformanceMetrics metrics;
+  metrics.environment_type = config.use_gpu ? "GPU" : "CPU";
+
+  auto load_start = std::chrono::high_resolution_clock::now();
+  auto detector   = DetectorFactory::createDetector(config);
+  auto load_end   = std::chrono::high_resolution_clock::now();
+  metrics.load_time_ms = std::chrono::duration<double, std::milli>(load_end - load_start).count();
+
+  cv::VideoCapture cap(video_path);
+  if (!cap.isOpened()) throw std::runtime_error("Could not open video: " + video_path);
+
+  std::vector<double> frame_times, latency_times;
+  std::vector<double> cpu_samples, gpu_samples, gpu_mem_samples;
+
+  double initial_memory = getCurrentMemoryUsageMB();
+  double initial_sys_memory = SystemMonitor::getSystemMemoryUsage();
+  SystemMonitor::getCPUUsage();
+
+  auto start_time = std::chrono::high_resolution_clock::now();
+  int frame_count = 0;
+  cv::Mat frame;
+
+  while (cap.read(frame) && !frame.empty()) {
+    double cpu = SystemMonitor::getCPUUsage();
+    auto gpu   = SystemMonitor::getGPUUsage();
+    cpu_samples.push_back(cpu);
+    gpu_samples.push_back(gpu.first);
+    gpu_mem_samples.push_back(gpu.second);
+
+    cv::TickMeter tm; tm.start();
+    auto frame_start = std::chrono::high_resolution_clock::now();
+    auto results     = DetectorFactory::detect(detector.get(), config, frame); (void)results;
+    auto frame_end   = std::chrono::high_resolution_clock::now();
+    tm.stop();
+
+    double frame_ms = std::chrono::duration<double, std::milli>(frame_end - frame_start).count();
+    double latency  = tm.getTimeMilli();
+
+    frame_times.push_back(frame_ms);
+    latency_times.push_back(latency);
+    frame_count++;
+  }
+
+  auto end_time = std::chrono::high_resolution_clock::now();
+  double total_time_ms = std::chrono::duration<double, std::milli>(end_time - start_time).count();
+
+  double final_memory = getCurrentMemoryUsageMB();
+  double final_sys_memory = SystemMonitor::getSystemMemoryUsage();
+  metrics.memory_mb = final_memory - initial_memory;
+  metrics.system_memory_used_mb = final_sys_memory - initial_sys_memory;
+
+  auto avg    = [](const std::vector<double>& v){ return v.empty()? 0.0 : std::accumulate(v.begin(), v.end(), 0.0)/v.size(); };
+  auto minmax = [](const std::vector<double>& v){ if (v.empty()) return std::make_pair(0.0,0.0); auto mm = std::minmax_element(v.begin(), v.end()); return std::make_pair(*mm.first, *mm.second); };
+
+  metrics.frame_count     = frame_count;
+  metrics.total_avg_ms    = avg(frame_times);
+  metrics.fps             = (total_time_ms > 0.0) ? ((frame_count * 1000.0) / total_time_ms) : 0.0;
+  metrics.latency_avg_ms  = avg(latency_times);
+  auto lat                = minmax(latency_times);
+  metrics.latency_min_ms  = lat.first;
+  metrics.latency_max_ms  = lat.second;
+  metrics.cpu_usage_percent = avg(cpu_samples);
+  metrics.gpu_usage_percent = avg(gpu_samples);
+  metrics.gpu_memory_used_mb= avg(gpu_mem_samples);
+
+  return metrics;
 }
 
-// Enhanced camera benchmark
+// ----------------- Bench: Camera -----------------
 PerformanceMetrics benchmark_camera_comprehensive(const BenchmarkConfig& config,
-                                                 int camera_id = 0,
-                                                 int duration_seconds = 30) {
-    PerformanceMetrics metrics;
-    metrics.environment_type = config.use_gpu ? "GPU" : "CPU";
-    
-    // Measure model loading time
-    auto load_start = std::chrono::high_resolution_clock::now();
-    auto detector = DetectorFactory::createDetector(config);
-    auto load_end = std::chrono::high_resolution_clock::now();
-    metrics.load_time_ms = std::chrono::duration<double, std::milli>(load_end - load_start).count();
-    
-    // Open camera
-    cv::VideoCapture cap(camera_id);
-    if (!cap.isOpened()) {
-        throw std::runtime_error("Could not open camera with ID: " + std::to_string(camera_id));
-    }
-    
-    std::vector<double> frame_times, latency_times;
-    std::vector<double> cpu_usage_samples, gpu_usage_samples, gpu_memory_samples;
-    
-    // Measure initial system state
-    double initial_memory = getCurrentMemoryUsageMB();
-    double initial_sys_memory = SystemMonitor::getSystemMemoryUsage();
-    SystemMonitor::getCPUUsage();
-    
-    auto start_time = std::chrono::high_resolution_clock::now();
-    auto end_target = start_time + std::chrono::seconds(duration_seconds);
-    int frame_count = 0;
-    cv::Mat frame;
-    
-    std::cout << "Running camera benchmark for " << duration_seconds << " seconds..." << std::endl;
-    
-    while (std::chrono::high_resolution_clock::now() < end_target) {
-        if (!cap.read(frame) || frame.empty()) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
-            continue;
-        }
-        
-        // Monitor system resources
-        double cpu_usage = SystemMonitor::getCPUUsage();
-        auto gpu_stats = SystemMonitor::getGPUUsage();
-        
-        cpu_usage_samples.push_back(cpu_usage);
-        gpu_usage_samples.push_back(gpu_stats.first);
-        gpu_memory_samples.push_back(gpu_stats.second);
-        
-        // Time frame processing
-        cv::TickMeter tm;
-        tm.start();
-        
-        auto frame_start = std::chrono::high_resolution_clock::now();
-        auto results = DetectorFactory::detect(detector.get(), config, frame);
-        auto frame_end = std::chrono::high_resolution_clock::now();
-        
-        tm.stop();
-        
-        double frame_time = std::chrono::duration<double, std::milli>(frame_end - frame_start).count();
-        double latency = tm.getTimeMilli();
-        
-        frame_times.push_back(frame_time);
-        latency_times.push_back(latency);
-        
-        frame_count++;
-    }
-    
-    auto end_time = std::chrono::high_resolution_clock::now();
-    double total_time = std::chrono::duration<double, std::milli>(end_time - start_time).count();
-    
-    double final_memory = getCurrentMemoryUsageMB();
-    double final_sys_memory = SystemMonitor::getSystemMemoryUsage();
-    metrics.memory_mb = final_memory - initial_memory;
-    metrics.system_memory_used_mb = final_sys_memory - initial_sys_memory;
-    
-    // Calculate statistics
-    auto calc_avg = [](const std::vector<double>& values) {
-        return std::accumulate(values.begin(), values.end(), 0.0) / values.size();
-    };
-    
-    auto calc_min_max = [](const std::vector<double>& values) {
-        auto minmax = std::minmax_element(values.begin(), values.end());
-        return std::make_pair(*minmax.first, *minmax.second);
-    };
-    
-    metrics.frame_count = frame_count;
-    metrics.total_avg_ms = calc_avg(frame_times);
-    metrics.fps = (frame_count * 1000.0) / total_time;
-    
-    // Enhanced latency statistics
-    metrics.latency_avg_ms = calc_avg(latency_times);
-    auto latency_minmax = calc_min_max(latency_times);
-    metrics.latency_min_ms = latency_minmax.first;
-    metrics.latency_max_ms = latency_minmax.second;
-    
-    // System resource statistics
-    metrics.cpu_usage_percent = calc_avg(cpu_usage_samples);
-    metrics.gpu_usage_percent = calc_avg(gpu_usage_samples);
-    metrics.gpu_memory_used_mb = calc_avg(gpu_memory_samples);
-    
-    return metrics;
+                                                  int camera_id = 0,
+                                                  int duration_seconds = 30) {
+  PerformanceMetrics metrics;
+  metrics.environment_type = config.use_gpu ? "GPU" : "CPU";
+
+  auto load_start = std::chrono::high_resolution_clock::now();
+  auto detector   = DetectorFactory::createDetector(config);
+  auto load_end   = std::chrono::high_resolution_clock::now();
+  metrics.load_time_ms = std::chrono::duration<double, std::milli>(load_end - load_start).count();
+
+  cv::VideoCapture cap(camera_id);
+  if (!cap.isOpened()) throw std::runtime_error("Could not open camera with ID: " + std::to_string(camera_id));
+
+  std::vector<double> frame_times, latency_times;
+  std::vector<double> cpu_samples, gpu_samples, gpu_mem_samples;
+
+  double initial_memory = getCurrentMemoryUsageMB();
+  double initial_sys_memory = SystemMonitor::getSystemMemoryUsage();
+  SystemMonitor::getCPUUsage();
+
+  auto start_time = std::chrono::high_resolution_clock::now();
+  auto end_target = start_time + std::chrono::seconds(duration_seconds);
+  int frame_count = 0;
+  cv::Mat frame;
+
+  while (std::chrono::high_resolution_clock::now() < end_target) {
+    if (!cap.read(frame) || frame.empty()) { std::this_thread::sleep_for(std::chrono::milliseconds(1)); continue; }
+
+    double cpu = SystemMonitor::getCPUUsage();
+    auto gpu   = SystemMonitor::getGPUUsage();
+    cpu_samples.push_back(cpu);
+    gpu_samples.push_back(gpu.first);
+    gpu_mem_samples.push_back(gpu.second);
+
+    cv::TickMeter tm; tm.start();
+    auto frame_start = std::chrono::high_resolution_clock::now();
+    auto results     = DetectorFactory::detect(detector.get(), config, frame); (void)results;
+    auto frame_end   = std::chrono::high_resolution_clock::now();
+    tm.stop();
+
+    double frame_ms = std::chrono::duration<double, std::milli>(frame_end - frame_start).count();
+    double latency  = tm.getTimeMilli();
+
+    frame_times.push_back(frame_ms);
+    latency_times.push_back(latency);
+    frame_count++;
+  }
+
+  auto end_time = std::chrono::high_resolution_clock::now();
+  double total_time_ms = std::chrono::duration<double, std::milli>(end_time - start_time).count();
+
+  double final_memory = getCurrentMemoryUsageMB();
+  double final_sys_memory = SystemMonitor::getSystemMemoryUsage();
+  metrics.memory_mb = final_memory - initial_memory;
+  metrics.system_memory_used_mb = final_sys_memory - initial_sys_memory;
+
+  auto avg    = [](const std::vector<double>& v){ return v.empty()? 0.0 : std::accumulate(v.begin(), v.end(), 0.0)/v.size(); };
+  auto minmax = [](const std::vector<double>& v){ if (v.empty()) return std::make_pair(0.0,0.0); auto mm = std::minmax_element(v.begin(), v.end()); return std::make_pair(*mm.first, *mm.second); };
+
+  metrics.frame_count     = frame_count;
+  metrics.total_avg_ms    = avg(frame_times);
+  metrics.fps             = (total_time_ms > 0.0) ? ((frame_count * 1000.0) / total_time_ms) : 0.0;
+  metrics.latency_avg_ms  = avg(latency_times);
+  auto lat                = minmax(latency_times);
+  metrics.latency_min_ms  = lat.first;
+  metrics.latency_max_ms  = lat.second;
+  metrics.cpu_usage_percent = avg(cpu_samples);
+  metrics.gpu_usage_percent = avg(gpu_samples);
+  metrics.gpu_memory_used_mb= avg(gpu_mem_samples);
+
+  return metrics;
 }
 
-// CSV output functions
-void printCSVHeader() {
-    std::cout << "model_type,task_type,environment,device,threads,precision,load_ms,preprocess_ms,inference_ms,postprocess_ms,total_ms,fps,memory_mb,system_memory_mb,cpu_usage_%,gpu_usage_%,gpu_memory_mb,latency_avg_ms,latency_min_ms,latency_max_ms,map_score,frame_count\n";
+// ----------------- CSV helpers -----------------
+static inline void printCSVHeader() {
+  std::cout
+    << "model_type,task_type,InputType,environment,device,threads,precision,"
+    << "load_ms,preprocess_ms,inference_ms,postprocess_ms,total_ms,fps,"
+    << "memory_mb,system_memory_mb,cpu_usage_%,gpu_usage_%,gpu_memory_mb,"
+    << "latency_avg_ms,latency_min_ms,latency_max_ms,map_score,frame_count\n";
 }
 
-void printCSVRow(const BenchmarkConfig& config, const PerformanceMetrics& metrics) {
-    std::cout << config.model_type << ","
-              << config.task_type << ","
-              << metrics.environment_type << ","
-              << (config.use_gpu ? "gpu" : "cpu") << ","
-              << config.thread_count << ","
-              << config.precision << ","
-              << std::fixed << std::setprecision(3)
-              << metrics.load_time_ms << ","
-              << metrics.preprocess_avg_ms << ","
-              << metrics.inference_avg_ms << ","
-              << metrics.postprocess_avg_ms << ","
-              << metrics.total_avg_ms << ","
-              << metrics.fps << ","
-              << metrics.memory_mb << ","
-              << metrics.system_memory_used_mb << ","
-              << metrics.cpu_usage_percent << ","
-              << metrics.gpu_usage_percent << ","
-              << metrics.gpu_memory_used_mb << ","
-              << metrics.latency_avg_ms << ","
-              << metrics.latency_min_ms << ","
-              << metrics.latency_max_ms << ","
-              << metrics.map_score << ","
-              << metrics.frame_count << std::endl;
+static inline void printCSVRow(const BenchmarkConfig& config,
+                               const PerformanceMetrics& m,
+                               const std::string& inputType) {
+  std::cout << config.model_type << ","
+            << config.task_type << ","
+            << inputType << ","
+            << m.environment_type << ","
+            << (config.use_gpu ? "gpu" : "cpu") << ","
+            << config.thread_count << ","
+            << config.precision << ","
+            << std::fixed << std::setprecision(3)
+            << m.load_time_ms << ","
+            << m.preprocess_avg_ms << ","
+            << m.inference_avg_ms << ","
+            << m.postprocess_avg_ms << ","
+            << m.total_avg_ms << ","
+            << m.fps << ","
+            << m.memory_mb << ","
+            << m.system_memory_used_mb << ","
+            << m.cpu_usage_percent << ","
+            << m.gpu_usage_percent << ","
+            << m.gpu_memory_used_mb << ","
+            << m.latency_avg_ms << ","
+            << m.latency_min_ms << ","
+            << m.latency_max_ms << ","
+            << m.map_score << ","
+            << m.frame_count << "\n";
 }
 
-// Configuration parsing
-BenchmarkConfig parseConfig(int argc, char** argv) {
-    if (argc < 6) {
-        std::cerr << "Usage: " << argv[0] << " <mode> <model_type> <task_type> <model_path> <labels_path> <input_path> [options]\n"
-                << "Modes: image, video, camera\n"
-                << "Model types: yolo5, yolo7, yolo8, yolo9, yolo10, yolo11, yolo12\n"
-                << "Task types: detection, segmentation, obb, pose\n"
-                << "Options: --gpu, --cpu, --threads=N, --quantized, --iterations=N\n";
-        throw std::runtime_error("Invalid arguments");
-    }
-    
-    BenchmarkConfig config;
-    config.model_type = argv[2];
-    config.task_type = argv[3];
-    config.model_path = argv[4];
-    config.labels_path = argv[5];
-    
-    // Parse optional arguments
-    for (int i = 7; i < argc; ++i) {
-        std::string arg = argv[i];
-        if (arg == "--gpu" || arg == "gpu") {
-            config.use_gpu = true;
-        } else if (arg == "--cpu" || arg == "cpu") {
-            config.use_gpu = false;
-        } else if (arg.substr(0, 10) == "--threads=") {
-            config.thread_count = std::stoi(arg.substr(10));
-        } else if (arg == "--quantized") {
-            config.quantized = true;
-            config.precision = "int8";
-        }
-    }
-    
-    return config;
+// Append a single CSV row to a file
+static inline void appendCSVRowToFile(const std::string& filePath,
+                                      const BenchmarkConfig& cfg,
+                                      const PerformanceMetrics& m,
+                                      const std::string& inputType) {
+  std::ofstream out(filePath, std::ios::app);
+  if (!out) throw std::runtime_error("Cannot append to results file: " + filePath);
+  out << cfg.model_type << ","
+      << cfg.task_type << ","
+      << inputType << ","
+      << m.environment_type << ","
+      << (cfg.use_gpu ? "gpu" : "cpu") << ","
+      << cfg.thread_count << ","
+      << cfg.precision << ","
+      << std::fixed << std::setprecision(3)
+      << m.load_time_ms << ","
+      << m.preprocess_avg_ms << ","
+      << m.inference_avg_ms << ","
+      << m.postprocess_avg_ms << ","
+      << m.total_avg_ms << ","
+      << m.fps << ","
+      << m.memory_mb << ","
+      << m.system_memory_used_mb << ","
+      << m.cpu_usage_percent << ","
+      << m.gpu_usage_percent << ","
+      << m.gpu_memory_used_mb << ","
+      << m.latency_avg_ms << ","
+      << m.latency_min_ms << ","
+      << m.latency_max_ms << ","
+      << m.map_score << ","
+      << m.frame_count << "\n";
 }
 
-// Main function
+// ----------------- Arg parse -----------------
+static BenchmarkConfig parseConfig(int argc, char** argv) {
+  if (argc < 6) {
+    std::cerr
+      << "Usage: " << argv[0] << " <mode> <model_type> <task_type> <model_path> <labels_path> <input_path> [options]\n"
+      << "Modes: image, video, camera, comprehensive\n"
+      << "Model types: yolo5..yolo12\n"
+      << "Task types: detection, segmentation, obb, pose\n"
+      << "Options: --gpu, --cpu, --threads=N, --quantized, --iterations=N, --duration=N\n";
+    throw std::runtime_error("Invalid arguments");
+  }
+
+  BenchmarkConfig cfg;
+  cfg.model_type  = argv[2];
+  cfg.task_type   = argv[3];
+  cfg.model_path  = argv[4];
+  cfg.labels_path = argv[5];
+
+  for (int i = 7; i < argc; ++i) {
+    std::string arg = argv[i];
+    if (arg == "--gpu" || arg == "gpu") cfg.use_gpu = true;
+    else if (arg == "--cpu" || arg == "cpu") cfg.use_gpu = false;
+    else if (arg.rfind("--threads=", 0) == 0) cfg.thread_count = std::stoi(arg.substr(10));
+    else if (arg == "--quantized") { cfg.quantized = true; cfg.precision = "int8"; }
+  }
+  return cfg;
+}
+
+// ----------------- main -----------------
 int main(int argc, char** argv) {
-    try {
-        if (argc < 2) {
-            std::cerr << "Usage: " << argv[0] << " <mode> <model_type> <task_type> <model_path> <labels_path> <input_path> [options]\n"
-                      << "Modes: image, video, camera, comprehensive\n"
-                      << "Model types: yolo5, yolo7, yolo8, yolo9, yolo10, yolo11, yolo12\n"
-                      << "Task types: detection, segmentation, obb, pose\n"
-                      << "Options: --gpu, --cpu, --threads=N, --quantized, --iterations=N, --duration=N\n"
-                      << "\nExamples:\n"
-                      << "  " << argv[0] << " image yolo11 detection models/yolo11n.onnx models/coco.names data/dog.jpg --gpu\n"
-                      << "  " << argv[0] << " video yolo8 detection models/yolov8n.onnx models/coco.names data/dogs.mp4 --cpu\n"
-                      << "  " << argv[0] << " comprehensive  # Run all supported combinations\n";
-            return 1;
+  try {
+    if (argc < 2) {
+      std::cerr
+        << "Usage: " << argv[0] << " <mode> <model_type> <task_type> <model_path> <labels_path> <input_path> [options]\n"
+        << "Modes: image, video, camera, comprehensive\n"
+        << "Options: --gpu, --cpu, --threads=N, --quantized, --iterations=N, --duration=N\n";
+      return 1;
+    }
+
+    std::string mode = argv[1];
+
+    if (mode == "comprehensive") {
+      std::cout << "YOLO Performance Analyzer - running comprehensive benchmarks...\n";
+      std::filesystem::create_directories("results");
+
+      // candidate models (add freely here)
+      std::vector<std::tuple<std::string,std::string,std::string>> test_configs = {
+        {"yolo11", "detection", "models/yolo11n.onnx"},
+        {"yolo8",  "detection", "models/yolov8n.onnx"},
+        {"yolo11_quantized", "detection", "quantized_models/yolo11n_quantized.onnx"},
+        {"yolo8_quantized",  "detection", "quantized_models/yolov8n_quantized.onnx"},
+      };
+
+      const std::string image_path = "data/dog.jpg";
+      const std::string video_path = "data/dogs.mp4";
+      const bool has_image = std::filesystem::exists(image_path);
+      const bool has_video = std::filesystem::exists(video_path);
+
+      const int image_iterations = 100; // single fixed iterations → no duplicate rows
+
+      std::string results_file = "results/comprehensive_benchmark_" + std::to_string(std::time(nullptr)) + ".csv";
+      {
+        std::ofstream file(results_file);
+        if (!file) throw std::runtime_error("Cannot open results file: " + results_file);
+        file << "model_type,task_type,InputType,environment,device,threads,precision,"
+                "load_ms,preprocess_ms,inference_ms,postprocess_ms,total_ms,fps,"
+                "memory_mb,system_memory_mb,cpu_usage_%,gpu_usage_%,gpu_memory_mb,"
+                "latency_avg_ms,latency_min_ms,latency_max_ms,map_score,frame_count\n";
+      }
+
+      // For each available model: run CPU(Image,Video) then GPU(Image,Video)
+      for (const auto& [model_type, task_type, model_path] : test_configs) {
+        if (!std::filesystem::exists(model_path)) {
+          std::cerr << "Skipping " << model_type << "/" << task_type << " - model not found: " << model_path << "\n";
+          continue;
         }
 
-        std::string mode = argv[1];
-        
-        if (mode == "comprehensive") {
-            std::cout << "YOLO Performance Analyzer - Advanced System Monitoring & Benchmarking...\n";
-            
-            // Create results directory
-            std::filesystem::create_directories("results");
-            
-            // Test configurations focusing on available models (original + quantized)
-            std::vector<std::tuple<std::string, std::string, std::string>> test_configs = {
-                {"yolo11", "detection", "models/yolo11n.onnx"},
-                {"yolo8", "detection", "models/yolov8n.onnx"},
-                {"yolo11_quantized", "detection", "quantized_models/yolo11n_quantized.onnx"},
-                {"yolo8_quantized", "detection", "quantized_models/yolov8n_quantized.onnx"},
-            };
-            
-            std::vector<bool> gpu_configs = {false, true}; // CPU and GPU
-            std::vector<int> iteration_configs = {50, 100};
-            
-            // Create CSV results file
-            std::string results_file = "results/comprehensive_benchmark_" + std::to_string(std::time(nullptr)) + ".csv";
-            std::ofstream file(results_file);
-            if (file.is_open()) {
-                std::streambuf* orig = std::cout.rdbuf();
-                std::cout.rdbuf(file.rdbuf());
-                printCSVHeader();
-                std::cout.rdbuf(orig);
-                file.close();
+        for (bool use_gpu : {false, true}) {
+          BenchmarkConfig cfg;
+          cfg.model_type  = model_type;
+          cfg.task_type   = task_type;
+          cfg.model_path  = model_path;
+          cfg.labels_path = "models/coco.names";
+          cfg.use_gpu     = use_gpu;
+          cfg.thread_count= 1;
+
+          try {
+            if (has_image) {
+              auto m_img = benchmark_image_comprehensive(cfg, image_path, image_iterations);
+              appendCSVRowToFile(results_file, cfg, m_img, "Image");
             }
-            
-            std::cout << "Starting comprehensive benchmark...\n";
-            
-            for (const auto& [model_type, task_type, model_path] : test_configs) {
-                // Check if model file exists
-                if (!std::filesystem::exists(model_path)) {
-                    std::cerr << "Skipping " << model_type << "/" << task_type << " - model not found: " << model_path << "\n";
-                    continue;
-                }
-                
-                for (bool use_gpu : gpu_configs) {
-                    for (int iterations : iteration_configs) {
-                        BenchmarkConfig config;
-                        config.model_type = model_type;
-                        config.task_type = task_type;
-                        config.model_path = model_path;
-                        config.labels_path = "models/coco.names";
-                        config.use_gpu = use_gpu;
-                        config.thread_count = 1;
-                        
-                        try {
-                            std::cout << "Testing " << model_type << "/" << task_type 
-                                      << " on " << (use_gpu ? "GPU" : "CPU") 
-                                      << " with " << iterations << " iterations...\n";
-                            
-                            // Run image benchmark
-                            auto image_metrics = benchmark_image_comprehensive(config, "data/dog.jpg", iterations);
-                            
-                            // Append to results file
-                            std::ofstream append_file(results_file, std::ios::app);
-                            if (append_file.is_open()) {
-                                std::streambuf* orig = std::cout.rdbuf();
-                                std::cout.rdbuf(append_file.rdbuf());
-                                printCSVRow(config, image_metrics);
-                                std::cout.rdbuf(orig);
-                                append_file.close();
-                            }
-                            
-                            // Add small delay to prevent system overload
-                            std::this_thread::sleep_for(std::chrono::milliseconds(500));
-                            
-                        } catch (const std::exception& e) {
-                            std::cerr << "Error benchmarking " << model_type << "/" << task_type 
-                                    << " on " << (use_gpu ? "GPU" : "CPU") << ": " << e.what() << "\n";
-                        }
-                    }
-                }
+            if (has_video) {
+              auto m_vid = benchmark_video_comprehensive(cfg, video_path);
+              appendCSVRowToFile(results_file, cfg, m_vid, "Video");
             }
-            
-            std::cout << "Comprehensive benchmark completed!\n";
-            std::cout << "Results saved to: " << results_file << "\n";
-            
-            return 0;
+            // small breather
+            std::this_thread::sleep_for(std::chrono::milliseconds(150));
+          } catch (const std::exception& e) {
+            std::cerr << "Error benchmarking " << model_type << "/" << task_type
+                      << " on " << (use_gpu ? "GPU" : "CPU") << ": " << e.what() << "\n";
+          }
         }
-        
-        // Parse configuration for single benchmark
-        BenchmarkConfig config = parseConfig(argc, argv);
-        std::string input_path = argv[6];
-        
-        int iterations = 100;
-        int duration = 30;
-        
-        // Parse additional options
-        for (int i = 7; i < argc; ++i) {
-            std::string arg = argv[i];
-            if (arg.substr(0, 13) == "--iterations=") {
-                iterations = std::stoi(arg.substr(13));
-            } else if (arg.substr(0, 11) == "--duration=") {
-                duration = std::stoi(arg.substr(11));
-            }
-        }
-        
-        printCSVHeader();
-        
-        PerformanceMetrics metrics;
-        
-        if (mode == "image") {
-            metrics = benchmark_image_comprehensive(config, input_path, iterations);
-        } else if (mode == "video") {
-            metrics = benchmark_video_comprehensive(config, input_path);
-        } else if (mode == "camera") {
-            int camera_id = std::stoi(input_path);
-            metrics = benchmark_camera_comprehensive(config, camera_id, duration);
-        } else {
-            std::cerr << "Error: Invalid mode '" << mode << "'. Use 'image', 'video', 'camera', or 'comprehensive'.\n";
-            return 1;
-        }
-        
-        printCSVRow(config, metrics);
-        
-    } catch (const std::exception& e) {
-        std::cerr << "Exception: " << e.what() << "\n";
-        return 1;
+      }
+
+      std::cout << "Comprehensive benchmark completed.\n";
+      std::cout << "Results saved to: " << results_file << "\n";
+      return 0;
     }
-    
-    return 0;
+
+    // Single-run modes
+    BenchmarkConfig cfg = parseConfig(argc, argv);
+    std::string input_path = argv[6];
+
+    int iterations = 100;
+    int duration   = 30;
+    for (int i = 7; i < argc; ++i) {
+      std::string arg = argv[i];
+      if (arg.rfind("--iterations=", 0) == 0) iterations = std::stoi(arg.substr(13));
+      else if (arg.rfind("--duration=", 0) == 0) duration = std::stoi(arg.substr(11));
+    }
+
+    // Print CSV header + one row to stdout
+    printCSVHeader();
+
+    PerformanceMetrics m;
+    if (mode == "image") {
+      m = benchmark_image_comprehensive(cfg, input_path, iterations);
+      printCSVRow(cfg, m, "Image");
+    } else if (mode == "video") {
+      m = benchmark_video_comprehensive(cfg, input_path);
+      printCSVRow(cfg, m, "Video");
+    } else if (mode == "camera") {
+      int cam_id = std::stoi(input_path);
+      m = benchmark_camera_comprehensive(cfg, cam_id, duration);
+      printCSVRow(cfg, m, "Video"); // treat camera as Video stream
+    } else {
+      std::cerr << "Error: invalid mode '" << mode << "'. Use image|video|camera|comprehensive.\n";
+      return 1;
+    }
+  } catch (const std::exception& e) {
+    std::cerr << "Exception: " << e.what() << "\n";
+    return 1;
+  }
+  return 0;
 }
