@@ -1,51 +1,40 @@
-// ScopedTimer.hpp
 #ifndef SCOPEDTIMER_HPP
 #define SCOPEDTIMER_HPP
-
-/**
- * @file ScopedTimer.hpp
- * @brief Header file for timing utilities.
- * 
- * This file defines the ScopedTimer class, which measures the duration of a 
- * code block for performance profiling. When TIMING_MODE is defined, it records
- * the time taken for execution and prints it to the standard output upon 
- * destruction; otherwise, it provides an empty implementation.
- */
 
 #include <chrono>
 #include <iostream>
 #include <string>
-#include "tools/Config.hpp" // Include the config file to access the flags
 
 #ifdef TIMING_MODE
 class ScopedTimer {
 public:
-    /**
-     * @brief Constructs a ScopedTimer to measure the duration of a named code block.
-     * @param name The name of the code block being timed.
-     */
-    ScopedTimer(const std::string &name) 
-        : func_name(name), start(std::chrono::high_resolution_clock::now()) {}
-    
-    /**
-     * @brief Destructor that calculates and prints the elapsed time.
-     */
+    using clock = std::chrono::high_resolution_clock;
+    using time_point = clock::time_point;
+
+    ScopedTimer(const std::string &name)
+      : func_name(name), start(clock::now()) {}
+
     ~ScopedTimer() {
-        auto stop = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double, std::milli> duration = stop - start;
-        std::cout << func_name << " took " << duration.count() << " milliseconds." << std::endl;
+        auto stop = clock::now();
+        auto us = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+        std::cout << func_name << " took " << (us / 1000.0) << " ms\n";
+    }
+
+    double elapsed_us() const {
+        return std::chrono::duration_cast<std::chrono::microseconds>(clock::now() - start).count();
     }
 
 private:
-    std::string func_name; ///< The name of the timed function.
-    std::chrono::time_point<std::chrono::high_resolution_clock> start; ///< Start time point.
+    std::string func_name;
+    time_point start;
 };
 #else
 class ScopedTimer {
 public:
-    ScopedTimer(const std::string &name) {}
+    ScopedTimer(const std::string&) {}
     ~ScopedTimer() {}
+    double elapsed_us() const { return 0.0; }
 };
-#endif // TIMING_MODE
+#endif
 
 #endif // SCOPEDTIMER_HPP

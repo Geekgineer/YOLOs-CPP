@@ -61,8 +61,8 @@
 //#define YOLO8
 //#define YOLO9
 //#define YOLO10
-//#define YOLO11
-#define YOLO12
+#define YOLO11
+// #define YOLO12
 
 #ifdef YOLO5
     #include "det/YOLO5.hpp"

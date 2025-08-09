@@ -1,63 +1,84 @@
-cmake_minimum_required(VERSION 3.0.0)
-project(yolo_ort)
+cmake_minimum_required(VERSION 3.16)
+project(yolo_ort CXX)
 
-option(ONNXRUNTIME_DIR "Path to built ONNX Runtime directory." STRING)
+# LTO/IPO policy + enable if available
+cmake_policy(SET CMP0069 NEW)
+include(CheckIPOSupported)
+check_ipo_supported(RESULT ipo_ok OUTPUT ipo_msg)
+if(ipo_ok)
+  set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+endif()
+
+# ---- User-supplied ONNX Runtime root ----
+set(ONNXRUNTIME_DIR "" CACHE PATH "Path to ONNX Runtime extracted directory")
 message(STATUS "ONNXRUNTIME_DIR: ${ONNXRUNTIME_DIR}")
+if(NOT EXISTS "${ONNXRUNTIME_DIR}/include/onnxruntime_c_api.h")
+  message(FATAL_ERROR "Invalid ONNXRUNTIME_DIR: header not found in ${ONNXRUNTIME_DIR}/include")
+endif()
 
+# ---- C++ standard (filesystem needs 17) ----
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# ---- OpenCV ----
 find_package(OpenCV REQUIRED)
 
-include_directories("include/")
+# ---- Targets ----
+add_executable(image_inference        src/image_inference.cpp)
+add_executable(camera_inference       src/camera_inference.cpp)
+add_executable(video_inference        src/video_inference.cpp)
+add_executable(yolo_performance_analyzer benchmark/yolo_performance_analyzer.cpp)
 
-# Add executable for image inference
-add_executable(image_inference
-               src/image_inference.cpp)
+# Common include dirs (project + ORT + OpenCV)
+set(PROJ_INC "${CMAKE_SOURCE_DIR}/include")
+foreach(tgt IN ITEMS image_inference camera_inference video_inference yolo_performance_analyzer)
+  target_include_directories(${tgt} PRIVATE
+    "${PROJ_INC}"
+    "${ONNXRUNTIME_DIR}/include"
+    ${OpenCV_INCLUDE_DIRS}
+  )
+  target_link_libraries(${tgt} PRIVATE ${OpenCV_LIBS})
+endforeach()
 
-# Add executable for camera inference
-add_executable(camera_inference
-               src/camera_inference.cpp)
-
-# Add executable for video inference
-add_executable(video_inference
-               src/video_inference.cpp)
-
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# Set include directories for all executables
-target_include_directories(image_inference PRIVATE "${ONNXRUNTIME_DIR}/include")
-target_include_directories(camera_inference PRIVATE "${ONNXRUNTIME_DIR}/include")
-target_include_directories(video_inference PRIVATE "${ONNXRUNTIME_DIR}/include")
-
-# Set compile features for all executables
-target_compile_features(image_inference PRIVATE cxx_std_14)
-target_compile_features(camera_inference PRIVATE cxx_std_14)
-target_compile_features(video_inference PRIVATE cxx_std_14)
-
-# Link libraries for all executables
-target_link_libraries(image_inference ${OpenCV_LIBS})
-target_link_libraries(camera_inference ${OpenCV_LIBS})
-target_link_libraries(video_inference ${OpenCV_LIBS})
-
-if(UNIX)
-    message(STATUS "We are building on Linux!")
-    # Specific Linux build commands or flags
-    target_link_libraries(image_inference "${ONNXRUNTIME_DIR}/lib/libonnxruntime.so")
-    target_link_libraries(camera_inference "${ONNXRUNTIME_DIR}/lib/libonnxruntime.so")
-    target_link_libraries(video_inference "${ONNXRUNTIME_DIR}/lib/libonnxruntime.so")
-endif(UNIX)
-
-if(APPLE)
-    message(STATUS "We are building on macOS!")
-    # Specific macOS build commands or flags
-    target_link_libraries(image_inference "${ONNXRUNTIME_DIR}/lib/libonnxruntime.dylib")
-    target_link_libraries(camera_inference "${ONNXRUNTIME_DIR}/lib/libonnxruntime.dylib")
-    target_link_libraries(video_inference "${ONNXRUNTIME_DIR}/lib/libonnxruntime.dylib")
-endif(APPLE)
-
+# ---- Link ONNX Runtime & platform deps ----
 if(WIN32)
-    message(STATUS "We are building on Windows!")
-    # Specific Windows build commands or flags
-    target_link_libraries(image_inference "${ONNXRUNTIME_DIR}/lib/onnxruntime.lib")
-    target_link_libraries(camera_inference "${ONNXRUNTIME_DIR}/lib/onnxruntime.lib")
-    target_link_libraries(video_inference "${ONNXRUNTIME_DIR}/lib/onnxruntime.lib")
-endif(WIN32)
+  message(STATUS "Building on Windows")
+  # Link import lib
+  foreach(tgt IN ITEMS image_inference camera_inference video_inference yolo_performance_analyzer)
+    target_link_libraries(${tgt} PRIVATE
+      "${ONNXRUNTIME_DIR}/lib/onnxruntime.lib"
+      psapi  # for GetProcessMemoryInfo
+    )
+    # Copy runtime DLLs next to each exe after build
+    add_custom_command(TARGET ${tgt} POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy_directory
+              "${ONNXRUNTIME_DIR}/lib"
+              "$<TARGET_FILE_DIR:${tgt}>"
+    )
+  endforeach()
+elseif(APPLE)
+  message(STATUS "Building on macOS")
+  foreach(tgt IN ITEMS image_inference camera_inference video_inference yolo_performance_analyzer)
+    target_link_libraries(${tgt} PRIVATE
+      "${ONNXRUNTIME_DIR}/lib/libonnxruntime.dylib"
+    )
+  endforeach()
+  # Ensure the loader can find ORT at runtime
+  set(CMAKE_BUILD_RPATH  "${ONNXRUNTIME_DIR}/lib")
+  set(CMAKE_INSTALL_RPATH "${ONNXRUNTIME_DIR}/lib")
+elseif(UNIX)
+  message(STATUS "Building on Linux")
+  foreach(tgt IN ITEMS image_inference camera_inference video_inference yolo_performance_analyzer)
+    target_link_libraries(${tgt} PRIVATE
+      "${ONNXRUNTIME_DIR}/lib/libonnxruntime.so"
+      pthread
+      dl
+    )
+  endforeach()
+  # Allow running without setting LD_LIBRARY_PATH
+  set(CMAKE_BUILD_RPATH  "${ONNXRUNTIME_DIR}/lib")
+  set(CMAKE_INSTALL_RPATH "${ONNXRUNTIME_DIR}/lib")
+else()
+  message(FATAL_ERROR "Unsupported platform")
+endif()
