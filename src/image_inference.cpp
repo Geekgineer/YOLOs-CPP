@@ -115,19 +115,19 @@ int main(int argc, char* argv[]){
 
     // Model paths for different YOLO versions
     #ifdef YOLO5
-        const std::string modelPath = "models/yolo5-n6.onnx";
+        std::string modelPath = "models/yolo5-n6.onnx";
     #endif
     #ifdef YOLO7
         const std::string modelPath = "models/yolo7-tiny.onnx";
     #endif
     #ifdef YOLO8
-        const std::string modelPath = "models/yolo8n.onnx";
+        std::string modelPath = "models/yolo8n.onnx";
     #endif
     #ifdef YOLO9
         const std::string modelPath = "models/yolov9s.onnx";
     #endif
     #ifdef YOLO10
-        const std::string modelPath = "models/yolo10n_uint8.onnx";
+        std::string modelPath = "models/yolo10n_uint8.onnx";
     #endif
     #ifdef YOLO11
         const std::string modelPath = "models/yolo11n.onnx";
@@ -185,16 +185,6 @@ int main(int argc, char* argv[]){
         // Draw bounding boxes on the image
         detector.drawBoundingBox(image, results); // simple bbox drawing
         // detector.drawBoundingBoxMask(image, results); // Uncomment for mask drawing
-        
-        // Generate output path
-        fs::path inputPath(imgPath);
-        fs::path outputPath = inputPath.parent_path() / 
-                             (inputPath.stem().string() + "_processed" + inputPath.extension().string());
-        
-        // Save the processed image
-        cv::imwrite(outputPath.string(), image);
-        std::cout << "Processed image saved to: " << outputPath.string() << std::endl;
-        
         // Display the image
         cv::imshow("Detections", image);
         cv::waitKey(0); // Wait for a key press to close the window
