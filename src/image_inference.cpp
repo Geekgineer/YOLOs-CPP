@@ -108,9 +108,9 @@ int main(int argc, char* argv[]){
             return -1;
         }
     } else {
-        std::cerr << "Error: No image path provided. Please pass a path to an image file or a folder of images." << std::endl;
-        std::cerr << "Usage: " << argv[0] << " <image_path_or_folder>" << std::endl;
-        return -1;
+        std::cout << "Usage: " << argv[0] << " <image_path_or_folder>\n";
+        std::cout << "No image path provided. Using default: " << imagePath << std::endl;
+        imageFiles.push_back(imagePath);
     }
 
     // Model paths for different YOLO versions
