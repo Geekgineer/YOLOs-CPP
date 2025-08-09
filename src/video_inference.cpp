@@ -230,9 +230,9 @@ int main(int argc, char* argv[]) {
             return -1;
         }
     } else {
-        std::cerr << "Error: No video path provided. Please pass a path to a video file or a folder of videos." << std::endl;
-        std::cerr << "Usage: " << argv[0] << " <video_path_or_folder>" << std::endl;
-        return -1;
+        std::cout << "Usage: " << argv[0] << " <video_path_or_folder>\n";
+        std::cout << "No video path provided. Using default: " << videoPath << std::endl;
+        videoFiles.push_back(videoPath);
     }
 
     // Model paths for different YOLO versions
