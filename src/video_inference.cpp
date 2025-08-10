@@ -121,7 +121,53 @@ private:
 
 int main(int argc, char** argv)
 {
-    // Paths to the model and labels
+    namespace fs = std::filesystem;
+
+    // Collect input video files from CLI (file or directory), replicating image_inference style
+    std::vector<std::string> videoFiles;
+
+    if (argc < 2)
+    {
+        std::cerr << "Error: Please provide a valid path to a video file or a folder containing videos.\n";
+        std::cerr << "Example: " << argv[0] << " /home/example/test.mp4" << std::endl;
+        return -1;
+    }
+
+    std::string videoPathArg = argv[1];
+
+    if (fs::is_directory(videoPathArg))
+    {
+        for (const auto& entry : fs::directory_iterator(videoPathArg))
+        {
+            if (entry.is_regular_file())
+            {
+                std::string ext = entry.path().extension().string();
+                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                if (ext == ".mp4" || ext == ".avi" || ext == ".mov" || ext == ".mkv" ||
+                    ext == ".wmv" || ext == ".flv" || ext == ".m4v" || ext == ".mpg" || ext == ".mpeg")
+                {
+                    videoFiles.push_back(fs::absolute(entry.path()).string());
+                }
+            }
+        }
+        if (videoFiles.empty())
+        {
+            std::cerr << "No video files found in directory: " << videoPathArg << std::endl;
+            return -1;
+        }
+    }
+    else if (fs::is_regular_file(videoPathArg))
+    {
+        videoFiles.push_back(videoPathArg);
+    }
+    else
+    {
+        std::cerr << "Error: Please provide a valid path to a video file or a folder containing videos.\n";
+        std::cerr << "Example: " << argv[0] << " /home/example/test.mp4" << std::endl;
+        return -1;
+    }
+
+    // Paths to the model and labels (use models/... like image_inference)
     const std::string labelsPath = "models/coco.names";
 
     // Model paths for different YOLO versions
@@ -147,7 +193,7 @@ int main(int argc, char** argv)
         const std::string modelPath = "models/yolo12n.onnx";
     #endif
 
-    // Initialize the YOLO detector
+    // Initialize the YOLO detector with the chosen model and labels
     bool isGPU = true; // Set to false for CPU processing
     #ifdef YOLO5
         YOLO5Detector detector(modelPath, labelsPath, isGPU);
@@ -161,6 +207,9 @@ int main(int argc, char** argv)
     #ifdef YOLO9
         YOLO9Detector detector(modelPath, labelsPath, isGPU);
     #endif
+    #ifdef YOLO10
+        YOLO10Detector detector(modelPath, labelsPath, isGPU);
+    #endif
     #ifdef YOLO11
         YOLO11Detector detector(modelPath, labelsPath, isGPU);
     #endif
@@ -168,23 +217,8 @@ int main(int argc, char** argv)
         YOLO12Detector detector(modelPath, labelsPath, isGPU);
     #endif
 
-    // Helpers
-    auto toLower = [](std::string s) {
-        std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
-        return s;
-    };
-
-    auto isVideoFile = [&](const std::filesystem::path& p) {
-        static const std::vector<std::string> exts = {
-            ".mp4", ".avi", ".mov", ".mkv", ".wmv", ".flv", ".m4v", ".mpg", ".mpeg"
-        };
-        std::string ext = toLower(p.extension().string());
-        return std::find(exts.begin(), exts.end(), ext) != exts.end();
-    };
-
-    // Processing routine for a single video
+    // Processing routine for a single video (reuses existing threaded pipeline)
     auto processSingleVideo = [&](const std::string& inputVideoPath, const std::string& outputVideoPath) -> bool {
-        // Open the video file
         cv::VideoCapture cap(inputVideoPath);
         if (!cap.isOpened())
         {
@@ -192,13 +226,11 @@ int main(int argc, char** argv)
             return false;
         }
 
-        // Get video properties
         int frameWidth = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_WIDTH));
         int frameHeight = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_HEIGHT));
         int fps = static_cast<int>(cap.get(cv::CAP_PROP_FPS));
-        int fourcc = static_cast<int>(cap.get(cv::CAP_PROP_FOURCC)); // Get codec of input video
+        int fourcc = static_cast<int>(cap.get(cv::CAP_PROP_FOURCC));
 
-        // Create a VideoWriter object to save the output video with the same codec
         cv::VideoWriter out(outputVideoPath, fourcc, fps, cv::Size(frameWidth, frameHeight), true);
         if (!out.isOpened())
         {
@@ -207,39 +239,30 @@ int main(int argc, char** argv)
             return false;
         }
 
-        // Thread-safe queues
         SafeQueue<cv::Mat> frameQueue;
         SafeQueue<std::pair<int, cv::Mat>> processedQueue;
 
-        // Capture thread
         std::thread captureThread([&]() {
             cv::Mat frame;
             while (cap.read(frame))
             {
-                frameQueue.enqueue(frame.clone()); // Clone to ensure thread safety
+                frameQueue.enqueue(frame.clone());
             }
             frameQueue.setFinished();
         });
 
-        // Processing thread
         std::thread processingThread([&]() {
             cv::Mat frame;
             int frameIndex = 0;
             while (frameQueue.dequeue(frame))
             {
-                // Detect objects in the frame
                 std::vector<Detection> results = detector.detect(frame);
-
-                // Draw bounding boxes on the frame
-                detector.drawBoundingBoxMask(frame, results); // Uncomment for mask drawing
-
-                // Enqueue the processed frame
+                detector.drawBoundingBoxMask(frame, results);
                 processedQueue.enqueue(std::make_pair(frameIndex++, frame));
             }
             processedQueue.setFinished();
         });
 
-        // Writing thread
         std::thread writingThread([&]() {
             std::pair<int, cv::Mat> processedFrame;
             while (processedQueue.dequeue(processedFrame))
@@ -248,84 +271,27 @@ int main(int argc, char** argv)
             }
         });
 
-        // Wait for all threads to finish
         captureThread.join();
         processingThread.join();
         writingThread.join();
 
-        // Release resources
         cap.release();
         out.release();
-
         return true;
     };
 
-    // CLI handling: expect one argument: path to a video file or a folder containing videos
-    if (argc < 2)
+    // Iterate over collected videos and process them
+    for (const auto& vp : videoFiles)
     {
-        std::cerr << "Usage: <executable> <path_to_video_or_directory>\n";
-        return 1;
+        std::cout << "\nProcessing: " << vp << std::endl;
+        fs::path vpp(vp);
+        fs::path outPath = vpp.parent_path() / (vpp.stem().string() + "_processed" + vpp.extension().string());
+        bool ok = processSingleVideo(vp, outPath.string());
+        if (!ok)
+        {
+            std::cerr << "Failed processing: " << vp << "\n";
+        }
     }
 
-    std::filesystem::path inputPath(argv[1]);
-    if (!std::filesystem::exists(inputPath))
-    {
-        std::cerr << "Error: Path does not exist: " << inputPath << "\n";
-        return 1;
-    }
-
-    if (std::filesystem::is_regular_file(inputPath))
-    {
-        if (!isVideoFile(inputPath))
-        {
-            std::cerr << "Error: Provided file is not a supported video: " << inputPath << "\n";
-            return 1;
-        }
-        std::filesystem::path outputPath = inputPath.parent_path() / (inputPath.stem().string() + "_processed" + inputPath.extension().string());
-        bool ok = processSingleVideo(inputPath.string(), outputPath.string());
-        return ok ? 0 : 1;
-    }
-    else if (std::filesystem::is_directory(inputPath))
-    {
-        std::vector<std::filesystem::path> videoFiles;
-        for (const auto& entry : std::filesystem::directory_iterator(inputPath))
-        {
-            if (entry.is_regular_file() && isVideoFile(entry.path()))
-            {
-                videoFiles.push_back(entry.path());
-            }
-        }
-
-        if (videoFiles.empty())
-        {
-            std::cerr << "Error: No supported video files found in directory: " << inputPath << "\n";
-            return 1;
-        }
-
-        int numFailed = 0;
-        for (const auto& vp : videoFiles)
-        {
-            std::filesystem::path outputPath = vp.parent_path() / (vp.stem().string() + "_processed" + vp.extension().string());
-            std::cout << "Processing: " << vp << " -> " << outputPath << std::endl;
-            if (!processSingleVideo(vp.string(), outputPath.string()))
-            {
-                std::cerr << "Failed processing: " << vp << "\n";
-                ++numFailed;
-            }
-        }
-
-        if (numFailed > 0)
-        {
-            std::cerr << "Completed with " << numFailed << " failures." << std::endl;
-            return 1;
-        }
-
-        std::cout << "All videos processed successfully." << std::endl;
-        return 0;
-    }
-    else
-    {
-        std::cerr << "Error: Provided path is neither a regular file nor a directory: " << inputPath << "\n";
-        return 1;
-    }
+    return 0;
 }
