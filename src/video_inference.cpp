@@ -46,6 +46,9 @@
 #include <mutex>
 #include <atomic>
 #include <condition_variable>
+#include <filesystem>
+#include <algorithm>
+#include <cctype>
 
 // Uncomment the version
 //#define YOLO5 // Uncomment for YOLOv5
@@ -53,8 +56,8 @@
 //#define YOLO8 // Uncomment for YOLOv8
 //#define YOLO9 // Uncomment for YOLOv9
 //#define YOLO10 // Uncomment for YOLOv10
-//#define YOLO11 // Uncomment for YOLOv11
-#define YOLO12 // Uncomment for YOLOv12
+#define YOLO11 // Uncomment for YOLOv11
+//#define YOLO12 // Uncomment for YOLOv12
 
 #ifdef YOLO5
     #include "det/YOLO5.hpp"
@@ -116,36 +119,33 @@ private:
     bool finished = false;
 };
 
-int main()
+int main(int argc, char** argv)
 {
-    // Paths to the model, labels, input video, and output video
-    const std::string labelsPath = "../models/coco.names";
-    const std::string videoPath = "../data/SIG_experience_center.mp4"; // Input video path
-    const std::string outputPath = "../data/SIG_experience_center_processed.mp4"; // Output video path
+    // Paths to the model and labels
+    const std::string labelsPath = "models/coco.names";
 
     // Model paths for different YOLO versions
     #ifdef YOLO5
-        std::string modelPath = "../models/yolo5-n6.onnx";
+        std::string modelPath = "models/yolo5-n6.onnx";
     #endif
     #ifdef YOLO7
-        const std::string modelPath = "../models/yolo7-tiny.onnx";
+        const std::string modelPath = "models/yolo7-tiny.onnx";
     #endif
     #ifdef YOLO8
-        std::string modelPath = "../models/yolo8n.onnx";
+        std::string modelPath = "models/yolo8n.onnx";
     #endif
     #ifdef YOLO9
-        const std::string modelPath = "../models/yolov9s.onnx";
+        const std::string modelPath = "models/yolov9s.onnx";
     #endif
     #ifdef YOLO10
-        std::string modelPath = "../models/yolo10n_uint8.onnx";
+        std::string modelPath = "models/yolo10n_uint8.onnx";
     #endif
     #ifdef YOLO11
-        const std::string modelPath = "../models/yolo11n.onnx";
+        const std::string modelPath = "models/yolo11n.onnx";
     #endif
     #ifdef YOLO12
-        const std::string modelPath = "../models/yolo12n.onnx";
+        const std::string modelPath = "models/yolo12n.onnx";
     #endif
-
 
     // Initialize the YOLO detector
     bool isGPU = true; // Set to false for CPU processing
@@ -168,87 +168,164 @@ int main()
         YOLO12Detector detector(modelPath, labelsPath, isGPU);
     #endif
 
-    // Open the video file
-    cv::VideoCapture cap(videoPath);
-    if (!cap.isOpened())
+    // Helpers
+    auto toLower = [](std::string s) {
+        std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
+        return s;
+    };
+
+    auto isVideoFile = [&](const std::filesystem::path& p) {
+        static const std::vector<std::string> exts = {
+            ".mp4", ".avi", ".mov", ".mkv", ".wmv", ".flv", ".m4v", ".mpg", ".mpeg"
+        };
+        std::string ext = toLower(p.extension().string());
+        return std::find(exts.begin(), exts.end(), ext) != exts.end();
+    };
+
+    // Processing routine for a single video
+    auto processSingleVideo = [&](const std::string& inputVideoPath, const std::string& outputVideoPath) -> bool {
+        // Open the video file
+        cv::VideoCapture cap(inputVideoPath);
+        if (!cap.isOpened())
+        {
+            std::cerr << "Error: Could not open or find the video file: " << inputVideoPath << "\n";
+            return false;
+        }
+
+        // Get video properties
+        int frameWidth = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_WIDTH));
+        int frameHeight = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_HEIGHT));
+        int fps = static_cast<int>(cap.get(cv::CAP_PROP_FPS));
+        int fourcc = static_cast<int>(cap.get(cv::CAP_PROP_FOURCC)); // Get codec of input video
+
+        // Create a VideoWriter object to save the output video with the same codec
+        cv::VideoWriter out(outputVideoPath, fourcc, fps, cv::Size(frameWidth, frameHeight), true);
+        if (!out.isOpened())
+        {
+            std::cerr << "Error: Could not open the output video file for writing: " << outputVideoPath << "\n";
+            cap.release();
+            return false;
+        }
+
+        // Thread-safe queues
+        SafeQueue<cv::Mat> frameQueue;
+        SafeQueue<std::pair<int, cv::Mat>> processedQueue;
+
+        // Capture thread
+        std::thread captureThread([&]() {
+            cv::Mat frame;
+            while (cap.read(frame))
+            {
+                frameQueue.enqueue(frame.clone()); // Clone to ensure thread safety
+            }
+            frameQueue.setFinished();
+        });
+
+        // Processing thread
+        std::thread processingThread([&]() {
+            cv::Mat frame;
+            int frameIndex = 0;
+            while (frameQueue.dequeue(frame))
+            {
+                // Detect objects in the frame
+                std::vector<Detection> results = detector.detect(frame);
+
+                // Draw bounding boxes on the frame
+                detector.drawBoundingBoxMask(frame, results); // Uncomment for mask drawing
+
+                // Enqueue the processed frame
+                processedQueue.enqueue(std::make_pair(frameIndex++, frame));
+            }
+            processedQueue.setFinished();
+        });
+
+        // Writing thread
+        std::thread writingThread([&]() {
+            std::pair<int, cv::Mat> processedFrame;
+            while (processedQueue.dequeue(processedFrame))
+            {
+                out.write(processedFrame.second);
+            }
+        });
+
+        // Wait for all threads to finish
+        captureThread.join();
+        processingThread.join();
+        writingThread.join();
+
+        // Release resources
+        cap.release();
+        out.release();
+
+        return true;
+    };
+
+    // CLI handling: expect one argument: path to a video file or a folder containing videos
+    if (argc < 2)
     {
-        std::cerr << "Error: Could not open or find the video file!\n";
-        return -1;
+        std::cerr << "Usage: <executable> <path_to_video_or_directory>\n";
+        return 1;
     }
 
-    // Get video properties
-    int frameWidth = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_WIDTH));
-    int frameHeight = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_HEIGHT));
-    int fps = static_cast<int>(cap.get(cv::CAP_PROP_FPS));
-    int fourcc = static_cast<int>(cap.get(cv::CAP_PROP_FOURCC)); // Get codec of input video
-
-    // Create a VideoWriter object to save the output video with the same codec
-    cv::VideoWriter out(outputPath, fourcc, fps, cv::Size(frameWidth, frameHeight), true);
-    if (!out.isOpened())
+    std::filesystem::path inputPath(argv[1]);
+    if (!std::filesystem::exists(inputPath))
     {
-        std::cerr << "Error: Could not open the output video file for writing!\n";
-        return -1;
+        std::cerr << "Error: Path does not exist: " << inputPath << "\n";
+        return 1;
     }
 
-    // Thread-safe queues and processing...
-    // Thread-safe queues
-    SafeQueue<cv::Mat> frameQueue;
-    SafeQueue<std::pair<int, cv::Mat>> processedQueue;
-
-    // Flag to indicate processing completion
-    std::atomic<bool> processingDone(false);
-
-
-    // Capture thread
-    std::thread captureThread([&]() {
-        cv::Mat frame;
-        int frameCount = 0;
-        while (cap.read(frame))
+    if (std::filesystem::is_regular_file(inputPath))
+    {
+        if (!isVideoFile(inputPath))
         {
-            frameQueue.enqueue(frame.clone()); // Clone to ensure thread safety
-            frameCount++;
+            std::cerr << "Error: Provided file is not a supported video: " << inputPath << "\n";
+            return 1;
         }
-        frameQueue.setFinished();
-    });
-
-    // Processing thread
-    std::thread processingThread([&]() {
-        cv::Mat frame;
-        int frameIndex = 0;
-        while (frameQueue.dequeue(frame))
+        std::filesystem::path outputPath = inputPath.parent_path() / (inputPath.stem().string() + "_processed" + inputPath.extension().string());
+        bool ok = processSingleVideo(inputPath.string(), outputPath.string());
+        return ok ? 0 : 1;
+    }
+    else if (std::filesystem::is_directory(inputPath))
+    {
+        std::vector<std::filesystem::path> videoFiles;
+        for (const auto& entry : std::filesystem::directory_iterator(inputPath))
         {
-            // Detect objects in the frame
-            std::vector<Detection> results = detector.detect(frame);
-
-            // Draw bounding boxes on the frame
-            detector.drawBoundingBoxMask(frame, results); // Uncomment for mask drawing
-
-            // Enqueue the processed frame
-            processedQueue.enqueue(std::make_pair(frameIndex++, frame));
+            if (entry.is_regular_file() && isVideoFile(entry.path()))
+            {
+                videoFiles.push_back(entry.path());
+            }
         }
-        processedQueue.setFinished();
-    });
 
-    // Writing thread
-    std::thread writingThread([&]() {
-        std::pair<int, cv::Mat> processedFrame;
-        while (processedQueue.dequeue(processedFrame))
+        if (videoFiles.empty())
         {
-            out.write(processedFrame.second);
+            std::cerr << "Error: No supported video files found in directory: " << inputPath << "\n";
+            return 1;
         }
-    });
 
-    // Wait for all threads to finish
-    captureThread.join();
-    processingThread.join();
-    writingThread.join();
+        int numFailed = 0;
+        for (const auto& vp : videoFiles)
+        {
+            std::filesystem::path outputPath = vp.parent_path() / (vp.stem().string() + "_processed" + vp.extension().string());
+            std::cout << "Processing: " << vp << " -> " << outputPath << std::endl;
+            if (!processSingleVideo(vp.string(), outputPath.string()))
+            {
+                std::cerr << "Failed processing: " << vp << "\n";
+                ++numFailed;
+            }
+        }
 
-    // Release resources
-    cap.release();
-    out.release();
-    cv::destroyAllWindows();
+        if (numFailed > 0)
+        {
+            std::cerr << "Completed with " << numFailed << " failures." << std::endl;
+            return 1;
+        }
 
-    std::cout << "Video processing completed successfully." << std::endl;
-
-    return 0;
+        std::cout << "All videos processed successfully." << std::endl;
+        return 0;
+    }
+    else
+    {
+        std::cerr << "Error: Provided path is neither a regular file nor a directory: " << inputPath << "\n";
+        return 1;
+    }
 }
