@@ -80,37 +80,39 @@ int main(int argc, char* argv[]){
     namespace fs = std::filesystem;
     // Paths to the model, labels, and test image
     const std::string labelsPath = "models/coco.names";
-    std::string imagePath = "data/dog.jpg";           // Default image path
     std::vector<std::string> imageFiles;
 
+    // Require a user-provided path to an image file or a directory of images
+    if (argc < 2) {
+        std::cerr << "Error: Please provide a valid path to an image file or a folder containing images.\n";
+        std::cerr << "Example: " << argv[0] << " /home/example/test.jpg" << std::endl;
+        return -1;
+    }
+
+    std::string imagePath = argv[1];
+
     // If an argument is provided, use it as the image path or directory
-    if (argc > 1) {
-        imagePath = argv[1];
-        if (fs::is_directory(imagePath)) {
-            // Collect all image files in the directory
-            for (const auto& entry : fs::directory_iterator(imagePath)) {
-                if (entry.is_regular_file()) {
-                    std::string ext = entry.path().extension().string();
-                    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-                    if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp" || ext == ".tiff" || ext == ".tif") {
-                        imageFiles.push_back(fs::absolute(entry.path()).string());
-                    }
+    if (fs::is_directory(imagePath)) {
+        // Collect all image files in the directory
+        for (const auto& entry : fs::directory_iterator(imagePath)) {
+            if (entry.is_regular_file()) {
+                std::string ext = entry.path().extension().string();
+                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp" || ext == ".tiff" || ext == ".tif") {
+                    imageFiles.push_back(fs::absolute(entry.path()).string());
                 }
             }
-            if (imageFiles.empty()) {
-                std::cerr << "No image files found in directory: " << imagePath << std::endl;
-                return -1;
-            }
-        } else if (fs::is_regular_file(imagePath)) {
-            imageFiles.push_back(imagePath);
-        } else {
-            std::cerr << "Provided path is not a valid file or directory: " << imagePath << std::endl;
+        }
+        if (imageFiles.empty()) {
+            std::cerr << "No image files found in directory: " << imagePath << std::endl;
             return -1;
         }
-    } else {
-        std::cout << "Usage: " << argv[0] << " <image_path_or_folder>\n";
-        std::cout << "No image path provided. Using default: " << imagePath << std::endl;
+    } else if (fs::is_regular_file(imagePath)) {
         imageFiles.push_back(imagePath);
+    } else {
+        std::cerr << "Please provide a valid path to an image file or a folder containing images.\n";
+        std::cerr << "Example: " << argv[0] << " /home/example/test.jpg" << std::endl;
+        return -1;
     }
 
     // Model paths for different YOLO versions
