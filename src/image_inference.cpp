@@ -44,7 +44,6 @@
 #include <filesystem>
 #include <algorithm> // Required for std::transform
 
-
 #include "det/YOLO.hpp"
 
 int main(int argc, char* argv[]){
@@ -54,15 +53,6 @@ int main(int argc, char* argv[]){
     std::string imagePath = "../data/dog.jpg";           // Default image path
     std::string modelPath = "../models/yolo11n.onnx";
     std::vector<std::string> imageFiles;
-
-    // Require a user-provided path to an image file or a directory of images
-    if (argc < 2) {
-        std::cerr << "Error: Please provide a valid path to an image file or a folder containing images.\n";
-        std::cerr << "Example: " << argv[0] << " /home/example/test.jpg" << std::endl;
-        return -1;
-    }
-
-    std::string imagePath = argv[1];
 
     if(argc > 1){
         modelPath = argv[1];            
@@ -101,7 +91,7 @@ int main(int argc, char* argv[]){
     }
     // Initialize the YOLO detector with the chosen model and labels
     bool isGPU = true; // Set to false for CPU processing
-    
+    // YOLO10Detector detector(modelPath, labelsPath, isGPU);
     YOLODetector detector(modelPath, labelsPath, isGPU);
     for (const auto& imgPath : imageFiles) {
         std::cout << "\nProcessing: " << imgPath << std::endl;
@@ -125,6 +115,7 @@ int main(int argc, char* argv[]){
                       << ", Box=(" << results[i].box.x << "," << results[i].box.y 
                       << "," << results[i].box.width << "," << results[i].box.height << ")" << std::endl;
         }
+
         // Draw bounding boxes on the image
         detector.drawBoundingBox(image, results); // simple bbox drawing
         // detector.drawBoundingBoxMask(image, results); // Uncomment for mask drawing

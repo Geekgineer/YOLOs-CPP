@@ -110,81 +110,87 @@ int main(int argc, char* argv[])
     bool isGPU = true; // Set to false for CPU processing
     YOLODetector detector(modelPath, labelsPath, isGPU);
 
-    // Processing routine for a single video (reuses existing threaded pipeline)
-    auto processSingleVideo = [&](const std::string& inputVideoPath, const std::string& outputVideoPath) -> bool {
-        cv::VideoCapture cap(inputVideoPath);
-        if (!cap.isOpened())
-        {
-            std::cerr << "Error: Could not open or find the video file: " << inputVideoPath << "\n";
-            return false;
-        }
-
-        int frameWidth = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_WIDTH));
-        int frameHeight = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_HEIGHT));
-        int fps = static_cast<int>(cap.get(cv::CAP_PROP_FPS));
-        int fourcc = static_cast<int>(cap.get(cv::CAP_PROP_FOURCC));
-
-        cv::VideoWriter out(outputVideoPath, fourcc, fps, cv::Size(frameWidth, frameHeight), true);
-        if (!out.isOpened())
-        {
-            std::cerr << "Error: Could not open the output video file for writing: " << outputVideoPath << "\n";
-            cap.release();
-            return false;
-        }
-
-        SafeQueue<cv::Mat> frameQueue;
-        SafeQueue<std::pair<int, cv::Mat>> processedQueue;
-
-        std::thread captureThread([&]() {
-            cv::Mat frame;
-            while (cap.read(frame))
-            {
-                frameQueue.enqueue(frame.clone());
-            }
-            frameQueue.setFinished();
-        });
-
-        std::thread processingThread([&]() {
-            cv::Mat frame;
-            int frameIndex = 0;
-            while (frameQueue.dequeue(frame))
-            {
-                std::vector<Detection> results = detector.detect(frame);
-                detector.drawBoundingBoxMask(frame, results);
-                processedQueue.enqueue(std::make_pair(frameIndex++, frame));
-            }
-            processedQueue.setFinished();
-        });
-
-        std::thread writingThread([&]() {
-            std::pair<int, cv::Mat> processedFrame;
-            while (processedQueue.dequeue(processedFrame))
-            {
-                out.write(processedFrame.second);
-            }
-        });
-
-        captureThread.join();
-        processingThread.join();
-        writingThread.join();
-
-        cap.release();
-        out.release();
-        return true;
-    };
-
-    // Iterate over collected videos and process them
-    for (const auto& vp : videoFiles)
+    // Open the video file
+    cv::VideoCapture cap(videoPath);
+    if (!cap.isOpened())
     {
-        std::cout << "\nProcessing: " << vp << std::endl;
-        fs::path vpp(vp);
-        fs::path outPath = vpp.parent_path() / (vpp.stem().string() + "_processed" + vpp.extension().string());
-        bool ok = processSingleVideo(vp, outPath.string());
-        if (!ok)
-        {
-            std::cerr << "Failed processing: " << vp << "\n";
-        }
+        std::cerr << "Error: Could not open or find the video file!\n";
+        return -1;
     }
+
+    // Get video properties
+    int frameWidth = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_WIDTH));
+    int frameHeight = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_HEIGHT));
+    int fps = static_cast<int>(cap.get(cv::CAP_PROP_FPS));
+    int fourcc = static_cast<int>(cap.get(cv::CAP_PROP_FOURCC)); // Get codec of input video
+
+    // Create a VideoWriter object to save the output video with the same codec
+    cv::VideoWriter out(outputPath, fourcc, fps, cv::Size(frameWidth, frameHeight), true);
+    if (!out.isOpened())
+    {
+        std::cerr << "Error: Could not open the output video file for writing!\n";
+        return -1;
+    }
+
+    // Thread-safe queues and processing...
+    // Thread-safe queues
+    SafeQueue<cv::Mat> frameQueue;
+    SafeQueue<std::pair<int, cv::Mat>> processedQueue;
+
+    // Flag to indicate processing completion
+    std::atomic<bool> processingDone(false);
+
+
+    // Capture thread
+    std::thread captureThread([&]() {
+        cv::Mat frame;
+        int frameCount = 0;
+        while (cap.read(frame))
+        {
+            frameQueue.enqueue(frame.clone()); // Clone to ensure thread safety
+            frameCount++;
+        }
+        frameQueue.setFinished();
+    });
+
+    // Processing thread
+    std::thread processingThread([&]() {
+        cv::Mat frame;
+        int frameIndex = 0;
+        while (frameQueue.dequeue(frame))
+        {
+            // Detect objects in the frame
+            std::vector<Detection> results = detector.detect(frame);
+
+            // Draw bounding boxes on the frame
+            detector.drawBoundingBoxMask(frame, results); // Uncomment for mask drawing
+
+            // Enqueue the processed frame
+            processedQueue.enqueue(std::make_pair(frameIndex++, frame));
+        }
+        processedQueue.setFinished();
+    });
+
+    // Writing thread
+    std::thread writingThread([&]() {
+        std::pair<int, cv::Mat> processedFrame;
+        while (processedQueue.dequeue(processedFrame))
+        {
+            out.write(processedFrame.second);
+        }
+    });
+
+    // Wait for all threads to finish
+    captureThread.join();
+    processingThread.join();
+    writingThread.join();
+
+    // Release resources
+    cap.release();
+    out.release();
+    cv::destroyAllWindows();
+
+    std::cout << "Video processing completed successfully." << std::endl;
 
     return 0;
 }
