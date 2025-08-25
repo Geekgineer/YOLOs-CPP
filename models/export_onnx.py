@@ -5,8 +5,6 @@ from ultralytics import YOLO
 # model = YOLO("yolov5nu.pt")
 # model = YOLO("yolov6n.yaml")
 # model.train(data="coco8.yaml", epochs=50, imgsz=640)
-
-# model = YOLO("yolov7/yolov7-tiny.pt")
 # model = YOLO("yolov8n.pt")
 # model = YOLO("yolov9t.pt")
 model = YOLO("yolov10n.pt")
