@@ -1,1 +1,1 @@
-cd build/ && ./camera_inference
+cd build/ && ./camera_inference "$@"

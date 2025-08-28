@@ -44,124 +44,55 @@
 #include <filesystem>
 #include <algorithm> // Required for std::transform
 
-// Uncomment the version
-//#define YOLO5 // Uncomment for YOLOv5
-//#define YOLO7 // Uncomment for YOLOv7
-//#define YOLO8 // Uncomment for YOLOv8
-//#define YOLO9 // Uncomment for YOLOv9
-//#define YOLO10 // Uncomment for YOLOv10
-#define YOLO11 // Uncomment for YOLOv11
-//#define YOLO12 // Uncomment for YOLOv12
-
-#ifdef YOLO5
-    #include "det/YOLO5.hpp"
-#endif
-#ifdef YOLO7
-    #include "det/YOLO7.hpp"
-#endif
-#ifdef YOLO8
-    #include "det/YOLO8.hpp"
-#endif
-#ifdef YOLO9
-    #include "det/YOLO9.hpp"
-#endif
-#ifdef YOLO10
-    #include "det/YOLO10.hpp"
-#endif
-#ifdef YOLO11
-    #include "det/YOLO11.hpp"
-#endif
-#ifdef YOLO12
-    #include "det/YOLO12.hpp"
-#endif
-
+#include "det/YOLO.hpp"
 
 int main(int argc, char* argv[]){
     namespace fs = std::filesystem;
     // Paths to the model, labels, and test image
-    const std::string labelsPath = "models/coco.names";
+    std::string labelsPath = "../models/coco.names";
+    std::string imagePath = "../data/dog.jpg";           // Default image path
+    std::string modelPath = "../models/yolo11n.onnx";
     std::vector<std::string> imageFiles;
 
-    // Require a user-provided path to an image file or a directory of images
-    if (argc < 2) {
-        std::cerr << "Error: Please provide a valid path to an image file or a folder containing images.\n";
-        std::cerr << "Example: " << argv[0] << " /home/example/test.jpg" << std::endl;
-        return -1;
+    if(argc > 1){
+        modelPath = argv[1];            
     }
-
-    std::string imagePath = argv[1];
-
     // If an argument is provided, use it as the image path or directory
-    if (fs::is_directory(imagePath)) {
-        // Collect all image files in the directory
-        for (const auto& entry : fs::directory_iterator(imagePath)) {
-            if (entry.is_regular_file()) {
-                std::string ext = entry.path().extension().string();
-                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-                if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp" || ext == ".tiff" || ext == ".tif") {
-                    imageFiles.push_back(fs::absolute(entry.path()).string());
+    if (argc > 2) {
+        imagePath = argv[2];
+        if (fs::is_directory(imagePath)) {
+            // Collect all image files in the directory
+            for (const auto& entry : fs::directory_iterator(imagePath)) {
+                if (entry.is_regular_file()) {
+                    std::string ext = entry.path().extension().string();
+                    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                    if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp" || ext == ".tiff" || ext == ".tif") {
+                        imageFiles.push_back(fs::absolute(entry.path()).string());
+                    }
                 }
             }
-        }
-        if (imageFiles.empty()) {
-            std::cerr << "No image files found in directory: " << imagePath << std::endl;
+            if (imageFiles.empty()) {
+                std::cerr << "No image files found in directory: " << imagePath << std::endl;
+                return -1;
+            }
+        } else if (fs::is_regular_file(imagePath)) {
+            imageFiles.push_back(imagePath);
+        } else {
+            std::cerr << "Provided path is not a valid file or directory: " << imagePath << std::endl;
             return -1;
         }
-    } else if (fs::is_regular_file(imagePath)) {
-        imageFiles.push_back(imagePath);
     } else {
-        std::cerr << "Please provide a valid path to an image file or a folder containing images.\n";
-        std::cerr << "Example: " << argv[0] << " /home/example/test.jpg" << std::endl;
-        return -1;
+        std::cout << "Usage: " << argv[0] << " <image_path_or_folder>\n";
+        std::cout << "No image path provided. Using default: " << imagePath << std::endl;
+        imageFiles.push_back(imagePath);
     }
-
-    // Model paths for different YOLO versions
-    #ifdef YOLO5
-        std::string modelPath = "models/yolo5-n6.onnx";
-    #endif
-    #ifdef YOLO7
-        const std::string modelPath = "models/yolo7-tiny.onnx";
-    #endif
-    #ifdef YOLO8
-        std::string modelPath = "models/yolo8n.onnx";
-    #endif
-    #ifdef YOLO9
-        const std::string modelPath = "models/yolov9s.onnx";
-    #endif
-    #ifdef YOLO10
-        std::string modelPath = "models/yolo10n_uint8.onnx";
-    #endif
-    #ifdef YOLO11
-        const std::string modelPath = "models/yolo11n.onnx";
-    #endif
-    #ifdef YOLO12
-        const std::string modelPath = "models/yolo12n.onnx";
-    #endif
-
+    if (argc > 3){
+        labelsPath = argv[3];
+    }
     // Initialize the YOLO detector with the chosen model and labels
     bool isGPU = true; // Set to false for CPU processing
-    #ifdef YOLO5
-        YOLO5Detector detector(modelPath, labelsPath, isGPU);
-    #endif
-    #ifdef YOLO7
-        YOLO7Detector detector(modelPath, labelsPath, isGPU);
-    #endif
-    #ifdef YOLO8
-        YOLO8Detector detector(modelPath, labelsPath, isGPU);
-    #endif
-    #ifdef YOLO9
-        YOLO9Detector detector(modelPath, labelsPath, isGPU);
-    #endif
-    #ifdef YOLO10
-        YOLO10Detector detector(modelPath, labelsPath, isGPU);
-    #endif
-    #ifdef YOLO11
-        YOLO11Detector detector(modelPath, labelsPath, isGPU);
-    #endif
-    #ifdef YOLO12
-        YOLO12Detector detector(modelPath, labelsPath, isGPU);
-    #endif
-
+    // YOLO10Detector detector(modelPath, labelsPath, isGPU);
+    YOLODetector detector(modelPath, labelsPath, isGPU);
     for (const auto& imgPath : imageFiles) {
         std::cout << "\nProcessing: " << imgPath << std::endl;
         // Load an image
@@ -184,6 +115,7 @@ int main(int argc, char* argv[]){
                       << ", Box=(" << results[i].box.x << "," << results[i].box.y 
                       << "," << results[i].box.width << "," << results[i].box.height << ")" << std::endl;
         }
+
         // Draw bounding boxes on the image
         detector.drawBoundingBox(image, results); // simple bbox drawing
         // detector.drawBoundingBoxMask(image, results); // Uncomment for mask drawing
