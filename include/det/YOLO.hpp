@@ -632,6 +632,13 @@ public:
         utils::DrawingUtils::drawBoundingBoxMask(image, detections, classNames, classColors, maskAlpha);
     }
 
+    /**
+     * @brief Gets the device used for inference.
+     * 
+     * @return std::string "GPU" or "CPU".
+     */
+    std::string getDevice() const { return device_used; }
+
 private:
     Ort::Env env{nullptr};                         // ONNX Runtime environment
     Ort::SessionOptions sessionOptions{nullptr};   // Session options for ONNX Runtime
@@ -649,6 +656,7 @@ private:
 
     std::vector<std::string> classNames;            // Vector of class names loaded from file
     std::vector<cv::Scalar> classColors;            // Vector of colors for each class
+    std::string device_used;                        // Device used for inference: "GPU" or "CPU"
 
     /**
      * @brief Preprocesses the input image for model inference.
@@ -721,11 +729,13 @@ YOLODetector::YOLODetector(const std::string &modelPath, const std::string &labe
     if (useGPU && cudaAvailable != availableProviders.end()) {
         std::cout << "Inference device: GPU" << std::endl;
         sessionOptions.AppendExecutionProvider_CUDA(cudaOption); // Append CUDA execution provider
+        device_used = "gpu";
     } else {
         if (useGPU) {
             std::cout << "GPU is not supported by your ONNXRuntime build. Fallback to CPU." << std::endl;
         }
         std::cout << "Inference device: CPU" << std::endl;
+        device_used = "cpu";
     }
 
     // Load the ONNX model into the session
@@ -817,7 +827,7 @@ std::vector<Detection> YOLODetector::postprocess(
     // Determine the number of features and detections
     const size_t num_features = outputShape[1];
     const size_t num_detections = outputShape[2];
-    std::cout << "num_features " << num_features << " num_detections " << num_detections << " " << outputShape[3] << std::endl;
+    // std::cout << "num_features " << num_features << " num_detections " << num_detections << " " << outputShape[3] << std::endl;
     // Early exit if no detections
     if (num_detections == 0) {
         return detections;
@@ -1145,16 +1155,16 @@ std::vector<Detection> YOLODetector::detect(const cv::Mat& image, float confThre
     // Postprocess the output tensors to obtain detections
     std::vector<Detection> detections;
     const std::vector<int64_t> outputShape = outputTensors[0].GetTensorTypeAndShapeInfo().GetShape();
-    std::cout << "out shape 0 "<< outputShape[0] << " 1 " << outputShape[1] << " 2 " << outputShape[2] << std::endl;
+    // std::cout << "out shape 0 "<< outputShape[0] << " 1 " << outputShape[1] << " 2 " << outputShape[2] << std::endl;
     if(outputShape[2] == 6){
-        std::cout << "yolo 10 detected" << std::endl;
+        // std::cout << "yolo 10 detected" << std::endl;
         detections = postprocess_yolo10(image.size(), resizedImageShape, outputTensors, confThreshold, iouThreshold);
     }else if(outputShape[1] == 7){
-        std::cout << "yolo 7 detected" << std::endl;
+        // std::cout << "yolo 7 detected" << std::endl;
         detections = postprocess_yolo7(image.size(), resizedImageShape, outputTensors, confThreshold, iouThreshold);
     }
     else{
-        std::cout << "yolo not 10 detected" << std::endl;
+        // std::cout << "yolo not 10 detected" << std::endl;
         detections = postprocess(image.size(), resizedImageShape, outputTensors, confThreshold, iouThreshold);
     }
     
