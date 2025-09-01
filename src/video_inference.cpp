@@ -89,8 +89,8 @@ int main(int argc, char* argv[])
 {
     // Paths to the model, labels, input video, and output video
     std::string labelsPath = "../models/coco.names";
-    std::string videoPath = "../data/SIG_experience_center.mp4"; // Input video path
-    std::string outputPath = "../data/SIG_experience_center_processed.mp4"; // Output video path
+    std::string videoPath = "../data/dogs.mp4"; // Input video path
+    std::string outputPath = "../data/out_dogs.mp4"; // Output video path
     std::string modelPath = "../models/yolo11n.onnx";
 
     if (argc > 1){
