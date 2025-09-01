@@ -51,3 +51,4 @@ onnxruntime*
 .vscode/
 *.onnx
 *.pt
+*.json
