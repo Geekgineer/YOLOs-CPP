@@ -10,13 +10,13 @@ def main(is_use_gpu = False, is_mac = False):
     device = "mps" if is_mac else ("0" if is_use_gpu else "cpu")
 
     models_to_export = [
-        "yolov5nu.pt",
-        "yolov6n.yaml",
-        "yolov8n.pt",
-        "yolov9t.pt",
-        "yolov10n.pt",
-        "yolo11n.pt",
-        "yolo12n.pt"
+        "YOLOv5nu_voc.pt",
+        "YOLOv6n_voc.pt",
+        "YOLOv8n_voc.pt",
+        "YOLOv9t_voc.pt",
+        "YOLOv10n_voc.pt",
+        "YOLOv11n_voc.pt",
+        "YOLOv12n_voc.pt"
     ]
 
     export_configs = {
