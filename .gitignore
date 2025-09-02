@@ -51,3 +51,6 @@ onnxruntime*
 # Ignore any IDE-specific files 
 .idea/
 .vscode/
+*.onnx
+*.pt
+*.json
