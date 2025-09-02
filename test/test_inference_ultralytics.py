@@ -81,13 +81,13 @@ def main():
     output_results_json = os.path.join(results_path, "results_ultralytics.json")
 
     models = [
-        "yolov5nu",
-        "yolov6n",
-        "yolov8n",
-        "yolov9t",
-        "yolov10n",
-        "yolo11n",
-        "yolo12n"
+        "YOLOv5nu_voc",
+        "YOLOv6n_voc",
+        "YOLOv8n_voc",
+        "YOLOv9t_voc",
+        "YOLOv10n_voc",
+        "YOLOv11n_voc",
+        "YOLOv12n_voc"
     ]
 
     results_dict = {}
@@ -124,7 +124,7 @@ def main():
 
             results = model.predict(
                 source = image_path,
-                verbose = False,
+                verbose = True,
                 conf = inference_config["conf"],
                 iou = inference_config["iou"],
                 device = "cpu",
@@ -154,7 +154,7 @@ def main():
                 x1, y1, x2, y2 = map(float, xyxy)
                 x, y, w, h = map(float, xywh)
 
-                if image_file not in results_dict[model_name]:
+                if image_path not in results_dict[model_name]:
                     results_dict[model_name][image_path] = []
 
                 results_dict[model_name][image_path].append(
