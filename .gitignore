@@ -52,6 +52,5 @@ onnxruntime*
 .idea/
 .vscode/
 *.onnx
-*.json
 
 !*voc.pt
