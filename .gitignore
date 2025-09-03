@@ -51,6 +51,8 @@ onnxruntime*
 # Ignore any IDE-specific files 
 .idea/
 .vscode/
+.cache/
 *.onnx
+build/
 
 !*voc.pt
