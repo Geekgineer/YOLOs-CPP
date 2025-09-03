@@ -54,98 +54,30 @@
 #include <atomic>
 
 #include <opencv2/highgui/highgui.hpp>
-
-// Uncomment the version
-//#define YOLO5
-//#define YOLO7
-//#define YOLO8
-//#define YOLO9
-//#define YOLO10
-//#define YOLO11
-#define YOLO12
-
-#ifdef YOLO5
-    #include "det/YOLO5.hpp"
-#endif
-#ifdef YOLO7
-    #include "det/YOLO7.hpp"
-#endif
-#ifdef YOLO8
-    #include "det/YOLO8.hpp"
-#endif
-#ifdef YOLO9
-    #include "det/YOLO9.hpp"
-#endif
-#ifdef YOLO10
-    #include "det/YOLO10.hpp"
-#endif
-#ifdef YOLO11
-    #include "det/YOLO11.hpp"
-#endif
-#ifdef YOLO12
-    #include "det/YOLO12.hpp"
-#endif
+#include "det/YOLO.hpp"
 
 
 // Include the bounded queue
 #include "tools/BoundedThreadSafeQueue.hpp"
 
-int main()
+int main(int argc, char* argv[])
 {
     // Configuration parameters
     const bool isGPU = true;
-    const std::string labelsPath = "../models/coco.names";
+    std::string labelsPath = "../models/coco.names";
+    std::string modelPath = "../models/yolo11n.onnx";
 
-    #ifdef YOLO5
-        std::string modelPath = "../models/yolo5-n6.onnx";
-    #endif
-    #ifdef YOLO7
-        const std::string modelPath = "../models/yolo7-tiny.onnx";
-    #endif
-    #ifdef YOLO8
-        std::string modelPath = "../models/yolo8n.onnx";
-    #endif
-    #ifdef YOLO9
-        const std::string modelPath = "../models/yolov9s.onnx";
-    #endif
-    #ifdef YOLO10
-        std::string modelPath = "../models/yolo10n_uint8.onnx";
-    #endif
-    #ifdef YOLO11
-        const std::string modelPath = "../models/yolo11n.onnx";
-    #endif
-    #ifdef YOLO12
-        const std::string modelPath = "../models/yolo12n.onnx";
-    #endif
-
-
-
-
-
-    const std::string videoSource = "/dev/video0"; // your usb cam device
-
-    // Initialize YOLO detector
-    #ifdef YOLO5
-        YOLO5Detector detector(modelPath, labelsPath, isGPU);
-    #endif
-    #ifdef YOLO7
-        YOLO7Detector detector(modelPath, labelsPath, isGPU);
-    #endif
-    #ifdef YOLO8
-        YOLO8Detector detector(modelPath, labelsPath, isGPU);
-    #endif
-    #ifdef YOLO9
-        YOLO9Detector detector(modelPath, labelsPath, isGPU);
-    #endif
-    #ifdef YOLO10
-        YOLO10Detector detector(modelPath, labelsPath, isGPU);
-    #endif
-    #ifdef YOLO11
-        YOLO11Detector detector(modelPath, labelsPath, isGPU);
-    #endif
-    #ifdef YOLO12
-        YOLO12Detector detector(modelPath, labelsPath, isGPU);
-    #endif
+    std::string videoSource = "/dev/video0"; // your usb cam device
+    if (argc > 1){
+        modelPath = argv[1];
+    }
+    if (argc > 2){
+        videoSource = argv[2];
+    }
+    if (argc > 3){
+        labelsPath = argv[3];
+    }
+    YOLODetector detector(modelPath, labelsPath, isGPU);
 
 
     // Open video capture

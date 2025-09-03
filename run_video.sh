@@ -1,1 +1,1 @@
-cd build/ && ./video_inference
+cd build/ && ./video_inference "$@"

@@ -29,6 +29,8 @@ Makefile2
 
 # Ignore environment files
 .env
+*.pt
+*.onnx
 
 # Ignore any data that should not be version controlled
 # data/*.mp4
