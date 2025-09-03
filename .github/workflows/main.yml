@@ -1,0 +1,82 @@
+name: Main CI
+
+on:
+  push:
+    branches: ["main", "dev"]
+  pull_request:
+    branches: ["main", "dev"]
+  workflow_dispatch:   # <--- allows manual trigger
+
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  test:
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            image: ghcr.io/ahmedmsalah99/ubuntu_cpu:latest
+            build: ubuntu_cpu
+          - runner: ubuntu-latest
+            image: ghcr.io/ahmedmsalah99/ubuntu_gpu:latest
+            build: ubuntu_gpu
+
+    container:
+      image: ${{ matrix.image }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch and unzip cpu models
+        if: matrix.build == 'ubuntu_cpu'
+        run: |
+          wget https://github.com/ahmedmsalah99/YOLOs-CPP/releases/download/v1/yolo_cpu_models.zip
+          unzip -o yolo_cpu_models.zip -d test_models
+          ls -R test_models
+          
+      - name: Fetch and unzip gpu models
+        if: matrix.build == 'ubuntu_gpu'
+        run: |
+          wget https://github.com/ahmedmsalah99/YOLOs-CPP/releases/download/v1/yolo_cpu_models.zip
+          unzip -o yolo_cpu_models.zip -d test_models
+          ls -R test_models
+
+      # CPU build
+      - name: Build CPU
+        if: matrix.build == 'ubuntu_cpu'
+        run: ./build.sh 1.20.1 0
+
+      # GPU build
+      - name: Build GPU
+        if: matrix.build == 'ubuntu_gpu'
+        run: ./build.sh 1.20.1 1
+
+      # Shared test step
+      - uses: ./.github/actions/run-tests
+
+  
+  # python-test:
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'workflow_dispatch'   # <--- run only on manual trigger
+  #   container:
+  #     image: ghcr.io/ahmedmsalah99/python:latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+
+  #     - name: Fetch and unzip models
+  #       run: |
+  #         wget https://github.com/ahmedmsalah99/YOLOs-CPP/releases/download/v1/yolo_cpu_models.zip
+  #         unzip -o yolo_cpu_models.zip -d test_models
+  #         ls -R test_models
+
+  #     - name: Export ONNX
+  #       run: python models/export_onnx.py
