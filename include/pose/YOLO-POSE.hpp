@@ -1,25 +1,26 @@
 #pragma once
 
 // ===================================
-// Single YOLOv12 Detector Header File
+// Single YOLO Pose Detector Header File
 // ===================================
 //
-// This header defines the YOLO12Detector class for performing object detection using the YOLOv12 model.
-// It includes necessary libraries, utility structures, and helper functions to facilitate model inference
-// and result postprocessing.
+// This header defines the YOLOPoseDetector class for performing human pose estimation using the YOLO model.
+// It includes necessary libraries, utility structures, and helper functions to facilitate model inference,
+// keypoint detection, and result visualization.
 //
 // Authors: 
 // 1- Abdalrahman M. Amer, www.linkedin.com/in/abdalrahman-m-amer
 // 2- Mohamed Samir, www.linkedin.com/in/mohamed-samir-7a730b237/
 //
-// Date: 19.02.2025
+// Date: 16.03.2025
 // ================================
 
 /**
- * @file YOLO12Detector.hpp
- * @brief Header file for the YOLO12Detector class, responsible for object detection
- *        using the YOLOv12 model with optimized performance for minimal latency.
+ * @file YOLO-POSE.hpp
+ * @brief Header file for the YOLOPoseDetector class, responsible for human pose estimation
+ *        using the YOLO model with optimized performance for real-time applications.
  */
+
 
 // Include necessary ONNX Runtime and OpenCV headers
 #include <onnxruntime_cxx_api.h>
@@ -42,45 +43,94 @@
 #include "tools/ScopedTimer.hpp"
 
 
-/**
- * @brief Confidence threshold for filtering detections.
- */
-const float CONFIDENCE_THRESHOLD = 0.4f;
 
 /**
- * @brief  IoU threshold for filtering detections.
+ * @brief Struct representing a detected keypoint in pose estimation.
+ *
+ * This struct holds the x and y coordinates of a keypoint along with 
+ * its confidence score, indicating the model's certainty in the prediction.
  */
-const float IOU_THRESHOLD = 0.45f;
+struct KeyPoint {
+    float x;         ///< X-coordinate of the keypoint
+    float y;         ///< Y-coordinate of the keypoint
+    float confidence; ///< Confidence score of the keypoint
 
+    /**
+     * @brief Constructor to initialize a KeyPoint.
+     * 
+     * @param x_ X-coordinate of the keypoint.
+     * @param y_ Y-coordinate of the keypoint.
+     * @param conf_ Confidence score of the keypoint.
+     */
+    KeyPoint(float x_ = 0, float y_ = 0, float conf_ = 0) 
+        : x(x_), y(y_), confidence(conf_) {}
+};
 
 /**
- * @brief Struct to represent a bounding box.
+ * @brief Struct representing a bounding box for object detection.
+ *
+ * Stores the coordinates and dimensions of a detected object within an image.
  */
-
-// Struct to represent a bounding box
 struct BoundingBox {
-    int x;
-    int y;
-    int width;
-    int height;
+    int x;      ///< X-coordinate of the top-left corner
+    int y;      ///< Y-coordinate of the top-left corner
+    int width;  ///< Width of the bounding box
+    int height; ///< Height of the bounding box
 
+    /**
+     * @brief Default constructor initializing an empty bounding box.
+     */
     BoundingBox() : x(0), y(0), width(0), height(0) {}
+
+    /**
+     * @brief Constructor to initialize a bounding box with given values.
+     *
+     * @param x_ X-coordinate of the top-left corner.
+     * @param y_ Y-coordinate of the top-left corner.
+     * @param width_ Width of the bounding box.
+     * @param height_ Height of the bounding box.
+     */
     BoundingBox(int x_, int y_, int width_, int height_)
         : x(x_), y(y_), width(width_), height(height_) {}
 };
 
 /**
- * @brief Struct to represent a detection.
+ * @brief Struct representing a detected object in an image.
+ *
+ * This struct contains the bounding box, confidence score, class ID,
+ * and keypoints (if applicable for pose estimation).
  */
 struct Detection {
-    BoundingBox box;
-    float conf{};
-    int classId{};
+    BoundingBox box;           ///< Bounding box of the detected object
+    float conf{};              ///< Confidence score of the detection
+    int classId{};             ///< ID of the detected class
+    std::vector<KeyPoint> keypoints; ///< List of keypoints (for pose estimation)
 };
+
+
+/**
+ * @brief List of COCO skeleton connections for human pose estimation.
+ *
+ * Defines the connections between keypoints in a skeleton structure using
+ * 0-based indices, which are standard in COCO pose datasets.
+ */
+const std::vector<std::pair<int, int>> POSE_SKELETON = {
+    // Face connections
+    {0,1}, {0,2}, {1,3}, {2,4},
+    // Head-to-shoulder connections
+    {3,5}, {4,6},
+    // Arms
+    {5,7}, {7,9}, {6,8}, {8,10},
+    // Body
+    {5,6}, {5,11}, {6,12}, {11,12},
+    // Legs
+    {11,13}, {13,15}, {12,14}, {14,16}
+};
+
 
 /**
  * @namespace utils
- * @brief Namespace containing utility functions for the YOLO12Detector.
+ * @brief Namespace containing utility functions for the YOLOPOSE-Detector.
  */
 namespace utils {
 
@@ -113,31 +163,7 @@ namespace utils {
     }
 
 
-    /**
-     * @brief Loads class names from a given file path.
-     * 
-     * @param path Path to the file containing class names.
-     * @return std::vector<std::string> Vector of class names.
-     */
-    std::vector<std::string> getClassNames(const std::string &path) {
-        std::vector<std::string> classNames;
-        std::ifstream infile(path);
 
-        if (infile) {
-            std::string line;
-            while (getline(infile, line)) {
-                // Remove carriage return if present (for Windows compatibility)
-                if (!line.empty() && line.back() == '\r')
-                    line.pop_back();
-                classNames.emplace_back(line);
-            }
-        } else {
-            std::cerr << "ERROR: Failed to access class name path: " << path << std::endl;
-        }
-
-        DEBUG_PRINT("Loaded " << classNames.size() << " class names from " + path);
-        return classNames;
-    }
 
     /**
      * @brief Computes the product of elements in a vector.
@@ -237,37 +263,6 @@ namespace utils {
         cv::copyMakeBorder(outImage, outImage, padTop, padBottom, padLeft, padRight, cv::BORDER_CONSTANT, color);
     }
 
-    /**
-     * @brief Scales detection coordinates back to the original image size.
-     * 
-     * @param imageShape Shape of the resized image used for inference.
-     * @param bbox Detection bounding box to be scaled.
-     * @param imageOriginalShape Original image size before resizing.
-     * @param p_Clip Whether to clip the coordinates to the image boundaries.
-     * @return BoundingBox Scaled bounding box.
-     */
-    BoundingBox scaleCoords(const cv::Size &imageShape, BoundingBox coords,
-                            const cv::Size &imageOriginalShape, bool p_Clip) {
-        BoundingBox result;
-        float gain = std::min(static_cast<float>(imageShape.height) / static_cast<float>(imageOriginalShape.height),
-                              static_cast<float>(imageShape.width) / static_cast<float>(imageOriginalShape.width));
-
-        int padX = static_cast<int>(std::round((imageShape.width - imageOriginalShape.width * gain) / 2.0f));
-        int padY = static_cast<int>(std::round((imageShape.height - imageOriginalShape.height * gain) / 2.0f));
-
-        result.x = static_cast<int>(std::round((coords.x - padX) / gain));
-        result.y = static_cast<int>(std::round((coords.y - padY) / gain));
-        result.width = static_cast<int>(std::round(coords.width / gain));
-        result.height = static_cast<int>(std::round(coords.height / gain));
-
-        if (p_Clip) {
-            result.x = utils::clamp(result.x, 0, imageOriginalShape.width);
-            result.y = utils::clamp(result.y, 0, imageOriginalShape.height);
-            result.width = utils::clamp(result.width, 0, imageOriginalShape.width - result.x);
-            result.height = utils::clamp(result.height, 0, imageOriginalShape.height - result.y);
-        }
-        return result;
-    }
 
     /**
      * @brief Performs Non-Maximum Suppression (NMS) on the bounding boxes.
@@ -374,178 +369,120 @@ namespace utils {
         DEBUG_PRINT("NMS completed with " + std::to_string(indices.size()) + " indices remaining");
     }
 
-
+    
     /**
-     * @brief Generates a vector of colors for each class name.
+     * @brief Draws pose estimations including bounding boxes, keypoints, and skeleton
      * 
-     * @param classNames Vector of class names.
-     * @param seed Seed for random color generation to ensure reproducibility.
-     * @return std::vector<cv::Scalar> Vector of colors.
+     * @param image Input/output image
+     * @param detections Vector of pose detections
+     * @param confidenceThreshold Minimum confidence to visualize
+     * @param kptRadius Radius of keypoint circles
+     * @param kptThreshold Minimum keypoint confidence to draw
      */
-    inline std::vector<cv::Scalar> generateColors(const std::vector<std::string> &classNames, int seed = 42) {
-        // Static cache to store colors based on class names to avoid regenerating
-        static std::unordered_map<size_t, std::vector<cv::Scalar>> colorCache;
-
-        // Compute a hash key based on class names to identify unique class configurations
-        size_t hashKey = 0;
-        for (const auto& name : classNames) {
-            hashKey ^= std::hash<std::string>{}(name) + 0x9e3779b9 + (hashKey << 6) + (hashKey >> 2);
-        }
-
-        // Check if colors for this class configuration are already cached
-        auto it = colorCache.find(hashKey);
-        if (it != colorCache.end()) {
-            return it->second;
-        }
-
-        // Generate unique random colors for each class
-        std::vector<cv::Scalar> colors;
-        colors.reserve(classNames.size());
-
-        std::mt19937 rng(seed); // Initialize random number generator with fixed seed
-        std::uniform_int_distribution<int> uni(0, 255); // Define distribution for color values
-
-        for (size_t i = 0; i < classNames.size(); ++i) {
-            colors.emplace_back(cv::Scalar(uni(rng), uni(rng), uni(rng))); // Generate random BGR color
-        }
-
-        // Cache the generated colors for future use
-        colorCache.emplace(hashKey, colors);
-
-        return colorCache[hashKey];
-    }
-
-    /**
-     * @brief Draws bounding boxes and labels on the image based on detections.
-     * 
-     * @param image Image on which to draw.
-     * @param detections Vector of detections.
-     * @param classNames Vector of class names corresponding to object IDs.
-     * @param colors Vector of colors for each class.
-     */
-    inline void drawBoundingBox(cv::Mat &image, const std::vector<Detection> &detections,
-                                const std::vector<std::string> &classNames, const std::vector<cv::Scalar> &colors) {
-        // Iterate through each detection to draw bounding boxes and labels
+    inline void drawPoseEstimation(cv::Mat &image,
+        const std::vector<Detection> &detections,
+        float confidenceThreshold = 0.5,
+        float kptThreshold = 0.5)
+    {
+        // Calculate dynamic sizes based on image dimensions
+        const int min_dim = std::min(image.rows, image.cols);
+        const float scale_factor = min_dim / 1280.0f;  // Reference 1280px size
+    
+        // Dynamic sizing parameters
+        const int line_thickness = std::max(1, static_cast<int>(2 * scale_factor));
+        const int kpt_radius = std::max(2, static_cast<int>(4 * scale_factor));
+        const float font_scale = 0.5f * scale_factor;
+        const int text_thickness = std::max(1, static_cast<int>(1 * scale_factor));
+        const int text_offset = static_cast<int>(10 * scale_factor);
+    
+        // Define the Ultralytics pose palette (BGR format)
+        // Original RGB values: [255,128,0], [255,153,51], [255,178,102], [230,230,0], [255,153,255],
+        // [153,204,255], [255,102,255], [255,51,255], [102,178,255], [51,153,255],
+        // [255,153,153], [255,102,102], [255,51,51], [153,255,153], [102,255,102],
+        // [51,255,51], [0,255,0], [0,0,255], [255,0,0], [255,255,255]
+        // Converted to BGR:
+        static const std::vector<cv::Scalar> pose_palette = {
+            cv::Scalar(0,128,255),    // 0
+            cv::Scalar(51,153,255),   // 1
+            cv::Scalar(102,178,255),  // 2
+            cv::Scalar(0,230,230),    // 3
+            cv::Scalar(255,153,255),  // 4
+            cv::Scalar(255,204,153),  // 5
+            cv::Scalar(255,102,255),  // 6
+            cv::Scalar(255,51,255),   // 7
+            cv::Scalar(255,178,102),  // 8
+            cv::Scalar(255,153,51),   // 9
+            cv::Scalar(153,153,255),  // 10
+            cv::Scalar(102,102,255),  // 11
+            cv::Scalar(51,51,255),    // 12
+            cv::Scalar(153,255,153),  // 13
+            cv::Scalar(102,255,102),  // 14
+            cv::Scalar(51,255,51),    // 15
+            cv::Scalar(0,255,0),      // 16
+            cv::Scalar(255,0,0),      // 17
+            cv::Scalar(0,0,255),      // 18
+            cv::Scalar(255,255,255)   // 19
+        };
+    
+        // Define per-keypoint color indices (for keypoints 0 to 16)
+        static const std::vector<int> kpt_color_indices = {16,16,16,16,16,0,0,0,0,0,0,9,9,9,9,9,9};
+        // Define per-limb color indices for each skeleton connection.
+        // Make sure the number of entries here matches the number of pairs in POSE_SKELETON.
+        static const std::vector<int> limb_color_indices = {9,9,9,9,7,7,7,0,0,0,0,0,16,16,16,16,16,16,16};
+    
+        // Loop through each detection
         for (const auto& detection : detections) {
-            // Skip detections below the confidence threshold
-            if (detection.conf <= CONFIDENCE_THRESHOLD)
+            if (detection.conf < confidenceThreshold)
                 continue;
-
-            // Ensure the object ID is within valid range
-            if (detection.classId < 0 || static_cast<size_t>(detection.classId) >= classNames.size())
-                continue;
-
-            // Select color based on object ID for consistent coloring
-            const cv::Scalar& color = colors[detection.classId % colors.size()];
-
-            // Draw the bounding box rectangle
-            cv::rectangle(image, cv::Point(detection.box.x, detection.box.y),
-                          cv::Point(detection.box.x + detection.box.width, detection.box.y + detection.box.height),
-                          color, 2, cv::LINE_AA);
-
-            // Prepare label text with class name and confidence percentage
-            std::string label = classNames[detection.classId] + ": " + std::to_string(static_cast<int>(detection.conf * 100)) + "%";
-
-            // Define text properties for labels
-            int fontFace = cv::FONT_HERSHEY_SIMPLEX;
-            double fontScale = std::min(image.rows, image.cols) * 0.0008;
-            const int thickness = std::max(1, static_cast<int>(std::min(image.rows, image.cols) * 0.002));
-            int baseline = 0;
-
-            // Calculate text size for background rectangles
-            cv::Size textSize = cv::getTextSize(label, fontFace, fontScale, thickness, &baseline);
-
-            // Define positions for the label
-            int labelY = std::max(detection.box.y, textSize.height + 5);
-            cv::Point labelTopLeft(detection.box.x, labelY - textSize.height - 5);
-            cv::Point labelBottomRight(detection.box.x + textSize.width + 5, labelY + baseline - 5);
-
-            // Draw background rectangle for label
-            cv::rectangle(image, labelTopLeft, labelBottomRight, color, cv::FILLED);
-
-            // Put label text
-            cv::putText(image, label, cv::Point(detection.box.x + 2, labelY - 2), fontFace, fontScale, cv::Scalar(255, 255, 255), thickness, cv::LINE_AA);
-        }
-    }
-
-    /**
-     * @brief Draws bounding boxes and semi-transparent masks on the image based on detections.
-     * 
-     * @param image Image on which to draw.
-     * @param detections Vector of detections.
-     * @param classNames Vector of class names corresponding to object IDs.
-     * @param classColors Vector of colors for each class.
-     * @param maskAlpha Alpha value for the mask transparency.
-     */
-    inline void drawBoundingBoxMask(cv::Mat &image, const std::vector<Detection> &detections,
-                                    const std::vector<std::string> &classNames, const std::vector<cv::Scalar> &classColors,
-                                    float maskAlpha = 0.4f) {
-        // Validate input image
-        if (image.empty()) {
-            std::cerr << "ERROR: Empty image provided to drawBoundingBoxMask." << std::endl;
-            return;
-        }
-
-        const int imgHeight = image.rows;
-        const int imgWidth = image.cols;
-
-        // Precompute dynamic font size and thickness based on image dimensions
-        const double fontSize = std::min(imgHeight, imgWidth) * 0.0006;
-        const int textThickness = std::max(1, static_cast<int>(std::min(imgHeight, imgWidth) * 0.001));
-
-        // Create a mask image for blending (initialized to zero)
-        cv::Mat maskImage(image.size(), image.type(), cv::Scalar::all(0));
-
-        // Pre-filter detections to include only those above the confidence threshold and with valid class IDs
-        std::vector<const Detection*> filteredDetections;
-        for (const auto& detection : detections) {
-            if (detection.conf > CONFIDENCE_THRESHOLD && 
-                detection.classId >= 0 && 
-                static_cast<size_t>(detection.classId) < classNames.size()) {
-                filteredDetections.emplace_back(&detection);
+    
+            // Draw bounding box (optional – remove if you prefer only pose visualization)
+            const auto& box = detection.box;
+            cv::rectangle(image,
+                cv::Point(box.x, box.y),
+                cv::Point(box.x + box.width, box.y + box.height),
+                cv::Scalar(0, 255, 0), // You can change the box color if desired
+                line_thickness);
+    
+            // Prepare a vector to hold keypoint positions and validity flags.
+            const size_t numKpts = detection.keypoints.size();
+            std::vector<cv::Point> kpt_points(numKpts, cv::Point(-1, -1));
+            std::vector<bool> valid(numKpts, false);
+    
+            // Draw keypoints using the corresponding palette colors
+            for (size_t i = 0; i < numKpts; i++) {
+                if (detection.keypoints[i].confidence >= kptThreshold) {
+                    int x = std::round(detection.keypoints[i].x);
+                    int y = std::round(detection.keypoints[i].y);
+                    kpt_points[i] = cv::Point(x, y);
+                    valid[i] = true;
+                    int color_index = (i < kpt_color_indices.size()) ? kpt_color_indices[i] : 0;
+                    cv::circle(image, cv::Point(x, y), kpt_radius, pose_palette[color_index], -1, cv::LINE_AA);
+                }
             }
+    
+            // Draw skeleton connections based on a predefined POSE_SKELETON (vector of pairs)
+            // Make sure that POSE_SKELETON is defined with 0-indexed keypoint indices.
+            for (size_t j = 0; j < POSE_SKELETON.size(); j++) {
+                auto [src, dst] = POSE_SKELETON[j];
+                if (src < numKpts && dst < numKpts && valid[src] && valid[dst]) {
+                    // Use the corresponding limb color from the palette
+                    int limb_color_index = (j < limb_color_indices.size()) ? limb_color_indices[j] : 0;
+                    cv::line(image, kpt_points[src], kpt_points[dst],
+                             pose_palette[limb_color_index],
+                             line_thickness, cv::LINE_AA);
+                }
+            }
+    
+            // (Optional) Add text labels such as confidence scores here if desired.
         }
+    }  
+}
 
-        // Draw filled rectangles on the mask image for the semi-transparent overlay
-        for (const auto* detection : filteredDetections) {
-            cv::Rect box(detection->box.x, detection->box.y, detection->box.width, detection->box.height);
-            const cv::Scalar &color = classColors[detection->classId];
-            cv::rectangle(maskImage, box, color, cv::FILLED);
-        }
-
-        // Blend the maskImage with the original image to apply the semi-transparent masks
-        cv::addWeighted(maskImage, maskAlpha, image, 1.0f, 0, image);
-
-        // Draw bounding boxes and labels on the original image
-        for (const auto* detection : filteredDetections) {
-            cv::Rect box(detection->box.x, detection->box.y, detection->box.width, detection->box.height);
-            const cv::Scalar &color = classColors[detection->classId];
-            cv::rectangle(image, box, color, 2, cv::LINE_AA);
-
-            std::string label = classNames[detection->classId] + ": " + std::to_string(static_cast<int>(detection->conf * 100)) + "%";
-            int baseLine = 0;
-            cv::Size labelSize = cv::getTextSize(label, cv::FONT_HERSHEY_SIMPLEX, fontSize, textThickness, &baseLine);
-
-            int labelY = std::max(detection->box.y, labelSize.height + 5);
-            cv::Point labelTopLeft(detection->box.x, labelY - labelSize.height - 5);
-            cv::Point labelBottomRight(detection->box.x + labelSize.width + 5, labelY + baseLine - 5);
-
-            // Draw background rectangle for label
-            cv::rectangle(image, labelTopLeft, labelBottomRight, color, cv::FILLED);
-
-            // Put label text
-            cv::putText(image, label, cv::Point(detection->box.x + 2, labelY - 2), cv::FONT_HERSHEY_SIMPLEX, fontSize, cv::Scalar(255, 255, 255), textThickness, cv::LINE_AA);
-        }
-
-        DEBUG_PRINT("Bounding boxes and masks drawn on image.");
-    }
-
-};
 
 /**
- * @brief YOLO12Detector class handles loading the YOLO model, preprocessing images, running inference, and postprocessing results.
+ * @brief YOLOPOSEDetector class handles loading the YOLO model, preprocessing images, running inference, and postprocessing results.
  */
-class YOLO12Detector {
+class YOLOPOSEDetector {
 public:
     /**
      * @brief Constructor to initialize the YOLO detector with model and label paths.
@@ -554,7 +491,7 @@ public:
      * @param labelsPath Path to the file containing class labels.
      * @param useGPU Whether to use GPU for inference (default is false).
      */
-    YOLO12Detector(const std::string &modelPath, const std::string &labelsPath, bool useGPU = false);
+    YOLOPOSEDetector(const std::string &modelPath, const std::string &labelsPath, bool useGPU = false);
     
     /**
      * @brief Runs detection on the provided image.
@@ -564,28 +501,15 @@ public:
      * @param iouThreshold IoU threshold for Non-Maximum Suppression (default is 0.45).
      * @return std::vector<Detection> Vector of detections.
      */
-    std::vector<Detection> detect(const cv::Mat &image, float confThreshold = 0.4f, float iouThreshold = 0.45f);
-    
+    std::vector<Detection> detect(const cv::Mat &image, float confThreshold = 0.4f, float iouThreshold = 0.5f);
+ 
     /**
-     * @brief Draws bounding boxes on the image based on detections.
+     * @brief Draws bounding boxes and keypoints (if available) on the provided image.
      * 
-     * @param image Image on which to draw.
-     * @param detections Vector of detections.
+     * @param image Input/output image on which detections will be visualized.
+     * @param detections Vector of detected objects containing bounding boxes and keypoints.
      */
-    void drawBoundingBox(cv::Mat &image, const std::vector<Detection> &detections) const {
-        utils::drawBoundingBox(image, detections, classNames, classColors);
-    }
-    
-    /**
-     * @brief Draws bounding boxes and semi-transparent masks on the image based on detections.
-     * 
-     * @param image Image on which to draw.
-     * @param detections Vector of detections.
-     * @param maskAlpha Alpha value for mask transparency (default is 0.4).
-     */
-    void drawBoundingBoxMask(cv::Mat &image, const std::vector<Detection> &detections, float maskAlpha = 0.4f) const {
-        utils::drawBoundingBoxMask(image, detections, classNames, classColors, maskAlpha);
-    }
+    void drawBoundingBox(cv::Mat &image, const std::vector<Detection> &detections) const;
 
 private:
     Ort::Env env{nullptr};                         // ONNX Runtime environment
@@ -601,9 +525,6 @@ private:
     std::vector<const char *> outputNames;
 
     size_t numInputNodes, numOutputNodes;          // Number of input and output nodes in the model
-
-    std::vector<std::string> classNames;            // Vector of class names loaded from file
-    std::vector<cv::Scalar> classColors;            // Vector of colors for each class
 
     /**
      * @brief Preprocesses the input image for model inference.
@@ -631,8 +552,9 @@ private:
     
 };
 
-// Implementation of YOLO12Detector constructor
-YOLO12Detector::YOLO12Detector(const std::string &modelPath, const std::string &labelsPath, bool useGPU) {
+
+// Implementation of YOLOPOSEDetector constructor
+YOLOPOSEDetector::YOLOPOSEDetector(const std::string &modelPath, const std::string &labelsPath, bool useGPU) {
     // Initialize ONNX Runtime environment with warning level
     env = Ort::Env(ORT_LOGGING_LEVEL_WARNING, "ONNX_DETECTION");
     sessionOptions = Ort::SessionOptions();
@@ -693,15 +615,12 @@ YOLO12Detector::YOLO12Detector(const std::string &modelPath, const std::string &
     numInputNodes = session.GetInputCount();
     numOutputNodes = session.GetOutputCount();
 
-    // Load class names and generate corresponding colors
-    classNames = utils::getClassNames(labelsPath);
-    classColors = utils::generateColors(classNames);
 
     std::cout << "Model loaded successfully with " << numInputNodes << " input nodes and " << numOutputNodes << " output nodes." << std::endl;
 }
 
 // Preprocess function implementation
-cv::Mat YOLO12Detector::preprocess(const cv::Mat &image, float *&blob, std::vector<int64_t> &inputTensorShape) {
+cv::Mat YOLOPOSEDetector::preprocess(const cv::Mat &image, float *&blob, std::vector<int64_t> &inputTensorShape) {
     ScopedTimer timer("preprocessing");
 
     cv::Mat resizedImage;
@@ -729,122 +648,138 @@ cv::Mat YOLO12Detector::preprocess(const cv::Mat &image, float *&blob, std::vect
 
     return resizedImage;
 }
-// Postprocess function to convert raw model output into detections
-std::vector<Detection> YOLO12Detector::postprocess(
+
+
+/**
+ * @brief Draws bounding boxes and pose keypoints (if available) on the image.
+ * 
+ * @param image Input/output image where detections will be drawn.
+ * @param detections Vector of detected objects, including bounding boxes and keypoints.
+ *
+ * @note Uses `utils::drawPoseEstimation()` for visualization.
+ */
+void YOLOPOSEDetector::drawBoundingBox(cv::Mat &image, const std::vector<Detection> &detections) const {
+    utils::drawPoseEstimation(image, detections);
+}
+
+
+/**
+ * @brief Processes the raw output tensors from the YOLO model and extracts detections.
+ *
+ * @param originalImageSize The original size of the input image before resizing.
+ * @param resizedImageShape The resized image dimensions used during inference.
+ * @param outputTensors The output tensors obtained from the model inference.
+ * @param confThreshold Confidence threshold to filter weak detections (default is 0.4).
+ * @param iouThreshold IoU threshold for Non-Maximum Suppression (NMS) to remove redundant detections (default is 0.5).
+ * @return std::vector<Detection> A vector of final detections after processing.
+ *
+ * @note This function applies confidence filtering, NMS, and necessary transformations 
+ *       to map detections back to the original image size.
+ */
+std::vector<Detection> YOLOPOSEDetector::postprocess(
     const cv::Size &originalImageSize,
     const cv::Size &resizedImageShape,
     const std::vector<Ort::Value> &outputTensors,
     float confThreshold,
     float iouThreshold
 ) {
-    ScopedTimer timer("postprocessing"); // Measure postprocessing time
-
+    ScopedTimer timer("postprocessing");
     std::vector<Detection> detections;
-    const float* rawOutput = outputTensors[0].GetTensorData<float>(); // Extract raw output data from the first output tensor
+    
+    const float* rawOutput = outputTensors[0].GetTensorData<float>();
     const std::vector<int64_t> outputShape = outputTensors[0].GetTensorTypeAndShapeInfo().GetShape();
 
-    // Determine the number of features and detections
-    const size_t num_features = outputShape[1];
-    const size_t num_detections = outputShape[2];
+    // Validate output dimensions
+    const size_t numFeatures = outputShape[1];
+    const size_t numDetections = outputShape[2];
+    const int numKeypoints = 17;
+    const int featuresPerKeypoint = 3;
 
-    // Early exit if no detections
-    if (num_detections == 0) {
+    if (numFeatures != 4 + 1 + numKeypoints * featuresPerKeypoint) {
+        std::cerr << "Invalid output shape for pose estimation model" << std::endl;
         return detections;
     }
 
-    // Calculate number of classes based on output shape
-    const int numClasses = static_cast<int>(num_features) - 4;
-    if (numClasses <= 0) {
-        // Invalid number of classes
-        return detections;
-    }
+    // Calculate letterbox padding parameters
+    const float scale = std::min(static_cast<float>(resizedImageShape.width) / originalImageSize.width,
+                static_cast<float>(resizedImageShape.height) / originalImageSize.height);
+    const cv::Size scaledSize(originalImageSize.width * scale, originalImageSize.height * scale);
+    const cv::Point2f padding((resizedImageShape.width - scaledSize.width) / 2.0f,
+                            (resizedImageShape.height - scaledSize.height) / 2.0f);
 
-    // Reserve memory for efficient appending
+    // Process each detection
     std::vector<BoundingBox> boxes;
-    boxes.reserve(num_detections);
-    std::vector<float> confs;
-    confs.reserve(num_detections);
-    std::vector<int> classIds;
-    classIds.reserve(num_detections);
-    std::vector<BoundingBox> nms_boxes;
-    nms_boxes.reserve(num_detections);
+    std::vector<float> confidences;
+    std::vector<std::vector<KeyPoint>> allKeypoints;
 
-    // Constants for indexing
-    const float* ptr = rawOutput;
+    for (size_t d = 0; d < numDetections; ++d) {
+        const float objConfidence = rawOutput[4 * numDetections + d];
+        if (objConfidence < confThreshold) continue;
 
-    for (size_t d = 0; d < num_detections; ++d) {
-        // Extract bounding box coordinates (center x, center y, width, height)
-        float centerX = ptr[0 * num_detections + d];
-        float centerY = ptr[1 * num_detections + d];
-        float width = ptr[2 * num_detections + d];
-        float height = ptr[3 * num_detections + d];
+        // Decode bounding box
+        const float cx = rawOutput[0 * numDetections + d];
+        const float cy = rawOutput[1 * numDetections + d];
+        const float w = rawOutput[2 * numDetections + d];
+        const float h = rawOutput[3 * numDetections + d];
+        
+          // Convert to original image coordinates
+          BoundingBox box;
+          box.x = static_cast<int>((cx - padding.x - w / 2) / scale);
+          box.y = static_cast<int>((cy - padding.y - h / 2) / scale);
+          box.width = static_cast<int>(w / scale);
+          box.height = static_cast<int>(h / scale);
+  
+          // Clip to image boundaries
+          box.x = utils::clamp(box.x, 0, originalImageSize.width - box.width);
+          box.y = utils::clamp(box.y, 0, originalImageSize.height - box.height);
+          box.width = utils::clamp(box.width, 0, originalImageSize.width - box.x);
+          box.height = utils::clamp(box.height, 0, originalImageSize.height - box.y);
 
-        // Find class with the highest confidence score
-        int classId = -1;
-        float maxScore = -FLT_MAX;
-        for (int c = 0; c < numClasses; ++c) {
-            const float score = ptr[d + (4 + c) * num_detections];
-            if (score > maxScore) {
-                maxScore = score;
-                classId = c;
-            }
+        // Extract keypoints
+        std::vector<KeyPoint> keypoints;
+        for (int k = 0; k < numKeypoints; ++k) {
+            const int offset = 5 + k * featuresPerKeypoint;
+            KeyPoint kpt;
+            kpt.x = (rawOutput[offset * numDetections + d] - padding.x) / scale;
+            kpt.y = (rawOutput[(offset + 1) * numDetections + d] - padding.y) / scale;
+            kpt.confidence = 1.0f / (1.0f + std::exp(-rawOutput[(offset + 2) * numDetections + d]));
+
+            // Clip keypoints to image boundaries
+            kpt.x = utils::clamp(kpt.x, 0.0f, static_cast<float>(originalImageSize.width - 1));
+            kpt.y = utils::clamp(kpt.y, 0.0f, static_cast<float>(originalImageSize.height - 1));
+
+            keypoints.emplace_back(kpt);
         }
 
-        // Proceed only if confidence exceeds threshold
-        if (maxScore > confThreshold) {
-            // Convert center coordinates to top-left (x1, y1)
-            float left = centerX - width / 2.0f;
-            float top = centerY - height / 2.0f;
-
-            // Scale to original image size
-            BoundingBox scaledBox = utils::scaleCoords(
-                resizedImageShape,
-                BoundingBox(left, top, width, height),
-                originalImageSize,
-                true
-            );
-
-            // Round coordinates for integer pixel positions
-            BoundingBox roundedBox;
-            roundedBox.x = std::round(scaledBox.x);
-            roundedBox.y = std::round(scaledBox.y);
-            roundedBox.width = std::round(scaledBox.width);
-            roundedBox.height = std::round(scaledBox.height);
-
-            // Adjust NMS box coordinates to prevent overlap between classes
-            BoundingBox nmsBox = roundedBox;
-            nmsBox.x += classId * 7680; // Arbitrary offset to differentiate classes
-            nmsBox.y += classId * 7680;
-
-            // Add to respective containers
-            nms_boxes.emplace_back(nmsBox);
-            boxes.emplace_back(roundedBox);
-            confs.emplace_back(maxScore);
-            classIds.emplace_back(classId);
-        }
+        // Store detection components
+        boxes.emplace_back(box);
+        confidences.emplace_back(objConfidence);
+        allKeypoints.emplace_back(keypoints);
     }
 
-    // Apply Non-Maximum Suppression (NMS) to eliminate redundant detections
+    // Apply Non-Maximum Suppression
     std::vector<int> indices;
-    utils::NMSBoxes(nms_boxes, confs, confThreshold, iouThreshold, indices);
+    utils::NMSBoxes(boxes, confidences, confThreshold, iouThreshold, indices);
 
-    // Collect filtered detections into the result vector
-    detections.reserve(indices.size());
-    for (const int idx : indices) {
-        detections.emplace_back(Detection{
-            boxes[idx],       // Bounding box
-            confs[idx],       // Confidence score
-            classIds[idx]     // Class ID
-        });
+    // Create final detections
+    for (int idx : indices) {
+        Detection det;
+        // After (convert cv::Rect to BoundingBox)
+        det.box.x = boxes[idx].x;
+        det.box.y = boxes[idx].y;
+        det.box.width = boxes[idx].width;
+        det.box.height = boxes[idx].height;
+        det.conf = confidences[idx];
+        det.classId = 0; // Single class (person)
+        det.keypoints = allKeypoints[idx];
+        detections.emplace_back(det);
     }
-
-    DEBUG_PRINT("Postprocessing completed") // Debug log for completion
 
     return detections;
 }
 
 // Detect function implementation
-std::vector<Detection> YOLO12Detector::detect(const cv::Mat& image, float confThreshold, float iouThreshold) {
+std::vector<Detection> YOLOPOSEDetector::detect(const cv::Mat& image, float confThreshold, float iouThreshold) {
     ScopedTimer timer("Overall detection");
 
     float* blobPtr = nullptr; // Pointer to hold preprocessed image data

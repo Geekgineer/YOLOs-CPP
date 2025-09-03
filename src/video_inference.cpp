@@ -46,38 +46,7 @@
 #include <mutex>
 #include <atomic>
 #include <condition_variable>
-
-// Uncomment the version
-//#define YOLO5 // Uncomment for YOLOv5
-//#define YOLO7 // Uncomment for YOLOv7
-//#define YOLO8 // Uncomment for YOLOv8
-//#define YOLO9 // Uncomment for YOLOv9
-//#define YOLO10 // Uncomment for YOLOv10
-//#define YOLO11 // Uncomment for YOLOv11
-#define YOLO12 // Uncomment for YOLOv12
-
-#ifdef YOLO5
-    #include "det/YOLO5.hpp"
-#endif
-#ifdef YOLO7
-    #include "det/YOLO7.hpp"
-#endif
-#ifdef YOLO8
-    #include "det/YOLO8.hpp"
-#endif
-#ifdef YOLO9
-    #include "det/YOLO9.hpp"
-#endif
-#ifdef YOLO10
-    #include "det/YOLO10.hpp"
-#endif
-#ifdef YOLO11
-    #include "det/YOLO11.hpp"
-#endif
-#ifdef YOLO12
-    #include "det/YOLO12.hpp"
-#endif
-
+#include "det/YOLO.hpp"
 // Thread-safe queue implementation
 template <typename T>
 class SafeQueue {
@@ -116,57 +85,30 @@ private:
     bool finished = false;
 };
 
-int main()
+int main(int argc, char* argv[])
 {
     // Paths to the model, labels, input video, and output video
-    const std::string labelsPath = "../models/coco.names";
-    const std::string videoPath = "../data/SIG_experience_center.mp4"; // Input video path
-    const std::string outputPath = "../data/SIG_experience_center_processed.mp4"; // Output video path
+    std::string labelsPath = "../models/coco.names";
+    std::string videoPath = "../data/dogs.mp4"; // Input video path
+    std::string outputPath = "../data/out_dogs.mp4"; // Output video path
+    std::string modelPath = "../models/yolo11n.onnx";
 
-    // Model paths for different YOLO versions
-    #ifdef YOLO5
-        std::string modelPath = "../models/yolo5-n6.onnx";
-    #endif
-    #ifdef YOLO7
-        const std::string modelPath = "../models/yolo7-tiny.onnx";
-    #endif
-    #ifdef YOLO8
-        std::string modelPath = "../models/yolo8n.onnx";
-    #endif
-    #ifdef YOLO9
-        const std::string modelPath = "../models/yolov9s.onnx";
-    #endif
-    #ifdef YOLO10
-        std::string modelPath = "../models/yolo10n_uint8.onnx";
-    #endif
-    #ifdef YOLO11
-        const std::string modelPath = "../models/yolo11n.onnx";
-    #endif
-    #ifdef YOLO12
-        const std::string modelPath = "../models/yolo12n.onnx";
-    #endif
-
+    if (argc > 1){
+        modelPath = argv[1];
+    }
+    if (argc > 2){
+        videoPath = argv[2];
+    }
+    if (argc > 3){
+        outputPath = argv[3];
+    }
+    if (argc > 4){
+        labelsPath = argv[4];
+    }
 
     // Initialize the YOLO detector
     bool isGPU = true; // Set to false for CPU processing
-    #ifdef YOLO5
-        YOLO5Detector detector(modelPath, labelsPath, isGPU);
-    #endif
-    #ifdef YOLO7
-        YOLO7Detector detector(modelPath, labelsPath, isGPU);
-    #endif
-    #ifdef YOLO8
-        YOLO8Detector detector(modelPath, labelsPath, isGPU);
-    #endif
-    #ifdef YOLO9
-        YOLO9Detector detector(modelPath, labelsPath, isGPU);
-    #endif
-    #ifdef YOLO11
-        YOLO11Detector detector(modelPath, labelsPath, isGPU);
-    #endif
-    #ifdef YOLO12
-        YOLO12Detector detector(modelPath, labelsPath, isGPU);
-    #endif
+    YOLODetector detector(modelPath, labelsPath, isGPU);
 
     // Open the video file
     cv::VideoCapture cap(videoPath);

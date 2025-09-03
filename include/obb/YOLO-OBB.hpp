@@ -1,10 +1,10 @@
 #pragma once
 
 // ===================================
-// Single YOLOv11-OBB Detector Header File
+// Single YOLO-OBB Detector Header File
 // ===================================
 //
-// This header defines the YOLO11-OBB-Detector class for performing object detection using the YOLOv11-OBB model.
+// This header defines the YOLO-OBB-Detector class for performing object detection using the YOLO-OBB model.
 // It includes necessary libraries, utility structures, and helper functions to facilitate model inference
 // and result postprocessing.
 //
@@ -16,9 +16,9 @@
 // ================================
 
 /**
- * @file YOLO11-OBB-Detector.hpp
- * @brief Header file for the YOLO11OBBDetector class, responsible for object detection
- *        using the YOLOv11 OBB model with optimized performance for minimal latency.
+ * @file YOLO-OBB-Detector.hpp
+ * @brief Header file for the YOLOOBBDetector class, responsible for object detection
+ *        using the YOLO OBB model with optimized performance for minimal latency.
  */
 
 // Include necessary ONNX Runtime and OpenCV headers
@@ -267,7 +267,7 @@ namespace OBB_NMS {
 
 /**
  * @namespace utils
- * @brief Namespace containing utility functions for the YOLO11OBBDetector.
+ * @brief Namespace containing utility functions for the YOLOOBBDetector.
  */
 namespace utils {
 
@@ -533,9 +533,9 @@ namespace utils {
 };
 
 /**
- * @brief YOLO11-OBB-Detector class handles loading the YOLO model, preprocessing images, running inference, and postprocessing results.
+ * @brief YOLO-OBB-Detector class handles loading the YOLO model, preprocessing images, running inference, and postprocessing results.
  */
-class YOLO11OBBDetector {
+class YOLOOBBDetector {
 public:
     /**
      * @brief Constructor to initialize the YOLO detector with model and label paths.
@@ -544,7 +544,7 @@ public:
      * @param labelsPath Path to the file containing class labels.
      * @param useGPU Whether to use GPU for inference (default is false).
      */
-    YOLO11OBBDetector(const std::string &modelPath, const std::string &labelsPath, bool useGPU = false);
+    YOLOOBBDetector(const std::string &modelPath, const std::string &labelsPath, bool useGPU = false);
     
     /**
      * @brief Runs detection on the provided image.
@@ -612,8 +612,8 @@ private:
         int topk = 500); // Default argument here
 };
 
-// Implementation of YOLO11OBBDetector constructor
-YOLO11OBBDetector::YOLO11OBBDetector(const std::string &modelPath, const std::string &labelsPath, bool useGPU) {
+// Implementation of YOLOOBBDetector constructor
+YOLOOBBDetector::YOLOOBBDetector(const std::string &modelPath, const std::string &labelsPath, bool useGPU) {
     // Initialize ONNX Runtime environment with warning level
     env = Ort::Env(ORT_LOGGING_LEVEL_WARNING, "ONNX_DETECTION");
     sessionOptions = Ort::SessionOptions();
@@ -682,7 +682,7 @@ YOLO11OBBDetector::YOLO11OBBDetector(const std::string &modelPath, const std::st
 }
 
 // Preprocess function implementation
-cv::Mat YOLO11OBBDetector::preprocess(const cv::Mat &image, float *&blob, std::vector<int64_t> &inputTensorShape) {
+cv::Mat YOLOOBBDetector::preprocess(const cv::Mat &image, float *&blob, std::vector<int64_t> &inputTensorShape) {
     ScopedTimer timer("preprocessing");
 
     cv::Mat resizedImage;
@@ -711,7 +711,7 @@ cv::Mat YOLO11OBBDetector::preprocess(const cv::Mat &image, float *&blob, std::v
     return resizedImage;
 }
 
-std::vector<Detection> YOLO11OBBDetector::postprocess(
+std::vector<Detection> YOLOOBBDetector::postprocess(
     const cv::Size &originalImageSize,
     const cv::Size &resizedImageShape,
     const std::vector<Ort::Value> &outputTensors,
@@ -822,7 +822,7 @@ std::vector<Detection> YOLO11OBBDetector::postprocess(
 
 
 // Detect function implementation
-std::vector<Detection> YOLO11OBBDetector::detect(const cv::Mat& image, float confThreshold, float iouThreshold) {
+std::vector<Detection> YOLOOBBDetector::detect(const cv::Mat& image, float confThreshold, float iouThreshold) {
     ScopedTimer timer("Overall detection");
 
     float* blobPtr = nullptr; // Pointer to hold preprocessed image data

@@ -1,12 +1,13 @@
 #pragma once
 
 // ====================================================
-// Single YOLOv9 Segmentation Header File
+// Single YOLO Segmentation Header File
 // ====================================================
 //
-// This header defines the YOLOv9SegDetector class for performing Semantic segmentation
-// using the YOLOv9 model. It includes necessary libraries, utility structures, 
-//and helper functions to facilitate model inference and result post-processing.
+// This header defines the YOLOSegDetector class for performing object detection 
+// and segmentation using the YOLO model. It includes necessary libraries, 
+// utility structures, and helper functions to facilitate model inference 
+// and result post-processing.
 //
 // Authors: 
 // 1- Abdalrahman M. Amer, www.linkedin.com/in/abdalrahman-m-amer
@@ -290,11 +291,11 @@ namespace utils {
 } // namespace utils
 
 // ============================================================================
-// YOLOv9SegDetector Class
+// YOLOSegDetector Class
 // ============================================================================
-class YOLOv9SegDetector {
+class YOLOSegDetector {
 public:
-    YOLOv9SegDetector(const std::string &modelPath,
+    YOLOSegDetector(const std::string &modelPath,
                       const std::string &labelsPath,
                       bool useGPU = false);
 
@@ -346,12 +347,12 @@ private:
                                           float iouThreshold);
 };
 
-inline YOLOv9SegDetector::YOLOv9SegDetector(const std::string &modelPath,
+inline YOLOSegDetector::YOLOSegDetector(const std::string &modelPath,
                                             const std::string &labelsPath,
                                             bool useGPU)
-    : env(ORT_LOGGING_LEVEL_WARNING, "YOLOv9Seg") 
+    : env(ORT_LOGGING_LEVEL_WARNING, "YOLOSeg") 
 {
-    ScopedTimer timer("YOLOv9SegDetector Constructor");
+    ScopedTimer timer("YOLOSegDetector Constructor");
 
     sessionOptions.SetIntraOpNumThreads(std::min(6, static_cast<int>(std::thread::hardware_concurrency())));
     sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
@@ -360,9 +361,9 @@ inline YOLOv9SegDetector::YOLOv9SegDetector(const std::string &modelPath,
     if (useGPU && std::find(providers.begin(), providers.end(), "CUDAExecutionProvider") != providers.end()) {
         OrtCUDAProviderOptions cudaOptions;
         sessionOptions.AppendExecutionProvider_CUDA(cudaOptions);
-        std::cout << "[INFO] Using GPU (CUDA) for YOLOv9 Seg inference.\n";
+        std::cout << "[INFO] Using GPU (CUDA) for YOLO Seg inference.\n";
     } else {
-        std::cout << "[INFO] Using CPU for YOLOv9 Seg inference.\n";
+        std::cout << "[INFO] Using CPU for YOLO Seg inference.\n";
     }
 
 #ifdef _WIN32
@@ -412,14 +413,14 @@ inline YOLOv9SegDetector::YOLOv9SegDetector(const std::string &modelPath,
     classNames  = utils::getClassNames(labelsPath);
     classColors = utils::generateColors(classNames);
 
-    std::cout << "[INFO] YOLOv9Seg loaded: " << modelPath << std::endl
+    std::cout << "[INFO] YOLOSeg loaded: " << modelPath << std::endl
               << "      Input shape: " << inputImageShape 
               << (isDynamicInputShape ? " (dynamic)" : "") << std::endl
               << "      #Outputs   : " << numOutputNodes << std::endl
               << "      #Classes   : " << classNames.size() << std::endl;
 }
 
-inline cv::Mat YOLOv9SegDetector::preprocess(const cv::Mat &image,
+inline cv::Mat YOLOSegDetector::preprocess(const cv::Mat &image,
                                              float *&blobPtr,
                                              std::vector<int64_t> &inputTensorShape) 
 {
@@ -449,7 +450,7 @@ inline cv::Mat YOLOv9SegDetector::preprocess(const cv::Mat &image,
     return letterboxImage;
 }
 
-std::vector<Segmentation> YOLOv9SegDetector::postprocess(
+std::vector<Segmentation> YOLOSegDetector::postprocess(
     const cv::Size &origSize,
     const cv::Size &letterboxSize,
     const std::vector<Ort::Value> &outputs,
@@ -657,7 +658,7 @@ std::vector<Segmentation> YOLOv9SegDetector::postprocess(
     return results;
 }
 
-inline void YOLOv9SegDetector::drawSegmentationsAndBoxes(cv::Mat &image,
+inline void YOLOSegDetector::drawSegmentationsAndBoxes(cv::Mat &image,
                                                  const std::vector<Segmentation> &results,
                                                  float maskAlpha) const 
 {
@@ -723,7 +724,7 @@ inline void YOLOv9SegDetector::drawSegmentationsAndBoxes(cv::Mat &image,
 }
 
 
-inline void YOLOv9SegDetector::drawSegmentations(cv::Mat &image,
+inline void YOLOSegDetector::drawSegmentations(cv::Mat &image,
                                                  const std::vector<Segmentation> &results,
                                                  float maskAlpha) const 
 {
@@ -760,11 +761,11 @@ inline void YOLOv9SegDetector::drawSegmentations(cv::Mat &image,
     }
 }
 
-inline std::vector<Segmentation> YOLOv9SegDetector::segment(const cv::Mat &image,
+inline std::vector<Segmentation> YOLOSegDetector::segment(const cv::Mat &image,
                                                             float confThreshold,
                                                             float iouThreshold) 
 {
-    ScopedTimer timer("YOLOv9Seg: segment()");
+    ScopedTimer timer("YOLOSeg: segment()");
 
     float *blobPtr = nullptr;
     std::vector<int64_t> inputShape = {1, 3, inputImageShape.height, inputImageShape.width};
