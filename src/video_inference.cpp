@@ -47,6 +47,8 @@
 #include <atomic>
 #include <condition_variable>
 #include "det/YOLO.hpp"
+#include "class/YOLO5CLASS.hpp"
+#include "class/YOLO12CLASS.hpp"
 // Thread-safe queue implementation
 template <typename T>
 class SafeQueue {
@@ -92,6 +94,7 @@ int main(int argc, char* argv[])
     std::string videoPath = "../data/dogs.mp4"; // Input video path
     std::string outputPath = "../data/out_dogs.mp4"; // Output video path
     std::string modelPath = "../models/yolo11n.onnx";
+    std::string task = "detect"; // detect | classify
 
     if (argc > 1){
         modelPath = argv[1];
@@ -104,6 +107,12 @@ int main(int argc, char* argv[])
     }
     if (argc > 4){
         labelsPath = argv[4];
+    }
+    for (int i = 1; i < argc; ++i) {
+        std::string arg = argv[i];
+        if ((arg == "--task" || arg == "-t") && i + 1 < argc) {
+            task = argv[i + 1];
+        }
     }
 
     // Initialize the YOLO detector
@@ -157,13 +166,31 @@ int main(int argc, char* argv[])
     std::thread processingThread([&]() {
         cv::Mat frame;
         int frameIndex = 0;
+        // Prepare classifier if needed
+        bool useYolo5 = (modelPath.find("yolo5") != std::string::npos);
+        bool useYolo12 = (modelPath.find("yolo12") != std::string::npos);
+        std::unique_ptr<YOLO5Classifier> y5;
+        std::unique_ptr<YOLO12Classifier> y12;
+        if (task == "classify") {
+            if (useYolo5) y5 = std::make_unique<YOLO5Classifier>(modelPath, labelsPath, isGPU, cv::Size(224,224));
+            else if (useYolo12) y12 = std::make_unique<YOLO12Classifier>(modelPath, labelsPath, isGPU, cv::Size(224,224));
+            else std::cerr << "--task classify specified but modelPath does not indicate yolo5 or yolo12." << std::endl;
+        }
         while (frameQueue.dequeue(frame))
         {
-            // Detect objects in the frame
-            std::vector<Detection> results = detector.detect(frame);
-
-            // Draw bounding boxes on the frame
-            detector.drawBoundingBoxMask(frame, results); // Uncomment for mask drawing
+            // Detect/Classify per frame
+            if (task == "classify") {
+                if (y5) {
+                    ClassificationResult res = y5->classify(frame);
+                    y5->drawResult(frame, res);
+                } else if (y12) {
+                    ClassificationResult res = y12->classify(frame);
+                    y12->drawResult(frame, res);
+                }
+            } else {
+                std::vector<Detection> results = detector.detect(frame);
+                detector.drawBoundingBoxMask(frame, results); // Uncomment for mask drawing
+            }
 
             // Enqueue the processed frame
             processedQueue.enqueue(std::make_pair(frameIndex++, frame));

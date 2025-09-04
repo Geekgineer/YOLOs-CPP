@@ -55,6 +55,8 @@
 
 #include <opencv2/highgui/highgui.hpp>
 #include "det/YOLO.hpp"
+#include "class/YOLO5CLASS.hpp"
+#include "class/YOLO12CLASS.hpp"
 
 
 // Include the bounded queue
@@ -66,6 +68,7 @@ int main(int argc, char* argv[])
     const bool isGPU = true;
     std::string labelsPath = "../models/coco.names";
     std::string modelPath = "../models/yolo11n.onnx";
+    std::string task = "detect"; // detect | classify
 
     std::string videoSource = "/dev/video0"; // your usb cam device
     if (argc > 1){
@@ -76,6 +79,12 @@ int main(int argc, char* argv[])
     }
     if (argc > 3){
         labelsPath = argv[3];
+    }
+    for (int i = 1; i < argc; ++i) {
+        std::string arg = argv[i];
+        if ((arg == "--task" || arg == "-t") && i + 1 < argc) {
+            task = argv[i + 1];
+        }
     }
     YOLODetector detector(modelPath, labelsPath, isGPU);
 
@@ -114,14 +123,36 @@ int main(int argc, char* argv[])
     // Consumer thread: Process frames
     std::thread consumer([&]() {
         cv::Mat frame;
+        // Prepare classifier if needed
+        bool useYolo5 = (modelPath.find("yolo5") != std::string::npos);
+        bool useYolo12 = (modelPath.find("yolo12") != std::string::npos);
+        std::unique_ptr<YOLO5Classifier> y5;
+        std::unique_ptr<YOLO12Classifier> y12;
+        if (task == "classify") {
+            if (useYolo5) y5 = std::make_unique<YOLO5Classifier>(modelPath, labelsPath, isGPU, cv::Size(224,224));
+            else if (useYolo12) y12 = std::make_unique<YOLO12Classifier>(modelPath, labelsPath, isGPU, cv::Size(224,224));
+            else std::cerr << "--task classify specified but modelPath does not indicate yolo5 or yolo12." << std::endl;
+        }
         while (!stopFlag.load() && frameQueue.dequeue(frame))
         {
-            // Perform detection
-            std::vector<Detection> detections = detector.detect(frame);
-
-            // Enqueue processed frame
-            if (!processedQueue.enqueue(std::make_pair(frame, detections)))
-                break;
+            // Perform detection/classification
+            if (task == "classify") {
+                std::vector<Detection> dummy;
+                if (y5) {
+                    ClassificationResult res = y5->classify(frame);
+                    (void)res;
+                    if (!processedQueue.enqueue(std::make_pair(frame, dummy))) break;
+                } else if (y12) {
+                    ClassificationResult res = y12->classify(frame);
+                    (void)res;
+                    if (!processedQueue.enqueue(std::make_pair(frame, dummy))) break;
+                } else {
+                    if (!processedQueue.enqueue(std::make_pair(frame, dummy))) break;
+                }
+            } else {
+                std::vector<Detection> detections = detector.detect(frame);
+                if (!processedQueue.enqueue(std::make_pair(frame, detections))) break;
+            }
         }
         processedQueue.set_finished();
     });
@@ -151,7 +182,21 @@ int main(int argc, char* argv[])
         {
             cv::Mat displayFrame = item.first;
             // detector.drawBoundingBox(displayFrame, item.second);
-            detector.drawBoundingBoxMask(displayFrame, item.second);
+            if (task == "classify") {
+                bool useYolo5 = (modelPath.find("yolo5") != std::string::npos);
+                bool useYolo12 = (modelPath.find("yolo12") != std::string::npos);
+                if (useYolo5) {
+                    YOLO5Classifier y5(modelPath, labelsPath, isGPU, cv::Size(224,224));
+                    ClassificationResult res = y5.classify(displayFrame);
+                    y5.drawResult(displayFrame, res);
+                } else if (useYolo12) {
+                    YOLO12Classifier y12(modelPath, labelsPath, isGPU, cv::Size(224,224));
+                    ClassificationResult res = y12.classify(displayFrame);
+                    y12.drawResult(displayFrame, res);
+                }
+            } else {
+                detector.drawBoundingBoxMask(displayFrame, item.second);
+            }
 
             // Display the frame
             cv::imshow("Detections", displayFrame);

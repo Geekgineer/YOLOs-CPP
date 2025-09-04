@@ -45,6 +45,8 @@
 #include <algorithm> // Required for std::transform
 
 #include "det/YOLO.hpp"
+#include "class/YOLO5CLASS.hpp"
+#include "class/YOLO12CLASS.hpp"
 
 int main(int argc, char* argv[]){
     namespace fs = std::filesystem;
@@ -52,6 +54,7 @@ int main(int argc, char* argv[]){
     std::string labelsPath = "../models/coco.names";
     std::string imagePath = "../data/dog.jpg";           // Default image path
     std::string modelPath = "../models/yolo11n.onnx";
+    std::string task = "detect"; // detect | classify
     std::vector<std::string> imageFiles;
 
     if(argc > 1){
@@ -89,9 +92,81 @@ int main(int argc, char* argv[]){
     if (argc > 3){
         labelsPath = argv[3];
     }
+    // Parse optional --task flag anywhere in argv
+    for (int i = 1; i < argc; ++i) {
+        std::string arg = argv[i];
+        if ((arg == "--task" || arg == "-t") && i + 1 < argc) {
+            task = argv[i + 1];
+        }
+    }
+
     // Initialize the YOLO detector with the chosen model and labels
     bool isGPU = true; // Set to false for CPU processing
     // YOLO10Detector detector(modelPath, labelsPath, isGPU);
+
+    if (task == "classify") {
+        // Collect images
+        if (fs::is_directory(imagePath)) {
+            for (const auto& entry : fs::directory_iterator(imagePath)) {
+                if (entry.is_regular_file()) {
+                    std::string ext = entry.path().extension().string();
+                    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                    if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp" || ext == ".tiff" || ext == ".tif") {
+                        imageFiles.push_back(fs::absolute(entry.path()).string());
+                    }
+                }
+            }
+            if (imageFiles.empty()) {
+                std::cerr << "No image files found in directory: " << imagePath << std::endl;
+                return -1;
+            }
+        } else {
+            imageFiles.push_back(imagePath);
+        }
+
+        // Choose classifier based on model path
+        std::unique_ptr<void, void(*)(void*)> noop(nullptr, [](void*){});
+        bool useYolo5 = (modelPath.find("yolo5") != std::string::npos);
+        bool useYolo12 = (modelPath.find("yolo12") != std::string::npos);
+
+        if (useYolo5) {
+            YOLO5Classifier classifier(modelPath, labelsPath, isGPU, cv::Size(224, 224));
+            for (const auto& imgPath : imageFiles) {
+                std::cout << "\nClassifying: " << imgPath << std::endl;
+                cv::Mat image = cv::imread(imgPath);
+                if (image.empty()) { std::cerr << "Error: Could not open or find the image!\n"; continue; }
+                auto start = std::chrono::high_resolution_clock::now();
+                ClassificationResult res = classifier.classify(image);
+                auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start);
+                std::cout << "Classification completed in: " << duration.count() << " ms\n";
+                std::cout << "Top-1: id=" << res.classId << ", name='" << res.className << "', conf=" << res.confidence << std::endl;
+                classifier.drawResult(image, res);
+                cv::imshow("Classification", image);
+                cv::waitKey(0);
+            }
+            return 0;
+        } else if (useYolo12) {
+            YOLO12Classifier classifier(modelPath, labelsPath, isGPU, cv::Size(224, 224));
+            for (const auto& imgPath : imageFiles) {
+                std::cout << "\nClassifying: " << imgPath << std::endl;
+                cv::Mat image = cv::imread(imgPath);
+                if (image.empty()) { std::cerr << "Error: Could not open or find the image!\n"; continue; }
+                auto start = std::chrono::high_resolution_clock::now();
+                ClassificationResult res = classifier.classify(image);
+                auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start);
+                std::cout << "Classification completed in: " << duration.count() << " ms\n";
+                std::cout << "Top-1: id=" << res.classId << ", name='" << res.className << "', conf=" << res.confidence << std::endl;
+                classifier.drawResult(image, res);
+                cv::imshow("Classification", image);
+                cv::waitKey(0);
+            }
+            return 0;
+        } else {
+            std::cerr << "--task classify specified but modelPath does not indicate yolo5 or yolo12. Please pass the correct classifier model." << std::endl;
+            return -1;
+        }
+    }
+
     YOLODetector detector(modelPath, labelsPath, isGPU);
     for (const auto& imgPath : imageFiles) {
         std::cout << "\nProcessing: " << imgPath << std::endl;
