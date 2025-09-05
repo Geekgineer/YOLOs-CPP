@@ -2,6 +2,7 @@ import sys
 import os
 import shutil
 import json
+from typing import Union
 
 from tqdm.auto import tqdm
 from ultralytics import YOLO
@@ -32,6 +33,116 @@ def validate_paths(paths : dict) -> bool:
 
     return True
 
+def load_inference_config(config_path: str) -> Union[dict, None]:
+
+    print(f"Loading inference configuration from '{config_path}'...")
+
+    if not os.path.exists(config_path):
+        print(f"Inference configuration file '{config_path}' does not exist.")
+        return None
+
+    with open(config_path, "r") as f:
+        try:
+            config = json.load(f)
+
+            if "conf" not in config or "iou" not in config:
+                print(f"Inference configuration file '{config_path}' is invalid.")
+                return None
+            
+            if not isinstance(config["conf"], float) or not isinstance(config["iou"], float):
+                print(f"Inference configuration file '{config_path}' is invalid.")
+                return None
+            
+            print(f"Loaded inference configuration from '{config_path}' : {config} .")
+
+            return config
+        
+        except json.JSONDecodeError as e:
+            print(f"Error loading inference configuration file '{config_path}': {e}")
+            return None
+        
+def run_inference(model_path: str, images_path: str, inference_config: dict) -> dict:
+
+    print(f"\n ####### Running inference for model: {model_path} on images in '{images_path}' with configuration: {inference_config} ... ###### \n")
+
+    model = YOLO(
+        model = model_path,
+        task = "detect",
+        verbose = True,
+    )
+
+    returned_results = {}
+
+    if model_path not in returned_results:
+        returned_results[model_path] = {
+            "weights_path": model_path,
+            "task": "detect",
+        }
+
+    for image_file in tqdm(os.listdir(images_path), desc="Images to process", unit="image"):
+            
+        _, file_ext = os.path.splitext(image_file)
+        image_path = os.path.join(images_path, image_file)
+        
+        if not os.path.isfile(image_path) or file_ext.lower() not in [".jpg", ".jpeg", ".png"]:
+            print(f"Skipping non-image file '{image_file}'.")
+            continue
+
+        if image_path not in returned_results[model_path]:
+            returned_results[model_path][image_path] = []
+
+        results = model.predict(
+            source = image_path,
+            verbose = True,
+            conf = inference_config["conf"],
+            iou = inference_config["iou"],
+            device = "cpu",
+        )
+
+        if not results or len(results) == 0:
+            print(f"No results for image '{image_file}', skipping.")
+            continue
+
+        result = results[0]
+
+        boxes = result.boxes
+        
+        if not boxes:
+            print(f"No boxes detected for image '{image_file}', skipping.")
+            continue
+
+        class_ids = boxes.cls
+        confidences = boxes.conf
+        xyxy = boxes.xyxy
+        xywh = boxes.xywh
+
+        for class_id, confidence, xyxy, xywh in zip(class_ids, confidences, xyxy, xywh):
+
+            class_id = int(class_id)
+            confidence = float(confidence)
+            x1, y1, x2, y2 = map(float, xyxy)
+            x, y, w, h = map(float, xywh)
+
+            left, top, width, height = x1, y1, w, h
+
+            returned_results[model_path][image_path].append(
+                {
+                    "class_id": class_id,
+                    "confidence": confidence,
+                    "bbox": {
+                        "left": left,
+                        "top": top,
+                        "width": width,
+                        "height": height
+                    }
+                }
+            )
+
+    print(f"\n ###### Finished running inference for model: {model_path} on images in '{images_path}' with configuration: {inference_config} ... ##### \n")            
+
+    return returned_results
+
+
 def main():
 
     data_path = "data"
@@ -58,25 +169,15 @@ def main():
             "conf": 0.25,
             "iou": 0.25
     }
+
     inference_config_path = "inference_config.json"
 
-    if os.path.exists(inference_config_path):
+    inference_config_loaded = load_inference_config(inference_config_path)
 
-        with open(inference_config_path, "r") as f:
-
-            inference_config_loaded = {}
-
-            try:
-                inference_config_loaded = json.load(f)
-
-                if "conf" not in inference_config_loaded or "iou" not in inference_config_loaded:
-                    print(f"Inference configuration file '{inference_config_path}' is missing required keys, using default configuration : {inference_config}.")
-                else:
-                    inference_config = inference_config_loaded
-                    print(f"Loaded inference configuration from '{inference_config_path}' : {inference_config} .")
-
-            except json.JSONDecodeError as e:
-                print(f"Error loading inference configuration file '{inference_config_path}': {e}, using default configuration : {inference_config}.")
+    if inference_config_loaded is not None:
+        inference_config = inference_config_loaded
+    else:
+        print(f"Using default inference configuration : {inference_config}.")
 
     output_results_json = os.path.join(results_path, "results_ultralytics.json")
 
@@ -94,77 +195,14 @@ def main():
 
     for model_name in tqdm(models, desc="Models to test", unit="model"):
 
-        print(f"Running inference for model: {model_name}")
-
         model_weights = os.path.join(weights_path, f"{model_name}.onnx")
         if not os.path.exists(model_weights):
             print(f"Model weights '{model_weights}' do not exist, skipping.")
             continue
 
-        if model_name not in results_dict:
-            results_dict[model_name] = {
-                "weights_path": model_weights,
-                "task": "detect",
-            }
+        model_results = run_inference(model_weights, images_path, inference_config)
 
-        model = YOLO(
-            model = model_weights,
-            task = "detect",
-            verbose = True,
-        )
-
-        for image_file in tqdm(os.listdir(images_path), desc="Images to process", unit="image"):
-             
-            _, file_ext = os.path.splitext(image_file)
-            image_path = os.path.join(images_path, image_file)
-           
-            if not os.path.isfile(image_path) or file_ext.lower() not in [".jpg", ".jpeg", ".png"]:
-                print(f"Skipping non-image file '{image_file}'.")
-                continue
-
-            results = model.predict(
-                source = image_path,
-                verbose = True,
-                conf = inference_config["conf"],
-                iou = inference_config["iou"],
-                device = "cpu",
-            )
-
-            if not results or len(results) == 0:
-                print(f"No results for image '{image_file}', skipping.")
-                continue
-
-            result = results[0]
-
-            boxes = result.boxes
-            
-            if not boxes:
-                print(f"No boxes detected for image '{image_file}', skipping.")
-                continue
-
-            class_ids = boxes.cls
-            confidences = boxes.conf
-            xyxy = boxes.xyxy
-            xywh = boxes.xywh
-
-            for class_id, confidence, xyxy, xywh in zip(class_ids, confidences, xyxy, xywh):
-
-                class_id = int(class_id)
-                confidence = float(confidence)
-                x1, y1, x2, y2 = map(float, xyxy)
-                x, y, w, h = map(float, xywh)
-
-                if image_path not in results_dict[model_name]:
-                    results_dict[model_name][image_path] = []
-
-                results_dict[model_name][image_path].append(
-                    {
-                        "class_id": class_id,
-                        "confidence": confidence,
-                        "xyxy": [x1, y1, x2, y2],
-                        "xywh": [x, y, w, h]
-                    }
-                )
+        results_dict.update(model_results)
 
     with open(output_results_json, "w") as f:
         json.dump(results_dict, f, indent=4)

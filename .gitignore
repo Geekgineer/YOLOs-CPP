@@ -52,7 +52,9 @@ onnxruntime*
 .idea/
 .vscode/
 .cache/
-*.onnx
 build/
+*.onnx
+*_cpp.json
+
 
 !*voc.pt
