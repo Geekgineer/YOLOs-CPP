@@ -23,7 +23,7 @@ def main(is_use_gpu = False, is_mac = False):
         "format": "onnx",
         "imgsz": 640,
         "half": False, # Use FP32
-        "dynamic": True,
+        "dynamic": False, # Use static shape, if dynamic is True, it may cause issues with some runtimes.
         "simplify": False,
         "opset": None,
         "nms": False,

@@ -18,6 +18,22 @@
 namespace fs = std::filesystem;
 using json = nlohmann::json;
 
+struct SingleInferenceResult {
+    int classId;
+
+    float conf;
+
+    float left;
+    float top;
+    float width;
+    float height;
+};
+
+struct InferenceResult {
+    std::string imagePath;
+    std::vector<SingleInferenceResult> detections;
+};
+
 bool validatePaths(const std::unordered_map<std::string, std::string>& paths) {
     for (const auto& [key, path] : paths) {
         if (!fs::exists(path)) {
@@ -109,16 +125,24 @@ bool validateModelFiles(const std::vector<std::string>& modelFiles) {
 
 
 void runInference(const std::string& modelPath, const std::string& labelsPath, const std::vector<std::string>& imageFiles, 
-                  const std::unordered_map<std::string, std::string>& inferenceConfig, bool isGPU) {
+                  const std::unordered_map<std::string, std::string>& inferenceConfig, bool isGPU,
+                  std::unordered_map<std::string, InferenceResult>& allResults) {
 
-    
     std::cout << "Using model: " << modelPath << std::endl;
     std::cout << "Using labels: " << labelsPath << std::endl;
     std::cout << "Using inference config: " << std::endl;
+
     for (const auto& [key, value] : inferenceConfig) {
         std::cout << "  " << key << ": " << value << std::endl;
     }
+
     std::cout << "Using device: " << (isGPU ? "GPU" : "CPU") << std::endl;
+
+    float confThreshold = std::stof(inferenceConfig.at("conf"));
+    float iouThreshold = std::stof(inferenceConfig.at("iou"));
+
+    if (allResults.find(modelPath) == allResults.end())
+        allResults[modelPath] = InferenceResult();
 
     YOLODetector detector(modelPath, labelsPath, isGPU);
 
@@ -135,14 +159,19 @@ void runInference(const std::string& modelPath, const std::string& labelsPath, c
 
         std::cout << "Image loaded: " << imgPath << " (Size: " << image.cols << "x" << image.rows << ")" << std::endl;
 
+        if (allResults[modelPath].imagePath.empty())
+            allResults[modelPath].imagePath = imgPath;
+
         // Detect objects in the image and measure execution time
         auto start = std::chrono::high_resolution_clock::now();
-        std::vector<Detection> results = detector.detect(image);
+        std::vector<Detection> results = detector.detect(image, confThreshold, iouThreshold);
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                             std::chrono::high_resolution_clock::now() - start);
 
         std::cout << "Detection completed in: " << duration.count() << " ms" << std::endl;
         std::cout << "Number of detections found: " << results.size() << std::endl;
+
+        std::vector<SingleInferenceResult> detections;
 
         // Print details of each detection
         for (size_t i = 0; i < results.size(); ++i) {
@@ -150,10 +179,59 @@ void runInference(const std::string& modelPath, const std::string& labelsPath, c
                       << ", Confidence=" << results[i].conf 
                       << ", Box=(" << results[i].box.x << "," << results[i].box.y 
                       << "," << results[i].box.width << "," << results[i].box.height << ")" << std::endl;
+
+            SingleInferenceResult singleResult;
+
+            singleResult.classId = results[i].classId;
+
+            singleResult.conf = results[i].conf;
+
+            singleResult.left = results[i].box.x;
+            singleResult.top = results[i].box.y;
+            singleResult.width = results[i].box.width;
+            singleResult.height = results[i].box.height;
+
+            detections.push_back(singleResult);
         }
+
+        allResults[modelPath].detections = detections;
     }
 }
 
+
+void fromMapToJson(const std::unordered_map<std::string, InferenceResult>& results, nlohmann::json& outputJson) {
+
+    for (const auto& [key, value] : results) {
+
+        nlohmann::json inferenceJson;
+        nlohmann::json detectionsJson = nlohmann::json::array();
+
+        for (const auto& detection : value.detections) {
+
+            nlohmann::json detectionJson;
+            nlohmann::json bboxJson;
+
+            detectionJson["class_id"] = detection.classId;
+            detectionJson["confidence"] = detection.conf;
+
+            bboxJson["left"] = detection.left;
+            bboxJson["top"] = detection.top;
+            bboxJson["width"] = detection.width;
+            bboxJson["height"] = detection.height;
+
+            detectionJson["bbox"] = bboxJson;
+
+            detectionsJson.push_back(detectionJson);
+    }
+
+    inferenceJson[value.imagePath] = detectionsJson;
+    inferenceJson["task"] = "detection";
+    inferenceJson["weights_path"] = key;
+
+    outputJson[key] = inferenceJson;
+
+    }
+}
 
 int main(int argc, char* argv[]){
 
@@ -204,45 +282,29 @@ int main(int argc, char* argv[]){
         {"conf", "0.50"},
         {"iou", "0.50"}
     };
+
     std::string inferenceConfigFilePath = basePath + "inference_config.json";
 
     loadInferenceConfig(inferenceConfigFilePath, inferenceConfig);
 
-    for(const auto& modelPath : modelFiles){
-        std::cout << "Running inference for model: " << modelPath << std::endl;
-        runInference(modelPath, labelsPath, imageFiles, inferenceConfig, isGPU);
+    std::string resultsFilePath = resultsPath + "results_cpp.json";
+
+    if(fs::exists(resultsFilePath)){
+        fs::remove(resultsFilePath);
     }
 
-    // YOLODetector detector(modelPath, labelsPath, isGPU);
-    // for (const auto& imgPath : imageFiles) {
-    //     std::cout << "\nProcessing: " << imgPath << std::endl;
-    //     // Load an image
-    //     cv::Mat image = cv::imread(imgPath);
-    //     if (image.empty()) {
-    //         std::cerr << "Error: Could not open or find the image!\n";
-    //         continue;
-    //     }
-    //     // Detect objects in the image and measure execution time
-    //     auto start = std::chrono::high_resolution_clock::now();
-    //     std::vector<Detection> results = detector.detect(image);
-    //     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-    //                         std::chrono::high_resolution_clock::now() - start);
-    //     std::cout << "Detection completed in: " << duration.count() << " ms" << std::endl;
-    //     std::cout << "Number of detections found: " << results.size() << std::endl;
-    //     // Print details of each detection
-    //     for (size_t i = 0; i < results.size(); ++i) {
-    //         std::cout << "Detection " << i << ": Class=" << results[i].classId 
-    //                   << ", Confidence=" << results[i].conf 
-    //                   << ", Box=(" << results[i].box.x << "," << results[i].box.y 
-    //                   << "," << results[i].box.width << "," << results[i].box.height << ")" << std::endl;
-    //     }
+    std::unordered_map<std::string, InferenceResult> allResults;
 
-    //     // Draw bounding boxes on the image
-    //     detector.drawBoundingBox(image, results); // simple bbox drawing
-    //     // detector.drawBoundingBoxMask(image, results); // Uncomment for mask drawing
-    //     // Display the image
-    //     cv::imshow("Detections", image);
-    //     cv::waitKey(0); // Wait for a key press to close the window
-    // }
+    for(const auto& modelPath : modelFiles){
+        std::cout << "\n ######## Running inference for model: " << modelPath << " ########" << std::endl;
+        runInference(modelPath, labelsPath, imageFiles, inferenceConfig, isGPU, allResults);
+        std::cout << " ######## Finished inference for model: " << modelPath << " ########\n" << std::endl;
+    }
+    
+    nlohmann::json outputJson;
+    fromMapToJson(allResults, outputJson);
+    std::ofstream file(resultsFilePath);
+    file << std::setw(2) << outputJson << std::endl;
+   
     return 0;
 }

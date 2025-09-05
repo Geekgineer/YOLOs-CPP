@@ -29,6 +29,8 @@ target_include_directories(test_inference_cpp PRIVATE "${ONNXRUNTIME_DIR}/includ
 # Link libraries for all executables
 target_link_libraries(test_inference_cpp ${OpenCV_LIBS} nlohmann_json::nlohmann_json)
 
+target_include_directories(test_inference_cpp PRIVATE ${CMAKE_SOURCE_DIR}/../include/det)
+
 
 if(UNIX)
     message(STATUS "We are building on Linux!")
