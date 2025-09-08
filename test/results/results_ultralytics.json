@@ -1,171 +1,206 @@
 {
-    "models/YOLOv5nu_voc.onnx": {
-        "weights_path": "models/YOLOv5nu_voc.onnx",
+    "YOLOv5nu_voc": {
+        "weights_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/models/YOLOv5nu_voc.onnx",
         "task": "detect",
-        "data/images/dog_bike_car.jpg": [
+        "results": [
             {
-                "class_id": 6,
-                "confidence": 0.971771240234375,
-                "bbox": {
-                    "left": 470.0596618652344,
-                    "top": 74.12084197998047,
-                    "width": 220.95382690429688,
-                    "height": 99.34899139404297
-                }
-            },
-            {
-                "class_id": 1,
-                "confidence": 0.8762854337692261,
-                "bbox": {
-                    "left": 159.56411743164062,
-                    "top": 154.0383758544922,
-                    "width": 408.7208557128906,
-                    "height": 268.30633544921875
-                }
+                "image_path": "data/images/dog_bike_car.jpg",
+                "inference_results": [
+                    {
+                        "class_id": 6,
+                        "confidence": 0.971771240234375,
+                        "bbox": {
+                            "left": 470,
+                            "top": 74,
+                            "width": 220,
+                            "height": 99
+                        }
+                    },
+                    {
+                        "class_id": 1,
+                        "confidence": 0.8762854337692261,
+                        "bbox": {
+                            "left": 159,
+                            "top": 154,
+                            "width": 408,
+                            "height": 268
+                        }
+                    }
+                ]
             }
         ]
     },
-    "models/YOLOv6n_voc.onnx": {
-        "weights_path": "models/YOLOv6n_voc.onnx",
+    "YOLOv6n_voc": {
+        "weights_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/models/YOLOv6n_voc.onnx",
         "task": "detect",
-        "data/images/dog_bike_car.jpg": []
-    },
-    "models/YOLOv8n_voc.onnx": {
-        "weights_path": "models/YOLOv8n_voc.onnx",
-        "task": "detect",
-        "data/images/dog_bike_car.jpg": [
+        "results": [
             {
-                "class_id": 6,
-                "confidence": 0.9829956889152527,
-                "bbox": {
-                    "left": 466.286865234375,
-                    "top": 74.60204315185547,
-                    "width": 231.59619140625,
-                    "height": 98.1446762084961
-                }
-            },
-            {
-                "class_id": 1,
-                "confidence": 0.9134905934333801,
-                "bbox": {
-                    "left": 141.73095703125,
-                    "top": 100.68032836914062,
-                    "width": 426.77166748046875,
-                    "height": 315.9456481933594
-                }
-            },
-            {
-                "class_id": 11,
-                "confidence": 0.7692201137542725,
-                "bbox": {
-                    "left": 132.7027587890625,
-                    "top": 219.9654083251953,
-                    "width": 176.68844604492188,
-                    "height": 320.9656982421875
-                }
+                "image_path": "data/images/dog_bike_car.jpg",
+                "inference_results": []
             }
         ]
     },
-    "models/YOLOv9t_voc.onnx": {
-        "weights_path": "models/YOLOv9t_voc.onnx",
+    "YOLOv8n_voc": {
+        "weights_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/models/YOLOv8n_voc.onnx",
         "task": "detect",
-        "data/images/dog_bike_car.jpg": [
+        "results": [
             {
-                "class_id": 6,
-                "confidence": 0.9130256175994873,
-                "bbox": {
-                    "left": 466.0251159667969,
-                    "top": 72.40374755859375,
-                    "width": 216.43539428710938,
-                    "height": 100.05732727050781
-                }
-            },
-            {
-                "class_id": 1,
-                "confidence": 0.7368897199630737,
-                "bbox": {
-                    "left": 127.11544799804688,
-                    "top": 136.0124969482422,
-                    "width": 440.3163146972656,
-                    "height": 288.11669921875
-                }
-            },
-            {
-                "class_id": 7,
-                "confidence": 0.6570667028427124,
-                "bbox": {
-                    "left": 130.7605743408203,
-                    "top": 223.01513671875,
-                    "width": 180.7229766845703,
-                    "height": 321.7899169921875
-                }
+                "image_path": "data/images/dog_bike_car.jpg",
+                "inference_results": [
+                    {
+                        "class_id": 6,
+                        "confidence": 0.9829956889152527,
+                        "bbox": {
+                            "left": 466,
+                            "top": 74,
+                            "width": 231,
+                            "height": 98
+                        }
+                    },
+                    {
+                        "class_id": 1,
+                        "confidence": 0.9134905934333801,
+                        "bbox": {
+                            "left": 141,
+                            "top": 100,
+                            "width": 426,
+                            "height": 315
+                        }
+                    },
+                    {
+                        "class_id": 11,
+                        "confidence": 0.7692201137542725,
+                        "bbox": {
+                            "left": 132,
+                            "top": 219,
+                            "width": 176,
+                            "height": 320
+                        }
+                    }
+                ]
             }
         ]
     },
-    "models/YOLOv10n_voc.onnx": {
-        "weights_path": "models/YOLOv10n_voc.onnx",
+    "YOLOv9t_voc": {
+        "weights_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/models/YOLOv9t_voc.onnx",
         "task": "detect",
-        "data/images/dog_bike_car.jpg": []
-    },
-    "models/YOLOv11n_voc.onnx": {
-        "weights_path": "models/YOLOv11n_voc.onnx",
-        "task": "detect",
-        "data/images/dog_bike_car.jpg": [
+        "results": [
             {
-                "class_id": 6,
-                "confidence": 0.910468578338623,
-                "bbox": {
-                    "left": 468.0233154296875,
-                    "top": 75.36714935302734,
-                    "width": 222.5113525390625,
-                    "height": 94.74346160888672
-                }
-            },
-            {
-                "class_id": 1,
-                "confidence": 0.6864686012268066,
-                "bbox": {
-                    "left": 193.96934509277344,
-                    "top": 129.26605224609375,
-                    "width": 372.8427734375,
-                    "height": 388.07012939453125
-                }
+                "image_path": "data/images/dog_bike_car.jpg",
+                "inference_results": [
+                    {
+                        "class_id": 6,
+                        "confidence": 0.9130256175994873,
+                        "bbox": {
+                            "left": 466,
+                            "top": 72,
+                            "width": 216,
+                            "height": 100
+                        }
+                    },
+                    {
+                        "class_id": 1,
+                        "confidence": 0.7368897199630737,
+                        "bbox": {
+                            "left": 127,
+                            "top": 136,
+                            "width": 440,
+                            "height": 288
+                        }
+                    },
+                    {
+                        "class_id": 7,
+                        "confidence": 0.6570667028427124,
+                        "bbox": {
+                            "left": 130,
+                            "top": 223,
+                            "width": 180,
+                            "height": 321
+                        }
+                    }
+                ]
             }
         ]
     },
-    "models/YOLOv12n_voc.onnx": {
-        "weights_path": "models/YOLOv12n_voc.onnx",
+    "YOLOv10n_voc": {
+        "weights_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/models/YOLOv10n_voc.onnx",
         "task": "detect",
-        "data/images/dog_bike_car.jpg": [
+        "results": [
             {
-                "class_id": 6,
-                "confidence": 0.8589310646057129,
-                "bbox": {
-                    "left": 462.5267028808594,
-                    "top": 56.01557922363281,
-                    "width": 236.24349975585938,
-                    "height": 118.54615783691406
-                }
-            },
+                "image_path": "data/images/dog_bike_car.jpg",
+                "inference_results": []
+            }
+        ]
+    },
+    "YOLOv11n_voc": {
+        "weights_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/models/YOLOv11n_voc.onnx",
+        "task": "detect",
+        "results": [
             {
-                "class_id": 1,
-                "confidence": 0.7806159257888794,
-                "bbox": {
-                    "left": 136.2744140625,
-                    "top": 134.41421508789062,
-                    "width": 428.0147705078125,
-                    "height": 291.63238525390625
-                }
-            },
+                "image_path": "data/images/dog_bike_car.jpg",
+                "inference_results": [
+                    {
+                        "class_id": 6,
+                        "confidence": 0.910468578338623,
+                        "bbox": {
+                            "left": 468,
+                            "top": 75,
+                            "width": 222,
+                            "height": 94
+                        }
+                    },
+                    {
+                        "class_id": 1,
+                        "confidence": 0.6864686012268066,
+                        "bbox": {
+                            "left": 193,
+                            "top": 129,
+                            "width": 372,
+                            "height": 388
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "YOLOv12n_voc": {
+        "weights_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/models/YOLOv12n_voc.onnx",
+        "task": "detect",
+        "results": [
             {
-                "class_id": 7,
-                "confidence": 0.5062676668167114,
-                "bbox": {
-                    "left": 127.81405639648438,
-                    "top": 224.59812927246094,
-                    "width": 179.40652465820312,
-                    "height": 321.94158935546875
-                }
+                "image_path": "data/images/dog_bike_car.jpg",
+                "inference_results": [
+                    {
+                        "class_id": 6,
+                        "confidence": 0.8589310646057129,
+                        "bbox": {
+                            "left": 462,
+                            "top": 56,
+                            "width": 236,
+                            "height": 118
+                        }
+                    },
+                    {
+                        "class_id": 1,
+                        "confidence": 0.7806159257888794,
+                        "bbox": {
+                            "left": 136,
+                            "top": 134,
+                            "width": 428,
+                            "height": 291
+                        }
+                    },
+                    {
+                        "class_id": 7,
+                        "confidence": 0.5062676668167114,
+                        "bbox": {
+                            "left": 127,
+                            "top": 224,
+                            "width": 179,
+                            "height": 321
+                        }
+                    }
+                ]
             }
         ]
     }
