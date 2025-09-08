@@ -84,7 +84,7 @@ def run_inference(model_path: str, images_path: str, inference_config: dict) -> 
             continue
 
         image_results = {
-            "image_path": image_path,
+            "image_path": os.path.abspath(image_path),
             "inference_results": []
         }
 
