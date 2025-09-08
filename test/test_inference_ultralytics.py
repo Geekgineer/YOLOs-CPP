@@ -61,7 +61,7 @@ def load_inference_config(config_path: str) -> Union[dict, None]:
             print(f"Error loading inference configuration file '{config_path}': {e}")
             return None
         
-def run_inference(model_path: str, images_path: str, inference_config: dict) -> dict:
+def run_inference(model_path: str, images_path: str, inference_config: dict) -> list:
 
     print(f"\n ####### Running inference for model: {model_path} on images in '{images_path}' with configuration: {inference_config} ... ###### \n")
 
@@ -71,41 +71,38 @@ def run_inference(model_path: str, images_path: str, inference_config: dict) -> 
         verbose = True,
     )
 
-    returned_results = {}
-
-    if model_path not in returned_results:
-        returned_results[model_path] = {
-            "weights_path": model_path,
-            "task": "detect",
-        }
+    returned_results = []
 
     for image_file in tqdm(os.listdir(images_path), desc="Images to process", unit="image"):
             
         _, file_ext = os.path.splitext(image_file)
+
         image_path = os.path.join(images_path, image_file)
         
         if not os.path.isfile(image_path) or file_ext.lower() not in [".jpg", ".jpeg", ".png"]:
             print(f"Skipping non-image file '{image_file}'.")
             continue
 
-        if image_path not in returned_results[model_path]:
-            returned_results[model_path][image_path] = []
+        image_results = {
+            "image_path": image_path,
+            "inference_results": []
+        }
 
-        results = model.predict(
+        returned_results.append(image_results)
+        
+        inference_results = model.predict(
             source = image_path,
             verbose = True,
             conf = inference_config["conf"],
             iou = inference_config["iou"],
-            device = "cpu",
+            device = "cpu"
         )
 
-        if not results or len(results) == 0:
-            print(f"No results for image '{image_file}', skipping.")
+        if not inference_results or len(inference_results) == 0:
+            print(f"No inference results for image '{image_file}', skipping.")
             continue
 
-        result = results[0]
-
-        boxes = result.boxes
+        boxes = inference_results[0].boxes
         
         if not boxes:
             print(f"No boxes detected for image '{image_file}', skipping.")
@@ -115,17 +112,19 @@ def run_inference(model_path: str, images_path: str, inference_config: dict) -> 
         confidences = boxes.conf
         xyxy = boxes.xyxy
         xywh = boxes.xywh
+        xyxyn = boxes.xyxyn
+        xywhn = boxes.xywhn
 
         for class_id, confidence, xyxy, xywh in zip(class_ids, confidences, xyxy, xywh):
 
             class_id = int(class_id)
             confidence = float(confidence)
-            x1, y1, x2, y2 = map(float, xyxy)
-            x, y, w, h = map(float, xywh)
+            x1, y1, x2, y2 = map(int, xyxy)
+            x, y, w, h = map(int, xywh)
 
             left, top, width, height = x1, y1, w, h
 
-            returned_results[model_path][image_path].append(
+            image_results["inference_results"].append(
                 {
                     "class_id": class_id,
                     "confidence": confidence,
@@ -200,9 +199,15 @@ def main():
             print(f"Model weights '{model_weights}' do not exist, skipping.")
             continue
 
+        if model_name not in results_dict:
+            results_dict[model_name] = {
+                "weights_path": os.path.abspath(model_weights),
+                "task": "detect",
+            }
+
         model_results = run_inference(model_weights, images_path, inference_config)
 
-        results_dict.update(model_results)
+        results_dict[model_name]["results"] = model_results
 
     with open(output_results_json, "w") as f:
         json.dump(results_dict, f, indent=4)

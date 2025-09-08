@@ -27,11 +27,17 @@ struct SingleInferenceResult {
     float top;
     float width;
     float height;
+
+    float normalized_left;
+    float normalized_top;
+    float normalized_width;
+    float normalized_height;
 };
 
-struct InferenceResult {
-    std::string imagePath;
-    std::vector<SingleInferenceResult> detections;
+struct Results {
+    std::string weightsPath;
+    std::string task;
+    std::unordered_map<std::string, std::vector<SingleInferenceResult>> inferenceResults;
 };
 
 bool validatePaths(const std::unordered_map<std::string, std::string>& paths) {
@@ -126,7 +132,7 @@ bool validateModelFiles(const std::vector<std::string>& modelFiles) {
 
 void runInference(const std::string& modelPath, const std::string& labelsPath, const std::vector<std::string>& imageFiles, 
                   const std::unordered_map<std::string, std::string>& inferenceConfig, bool isGPU,
-                  std::unordered_map<std::string, InferenceResult>& allResults) {
+                  std::unordered_map<std::string, std::vector<SingleInferenceResult>>& inferenceResults) {
 
     std::cout << "Using model: " << modelPath << std::endl;
     std::cout << "Using labels: " << labelsPath << std::endl;
@@ -141,26 +147,27 @@ void runInference(const std::string& modelPath, const std::string& labelsPath, c
     float confThreshold = std::stof(inferenceConfig.at("conf"));
     float iouThreshold = std::stof(inferenceConfig.at("iou"));
 
-    if (allResults.find(modelPath) == allResults.end())
-        allResults[modelPath] = InferenceResult();
+    int image_width, image_height;
 
     YOLODetector detector(modelPath, labelsPath, isGPU);
 
-    for (const auto& imgPath : imageFiles) {
+    for (const auto& imagePath : imageFiles) {
 
-        std::cout << "\nProcessing: " << imgPath << std::endl;
+        std::cout << "\nProcessing: " << imagePath << std::endl;
 
         // Load an image
-        cv::Mat image = cv::imread(imgPath);
+        cv::Mat image = cv::imread(imagePath);
         if (image.empty()) {
             std::cerr << "Error: Could not open or find the image!\n";
             continue;
         }
 
-        std::cout << "Image loaded: " << imgPath << " (Size: " << image.cols << "x" << image.rows << ")" << std::endl;
+        image_width = image.cols;
+        image_height = image.rows;
 
-        if (allResults[modelPath].imagePath.empty())
-            allResults[modelPath].imagePath = imgPath;
+        std::cout << "Image loaded: " << imagePath << " (Size: " << image.cols << "x" << image.rows << ")" << std::endl;
+
+        inferenceResults[imagePath] = std::vector<SingleInferenceResult>();
 
         // Detect objects in the image and measure execution time
         auto start = std::chrono::high_resolution_clock::now();
@@ -172,6 +179,8 @@ void runInference(const std::string& modelPath, const std::string& labelsPath, c
         std::cout << "Number of detections found: " << results.size() << std::endl;
 
         std::vector<SingleInferenceResult> detections;
+
+        float normalized_left, normalized_top, normalized_width, normalized_height;
 
         // Print details of each detection
         for (size_t i = 0; i < results.size(); ++i) {
@@ -186,50 +195,52 @@ void runInference(const std::string& modelPath, const std::string& labelsPath, c
 
             singleResult.conf = results[i].conf;
 
+            singleResult.normalized_left = results[i].box.x / static_cast<float>(image_width);
+            singleResult.normalized_top = results[i].box.y / static_cast<float>(image_height);
+            singleResult.normalized_width = results[i].box.width / static_cast<float>(image_width);
+            singleResult.normalized_height = results[i].box.height / static_cast<float>(image_height);
+
             singleResult.left = results[i].box.x;
             singleResult.top = results[i].box.y;
             singleResult.width = results[i].box.width;
             singleResult.height = results[i].box.height;
 
-            detections.push_back(singleResult);
+            inferenceResults[imagePath].push_back(singleResult);
         }
-
-        allResults[modelPath].detections = detections;
     }
 }
 
 
-void fromMapToJson(const std::unordered_map<std::string, InferenceResult>& results, nlohmann::json& outputJson) {
+void fromMapToJson(const std::unordered_map<std::string, Results>& results, nlohmann::json& outputJson) {
 
-    for (const auto& [key, value] : results) {
+    for (const auto& [modelName, results] : results) {
 
-        nlohmann::json inferenceJson;
-        nlohmann::json detectionsJson = nlohmann::json::array();
+        outputJson[modelName] = nlohmann::json();
+        outputJson[modelName]["weights_path"] = results.weightsPath;
+        outputJson[modelName]["task"] = results.task;
+        outputJson[modelName]["results"] = nlohmann::json::array();
 
-        for (const auto& detection : value.detections) {
+        for (const auto& [imagePath, inferenceResults] : results.inferenceResults) {
 
-            nlohmann::json detectionJson;
-            nlohmann::json bboxJson;
+            nlohmann::json imageResults;
+            imageResults["image_path"] = imagePath;
+            imageResults["inference_results"] = nlohmann::json::array();
 
-            detectionJson["class_id"] = detection.classId;
-            detectionJson["confidence"] = detection.conf;
+            for (const auto& res : inferenceResults) {
+                nlohmann::json singleResult;
+                singleResult["class_id"] = res.classId;
+                singleResult["confidence"] = res.conf;
 
-            bboxJson["left"] = detection.left;
-            bboxJson["top"] = detection.top;
-            bboxJson["width"] = detection.width;
-            bboxJson["height"] = detection.height;
+                singleResult["bbox"] = nlohmann::json();
+                singleResult["bbox"]["left"] = res.left;
+                singleResult["bbox"]["top"] = res.top;
+                singleResult["bbox"]["width"] = res.width;
+                singleResult["bbox"]["height"] = res.height;
 
-            detectionJson["bbox"] = bboxJson;
-
-            detectionsJson.push_back(detectionJson);
-    }
-
-    inferenceJson[value.imagePath] = detectionsJson;
-    inferenceJson["task"] = "detection";
-    inferenceJson["weights_path"] = key;
-
-    outputJson[key] = inferenceJson;
-
+                imageResults["inference_results"].push_back(singleResult);
+            }
+            outputJson[modelName]["results"].push_back(imageResults);
+        }
     }
 }
 
@@ -264,19 +275,19 @@ int main(int argc, char* argv[]){
         return -1; // Exit if no images found
     }
     
-    std::vector<std::string> modelFiles = {
-        weightsPath + "YOLOv5nu_voc.onnx",
-        weightsPath + "YOLOv6n_voc.onnx",
-        weightsPath + "YOLOv8n_voc.onnx",
-        weightsPath + "YOLOv9t_voc.onnx",
-        weightsPath + "YOLOv10n_voc.onnx",
-        weightsPath + "YOLOv11n_voc.onnx",
-        weightsPath + "YOLOv12n_voc.onnx"
+    std::vector<std::string> models = {
+        "YOLOv5nu_voc",
+        "YOLOv6n_voc",
+        "YOLOv8n_voc",
+        "YOLOv9t_voc",
+        "YOLOv10n_voc",
+        "YOLOv11n_voc",
+        "YOLOv12n_voc"
     };
 
-    if (!validateModelFiles(modelFiles)) {
-        return -1; // Exit if any model file is missing
-    }
+    // if (!validateModelFiles(modelFiles)) {
+    //     return -1; // Exit if any model file is missing
+    // }
 
     std::unordered_map<std::string, std::string> inferenceConfig = {
         {"conf", "0.50"},
@@ -293,12 +304,27 @@ int main(int argc, char* argv[]){
         fs::remove(resultsFilePath);
     }
 
-    std::unordered_map<std::string, InferenceResult> allResults;
+    std::unordered_map<std::string, Results> allResults;
 
-    for(const auto& modelPath : modelFiles){
+    for(const auto& model : models){
+
+        std::string modelPath = weightsPath + model + ".onnx";
+        if (!fs::exists(modelPath)) {
+            std::cerr << "Warning: Model file does not exist, skipping: " << modelPath << std::endl;
+            continue;
+        }
+
+        allResults[model] = Results();
+        allResults[model].weightsPath = modelPath;
+        allResults[model].task = "detect";
+
         std::cout << "\n ######## Running inference for model: " << modelPath << " ########" << std::endl;
-        runInference(modelPath, labelsPath, imageFiles, inferenceConfig, isGPU, allResults);
+
+        runInference(modelPath, labelsPath, imageFiles, inferenceConfig, isGPU, allResults[model].inferenceResults);
+
         std::cout << " ######## Finished inference for model: " << modelPath << " ########\n" << std::endl;
+
+
     }
     
     nlohmann::json outputJson;
