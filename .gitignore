@@ -53,6 +53,9 @@ onnxruntime*
 .vscode/
 .cache/
 build/
+__pycache__/
+
+
 *.onnx
 *_cpp.json
 
