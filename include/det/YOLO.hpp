@@ -706,7 +706,16 @@ private:
     std::vector<Detection> postprocess_yolo7(const cv::Size &originalImageSize, const cv::Size &resizedImageShape,
                                       const std::vector<Ort::Value> &outputTensors,
                                       float confThreshold, float iouThreshold);
-    
+    /**
+     * @brief Postprocesses the model output to extract detections.
+     * 
+     * @param originalImageSize Size of the original input image.
+     * @param resizedImageShape Size of the image after preprocessing.
+     * @param outputTensors Vector of output tensors from the model.
+     * @param confThreshold Confidence threshold to filter detections.
+     * @param iouThreshold IoU threshold for Non-Maximum Suppression.
+     * @return std::vector<Detection> Vector of detections.
+     */
     std::vector<Detection> postprocess_yolonas(
                 const cv::Size &originalImageSize,
                 const cv::Size &resizedImageShape,
@@ -1231,10 +1240,12 @@ std::vector<Detection> YOLODetector::detect(const cv::Mat& image, float confThre
     float* blobPtr = nullptr; // Pointer to hold preprocessed image data
     // Define the shape of the input tensor (batch size, channels, height, width)
     std::vector<int64_t> inputTensorShape = {1, 3, inputImageShape.height, inputImageShape.width};
-
+    auto start = std::chrono::high_resolution_clock::now();
     // Preprocess the image and obtain a pointer to the blob
     cv::Mat preprocessedImage = preprocess(image, blobPtr, inputTensorShape);
-
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+                            std::chrono::high_resolution_clock::now() - start);
+    
     // Compute the total number of elements in the input tensor
     size_t inputTensorSize = utils::MathUtils::vectorProduct(inputTensorShape);
 
@@ -1255,6 +1266,9 @@ std::vector<Detection> YOLODetector::detect(const cv::Mat& image, float confThre
         inputTensorShape.size()
     );
     std::cout << "data " << outputNames.data()[0] << std::endl;
+    std::cout << "preprocessing completed in: " << duration.count() << " ms" << std::endl;
+
+    start = std::chrono::high_resolution_clock::now();
     // Run the inference session with the input tensor and retrieve output tensors
     std::vector<Ort::Value> outputTensors = session.Run(
         Ort::RunOptions{nullptr},
@@ -1264,11 +1278,17 @@ std::vector<Detection> YOLODetector::detect(const cv::Mat& image, float confThre
         outputNames.data(),
         numOutputNodes
     );
-
+    duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+                            std::chrono::high_resolution_clock::now() - start);
+    std::cout << "inference completed in: " << duration.count() << " ms" << std::endl;
     // Determine the resized image shape based on input tensor shape
+    start = std::chrono::high_resolution_clock::now();
     cv::Size resizedImageShape(static_cast<int>(inputTensorShape[3]), static_cast<int>(inputTensorShape[2]));
-
+    duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+                            std::chrono::high_resolution_clock::now() - start);
+    std::cout << "resizing completed in: " << duration.count() << " ms" << std::endl;
     // Postprocess the output tensors to obtain detections
+    start = std::chrono::high_resolution_clock::now();
     std::vector<Detection> detections;
     const std::vector<int64_t> outputShape = outputTensors[0].GetTensorTypeAndShapeInfo().GetShape();
     if(outputShape[2] == 6){
@@ -1287,6 +1307,8 @@ std::vector<Detection> YOLODetector::detect(const cv::Mat& image, float confThre
         detections = postprocess(image.size(), resizedImageShape, outputTensors, confThreshold, iouThreshold);
     }
     
-
+    duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+                            std::chrono::high_resolution_clock::now() - start);
+    std::cout << "postporcessing completed in: " << duration.count() << " ms" << std::endl;
     return detections; // Return the vector of detections
 }
