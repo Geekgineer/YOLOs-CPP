@@ -54,6 +54,7 @@ onnxruntime*
 .cache/
 build/
 __pycache__/
+.pytest_cache/
 
 
 *.onnx
