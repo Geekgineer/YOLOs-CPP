@@ -46,6 +46,12 @@
 #include <mutex>
 #include <atomic>
 #include <condition_variable>
+// #ifndef DEBUG_MODE
+// #define DEBUG_MODE
+// #endif
+// #ifndef TIMING_MODE
+// #define TIMING_MODE
+// #endif
 #include "det/YOLO.hpp"
 // Thread-safe queue implementation
 template <typename T>
