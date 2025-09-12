@@ -36,8 +36,13 @@
 #include <thread>
 
 // Include debug and custom ScopedTimer tools for performance measurement
+#ifdef DEBUG_MODE
 #include "tools/Debug.hpp"
+#endif
+
+#ifdef TIMING_MODE
 #include "tools/ScopedTimer.hpp"
+#endif
 
 #include <opencv2/opencv.hpp>
 
@@ -431,8 +436,9 @@ namespace utils
                 // Put label text
                 cv::putText(image, label, cv::Point(detection->box.x + 2, labelY - 2), cv::FONT_HERSHEY_SIMPLEX, fontSize, cv::Scalar(255, 255, 255), textThickness, cv::LINE_AA);
             }
-
+#ifdef DEBUG_MODE
             DEBUG_PRINT("Bounding boxes and masks drawn on image.");
+#endif
         }
     };
 
@@ -462,8 +468,9 @@ namespace utils
         {
             std::cerr << "ERROR: Failed to access class name path: " << path << std::endl;
         }
-
+#ifdef DEBUG_MODE
         DEBUG_PRINT("Loaded " << classNames.size() << " class names from " + path);
+#endif
         return classNames;
     }
 
@@ -488,7 +495,9 @@ namespace utils
         const size_t numBoxes = boundingBoxes.size();
         if (numBoxes == 0)
         {
+#ifdef DEBUG_MODE
             DEBUG_PRINT("No bounding boxes to process in NMS");
+#endif
             return;
         }
 
@@ -507,7 +516,9 @@ namespace utils
         // If no boxes remain after thresholding
         if (sortedIndices.empty())
         {
+#ifdef DEBUG_MODE
             DEBUG_PRINT("No bounding boxes above score threshold");
+#endif
             return;
         }
 
@@ -580,8 +591,9 @@ namespace utils
                 }
             }
         }
-
+#ifdef DEBUG_MODE
         DEBUG_PRINT("NMS completed with " + std::to_string(indices.size()) + " indices remaining");
+#endif
     }
 
 };
@@ -806,8 +818,9 @@ YOLODetector::YOLODetector(const std::string &modelPath, const std::string &labe
 
 // Preprocess function implementation
 cv::Mat YOLODetector::preprocess(const cv::Mat &image, float *&blob, std::vector<int64_t> &inputTensorShape) {
+#ifdef TIMING_MODE
     ScopedTimer timer("preprocessing");
-
+#endif
     cv::Mat resizedImage;
     // Resize and pad the image using letterBox utility
     utils::ImagePreprocessingUtils::letterBox(image, resizedImage, inputImageShape, cv::Scalar(114, 114, 114), isDynamicInputShape, false, true, 32);
@@ -828,9 +841,9 @@ cv::Mat YOLODetector::preprocess(const cv::Mat &image, float *&blob, std::vector
         chw[i] = cv::Mat(resizedImage.rows, resizedImage.cols, CV_32FC1, blob + i * resizedImage.cols * resizedImage.rows);
     }
     cv::split(resizedImage, chw); // Split channels into the blob
-
+#ifdef DEBUG_MODE
     DEBUG_PRINT("Preprocessing completed")
-
+#endif
     return resizedImage;
 }
 // Postprocess function to convert raw model output into detections
@@ -841,8 +854,9 @@ std::vector<Detection> YOLODetector::postprocess(
     float confThreshold,
     float iouThreshold
 ) {
+#ifdef TIMING_MODE
     ScopedTimer timer("postprocessing"); // Measure postprocessing time
-
+#endif
     std::vector<Detection> detections;
     const float* rawOutput = outputTensors[0].GetTensorData<float>(); // Extract raw output data from the first output tensor
     const std::vector<int64_t> outputShape = outputTensors[0].GetTensorTypeAndShapeInfo().GetShape();
@@ -940,9 +954,9 @@ std::vector<Detection> YOLODetector::postprocess(
             classIds[idx]     // Class ID
         });
     }
-
+#ifdef DEBUG_MODE
     DEBUG_PRINT("Postprocessing completed") // Debug log for completion
-
+#endif
     return detections;
 }
 // Postprocess function implementation
@@ -954,7 +968,9 @@ std::vector<Detection> YOLODetector::postprocess_yolo10(
     float iouThreshold
 ) {
     // Start timing the postprocessing step
+#ifdef TIMING_MODE
     ScopedTimer timer("Postprocessing");
+#endif
     std::vector<Detection> detections;
     // Retrieve raw output data from the first output tensor
     auto *rawOutput = outputTensors[0].GetTensorData<float>();
@@ -967,7 +983,9 @@ std::vector<Detection> YOLODetector::postprocess_yolo10(
     int num_detections = outputShape[1];
     if(num_detections == 0)
         return detections;
+#ifdef DEBUG_MODE
     DEBUG_PRINT("Number of detections before filtering: " << num_detections);
+#endif
     // Reserve memory for efficient appending
     std::vector<BoundingBox> boxes;
     boxes.reserve(num_detections);
@@ -1029,9 +1047,9 @@ std::vector<Detection> YOLODetector::postprocess_yolo10(
             classIds[idx]     // Class ID
         });
     }
-
+#ifdef DEBUG_MODE
     DEBUG_PRINT("Postprocessing completed") // Debug log for completion
-
+#endif
     return detections;
 
 }
@@ -1148,7 +1166,9 @@ std::vector<Detection> YOLODetector::postprocess_yolo7(
     float iouThreshold
 ) {
     // Start timing the postprocessing step
+#ifdef TIMING_MODE
     ScopedTimer timer("Postprocessing");
+#endif
     std::vector<Detection> detections;
     // Retrieve raw output data from the first output tensor
     auto *rawOutput = outputTensors[0].GetTensorData<float>();
@@ -1159,11 +1179,14 @@ std::vector<Detection> YOLODetector::postprocess_yolo7(
 
     // Assume the second dimension represents the number of detections
     int num_detections = outputShape[0];
+#ifdef DEBUG_MODE
     DEBUG_PRINT("Number of detections before filtering: " << num_detections);
-    std::cout << "Number of detections before filtering: " << num_detections << std::endl;
+#endif
     if(num_detections == 0)
         return detections;
+#ifdef DEBUG_MODE
     DEBUG_PRINT("Number of detections before filtering: " << num_detections);
+#endif
     // Reserve memory for efficient appending
     std::vector<BoundingBox> boxes;
     boxes.reserve(num_detections);
@@ -1226,8 +1249,9 @@ std::vector<Detection> YOLODetector::postprocess_yolo7(
             classIds[idx]     // Class ID
         });
     }
-
+#ifdef DEBUG_MODE
     DEBUG_PRINT("Postprocessing completed") // Debug log for completion
+#endif
 
     return detections;
 
@@ -1235,8 +1259,9 @@ std::vector<Detection> YOLODetector::postprocess_yolo7(
 
 // Detect function implementation
 std::vector<Detection> YOLODetector::detect(const cv::Mat& image, float confThreshold, float iouThreshold) {
+#ifdef TIMING_MODE
     ScopedTimer timer("Overall detection");
-
+#endif
     float* blobPtr = nullptr; // Pointer to hold preprocessed image data
     // Define the shape of the input tensor (batch size, channels, height, width)
     std::vector<int64_t> inputTensorShape = {1, 3, inputImageShape.height, inputImageShape.width};
