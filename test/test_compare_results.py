@@ -59,6 +59,46 @@ def test_compare_weights_paths(results_ultralytics : dict, results_cpp : dict):
 
       assert weights_path_ultralytics == weights_path_cpp, f"Weights path mismatch for model {model_name}: {weights_path_ultralytics} != {weights_path_cpp}"
 
+def test_compare_images_counts(results_ultralytics : dict, results_cpp : dict):
+    
+   for model_name in results_ultralytics.keys():
+
+      results_ultralytics_model = results_ultralytics[model_name]["results"]
+      results_cpp_model = results_cpp[model_name]["results"]
+
+      assert len(results_ultralytics_model) == len(results_cpp_model), f"Number of results mismatch for model {model_name}: {len(results_ultralytics_model)} != {len(results_cpp_model)}"
+
+def test_compare_images_paths(results_ultralytics : dict, results_cpp : dict):
+    
+   for model_name in results_ultralytics.keys():
+
+      results_ultralytics_model = results_ultralytics[model_name]["results"]
+      results_cpp_model = results_cpp[model_name]["results"]
+
+      for i in range(len(results_ultralytics_model)):
+
+         image_path_ultralytics = results_ultralytics_model[i].get("image_path")
+         image_path_cpp = results_cpp_model[i].get("image_path")
+
+         assert image_path_ultralytics == image_path_cpp, f"Image path mismatch for model {model_name}, image {i}: {image_path_ultralytics} != {image_path_cpp}"
    
     
-   
+
+def test_compare_detections_counts(results_ultralytics : dict, results_cpp : dict):
+
+   for model_name in results_ultralytics.keys():
+
+      results_ultralytics_model = results_ultralytics[model_name]["results"]
+      results_cpp_model = results_cpp[model_name]["results"]
+
+      for i in range(len(results_ultralytics_model)):
+
+         detections_ultralytics = results_ultralytics_model[i].get("inference_results", [])
+         detections_cpp = results_cpp_model[i].get("inference_results", [])
+
+         image_path = results_ultralytics_model[i].get("image_path")
+
+         assert len(detections_ultralytics) == len(detections_cpp), f"""
+         Number of detections mismatch for model {model_name}, 
+         image :  {image_path}: ultralytics: {len(detections_ultralytics)} != cpp: {len(detections_cpp)}
+         """
