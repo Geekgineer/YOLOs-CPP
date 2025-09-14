@@ -1063,7 +1063,9 @@ std::vector<Detection> YOLODetector::postprocess_yolonas(
     float iouThreshold
 ) {
     // Start timing the postprocessing step
+#ifdef TIMING_MODE
     ScopedTimer timer("Postprocessing");
+#endif
     std::vector<Detection> detections;
     // Retrieve raw output data from the first output tensor
     auto *rawOutput = outputTensors[0].GetTensorData<float>();
@@ -1075,11 +1077,15 @@ std::vector<Detection> YOLODetector::postprocess_yolonas(
 
     // Assume the second dimension represents the number of detections
     int num_detections = outputShape[1];
+#ifdef DEBUG_MODE
     DEBUG_PRINT("Number of detections before filtering: " << num_detections);
+#endif
     std::cout << "Number of detections before filtering: " << num_detections << std::endl;
     if(num_detections == 0)
         return detections;
+#ifdef DEBUG_MODE
     DEBUG_PRINT("Number of detections before filtering: " << num_detections);
+#endif
     // Reserve memory for efficient appending
     std::vector<BoundingBox> boxes;
     boxes.reserve(num_detections);
@@ -1149,9 +1155,9 @@ std::vector<Detection> YOLODetector::postprocess_yolonas(
             classIds[idx]     // Class ID
         });
     }
-
+#ifdef DEBUG_MODE
     DEBUG_PRINT("Postprocessing completed") // Debug log for completion
-
+#endif
     return detections;
 
 }
