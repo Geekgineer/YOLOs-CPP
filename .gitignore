@@ -56,10 +56,3 @@ onnxruntime*
 build/
 __pycache__/
 .pytest_cache/
-
-
-*.onnx
-# *_cpp.json
-
-
-# !*voc.pt
