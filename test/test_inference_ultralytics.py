@@ -2,8 +2,8 @@ import sys
 import os
 import shutil
 import json
-from typing import Union
 
+from typing import Union
 from tqdm.auto import tqdm
 from ultralytics import YOLO
 
@@ -84,7 +84,7 @@ def run_inference(model_path: str, images_path: str, inference_config: dict) -> 
             continue
 
         image_results = {
-            "image_path": os.path.abspath(image_path),
+            "image_path": image_path,
             "inference_results": []
         }
 
@@ -165,8 +165,8 @@ def main():
     os.makedirs(results_path)
 
     inference_config = {
-            "conf": 0.25,
-            "iou": 0.25
+            "conf": 0.50,
+            "iou": 0.50
     }
 
     inference_config_path = "inference_config.json"
@@ -201,8 +201,8 @@ def main():
 
         if model_name not in results_dict:
             results_dict[model_name] = {
-                "weights_path": os.path.abspath(model_weights),
-                "task": "detect",
+                "weights_path": model_weights,
+                "task": "detect"
             }
 
         model_results = run_inference(model_weights, images_path, inference_config)

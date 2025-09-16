@@ -59,7 +59,7 @@ __pycache__/
 
 
 *.onnx
-*_cpp.json
+# *_cpp.json
 
 
 !*voc.pt

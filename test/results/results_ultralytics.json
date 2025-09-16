@@ -1,10 +1,10 @@
 {
     "YOLOv5nu_voc": {
-        "weights_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/models/YOLOv5nu_voc.onnx",
+        "weights_path": "models/YOLOv5nu_voc.onnx",
         "task": "detect",
         "results": [
             {
-                "image_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/data/images/dog_bike_car.jpg",
+                "image_path": "data/images/dog_bike_car.jpg",
                 "inference_results": [
                     {
                         "class_id": 6,
@@ -31,21 +31,21 @@
         ]
     },
     "YOLOv6n_voc": {
-        "weights_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/models/YOLOv6n_voc.onnx",
+        "weights_path": "models/YOLOv6n_voc.onnx",
         "task": "detect",
         "results": [
             {
-                "image_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/data/images/dog_bike_car.jpg",
+                "image_path": "data/images/dog_bike_car.jpg",
                 "inference_results": []
             }
         ]
     },
     "YOLOv8n_voc": {
-        "weights_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/models/YOLOv8n_voc.onnx",
+        "weights_path": "models/YOLOv8n_voc.onnx",
         "task": "detect",
         "results": [
             {
-                "image_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/data/images/dog_bike_car.jpg",
+                "image_path": "data/images/dog_bike_car.jpg",
                 "inference_results": [
                     {
                         "class_id": 6,
@@ -82,11 +82,11 @@
         ]
     },
     "YOLOv9t_voc": {
-        "weights_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/models/YOLOv9t_voc.onnx",
+        "weights_path": "models/YOLOv9t_voc.onnx",
         "task": "detect",
         "results": [
             {
-                "image_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/data/images/dog_bike_car.jpg",
+                "image_path": "data/images/dog_bike_car.jpg",
                 "inference_results": [
                     {
                         "class_id": 6,
@@ -123,21 +123,21 @@
         ]
     },
     "YOLOv10n_voc": {
-        "weights_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/models/YOLOv10n_voc.onnx",
+        "weights_path": "models/YOLOv10n_voc.onnx",
         "task": "detect",
         "results": [
             {
-                "image_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/data/images/dog_bike_car.jpg",
+                "image_path": "data/images/dog_bike_car.jpg",
                 "inference_results": []
             }
         ]
     },
     "YOLOv11n_voc": {
-        "weights_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/models/YOLOv11n_voc.onnx",
+        "weights_path": "models/YOLOv11n_voc.onnx",
         "task": "detect",
         "results": [
             {
-                "image_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/data/images/dog_bike_car.jpg",
+                "image_path": "data/images/dog_bike_car.jpg",
                 "inference_results": [
                     {
                         "class_id": 6,
@@ -164,11 +164,11 @@
         ]
     },
     "YOLOv12n_voc": {
-        "weights_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/models/YOLOv12n_voc.onnx",
+        "weights_path": "models/YOLOv12n_voc.onnx",
         "task": "detect",
         "results": [
             {
-                "image_path": "/home/imessam/dev/contributions/YOLOs-CPP/test/data/images/dog_bike_car.jpg",
+                "image_path": "data/images/dog_bike_car.jpg",
                 "inference_results": [
                     {
                         "class_id": 6,
