@@ -62,4 +62,4 @@ __pycache__/
 # *_cpp.json
 
 
-!*voc.pt
+# !*voc.pt
