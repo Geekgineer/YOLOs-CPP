@@ -54,6 +54,12 @@
 #include <atomic>
 
 #include <opencv2/highgui/highgui.hpp>
+// #ifndef DEBUG_MODE
+// #define DEBUG_MODE
+// #endif
+// #ifndef TIMING_MODE
+// #define TIMING_MODE
+// #endif
 #include "det/YOLO.hpp"
 
 

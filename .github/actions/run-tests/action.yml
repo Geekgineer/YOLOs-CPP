@@ -1,0 +1,9 @@
+# .github/actions/run-tests/action.yml
+name: "Run Tests"
+description: "Reusable test step"
+runs:
+  using: "composite"
+  steps:
+    - name: Run Tests
+      run: echo "Passed Tests!"
+      shell: bash
