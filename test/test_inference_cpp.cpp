@@ -211,19 +211,19 @@ void runInference(const std::string& modelPath, const std::string& labelsPath, c
 }
 
 
-void fromMapToJson(const std::unordered_map<std::string, Results>& results, nlohmann::json& outputJson) {
+void fromMapToJson(const std::unordered_map<std::string, Results>& results, std::string basePath, nlohmann::json& outputJson) {
 
     for (const auto& [modelName, results] : results) {
 
         outputJson[modelName] = nlohmann::json();
-        outputJson[modelName]["weights_path"] = results.weightsPath;
+        outputJson[modelName]["weights_path"] = results.weightsPath.substr(basePath.length());
         outputJson[modelName]["task"] = results.task;
         outputJson[modelName]["results"] = nlohmann::json::array();
 
         for (const auto& [imagePath, inferenceResults] : results.inferenceResults) {
 
             nlohmann::json imageResults;
-            imageResults["image_path"] = imagePath;
+            imageResults["image_path"] = imagePath.substr(basePath.length());
             imageResults["inference_results"] = nlohmann::json::array();
 
             for (const auto& res : inferenceResults) {
@@ -254,8 +254,10 @@ int main(int argc, char* argv[]){
 
     std::string dataPath = basePath + "data/";
     std::string imagesPath = dataPath + "images/";
+
     std::string weightsPath = basePath + "models/";
     std::string labelsPath = weightsPath + "voc.names";
+    
     std::string resultsPath = basePath + "results/";
 
     std::unordered_map<std::string, std::string> paths_map = {
@@ -284,10 +286,6 @@ int main(int argc, char* argv[]){
         "YOLOv11n_voc",
         "YOLOv12n_voc"
     };
-
-    // if (!validateModelFiles(modelFiles)) {
-    //     return -1; // Exit if any model file is missing
-    // }
 
     std::unordered_map<std::string, std::string> inferenceConfig = {
         {"conf", "0.50"},
@@ -328,7 +326,7 @@ int main(int argc, char* argv[]){
     }
     
     nlohmann::json outputJson;
-    fromMapToJson(allResults, outputJson);
+    fromMapToJson(allResults, basePath, outputJson);
     std::ofstream file(resultsFilePath);
     file << std::setw(2) << outputJson << std::endl;
    
