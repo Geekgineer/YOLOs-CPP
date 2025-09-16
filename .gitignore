@@ -1,5 +1,6 @@
 # Ignore build directories
 /build
+/benchmark/build/
 /build/*
 
 # CMake files

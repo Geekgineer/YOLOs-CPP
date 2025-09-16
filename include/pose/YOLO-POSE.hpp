@@ -1,10 +1,10 @@
 #pragma once
 
 // ===================================
-// Single YOLOv11 Pose Detector Header File
+// Single YOLO Pose Detector Header File
 // ===================================
 //
-// This header defines the YOLO11PoseDetector class for performing human pose estimation using the YOLOv11 model.
+// This header defines the YOLOPoseDetector class for performing human pose estimation using the YOLO model.
 // It includes necessary libraries, utility structures, and helper functions to facilitate model inference,
 // keypoint detection, and result visualization.
 //
@@ -16,9 +16,9 @@
 // ================================
 
 /**
- * @file YOLO11-POSE.hpp
- * @brief Header file for the YOLO11PoseDetector class, responsible for human pose estimation
- *        using the YOLOv11 model with optimized performance for real-time applications.
+ * @file YOLO-POSE.hpp
+ * @brief Header file for the YOLOPoseDetector class, responsible for human pose estimation
+ *        using the YOLO model with optimized performance for real-time applications.
  */
 
 
@@ -130,7 +130,7 @@ const std::vector<std::pair<int, int>> POSE_SKELETON = {
 
 /**
  * @namespace utils
- * @brief Namespace containing utility functions for the YOLO11POSE-Detector.
+ * @brief Namespace containing utility functions for the YOLOPOSE-Detector.
  */
 namespace utils {
 
@@ -480,9 +480,9 @@ namespace utils {
 
 
 /**
- * @brief YOLO11POSEDetector class handles loading the YOLO model, preprocessing images, running inference, and postprocessing results.
+ * @brief YOLOPOSEDetector class handles loading the YOLO model, preprocessing images, running inference, and postprocessing results.
  */
-class YOLO11POSEDetector {
+class YOLOPOSEDetector {
 public:
     /**
      * @brief Constructor to initialize the YOLO detector with model and label paths.
@@ -491,7 +491,7 @@ public:
      * @param labelsPath Path to the file containing class labels.
      * @param useGPU Whether to use GPU for inference (default is false).
      */
-    YOLO11POSEDetector(const std::string &modelPath, const std::string &labelsPath, bool useGPU = false);
+    YOLOPOSEDetector(const std::string &modelPath, const std::string &labelsPath, bool useGPU = false);
     
     /**
      * @brief Runs detection on the provided image.
@@ -553,8 +553,8 @@ private:
 };
 
 
-// Implementation of YOLO11POSEDetector constructor
-YOLO11POSEDetector::YOLO11POSEDetector(const std::string &modelPath, const std::string &labelsPath, bool useGPU) {
+// Implementation of YOLOPOSEDetector constructor
+YOLOPOSEDetector::YOLOPOSEDetector(const std::string &modelPath, const std::string &labelsPath, bool useGPU) {
     // Initialize ONNX Runtime environment with warning level
     env = Ort::Env(ORT_LOGGING_LEVEL_WARNING, "ONNX_DETECTION");
     sessionOptions = Ort::SessionOptions();
@@ -620,7 +620,7 @@ YOLO11POSEDetector::YOLO11POSEDetector(const std::string &modelPath, const std::
 }
 
 // Preprocess function implementation
-cv::Mat YOLO11POSEDetector::preprocess(const cv::Mat &image, float *&blob, std::vector<int64_t> &inputTensorShape) {
+cv::Mat YOLOPOSEDetector::preprocess(const cv::Mat &image, float *&blob, std::vector<int64_t> &inputTensorShape) {
     ScopedTimer timer("preprocessing");
 
     cv::Mat resizedImage;
@@ -658,7 +658,7 @@ cv::Mat YOLO11POSEDetector::preprocess(const cv::Mat &image, float *&blob, std::
  *
  * @note Uses `utils::drawPoseEstimation()` for visualization.
  */
-void YOLO11POSEDetector::drawBoundingBox(cv::Mat &image, const std::vector<Detection> &detections) const {
+void YOLOPOSEDetector::drawBoundingBox(cv::Mat &image, const std::vector<Detection> &detections) const {
     utils::drawPoseEstimation(image, detections);
 }
 
@@ -676,7 +676,7 @@ void YOLO11POSEDetector::drawBoundingBox(cv::Mat &image, const std::vector<Detec
  * @note This function applies confidence filtering, NMS, and necessary transformations 
  *       to map detections back to the original image size.
  */
-std::vector<Detection> YOLO11POSEDetector::postprocess(
+std::vector<Detection> YOLOPOSEDetector::postprocess(
     const cv::Size &originalImageSize,
     const cv::Size &resizedImageShape,
     const std::vector<Ort::Value> &outputTensors,
@@ -779,7 +779,7 @@ std::vector<Detection> YOLO11POSEDetector::postprocess(
 }
 
 // Detect function implementation
-std::vector<Detection> YOLO11POSEDetector::detect(const cv::Mat& image, float confThreshold, float iouThreshold) {
+std::vector<Detection> YOLOPOSEDetector::detect(const cv::Mat& image, float confThreshold, float iouThreshold) {
     ScopedTimer timer("Overall detection");
 
     float* blobPtr = nullptr; // Pointer to hold preprocessed image data

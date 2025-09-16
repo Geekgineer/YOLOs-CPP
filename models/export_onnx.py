@@ -1,4 +1,5 @@
 from ultralytics import YOLO
+from ultralytics import NAS
 
 # Load the YOLOv12n model
 
@@ -8,9 +9,11 @@ from ultralytics import YOLO
 # model = YOLO("yolov8n.pt")
 # model = YOLO("yolov9t.pt")
 # model = YOLO("yolov10n.pt")
-model = YOLO("yolo11n.pt")
+# model = YOLO("yolo11n.pt")
 # model = YOLO("yolo12n.pt")
+model = NAS("yolo_nas_s.pt")
 
 
 # Export the model to ONNX format
 model.export(format="onnx")
+

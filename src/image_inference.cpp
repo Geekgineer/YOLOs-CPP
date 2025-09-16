@@ -44,7 +44,15 @@
 #include <filesystem>
 #include <algorithm> // Required for std::transform
 
+
+// #ifndef DEBUG_MODE
+// #define DEBUG_MODE
+// #endif
+// #ifndef TIMING_MODE
+// #define TIMING_MODE
+// #endif
 #include "det/YOLO.hpp"
+
 
 int main(int argc, char* argv[]){
     namespace fs = std::filesystem;
