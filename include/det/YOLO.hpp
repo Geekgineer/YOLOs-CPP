@@ -930,8 +930,8 @@ std::vector<Detection> YOLODetector::postprocess(
 
     int det_offset = img_idx*outputShape[1]*outputShape[2];
     // Determine the number of features and detections
-    const size_t num_features = outputShape[2] > outputShape[1] ? outputShape[1] : outputShape[2];
-    const size_t num_detections = outputShape[2] > outputShape[1] ? outputShape[2] : outputShape[1];
+    const size_t num_features = outputShape[1];
+    const size_t num_detections = outputShape[2];
     // Early exit if no detections
     if (num_detections == 0) {
         return detections;
@@ -1237,28 +1237,27 @@ std::vector<Detection> YOLODetector::postprocess_yolo7(
     float confThreshold,
     float iouThreshold
     ) {
-    // Start timing the postprocessing step
 #ifdef TIMING_MODE
-    ScopedTimer timer("Postprocessing");
+    ScopedTimer timer("postprocessing"); // Measure postprocessing time
 #endif
     std::vector<Detection> detections;
-    // Retrieve raw output data from the first output tensor
-    auto *rawOutput = outputTensors[0].GetTensorData<float>();
-    std::vector<int64_t> outputShape = outputTensors[0].GetTensorTypeAndShapeInfo().GetShape();
-    size_t count = outputTensors[0].GetTensorTypeAndShapeInfo().GetElementCount();
+    const float* rawOutput = outputTensors[0].GetTensorData<float>(); // Extract raw output data from the first output tensor
+    const std::vector<int64_t> outputShape = outputTensors[0].GetTensorTypeAndShapeInfo().GetShape();
 
-    std::vector<Detection> detectionVector;
-
-    // Assume the second dimension represents the number of detections
-    int num_detections = outputShape[0];
-#ifdef DEBUG_MODE
-    DEBUG_PRINT("Number of detections before filtering: " << num_detections);
-#endif
-    if(num_detections == 0)
+    int det_offset = img_idx*outputShape[1]*outputShape[2];
+    // Determine the number of features and detections
+    const size_t num_features = outputShape[2];
+    const size_t num_detections = outputShape[1];
+    // Early exit if no detections
+    if (num_detections == 0) {
         return detections;
-#ifdef DEBUG_MODE
-    DEBUG_PRINT("Number of detections before filtering: " << num_detections);
-#endif
+    }
+    // Calculate number of classes based on output shape
+    const int numClasses = static_cast<int>(num_features) - 5;
+    if (numClasses <= 0) {
+        // Invalid number of classes
+        return detections;
+    }
     // Reserve memory for efficient appending
     std::vector<BoundingBox> boxes;
     boxes.reserve(num_detections);
@@ -1268,22 +1267,37 @@ std::vector<Detection> YOLODetector::postprocess_yolo7(
     classIds.reserve(num_detections);
     std::vector<BoundingBox> nms_boxes;
     nms_boxes.reserve(num_detections);
-    // Iterate through each detection and filter based on confidence threshold
-    for (int i = 0; i < num_detections; i++) {
-        float x1 = rawOutput[i * outputShape[1] + 1];
-        float y1 = rawOutput[i * outputShape[1] + 2];
-        float x2 = rawOutput[i * outputShape[1] + 3];
-        float y2 = rawOutput[i * outputShape[1] + 4];
-        int classId = static_cast<int>(rawOutput[i * outputShape[1] + 5]);
+    // Constants for indexing
+    const float* ptr = rawOutput;
 
-        float confidence = outputShape[1] > 6 ? rawOutput[i * outputShape[1] + 6] : rawOutput[i * outputShape[1] + 0];
-
+    for (size_t d = 0; d < num_detections; ++d) {
+        // Extract bounding box coordinates (center x, center y, width, height)
+        float centerX = ptr[det_offset +  d*num_features+ 0];
+        float centerY = ptr[det_offset + d*num_features + 1];
+        float width = ptr[det_offset +  d*num_features + 2];
+        float height = ptr[det_offset +  d*num_features + 3];
+        // Find class with the highest confidence score
+        float obj = ptr[det_offset +  d*num_features + 4];
+        int classId = -1;
+        float maxScore = -FLT_MAX;
+        for (int c = 0; c < numClasses; ++c) {
+            const float score = ptr[det_offset + (5 + c) +d* num_features];
+            if (score > maxScore) {
+                maxScore = score;
+                classId = c;
+            }
+        }
+        
         // Proceed only if confidence exceeds threshold
-        if (confidence > confThreshold) {
+        if (obj > confThreshold) {
+            // Convert center coordinates to top-left (x1, y1)
+            float left = centerX - width / 2.0f;
+            float top = centerY - height / 2.0f;
+
             // Scale to original image size
             BoundingBox scaledBox = utils::ImagePreprocessingUtils::scaleCoords(
                 resizedImageShape,
-                BoundingBox(x1, y1, x2-x1, y2-y1),
+                BoundingBox(left, top, width, height),
                 originalImageSize,
                 true
             );
@@ -1303,11 +1317,10 @@ std::vector<Detection> YOLODetector::postprocess_yolo7(
             // Add to respective containers
             nms_boxes.emplace_back(nmsBox);
             boxes.emplace_back(roundedBox);
-            confs.emplace_back(confidence);
+            confs.emplace_back(obj);
             classIds.emplace_back(classId);
         }
     }
-
     // Apply Non-Maximum Suppression (NMS) to eliminate redundant detections
     std::vector<int> indices;
     utils::NMSBoxes(nms_boxes, confs, confThreshold, iouThreshold, indices);
@@ -1324,9 +1337,7 @@ std::vector<Detection> YOLODetector::postprocess_yolo7(
 #ifdef DEBUG_MODE
     DEBUG_PRINT("Postprocessing completed") // Debug log for completion
 #endif
-
     return detections;
-
 }
 
 
@@ -1394,13 +1405,12 @@ std::vector<Detection> YOLODetector::detect(const cv::Mat& image, float confThre
         // std::cout << "yolo 10 detected" << std::endl;
         detections = postprocess_yolo10(image.size(), resizedImageShape, outputTensors,0, confThreshold, iouThreshold);
     }
-    else if(outputShape[1] == 7){
-        std::cout << "yolo 7 detected" << std::endl;
-        detections = postprocess_yolo7(image.size(), resizedImageShape, outputTensors,0, confThreshold, iouThreshold);
-    }
     else if(outputShape[2] == 4){
         // std::cout << "yolo nas detected" << std::endl;
         detections = postprocess_yolonas(image.size(), resizedImageShape, outputTensors,0, confThreshold, iouThreshold);
+    }
+    else if(outputShape[1] > outputShape[2]){
+        detections = postprocess_yolo7(image.size(), resizedImageShape, outputTensors,0, confThreshold, iouThreshold);
     }
     else{
         std::cout << "yolo not 10 detected" << std::endl;
@@ -1481,13 +1491,12 @@ std::vector<std::vector<Detection>> YOLODetector::detect(const std::vector<cv::M
             // std::cout << "yolo 10 detected" << std::endl;
             detections = postprocess_yolo10(image.size(), resizedImageShape, outputTensors,i, confThreshold, iouThreshold);
         }
-        // else if(outputShape[1] == 7){
-        //     // std::cout << "yolo 7 detected" << std::endl;
-        //     detections = postprocess_yolo7(image.size(), resizedImageShape, outputTensors,i, confThreshold, iouThreshold);
-        // }
         else if(outputShape[2] == 4){
-            std::cout << "yolo nas detected" << std::endl;
+            // std::cout << "yolo nas detected" << std::endl;
             detections = postprocess_yolonas(image.size(), resizedImageShape, outputTensors,i, confThreshold, iouThreshold);
+        }
+        else if(outputShape[1] > outputShape[2]){
+            detections = postprocess_yolo7(image.size(), resizedImageShape, outputTensors,i, confThreshold, iouThreshold);
         }
         else{
             // std::cout << "yolo not 10 detected" << std::endl;
