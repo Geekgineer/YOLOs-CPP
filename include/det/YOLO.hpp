@@ -1400,7 +1400,7 @@ std::vector<Detection> YOLODetector::detect(const cv::Mat& image, float confThre
     start = std::chrono::high_resolution_clock::now();
     std::vector<Detection> detections;
     const std::vector<int64_t> outputShape = outputTensors[0].GetTensorTypeAndShapeInfo().GetShape();
-    std::cout << "outputShape " << outputShape[0] << " " << outputShape[1] << " " << outputShape[2] << " " << outputShape[3] << std::endl;
+    // std::cout << "outputShape " << outputShape[0] << " " << outputShape[1] << " " << outputShape[2] << " " << outputShape[3] << std::endl;
     if(outputShape[2] == 6){
         // std::cout << "yolo 10 detected" << std::endl;
         detections = postprocess_yolo10(image.size(), resizedImageShape, outputTensors,0, confThreshold, iouThreshold);
@@ -1413,7 +1413,7 @@ std::vector<Detection> YOLODetector::detect(const cv::Mat& image, float confThre
         detections = postprocess_yolo7(image.size(), resizedImageShape, outputTensors,0, confThreshold, iouThreshold);
     }
     else{
-        std::cout << "yolo not 10 detected" << std::endl;
+        // std::cout << "yolo not 10 detected" << std::endl;
         detections = postprocess(image.size(), resizedImageShape, outputTensors,0, confThreshold, iouThreshold);
     }
 
