@@ -693,7 +693,7 @@ private:
     std::vector<cv::Size> batch_preprocess(const std::vector<cv::Mat> &images, float *&blob, std::vector<int64_t> &inputTensorShape);
     
     /**
-     * @brief Postprocesses the model output to extract detections for a single image.
+     * @brief Postprocesses the model output to extract detections.
      * 
      * @param originalImageSize Size of the original input image.
      * @param resizedImageShape Size of the image after preprocessing.
@@ -707,7 +707,7 @@ private:
                                       const std::vector<Ort::Value> &outputTensors,int img_idx,
                                       float confThreshold, float iouThreshold);
     /**
-     * @brief Postprocesses the model output to extract detections for a single image.
+     * @brief Postprocesses the model output to extract detections.
      * 
      * @param originalImageSize Size of the original input image.
      * @param resizedImageShape Size of the image after preprocessing.
@@ -721,7 +721,7 @@ private:
                                       const std::vector<Ort::Value> &outputTensors,int img_idx,
                                       float confThreshold, float iouThreshold);
     /**
-     * @brief Postprocesses the model output to extract detections for a single image.
+     * @brief Postprocesses the model output to extract detections.
      * 
      * @param originalImageSize Size of the original input image.
      * @param resizedImageShape Size of the image after preprocessing.
@@ -735,7 +735,7 @@ private:
                                       const std::vector<Ort::Value> &outputTensors,int img_idx,
                                       float confThreshold, float iouThreshold);
     /**
-     * @brief Postprocesses the model output to extract detections for a single image.
+     * @brief Postprocesses the model output to extract detections.
      * 
      * @param originalImageSize Size of the original input image.
      * @param resizedImageShape Size of the image after preprocessing.
