@@ -52,3 +52,7 @@ onnxruntime*
 # Ignore any IDE-specific files 
 .idea/
 .vscode/
+.cache/
+build/
+__pycache__/
+.pytest_cache/
