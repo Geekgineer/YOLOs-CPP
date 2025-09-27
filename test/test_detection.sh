@@ -22,6 +22,5 @@ cd ../../
 # Run C++ inference pipeline
 ./build/inference_detection_cpp
 
-# Compare results with pytest
-cd detection
-pytest compare_results.py
+# Compare results with google test
+./build/compare_detection_results 
