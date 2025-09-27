@@ -32,7 +32,7 @@ Currently, only object detection is supported:
 
 - Use the `run_test.sh` script in the root folder to execute the entire pipeline:
   ```bash
-  ./run_test.sh
+  ./run_test.sh <task_type (0 for detection, 1 for classification, 2 for segmentation, 3 for pose, 4 for obb, 5 for all, default: 0)>
   ```
 
 ## Notes
