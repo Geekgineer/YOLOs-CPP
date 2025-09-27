@@ -250,7 +250,7 @@ int main(int argc, char* argv[]){
 
     bool isGPU = argc > 1 ? std::string(argv[1]) == "gpu" : false; // Default to CPU if no argument is provided
 
-    std::string basePath = XSTRING(BASE_PATH); // Base path defined in CMakeLists.txt
+    std::string basePath = XSTRING(BASE_PATH_DETECTION); // Base path defined in CMakeLists.txt
 
     std::string dataPath = basePath + "data/";
     std::string imagesPath = dataPath + "images/";
