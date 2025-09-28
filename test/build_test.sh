@@ -5,22 +5,25 @@ set -euo pipefail
 CURRENT_DIR=$(cd "$(dirname "$0")" && pwd)
 
 # Default values
-ONNXRUNTIME_VERSION="${1:-1.20.1}"
-ONNXRUNTIME_GPU="${2:-0}"
+TEST_TASK="${1:-0}" # 0: detection, 1: classification, 2: segmentation, 3: pose, 4: obb, 5: all
+ONNXRUNTIME_VERSION="${2:-1.20.1}"
+ONNXRUNTIME_GPU="${3:-0}"
+
 
 # Function to display usage
 usage() {
-    echo "Usage: $0 [ONNXRUNTIME_VERSION] [ONNXRUNTIME_GPU]"
+    echo "Usage: $0 [TEST_TASK] [ONNXRUNTIME_VERSION] [ONNXRUNTIME_GPU]"
     echo
     echo "This script downloads ONNX Runtime for the current platform and architecture and builds YOLOs-CPP."
     echo
     echo "Arguments:"
+    echo "  TEST_TASK            The test task to build (0 for detection, 1 for classification, 2 for segmentation, 3 for pose, 4 for obb, 5 for all, default: 0)."
     echo "  ONNXRUNTIME_VERSION   Version of ONNX Runtime to download (default: 1.20.1)."
     echo "  ONNXRUNTIME_GPU       Whether to use GPU support (0 for CPU, 1 for GPU, default: 0)."
     echo
     echo "Examples:"
-    echo "  $0 1.20.1 0          # Downloads ONNX Runtime v1.20.1 for CPU."
-    echo "  $0 1.16.3 1          # Downloads ONNX Runtime v1.16.3 for GPU."
+    echo "  $0 0 1.20.1 0          # Downloads ONNX Runtime v1.20.1 for CPU and builds detection tests."
+    echo "  $0 5 1.16.3 1        # Downloads ONNX Runtime v1.16.3 for GPU and builds all tests."
     echo
     exit 1
 }
@@ -114,6 +117,8 @@ download_onnxruntime() {
     rm -f "${ONNXRUNTIME_FILE}"
 }
 
+
+
 # Function to build the project
 build_project() {
     local build_type="${1:-Release}"
@@ -124,7 +129,7 @@ build_project() {
     cd "$build_dir"
 
     echo "Configuring CMake with build type: $build_type ..."
-    cmake .. -D ONNXRUNTIME_DIR="${ONNXRUNTIME_DIR}" -DCMAKE_BUILD_TYPE="$build_type" -DCMAKE_CXX_FLAGS_RELEASE="-O3 -march=native"
+    cmake .. -D ONNXRUNTIME_DIR="${ONNXRUNTIME_DIR}" -DtestTask="${TEST_TASK}" -DCMAKE_BUILD_TYPE="$build_type" -DCMAKE_CXX_FLAGS_RELEASE="-O3 -march=native"
 
     echo "Building project incrementally ..."
     cmake --build . -- -j$(nproc)  # Parallel build using available CPU cores
