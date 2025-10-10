@@ -1,0 +1,10 @@
+{
+    "yolov8s-seg": {
+        "weights_path": "models/yolov8s-seg.onnx",
+        "task": "segment",
+        "results": [
+            {
+                "image_path": "data/images/car_peds.jpg",
+                "inference_results": [
+                    {
+                        "class_id": 
