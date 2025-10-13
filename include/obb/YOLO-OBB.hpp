@@ -344,7 +344,6 @@ namespace utils {
      * @param outImage Output resized and padded image.
      * @param newShape Desired output size.
      * @param color Padding color (default is gray).
-     * @param auto_ Automatically adjust padding to be multiple of stride.
      * @param scaleFill Whether to scale to fill the new shape without keeping aspect ratio.
      * @param scaleUp Whether to allow scaling up of the image.
      * @param stride Stride size for padding alignment.
@@ -352,7 +351,6 @@ namespace utils {
     inline void letterBox(const cv::Mat& image, cv::Mat& outImage,
                         const cv::Size& newShape,
                         const cv::Scalar& color = cv::Scalar(114, 114, 114),
-                        bool auto_ = true,
                         bool scaleFill = false,
                         bool scaleUp = true,
                         int stride = 32) {
@@ -373,18 +371,14 @@ namespace utils {
         int dw = newShape.width - newUnpadW;
         int dh = newShape.height - newUnpadH;
 
-        if (auto_) {
-            // Ensure padding is a multiple of stride for model compatibility
-            dw = (dw % stride) / 2;
-            dh = (dh % stride) / 2;
-        } else if (scaleFill) {
+        if (scaleFill) {
             // Scale to fill without maintaining aspect ratio
+            dw = 0;
+            dh = 0;
             newUnpadW = newShape.width;
             newUnpadH = newShape.height;
             ratio = std::min(static_cast<float>(newShape.width) / image.cols,
                             static_cast<float>(newShape.height) / image.rows);
-            dw = 0;
-            dh = 0;
         } else {
             // Evenly distribute padding on both sides
             // Calculate separate padding for left/right and top/bottom to handle odd padding
@@ -663,10 +657,32 @@ YOLOOBBDetector::YOLOOBBDetector(const std::string &modelPath, const std::string
     outputNodeNameAllocatedStrings.push_back(std::move(output_name));
     outputNames.push_back(outputNodeNameAllocatedStrings.back().get());
 
+    // After retrieving inputTensorShapeVec
+    std::cout << "Input tensor shape: [";
+    for(size_t i = 0; i < inputTensorShapeVec.size(); i++) {
+        std::cout << inputTensorShapeVec[i];
+        if(i < inputTensorShapeVec.size()-1) std::cout << ", ";
+    }
+    std::cout << "]" << std::endl;
+
     // Set the expected input image shape based on the model's input tensor
+    // if (inputTensorShapeVec.size() >= 4) {
+    //     inputImageShape = cv::Size(static_cast<int>(inputTensorShapeVec[3]), static_cast<int>(inputTensorShapeVec[2]));
+    // } 
     if (inputTensorShapeVec.size() >= 4) {
-        inputImageShape = cv::Size(static_cast<int>(inputTensorShapeVec[3]), static_cast<int>(inputTensorShapeVec[2]));
-    } else {
+        int height = (inputTensorShapeVec[2] == -1) ? 640 : static_cast<int>(inputTensorShapeVec[2]);
+        int width = (inputTensorShapeVec[3] == -1) ? 640 : static_cast<int>(inputTensorShapeVec[3]);
+        
+        if(height <= 0 || width <= 0) {
+            std::cerr << "Invalid dimensions detected: " << width << "x" << height << std::endl;
+            height = 640;
+            width = 640;
+        }
+        
+        inputImageShape = cv::Size(width, height);
+        std::cout << "Using input shape: " << width << "x" << height << std::endl;
+    }
+    else {
         throw std::runtime_error("Invalid input tensor shape.");
     }
 
@@ -869,4 +885,3 @@ std::vector<Detection> YOLOOBBDetector::detect(const cv::Mat& image, float confT
 
     return detections; // Return the vector of detections
 }
-
