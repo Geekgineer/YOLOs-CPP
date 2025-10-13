@@ -45,14 +45,6 @@ def load_inference_config(config_path: str) -> Union[dict, None]:
         try:
             config = json.load(f)
 
-            if "conf" not in config or "iou" not in config:
-                print(f"Inference configuration file '{config_path}' is invalid.")
-                return None
-            
-            if not isinstance(config["conf"], float) or not isinstance(config["iou"], float):
-                print(f"Inference configuration file '{config_path}' is invalid.")
-                return None
-            
             print(f"Loaded inference configuration from '{config_path}' : {config} .")
 
             return config
@@ -108,7 +100,7 @@ def run_inference(model_path: str, images_path: str, inference_config: dict) -> 
             image_results["inference_results"].append(
                 {
                     "class_id": class_id,
-                    "polygon": xy.tolist()
+                    "polygon": [{"x" : point[0], "y" : point[1]} for point in xy.tolist()]
                 }
             )
 
@@ -142,18 +134,16 @@ def main():
     os.makedirs(results_path)
 
     inference_config = {
-            "conf": 0.50,
-            "iou": 0.50
     }
 
-    # inference_config_path = "inference_config.json"
+    inference_config_path = "inference_config.json"
 
-    # inference_config_loaded = load_inference_config(inference_config_path)
+    inference_config_loaded = load_inference_config(inference_config_path)
 
-    # if inference_config_loaded is not None:
-    #     inference_config = inference_config_loaded
-    # else:
-    #     print(f"Using default inference configuration : {inference_config}.")
+    if inference_config_loaded is not None:
+        inference_config = inference_config_loaded
+    else:
+        print(f"Using default inference configuration : {inference_config}.")
 
     output_results_json = os.path.join(results_path, "results_ultralytics.json")
 
