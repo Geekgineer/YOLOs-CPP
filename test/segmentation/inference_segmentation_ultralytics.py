@@ -2,6 +2,9 @@ import sys
 import os
 import shutil
 import json
+import cv2
+
+import numpy as np
 
 from typing import Union
 from tqdm.auto import tqdm
@@ -53,7 +56,7 @@ def load_inference_config(config_path: str) -> Union[dict, None]:
             print(f"Error loading inference configuration file '{config_path}': {e}")
             return None
         
-def run_inference(model_path: str, images_path: str, inference_config: dict) -> list:
+def run_inference(model_path: str, images_path: str, inference_config: dict, mask_paths: str) -> list:
 
     print(f"\n ####### Running inference for model: {model_path} on images in '{images_path}' with configuration: {inference_config} ... ###### \n")
 
@@ -65,6 +68,8 @@ def run_inference(model_path: str, images_path: str, inference_config: dict) -> 
 
     returned_results = []
 
+    model_name = os.path.basename(model_path).split(".")[0]
+
     for image_file in tqdm(os.listdir(images_path), desc="Images to process", unit="image"):
             
         _, file_ext = os.path.splitext(image_file)
@@ -74,6 +79,8 @@ def run_inference(model_path: str, images_path: str, inference_config: dict) -> 
         if not os.path.isfile(image_path) or file_ext.lower() not in [".jpg", ".jpeg", ".png"]:
             print(f"Skipping non-image file '{image_file}'.")
             continue
+
+        image_name = os.path.splitext(image_file)[0]
 
         image_results = {
             "image_path": image_path,
@@ -85,26 +92,39 @@ def run_inference(model_path: str, images_path: str, inference_config: dict) -> 
         inference_results = model.predict(
             source = image_path,
             verbose = True,
-            device = "cpu"
+            device = "cpu",
         )
 
         if not inference_results or len(inference_results) == 0:
             print(f"No inference results for image '{image_file}', skipping.")
             continue
 
-        xy = inference_results[0].masks.xy  # mask in polygon format
-        class_ids = inference_results[0].boxes.cls.cpu().numpy().astype(int)
+        result = inference_results[0]
 
-        for xy, class_id in zip(xy, class_ids):
-           
-            image_results["inference_results"].append(
-                {
-                    "class_id": class_id,
-                    "polygon": [{"x" : point[0], "y" : point[1]} for point in xy.tolist()]
-                }
-            )
+        if result is None:
+            print(f"No inference results for image '{image_file}', skipping.")
+            continue
 
-            print(image_results["inference_results"][-1])
+        class_ids = result.boxes.cls.cpu().numpy().astype(int)
+        masks_xy = result.masks.xy
+
+        full_mask = np.zeros(result.orig_shape, dtype=np.uint8)
+
+        mask_img_path = os.path.join(mask_paths, f"{model_name}_{image_name}_mask.png")
+
+        for mask_xy, class_id in zip(masks_xy, class_ids):
+
+            mask_xy = mask_xy.reshape((-1, 1, 2)).astype(np.int32)
+
+            cv2.fillPoly(full_mask, [mask_xy], class_id.item())
+
+        image_results["inference_results"].append(
+            {
+                "mask_path": mask_img_path,
+            }
+        )
+        cv2.imwrite(mask_img_path, full_mask)
+        
 
     print(f"\n ###### Finished running inference for model: {model_path} on images in '{images_path}' with configuration: {inference_config} ... ##### \n")            
 
@@ -132,6 +152,12 @@ def main():
         print(f"Results path '{results_path}' already exists, removing it and creating a new one.")
         shutil.rmtree(results_path)
     os.makedirs(results_path)
+
+    masks_path = os.path.join(results_path, "masks", "ultralytics")
+    if os.path.exists(masks_path):
+        print(f"Masks path '{masks_path}' already exists, removing it and creating a new one.")
+        shutil.rmtree(masks_path)
+    os.makedirs(masks_path)
 
     inference_config = {
     }
@@ -168,7 +194,7 @@ def main():
                 "task": "segment",
             }
 
-        model_results = run_inference(model_weights, images_path, inference_config)
+        model_results = run_inference(model_weights, images_path, inference_config, masks_path)
 
         results_dict[model_name]["results"] = model_results
 

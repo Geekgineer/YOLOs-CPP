@@ -7,4 +7,38 @@
                 "image_path": "data/images/car_peds.jpg",
                 "inference_results": [
                     {
-                        "class_id": 
+                        "mask_path": "results/masks/ultralytics/yolov8s-seg_car_peds_mask.png"
+                    }
+                ]
+            }
+        ]
+    },
+    "yolov9c-seg": {
+        "weights_path": "models/yolov9c-seg.onnx",
+        "task": "segment",
+        "results": [
+            {
+                "image_path": "data/images/car_peds.jpg",
+                "inference_results": [
+                    {
+                        "mask_path": "results/masks/ultralytics/yolov9c-seg_car_peds_mask.png"
+                    }
+                ]
+            }
+        ]
+    },
+    "yolo11s-seg": {
+        "weights_path": "models/yolo11s-seg.onnx",
+        "task": "segment",
+        "results": [
+            {
+                "image_path": "data/images/car_peds.jpg",
+                "inference_results": [
+                    {
+                        "mask_path": "results/masks/ultralytics/yolo11s-seg_car_peds_mask.png"
+                    }
+                ]
+            }
+        ]
+    }
+}
