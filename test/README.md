@@ -8,7 +8,7 @@ Currently, only object detection is supported:
 
 - [x] Object Detection 🦾
 - [ ] Classification (coming soon) 🧠
-- [ ] Segmentation (coming soon) 🖼️
+- [x] Segmentation (coming soon) 🖼️
 
 ## Workflow
 
@@ -27,6 +27,7 @@ Currently, only object detection is supported:
 
 - **Confidence Error Margin (Detection only)**: 0.1  
 - **Bounding Box Coordinates Error Margin** (Detection only): 50 pixels
+- **Mask Error Margin (Segmentation only)**: 1%
 
 ## How to Run
 
