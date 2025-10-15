@@ -1,0 +1,198 @@
+{
+    "yolov8s-seg": {
+        "weights_path": "models/yolov8s-seg.onnx",
+        "task": "segment",
+        "results": [
+            {
+                "image_path": "data/images/car_peds.jpg",
+                "inference_results": [
+                    {
+                        "class_id": 2,
+                        "confidence": 0.9086638689041138,
+                        "bbox": {
+                            "left": 1574,
+                            "top": 427,
+                            "width": 933,
+                            "height": 406
+                        }
+                    },
+                    {
+                        "class_id": 0,
+                        "confidence": 0.861936092376709,
+                        "bbox": {
+                            "left": 2574,
+                            "top": 857,
+                            "width": 333,
+                            "height": 468
+                        }
+                    },
+                    {
+                        "class_id": 0,
+                        "confidence": 0.8342779874801636,
+                        "bbox": {
+                            "left": 2647,
+                            "top": 1020,
+                            "width": 417,
+                            "height": 442
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.8096529245376587,
+                        "bbox": {
+                            "left": 516,
+                            "top": 563,
+                            "width": 249,
+                            "height": 198
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.7703325152397156,
+                        "bbox": {
+                            "left": 2680,
+                            "top": 334,
+                            "width": 332,
+                            "height": 181
+                        }
+                    }
+                ],
+                "mask_path": "results/masks/ultralytics/yolov8s-seg_car_peds_mask.png"
+            }
+        ]
+    },
+    "yolov9c-seg": {
+        "weights_path": "models/yolov9c-seg.onnx",
+        "task": "segment",
+        "results": [
+            {
+                "image_path": "data/images/car_peds.jpg",
+                "inference_results": [
+                    {
+                        "class_id": 2,
+                        "confidence": 0.9181428551673889,
+                        "bbox": {
+                            "left": 1570,
+                            "top": 427,
+                            "width": 936,
+                            "height": 404
+                        }
+                    },
+                    {
+                        "class_id": 0,
+                        "confidence": 0.8763781785964966,
+                        "bbox": {
+                            "left": 2566,
+                            "top": 856,
+                            "width": 344,
+                            "height": 464
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.8353836536407471,
+                        "bbox": {
+                            "left": 2680,
+                            "top": 335,
+                            "width": 335,
+                            "height": 177
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.7997299432754517,
+                        "bbox": {
+                            "left": 516,
+                            "top": 563,
+                            "width": 249,
+                            "height": 200
+                        }
+                    },
+                    {
+                        "class_id": 0,
+                        "confidence": 0.6884241104125977,
+                        "bbox": {
+                            "left": 2638,
+                            "top": 1016,
+                            "width": 432,
+                            "height": 439
+                        }
+                    },
+                    {
+                        "class_id": 7,
+                        "confidence": 0.5562658905982971,
+                        "bbox": {
+                            "left": 2013,
+                            "top": 71,
+                            "width": 166,
+                            "height": 187
+                        }
+                    }
+                ],
+                "mask_path": "results/masks/ultralytics/yolov9c-seg_car_peds_mask.png"
+            }
+        ]
+    },
+    "yolo11s-seg": {
+        "weights_path": "models/yolo11s-seg.onnx",
+        "task": "segment",
+        "results": [
+            {
+                "image_path": "data/images/car_peds.jpg",
+                "inference_results": [
+                    {
+                        "class_id": 2,
+                        "confidence": 0.9212387800216675,
+                        "bbox": {
+                            "left": 1567,
+                            "top": 424,
+                            "width": 937,
+                            "height": 406
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.8326621055603027,
+                        "bbox": {
+                            "left": 520,
+                            "top": 564,
+                            "width": 244,
+                            "height": 198
+                        }
+                    },
+                    {
+                        "class_id": 0,
+                        "confidence": 0.8304018974304199,
+                        "bbox": {
+                            "left": 2646,
+                            "top": 1021,
+                            "width": 417,
+                            "height": 444
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.8103240132331848,
+                        "bbox": {
+                            "left": 2678,
+                            "top": 333,
+                            "width": 334,
+                            "height": 180
+                        }
+                    },
+                    {
+                        "class_id": 0,
+                        "confidence": 0.7540654540061951,
+                        "bbox": {
+                            "left": 2563,
+                            "top": 855,
+                            "width": 344,
+                            "height": 459
+                        }
+                    }
+                ],
+                "mask_path": "results/masks/ultralytics/yolo11s-seg_car_peds_mask.png"
+            }
+        ]
+    }
+}
