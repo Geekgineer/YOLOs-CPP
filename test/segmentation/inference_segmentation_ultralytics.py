@@ -91,6 +91,8 @@ def run_inference(model_path: str, images_path: str, inference_config: dict, mas
         
         inference_results = model.predict(
             source = image_path,
+            conf = inference_config["conf"],
+            iou = inference_config["iou"],
             verbose = True,
             device = "cpu",
         )
@@ -105,24 +107,51 @@ def run_inference(model_path: str, images_path: str, inference_config: dict, mas
             print(f"No inference results for image '{image_file}', skipping.")
             continue
 
-        class_ids = result.boxes.cls.cpu().numpy().astype(int)
+        boxes = result.boxes
+        
+        if not boxes:
+            print(f"No boxes detected for image '{image_file}', skipping.")
+            continue
+
+        class_ids = boxes.cls
+        confidences = boxes.conf
+        xyxy = boxes.xyxy
+        xywh = boxes.xywh
+
         masks_xy = result.masks.xy
 
         full_mask = np.zeros(result.orig_shape, dtype=np.uint8)
 
         mask_img_path = os.path.join(mask_paths, f"{model_name}_{image_name}_mask.png")
 
-        for mask_xy, class_id in zip(masks_xy, class_ids):
+        for mask_xy, class_id, confidence, xyxy, xywh  in zip(masks_xy, class_ids, confidences, xyxy, xywh):
+
+            class_id = int(class_id)
+            confidence = float(confidence)
+            x1, y1, x2, y2 = map(int, xyxy)
+            x, y, w, h = map(int, xywh)
+
+            left, top, width, height = x1, y1, w, h
+
+            image_results["inference_results"].append(
+                {
+                    "class_id": class_id,
+                    "confidence": confidence,
+                    "bbox": {
+                        "left": left,
+                        "top": top,
+                        "width": width,
+                        "height": height
+                    }
+                }
+            )
 
             mask_xy = mask_xy.reshape((-1, 1, 2)).astype(np.int32)
 
-            cv2.fillPoly(full_mask, [mask_xy], class_id.item())
+            cv2.fillPoly(full_mask, [mask_xy], class_id)
 
-        image_results["inference_results"].append(
-            {
-                "mask_path": mask_img_path,
-            }
-        )
+        image_results["mask_path"] = mask_img_path
+
         cv2.imwrite(mask_img_path, full_mask)
         
 
@@ -160,6 +189,8 @@ def main():
     os.makedirs(masks_path)
 
     inference_config = {
+            "conf": 0.50,
+            "iou": 0.50
     }
 
     inference_config_path = "inference_config.json"
