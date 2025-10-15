@@ -216,7 +216,7 @@ void runInference(const std::string& modelPath, const std::string& labelsPath, c
 
             for(int row = 0; row < mask.rows; ++row) {
                 for(int col = 0; col < mask.cols; ++col) {
-                    if (mask.at<uchar>(row, col) == 1) {
+                    if (mask.at<uchar>(row, col) == 255) {
                         mask_full.at<uchar>(row , col) = results[i].classId;
                     }
                 }
@@ -240,18 +240,18 @@ void fromMapToJson(
     std::string basePath, 
     nlohmann::json& outputJson) {
 
-    for (const auto& [modelName, results] : results) {
+    for (const auto& [modelName, result] : results) {
 
         outputJson[modelName] = nlohmann::json();
-        outputJson[modelName]["weights_path"] = results.weightsPath.substr(basePath.length());
-        outputJson[modelName]["task"] = results.task;
+        outputJson[modelName]["weights_path"] = result.weightsPath.substr(basePath.length());
+        outputJson[modelName]["task"] = result.task;
         outputJson[modelName]["results"] = nlohmann::json::array();
 
-        for (const auto& [imagePath, inferenceResults] : results.inferenceResults) {
+        for (const auto& [imagePath, inferenceResults] : result.inferenceResults) {
 
             nlohmann::json imageResults;
             imageResults["image_path"] = imagePath.substr(basePath.length());
-            imageResults["mask_path"] = results.inferenceMasks[imagePath].substr(basePath.length());
+            imageResults["mask_path"] = result.inferenceMasks.at(imagePath).substr(basePath.length());
             imageResults["inference_results"] = nlohmann::json::array();
 
             for (const auto& res : inferenceResults) {
@@ -278,13 +278,13 @@ int main(int argc, char* argv[]){
 
     bool isGPU = argc > 1 ? std::string(argv[1]) == "gpu" : false; // Default to CPU if no argument is provided
 
-    std::string basePath = XSTRING(BASE_PATH_DETECTION); // Base path defined in CMakeLists.txt
+    std::string basePath = XSTRING(BASE_PATH_SEGMENTATION); // Base path defined in CMakeLists.txt
 
     std::string dataPath = basePath + "data/";
     std::string imagesPath = dataPath + "images/";
 
     std::string weightsPath = basePath + "models/";
-    std::string labelsPath = weightsPath + "voc.names";
+    std::string labelsPath = weightsPath + "coco.names";
     
     std::string resultsPath = basePath + "results/";
 

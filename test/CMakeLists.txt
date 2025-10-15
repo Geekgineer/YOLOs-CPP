@@ -152,6 +152,7 @@ foreach(test_target ${TESTS})
     target_link_libraries(${test_target} 
         nlohmann_json::nlohmann_json
         GTest::gtest_main
+        ${OpenCV_LIBS} 
     )
 
     gtest_discover_tests(${test_target})
