@@ -39,6 +39,6 @@ Currently, only object detection is supported:
 ## Notes
 
 - Ground truth results are pre-generated using the Ultralytics framework.
-- Classification and segmentation tasks are not yet supported; support for these will be added in future updates. The timeline for classification support is to be determined.
+- Classification and segmentation tasks are not yet supported; support for these will be added in future updates.
 - This pipeline is part of the YOLOs-CPP repository. 📦
 
