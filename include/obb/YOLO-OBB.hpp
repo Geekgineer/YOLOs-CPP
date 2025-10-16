@@ -351,6 +351,7 @@ namespace utils {
     inline void letterBox(const cv::Mat& image, cv::Mat& outImage,
                         const cv::Size& newShape,
                         const cv::Scalar& color = cv::Scalar(114, 114, 114),
+                        bool auto_ = true,
                         bool scaleFill = false,
                         bool scaleUp = true,
                         int stride = 32) {
