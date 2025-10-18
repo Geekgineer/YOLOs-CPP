@@ -6,9 +6,9 @@
 #include "class/YOLOCLASS.hpp"
 
 int main(int argc, char** argv){
-    const std::string labelsPath = "../models/coco.names";     // detection labels; use proper labels for your model
-    const std::string imagePath  = "../data/dog2.jpg";         // change to your image
-    const std::string modelPath  = "../models/yolo11l-cls.onnx";   // classification ONNX
+    std::string labelsPath = "../models/coco.names";     // detection labels; use proper labels for your model
+    std::string imagePath  = "../data/dog2.jpg";         // change to your image
+    std::string modelPath  = "../models/yolo11l-cls.onnx";   // classification ONNX
     int versionArg = 12;
 
     // Parse command line arguments
