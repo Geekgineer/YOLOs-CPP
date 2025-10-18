@@ -256,6 +256,16 @@ inline ClassificationResult BaseYOLOClassifier::classify(const cv::Mat& image) {
 }
 
 // Thin wrappers for versioned classifiers
+class YOLO5Classifier : public BaseYOLOClassifier {
+public:
+    using BaseYOLOClassifier::BaseYOLOClassifier;
+};
+
+class YOLO8Classifier : public BaseYOLOClassifier {
+public:
+    using BaseYOLOClassifier::BaseYOLOClassifier;
+};
+
 class YOLO11Classifier : public BaseYOLOClassifier {
 public:
     using BaseYOLOClassifier::BaseYOLOClassifier;
@@ -266,7 +276,7 @@ public:
     using BaseYOLOClassifier::BaseYOLOClassifier;
 };
 
-enum class YOLOClassVersion { V11, V12 };
+enum class YOLOClassVersion { V5, V8, V11, V12 };
 
 class YOLOClassifier {
 public:
@@ -275,32 +285,44 @@ public:
                    bool useGPU = false,
                    YOLOClassVersion version = YOLOClassVersion::V11)
     {
-        if (version == YOLOClassVersion::V11) {
+        if (version == YOLOClassVersion::V5) {
+            impl_.template emplace<YOLO5Classifier>(modelPath, labelsPath, useGPU);
+        } else if (version == YOLOClassVersion::V8) {
+            impl_.template emplace<YOLO8Classifier>(modelPath, labelsPath, useGPU);
+        } else if (version == YOLOClassVersion::V11) {
             impl_.template emplace<YOLO11Classifier>(modelPath, labelsPath, useGPU);
         } else {
             impl_.template emplace<YOLO12Classifier>(modelPath, labelsPath, useGPU);
         }
     }
     ClassificationResult classify(const cv::Mat &image) {
-        if (auto *p = std::get_if<YOLO11Classifier>(&impl_)) return p->classify(image);
-        if (auto *q = std::get_if<YOLO12Classifier>(&impl_)) return q->classify(image);
+        if (auto *p = std::get_if<YOLO5Classifier>(&impl_)) return p->classify(image);
+        if (auto *q = std::get_if<YOLO8Classifier>(&impl_)) return q->classify(image);
+        if (auto *r = std::get_if<YOLO11Classifier>(&impl_)) return r->classify(image);
+        if (auto *s = std::get_if<YOLO12Classifier>(&impl_)) return s->classify(image);
         return {};
     }
     void drawResult(cv::Mat &image, const ClassificationResult &result,
                     const cv::Point &position = cv::Point(10, 10)) const {
-        if (auto *p = std::get_if<YOLO11Classifier>(&impl_)) { p->drawResult(image, result, position); return; }
-        if (auto *q = std::get_if<YOLO12Classifier>(&impl_)) { q->drawResult(image, result, position); return; }
+        if (auto *p = std::get_if<YOLO5Classifier>(&impl_)) { p->drawResult(image, result, position); return; }
+        if (auto *q = std::get_if<YOLO8Classifier>(&impl_)) { q->drawResult(image, result, position); return; }
+        if (auto *r = std::get_if<YOLO11Classifier>(&impl_)) { r->drawResult(image, result, position); return; }
+        if (auto *s = std::get_if<YOLO12Classifier>(&impl_)) { s->drawResult(image, result, position); return; }
     }
     cv::Size getInputShape() const {
-        if (auto *p = std::get_if<YOLO11Classifier>(&impl_)) return p->getInputShape();
-        if (auto *q = std::get_if<YOLO12Classifier>(&impl_)) return q->getInputShape();
+        if (auto *p = std::get_if<YOLO5Classifier>(&impl_)) return p->getInputShape();
+        if (auto *q = std::get_if<YOLO8Classifier>(&impl_)) return q->getInputShape();
+        if (auto *r = std::get_if<YOLO11Classifier>(&impl_)) return r->getInputShape();
+        if (auto *s = std::get_if<YOLO12Classifier>(&impl_)) return s->getInputShape();
         return cv::Size();
     }
     bool isModelInputShapeDynamic() const {
-        if (auto *p = std::get_if<YOLO11Classifier>(&impl_)) return p->isModelInputShapeDynamic();
-        if (auto *q = std::get_if<YOLO12Classifier>(&impl_)) return q->isModelInputShapeDynamic();
+        if (auto *p = std::get_if<YOLO5Classifier>(&impl_)) return p->isModelInputShapeDynamic();
+        if (auto *q = std::get_if<YOLO8Classifier>(&impl_)) return q->isModelInputShapeDynamic();
+        if (auto *r = std::get_if<YOLO11Classifier>(&impl_)) return r->isModelInputShapeDynamic();
+        if (auto *s = std::get_if<YOLO12Classifier>(&impl_)) return s->isModelInputShapeDynamic();
         return true;
     }
 private:
-    std::variant<std::monostate, YOLO11Classifier, YOLO12Classifier> impl_;
+    std::variant<std::monostate, YOLO5Classifier, YOLO8Classifier, YOLO11Classifier, YOLO12Classifier> impl_;
 };
