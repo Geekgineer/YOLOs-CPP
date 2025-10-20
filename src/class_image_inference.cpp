@@ -7,13 +7,13 @@
 
 int main(int argc, char** argv){
     const std::string labelsPath = "../models/coco.names";     // detection labels; use proper labels for your model
-    const std::string imagePath  = "../data/dog2.jpg";         // change to your image
-    const std::string modelPath  = "../models/yolo11l-cls.onnx";   // classification ONNX
-    int versionArg = 12;
+    const std::string imagePath  = "../data/dog.jpg";         // change to your image
+    const std::string modelPath  = "../models/yolov8n-cls.onnx";   // classification ONNX
+    int versionArg = 5;
 
     // Init classifier
-    bool useGPU = true;    
-    YOLOClassVersion ver = (versionArg == 11) ? YOLOClassVersion::V11 : YOLOClassVersion::V12;
+    bool useGPU = false;    
+    YOLOClassVersion ver = (versionArg == 5) ? YOLOClassVersion::V5 : YOLOClassVersion::V8;
     YOLOClassifier classifier(modelPath, labelsPath, useGPU, ver);
 
     // Load image
