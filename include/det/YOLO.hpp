@@ -130,20 +130,24 @@ namespace utils
          *
          * @param image Input image.
          * @param outImage Output resized and padded image.
-         * @param newShape Desired output size.
-         * @param color Padding color (default is gray).
-         * @param auto_ Automatically adjust padding to be multiple of stride.
+         * @param newShape Desired output size, default is (640, 640).
+         * @param auto_ If True, use minimum rectangle to resize. If False, use new_shape directly.
          * @param scaleFill Whether to scale to fill the new shape without keeping aspect ratio.
          * @param scaleUp Whether to allow scaling up of the image.
-         * @param stride Stride size for padding alignment.
+         * @param center If True, center the placed image. If False, place image in top-left corner.
+         * @param stride Stride of the model (e.g., 32 for YOLOv5).
+         * @param padding_value Padding value (default is 114). 
+         * @param interpolation Interpolation method (default is cv::INTER_LINEAR).
          */
         static inline void letterBox(const cv::Mat &image, cv::Mat &outImage,
-                                     const cv::Size &newShape,
-                                     const cv::Scalar &color = cv::Scalar(114, 114, 114),
-                                     bool auto_ = true,
+                                     const cv::Size &newShape = cv::Size(640, 640),
+                                     bool auto_ = false,
                                      bool scaleFill = false,
                                      bool scaleUp = true,
-                                     int stride = 32)
+                                     bool center = true,
+                                     int stride = 32,
+                                     const cv::Scalar &padding_value = cv::Scalar(114, 114, 114),
+                                     int interpolation = cv::INTER_LINEAR)
         {
             // Calculate the scaling ratio to fit the image within the new shape
             float ratio = std::min(static_cast<float>(newShape.height) / image.rows,
@@ -154,6 +158,7 @@ namespace utils
             {
                 ratio = std::min(ratio, 1.0f);
             }
+
             // Calculate new dimensions after scaling
             int newUnpadW = static_cast<int>(std::round(image.cols * ratio));
             int newUnpadH = static_cast<int>(std::round(image.rows * ratio));
@@ -162,7 +167,13 @@ namespace utils
             int dw = newShape.width - newUnpadW;
             int dh = newShape.height - newUnpadH;
 
-            if (scaleFill)
+            if (auto_)
+            {
+                // Calculate the minimum rectangle to fit the image within the new shape
+                dw = dw % stride;
+                dh = dh % stride;
+
+            else if (scaleFill)
             {
                 // Scale to fill without maintaining aspect ratio
                 newUnpadW = newShape.width;
@@ -172,48 +183,28 @@ namespace utils
                 dw = 0;
                 dh = 0;
             }
-            else
-            {
-                // Evenly distribute padding on both sides
-                // Calculate separate padding for left/right and top/bottom to handle odd padding
-                int padLeft = dw / 2;
-                int padRight = dw - padLeft;
-                int padTop = dh / 2;
-                int padBottom = dh - padTop;
-                // Resize the image if the new dimensions differ
-                if (image.cols != newUnpadW || image.rows != newUnpadH)
-                {
-                    cv::resize(image, outImage, cv::Size(newUnpadW, newUnpadH), 0, 0, cv::INTER_LINEAR);
-                }
-                else
-                {
-                    // Avoid unnecessary copying if dimensions are the same
-                    outImage = image;
-                }
 
-                // Apply padding to reach the desired shape
-                cv::copyMakeBorder(outImage, outImage, padTop, padBottom, padLeft, padRight, cv::BORDER_CONSTANT, color);
-                return; // Exit early since padding is already applied
+            if (center){
+                // Center the placed image
+                dw /= 2;
+                dh /= 2;
             }
-            // Resize the image if the new dimensions differ
             if (image.cols != newUnpadW || image.rows != newUnpadH)
             {
                 cv::resize(image, outImage, cv::Size(newUnpadW, newUnpadH), 0, 0, cv::INTER_LINEAR);
-            }
-            else
-            {
+            }else {
                 // Avoid unnecessary copying if dimensions are the same
                 outImage = image;
             }
 
-            // Calculate separate padding for left/right and top/bottom to handle odd padding
-            int padLeft = dw / 2;
-            int padRight = dw - padLeft;
-            int padTop = dh / 2;
-            int padBottom = dh - padTop;
+            int top = center ? std::round(dh - 0.1) : 0;
+            int bottom = std::round(dh + 0.1);
 
-            // Apply padding to reach the desired shape
-            cv::copyMakeBorder(outImage, outImage, padTop, padBottom, padLeft, padRight, cv::BORDER_CONSTANT, color);
+            int left = center ? std::round(dw - 0.1) : 0;
+            int right = std::round(dw + 0.1);
+
+            cv::copyMakeBorder(outImage, outImage, top, bottom, left, right, cv::BORDER_CONSTANT, padding_value);
+               
         }
 
         /**
