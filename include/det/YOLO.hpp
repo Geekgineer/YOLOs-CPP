@@ -889,10 +889,6 @@ cv::Mat YOLODetector::preprocess(const cv::Mat &image, float *&blob, std::vector
     cv::Mat resizedImage;
     // Resize and pad the image using letterBox utility
     utils::ImagePreprocessingUtils::letterBox(image, resizedImage);
-    cv::imwrite("resized.png", resizedImage);
-    // utils::ImagePreprocessingUtils::letterBox_old(image, resizedImage, inputImageShape, cv::Scalar(114, 114, 114), isDynamicInputShape, false, true, 32);
-
-    // cv::imwrite("resized_old.png", resizedImage);
 
     // Update input tensor shape based on resized image dimensions
     inputTensorShape[2] = resizedImage.rows;
@@ -907,7 +903,7 @@ cv::Mat YOLODetector::preprocess(const cv::Mat &image, float *&blob, std::vector
     // Split the image into separate channels and store in the blob
     std::vector<cv::Mat> chw(resizedImage.channels());
     for (int i = 0; i < resizedImage.channels(); ++i) {
-        chw[i] = cv::Mat(resizedImage.rows, resizedImage.cols, CV_32FC3, blob + i * resizedImage.cols * resizedImage.rows);
+        chw[i] = cv::Mat(resizedImage.rows, resizedImage.cols, CV_32FC1, blob + i * resizedImage.cols * resizedImage.rows);
     }
     cv::split(resizedImage, chw); // Split channels into the blob
 #ifdef DEBUG_MODE
@@ -951,7 +947,7 @@ std::vector<cv::Size> YOLODetector::batch_preprocess(const std::vector<cv::Mat> 
 
         std::vector<cv::Mat> chw(3);
         for (int c = 0; c < 3; ++c) {
-            chw[c] = cv::Mat(resizedImages[b].rows, resizedImages[b].cols, CV_32FC3, blob + b * 3 * resizedImages[b].rows * resizedImages[b].cols + c * resizedImages[b].rows * resizedImages[b].cols);
+            chw[c] = cv::Mat(resizedImages[b].rows, resizedImages[b].cols, CV_32FC1, blob + b * 3 * resizedImages[b].rows * resizedImages[b].cols + c * resizedImages[b].rows * resizedImages[b].cols);
         }
         cv::split(floatImage, chw);
     }
