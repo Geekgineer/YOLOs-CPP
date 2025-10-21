@@ -125,6 +125,58 @@ namespace utils
     class ImagePreprocessingUtils
     {
     public:
+
+    static inline void letterBox_old(const cv::Mat& image, cv::Mat& outImage,
+                        const cv::Size& newShape,
+                        const cv::Scalar& color,
+                        bool auto_,
+                        bool scaleFill,
+                        bool scaleUp,
+                        int stride) {
+        float ratio = std::min(static_cast<float>(newShape.height) / image.rows,
+                            static_cast<float>(newShape.width) / image.cols);
+        if (!scaleUp) {
+            ratio = std::min(ratio, 1.0f);
+        }
+        int newUnpadW = static_cast<int>(std::round(image.cols * ratio));
+        int newUnpadH = static_cast<int>(std::round(image.rows * ratio));
+        int dw = newShape.width - newUnpadW;
+        int dh = newShape.height - newUnpadH;
+
+        if (auto_) {
+            dw = (dw % stride) / 2;
+            dh = (dh % stride) / 2;
+        } else if (scaleFill) {
+            newUnpadW = newShape.width;
+            newUnpadH = newShape.height;
+            ratio = std::min(static_cast<float>(newShape.width) / image.cols,
+                            static_cast<float>(newShape.height) / image.rows);
+            dw = 0;
+            dh = 0;
+        } else {
+            int padLeft = dw / 2;
+            int padRight = dw - padLeft;
+            int padTop = dh / 2;
+            int padBottom = dh - padTop;
+            if (image.cols != newUnpadW || image.rows != newUnpadH) {
+                cv::resize(image, outImage, cv::Size(newUnpadW, newUnpadH), 0, 0, cv::INTER_LINEAR);
+            } else {
+                outImage = image;
+            }
+            cv::copyMakeBorder(outImage, outImage, padTop, padBottom, padLeft, padRight, cv::BORDER_CONSTANT, color);
+            return;
+        }
+        if (image.cols != newUnpadW || image.rows != newUnpadH) {
+            cv::resize(image, outImage, cv::Size(newUnpadW, newUnpadH), 0, 0, cv::INTER_LINEAR);
+        } else {
+            outImage = image;
+        }
+        int padLeft = dw / 2;
+        int padRight = dw - padLeft;
+        int padTop = dh / 2;
+        int padBottom = dh - padTop;
+        cv::copyMakeBorder(outImage, outImage, padTop, padBottom, padLeft, padRight, cv::BORDER_CONSTANT, color);
+    }
         /**
          * @brief Resizes an image with letterboxing to maintain aspect ratio.
          *
@@ -172,6 +224,7 @@ namespace utils
                 // Calculate the minimum rectangle to fit the image within the new shape
                 dw = dw % stride;
                 dh = dh % stride;
+            }
 
             else if (scaleFill)
             {
@@ -197,11 +250,11 @@ namespace utils
                 outImage = image;
             }
 
-            int top = center ? std::round(dh - 0.1) : 0;
-            int bottom = std::round(dh + 0.1);
+            int top = center ? static_cast<int>(std::round(dh - 0.1)) : 0;
+            int bottom = static_cast<int>(std::round(dh + 0.1));
 
-            int left = center ? std::round(dw - 0.1) : 0;
-            int right = std::round(dw + 0.1);
+            int left = center ? static_cast<int>(std::round(dw - 0.1)) : 0;
+            int right = static_cast<int>(std::round(dw + 0.1));
 
             cv::copyMakeBorder(outImage, outImage, top, bottom, left, right, cv::BORDER_CONSTANT, padding_value);
                
@@ -835,7 +888,11 @@ cv::Mat YOLODetector::preprocess(const cv::Mat &image, float *&blob, std::vector
 #endif
     cv::Mat resizedImage;
     // Resize and pad the image using letterBox utility
-    utils::ImagePreprocessingUtils::letterBox(image, resizedImage, inputImageShape, cv::Scalar(114, 114, 114), isDynamicInputShape, false, true, 32);
+    utils::ImagePreprocessingUtils::letterBox(image, resizedImage);
+    cv::imwrite("resized.png", resizedImage);
+    // utils::ImagePreprocessingUtils::letterBox_old(image, resizedImage, inputImageShape, cv::Scalar(114, 114, 114), isDynamicInputShape, false, true, 32);
+
+    // cv::imwrite("resized_old.png", resizedImage);
 
     // Update input tensor shape based on resized image dimensions
     inputTensorShape[2] = resizedImage.rows;
@@ -850,7 +907,7 @@ cv::Mat YOLODetector::preprocess(const cv::Mat &image, float *&blob, std::vector
     // Split the image into separate channels and store in the blob
     std::vector<cv::Mat> chw(resizedImage.channels());
     for (int i = 0; i < resizedImage.channels(); ++i) {
-        chw[i] = cv::Mat(resizedImage.rows, resizedImage.cols, CV_32FC1, blob + i * resizedImage.cols * resizedImage.rows);
+        chw[i] = cv::Mat(resizedImage.rows, resizedImage.cols, CV_32FC3, blob + i * resizedImage.cols * resizedImage.rows);
     }
     cv::split(resizedImage, chw); // Split channels into the blob
 #ifdef DEBUG_MODE
@@ -874,7 +931,7 @@ std::vector<cv::Size> YOLODetector::batch_preprocess(const std::vector<cv::Mat> 
     std::vector<cv::Mat> resizedImages(batchSize);
     std::vector<cv::Size> resizedShapes(batchSize);
     for (size_t i = 0; i < batchSize; ++i) {
-        utils::ImagePreprocessingUtils::letterBox(images[i], resizedImages[i], inputImageShape, cv::Scalar(114, 114, 114), isDynamicInputShape, false, true, 32);
+        utils::ImagePreprocessingUtils::letterBox(images[i], resizedImages[i]);
         resizedShapes[i] = resizedImages[i].size();
     }
     
@@ -894,7 +951,7 @@ std::vector<cv::Size> YOLODetector::batch_preprocess(const std::vector<cv::Mat> 
 
         std::vector<cv::Mat> chw(3);
         for (int c = 0; c < 3; ++c) {
-            chw[c] = cv::Mat(resizedImages[b].rows, resizedImages[b].cols, CV_32FC1, blob + b * 3 * resizedImages[b].rows * resizedImages[b].cols + c * resizedImages[b].rows * resizedImages[b].cols);
+            chw[c] = cv::Mat(resizedImages[b].rows, resizedImages[b].cols, CV_32FC3, blob + b * 3 * resizedImages[b].rows * resizedImages[b].cols + c * resizedImages[b].rows * resizedImages[b].cols);
         }
         cv::split(floatImage, chw);
     }
