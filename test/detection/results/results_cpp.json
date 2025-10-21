@@ -12,7 +12,7 @@
               "width": 244
             },
             "class_id": 6,
-            "confidence": 0.565910279750824
+            "confidence": 0.565911591053009
           }
         ]
       }
@@ -43,7 +43,7 @@
               "width": 385
             },
             "class_id": 1,
-            "confidence": 0.8517178297042847
+            "confidence": 0.851718544960022
           }
         ]
       }
@@ -64,7 +64,7 @@
               "width": 428
             },
             "class_id": 1,
-            "confidence": 0.7506287693977356
+            "confidence": 0.7506285905838013
           },
           {
             "bbox": {
@@ -74,7 +74,7 @@
               "width": 242
             },
             "class_id": 6,
-            "confidence": 0.7468006610870361
+            "confidence": 0.7468011379241943
           }
         ]
       }
@@ -95,7 +95,7 @@
               "width": 218
             },
             "class_id": 6,
-            "confidence": 0.967854380607605
+            "confidence": 0.9678542613983154
           },
           {
             "bbox": {
@@ -105,7 +105,7 @@
               "width": 418
             },
             "class_id": 1,
-            "confidence": 0.8377916216850281
+            "confidence": 0.837791919708252
           }
         ]
       }
@@ -136,7 +136,7 @@
               "width": 235
             },
             "class_id": 6,
-            "confidence": 0.9784296751022339
+            "confidence": 0.9784296154975891
           },
           {
             "bbox": {
@@ -146,7 +146,7 @@
               "width": 427
             },
             "class_id": 1,
-            "confidence": 0.8778327703475952
+            "confidence": 0.8778324127197266
           },
           {
             "bbox": {
@@ -156,7 +156,7 @@
               "width": 188
             },
             "class_id": 11,
-            "confidence": 0.7618352174758911
+            "confidence": 0.7618356943130493
           }
         ]
       }
@@ -187,7 +187,7 @@
               "width": 438
             },
             "class_id": 1,
-            "confidence": 0.7383862137794495
+            "confidence": 0.7383860349655151
           },
           {
             "bbox": {
@@ -197,7 +197,7 @@
               "width": 182
             },
             "class_id": 7,
-            "confidence": 0.6556698083877563
+            "confidence": 0.6556684970855713
           }
         ]
       }
