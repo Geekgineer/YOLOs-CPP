@@ -61,8 +61,8 @@
 //#define YOLO8
 //#define YOLO9
 //#define YOLO10
-//#define YOLO11
-#define YOLO12
+#define YOLO11
+//#define YOLO12
 
 #ifdef YOLO5
     #include "det/YOLO5.hpp"
@@ -122,7 +122,11 @@ int main()
 
 
 
-    const std::string videoSource = "/dev/video0"; // your usb cam device
+    #ifdef __APPLE__
+        const int videoSource = 0; // Camera index on macOS
+    #else
+        const std::string videoSource = "/dev/video0"; // your usb cam device on Linux
+    #endif
 
     // Initialize YOLO detector
     #ifdef YOLO5
@@ -150,7 +154,11 @@ int main()
 
     // Open video capture
     cv::VideoCapture cap;
-    cap.open(videoSource, cv::CAP_V4L2); // Specify V4L2 backend for better performance
+    #ifdef __APPLE__
+        cap.open(videoSource, cv::CAP_AVFOUNDATION); // Use AVFoundation on macOS
+    #else
+        cap.open(videoSource, cv::CAP_V4L2); // Specify V4L2 backend for Linux
+    #endif
     if (!cap.isOpened())
     {
         std::cerr << "Error: Could not open the camera!\n";
