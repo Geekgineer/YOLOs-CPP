@@ -1,6 +1,9 @@
 # Ignore build directories
 /build
+<<<<<<< HEAD
 /benchmark/build/
+=======
+>>>>>>> 3a6f35477e72dcabb6e5a27c1d2bb2cd06b64750
 /build/*
 
 # CMake files
@@ -30,15 +33,21 @@ Makefile2
 
 # Ignore environment files
 .env
+<<<<<<< HEAD
 *.pt
 *.onnx
+=======
+>>>>>>> 3a6f35477e72dcabb6e5a27c1d2bb2cd06b64750
 
 # Ignore any data that should not be version controlled
 # data/*.mp4
 # data/*.jpg
 # data/*.png
 # data/cover.png
+<<<<<<< HEAD
 masks/cpp/
+=======
+>>>>>>> 3a6f35477e72dcabb6e5a27c1d2bb2cd06b64750
 
 # Ignore external libraries or packages
 onnxruntime*
@@ -53,7 +62,10 @@ onnxruntime*
 # Ignore any IDE-specific files 
 .idea/
 .vscode/
+<<<<<<< HEAD
 .cache/
 build/
 __pycache__/
 .pytest_cache/
+=======
+>>>>>>> 3a6f35477e72dcabb6e5a27c1d2bb2cd06b64750
