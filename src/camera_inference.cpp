@@ -54,6 +54,7 @@
 #include <atomic>
 
 #include <opencv2/highgui/highgui.hpp>
+<<<<<<< HEAD
 
 // Uncomment the version
 //#define YOLO5
@@ -85,11 +86,21 @@
 #ifdef YOLO12
     #include "det/YOLO12.hpp"
 #endif
+=======
+// #ifndef DEBUG_MODE
+// #define DEBUG_MODE
+// #endif
+// #ifndef TIMING_MODE
+// #define TIMING_MODE
+// #endif
+#include "det/YOLO.hpp"
+>>>>>>> 36e86b10bf391b0295b22a2b376eeee0279e92ef
 
 
 // Include the bounded queue
 #include "tools/BoundedThreadSafeQueue.hpp"
 
+<<<<<<< HEAD
 int main()
 {
     // Configuration parameters
@@ -146,6 +157,26 @@ int main()
     #ifdef YOLO12
         YOLO12Detector detector(modelPath, labelsPath, isGPU);
     #endif
+=======
+int main(int argc, char* argv[])
+{
+    // Configuration parameters
+    const bool isGPU = true;
+    std::string labelsPath = "../models/coco.names";
+    std::string modelPath = "../models/yolo11n.onnx";
+
+    std::string videoSource = "/dev/video0"; // your usb cam device
+    if (argc > 1){
+        modelPath = argv[1];
+    }
+    if (argc > 2){
+        videoSource = argv[2];
+    }
+    if (argc > 3){
+        labelsPath = argv[3];
+    }
+    YOLODetector detector(modelPath, labelsPath, isGPU);
+>>>>>>> 36e86b10bf391b0295b22a2b376eeee0279e92ef
 
 
     // Open video capture
@@ -244,4 +275,8 @@ int main()
     cv::destroyAllWindows();
 
     return 0;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 36e86b10bf391b0295b22a2b376eeee0279e92ef

@@ -1,0 +1,9 @@
+model_type,InputType,device,task_type,environment,threads,precision,load_ms,preprocess_ms,inference_ms,postprocess_ms,total_ms,fps,memory_mb,system_memory_mb,cpu_usage_%,gpu_usage_%,gpu_memory_mb,latency_avg_ms,latency_min_ms,latency_max_ms,map_score,frame_count
+yolo11,Image,cpu,detection,CPU,1,fp32,88.661,0,53.155,0,53.156,18.813,0.723,-181.57,5.052,0.0,2.0,53.157,48.709,62.204,0,100
+yolo11,Image,gpu,detection,GPU,1,fp32,413.238,0,11.798,0,11.798,88.761,0.68,144.816,3.69,3.65,520.0,11.8,8.311,16.296,0,100
+yolo11,Video,cpu,detection,CPU,1,fp32,44.202,0,0.0,0,53.958,9.679,1490.355,1714.949,4.876,0.0,2.0,53.96,43.988,71.95,0,303
+yolo11,Video,gpu,detection,GPU,1,fp32,60.472,0,0.0,0,12.367,21.045,323.871,2062.211,3.923,3.508,519.571,12.368,9.359,148.14,0,303
+yolo8,Image,cpu,detection,CPU,1,fp32,64.418,0,48.141,0,48.141,20.772,0.0,-227.34,4.933,0.0,400.0,48.143,44.144,63.129,0,100
+yolo8,Image,gpu,detection,GPU,1,fp32,76.371,0,10.937,0,10.937,95.432,0.0,-18.961,3.216,3.93,500.0,10.939,7.633,15.641,0,100
+yolo8,Video,cpu,detection,CPU,1,fp32,38.698,0,0.0,0,47.211,10.247,73.797,51.402,4.843,0.0,400.0,47.213,44.301,71.003,0,303
+yolo8,Video,gpu,detection,GPU,1,fp32,63.064,0,0.0,0,11.009,21.03,0.0,364.863,3.653,3.561,499.677,11.011,7.316,114.428,0,303

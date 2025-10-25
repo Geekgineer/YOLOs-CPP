@@ -46,6 +46,7 @@
 #include <mutex>
 #include <atomic>
 #include <condition_variable>
+<<<<<<< HEAD
 
 // Uncomment the version
 //#define YOLO5 // Uncomment for YOLOv5
@@ -78,6 +79,15 @@
     #include "det/YOLO12.hpp"
 #endif
 
+=======
+// #ifndef DEBUG_MODE
+// #define DEBUG_MODE
+// #endif
+// #ifndef TIMING_MODE
+// #define TIMING_MODE
+// #endif
+#include "det/YOLO.hpp"
+>>>>>>> 36e86b10bf391b0295b22a2b376eeee0279e92ef
 // Thread-safe queue implementation
 template <typename T>
 class SafeQueue {
@@ -116,6 +126,7 @@ private:
     bool finished = false;
 };
 
+<<<<<<< HEAD
 int main()
 {
     // Paths to the model, labels, input video, and output video
@@ -167,6 +178,32 @@ int main()
     #ifdef YOLO12
         YOLO12Detector detector(modelPath, labelsPath, isGPU);
     #endif
+=======
+int main(int argc, char* argv[])
+{
+    // Paths to the model, labels, input video, and output video
+    std::string labelsPath = "../models/coco.names";
+    std::string videoPath = "../data/dogs.mp4"; // Input video path
+    std::string outputPath = "../data/out_dogs.mp4"; // Output video path
+    std::string modelPath = "../models/yolo11n.onnx";
+
+    if (argc > 1){
+        modelPath = argv[1];
+    }
+    if (argc > 2){
+        videoPath = argv[2];
+    }
+    if (argc > 3){
+        outputPath = argv[3];
+    }
+    if (argc > 4){
+        labelsPath = argv[4];
+    }
+
+    // Initialize the YOLO detector
+    bool isGPU = true; // Set to false for CPU processing
+    YOLODetector detector(modelPath, labelsPath, isGPU);
+>>>>>>> 36e86b10bf391b0295b22a2b376eeee0279e92ef
 
     // Open the video file
     cv::VideoCapture cap(videoPath);
@@ -251,4 +288,8 @@ int main()
     std::cout << "Video processing completed successfully." << std::endl;
 
     return 0;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 36e86b10bf391b0295b22a2b376eeee0279e92ef

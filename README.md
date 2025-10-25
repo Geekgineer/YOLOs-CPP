@@ -11,6 +11,7 @@
 
 
 ## Overview
+<<<<<<< HEAD
 **YOLOs-CPP** provides single C++ headers with a high-performance application designed for real-time object detection, segmentation, oriented object detection (OBB), and pose estimation using various YOLO (You Only Look Once) models from [Ultralytics](https://github.com/ultralytics/ultralytics). Leveraging the power of [ONNX Runtime](https://github.com/microsoft/onnxruntime) and [OpenCV](https://opencv.org/), this project provides seamless integration with a unified YOLOv(5,7,8,9,10,11,12) implementation for image, video, and live camera inference. Whether you're developing for research, production, or hobbyist projects, this application offers flexibility and efficiency.
 
 ## 
@@ -41,6 +42,62 @@
 * [ ] Benchmarking
 * [ ] Write documentation
 
+=======
+
+**YOLOs-CPP** is a high-performance C++ library for real-time object detection, segmentation, oriented object detection (OBB), and pose estimation using multiple YOLO model versions. It integrates ONNX Runtime and OpenCV to support fast, flexible inference across a variety of input types (image, video, camera).
+
+## Features
+
+- **Multiple YOLO Models**: Support for YOLOv5 to YOLOv12
+- **Detection Types**: Standard detection, segmentation, OBB, and pose estimation
+- **Backends**: ONNX Runtime for GPU/CPU acceleration
+- **Real-Time**: Optimized for real-time performance
+- **Cross-Platform**: Linux, Windows, macOS
+- **Easy Integration**: Modular headers and examples for C++ projects
+
+## 🔄 Recent Updates
+
+- **[2025.05.15]**: Classification support added
+- **[2025.03.16]**: Pose estimation support
+- **[2025.02.11]**: OBB support
+- **[2025.01.29]**: YOLOv9+ support
+- **[2024.10.23]**: Initial release
+
+## Quick Start
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/Geekgineer/YOLOs-CPP
+cd YOLOs-CPP
+```
+
+### Build
+
+```bash
+./build.sh
+```
+
+### Run Inference
+
+- Image: `./run_image.sh`
+- Video: `./run_video.sh`
+- Camera: `./run_camera.sh`
+
+## Supported Models
+
+| Type         | Examples                   |
+| ------------ | -------------------------- |
+| Standard     | yolo11n.onnx, yolo12n.onnx |
+| Segmentation | yolo11n-seg.onnx           |
+| OBB          | yolo11n-obb.onnx           |
+| Pose         | yolo11n-pose.onnx          |
+| Quantized    | yolo11n\_uint8.onnx        |
+
+Custom ONNX export recommended via `models/export_onnx.py`.
+
+## 🎥 Demo Gallery
+>>>>>>> 36e86b10bf391b0295b22a2b376eeee0279e92ef
 
 *Video example of object detection output with segmentation masks, bounding boxes and labels. [Click on image!]*
 
@@ -68,6 +125,7 @@
 </table>
 
 
+<<<<<<< HEAD
 ### Integration in your c++ projects
 
 ## Detection Example
@@ -416,11 +474,17 @@ Contributions are welcome! Please follow these steps to contribute:
     git push origin feature/YourFeatureName
     ```
 7. **Create a Pull Request**: Navigate to the original repository and click "New Pull Request" to submit your changes for review.
+=======
+> For full installation, usage, contribution, and model details, see the `docs/` folder.
+
+---
+>>>>>>> 36e86b10bf391b0295b22a2b376eeee0279e92ef
 
 ### License
 
 This project is licensed under the MIT License. You are free to use, modify, and distribute this software in accordance with the terms of the license.
 
+<<<<<<< HEAD
 ### Acknowledgment
 
 - [https://github.com/itsnine/yolov5-onnxruntime](https://github.com/itsnine/yolov5-onnxruntime)
@@ -428,3 +492,9 @@ This project is licensed under the MIT License. You are free to use, modify, and
 - [https://github.com/Li-99/yolov8_onnxruntime](https://github.com/Li-99/yolov8_onnxruntime)
 - [https://github.com/K4HVH/YOLOv8-ONNXRuntime-CPP](https://github.com/K4HVH/YOLOv8-ONNXRuntime-CPP)
 - [https://github.com/iamstarlee/YOLOv8-ONNXRuntime-CPP](https://github.com/iamstarlee/YOLOv8-ONNXRuntime-CPP)
+=======
+### Acknowledgments
+
+See `docs/ACKNOWLEDGMENTS.md` for external contributions and references.
+
+>>>>>>> 36e86b10bf391b0295b22a2b376eeee0279e92ef
