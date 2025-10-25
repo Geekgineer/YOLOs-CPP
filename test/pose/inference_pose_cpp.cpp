@@ -16,14 +16,14 @@
 namespace fs = std::filesystem;
 using json = nlohmann::json;
 
-struct Keypoint {
-    float x, y, confidence;
-};
+struct Keypoint { 
+     float x, y, confidence; 
+ }; 
 
 struct SingleInferenceResult {
     int classId;
     float conf;
-    std::vector<Keypoint> keypoints;
+    std::vector<KeyPoint> keypoints;
 };
 
 struct Results {
@@ -127,7 +127,7 @@ void runInference(const std::string& modelPath, const std::string& labelsPath, c
         inferenceResults[imagePath] = std::vector<SingleInferenceResult>();
 
         auto start = std::chrono::high_resolution_clock::now();
-        std::vector<Pose> results = detector.detect(image, confThreshold, iouThreshold);
+        std::vector<Detection> results = detector.detect(image, confThreshold, iouThreshold);
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                             std::chrono::high_resolution_clock::now() - start);
         std::cout << "Detection completed in: " << duration.count() << " ms" << std::endl;
@@ -198,7 +198,10 @@ int main(int argc, char* argv[]) {
     if (!loadImages(imagesPath, imageFiles)) {
         return -1;
     }
-    std::vector<std::string> models = {"yolov8n-pose"};
+    std::vector<std::string> models = {
+        "yolov8n-pose", 
+        "yolo11n-pose"
+    };
     std::unordered_map<std::string, std::string> inferenceConfig = {
         {"conf", "0.50"},
         {"iou", "0.50"}
