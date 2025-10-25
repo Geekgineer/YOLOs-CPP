@@ -1,6 +1,6 @@
 #pragma once
 
-// Unified YOLO classifier header (now supports YOLOv8, YOLOv11, and YOLOv12)
+// One-file unified YOLO classifier (merges YOLO11 and YOLO12 implementations)
 
 #include <onnxruntime_cxx_api.h>
 #include <opencv2/opencv.hpp>
@@ -23,9 +23,6 @@
 #include "tools/Debug.hpp"
 #include "tools/ScopedTimer.hpp"
 
-// -----------------------------
-// Classification result struct
-// -----------------------------
 struct ClassificationResult {
     int classId{-1};
     float confidence{0.0f};
@@ -36,9 +33,6 @@ struct ClassificationResult {
         : classId(id), confidence(conf), className(std::move(name)) {}
 };
 
-// -----------------------------
-// Utility namespace
-// -----------------------------
 namespace utils {
     template <typename T>
     typename std::enable_if<std::is_arithmetic<T>::value, T>::type
@@ -119,9 +113,6 @@ namespace utils {
     }
 } // namespace utils
 
-// -----------------------------
-// Base classifier (shared logic)
-// -----------------------------
 class BaseYOLOClassifier {
 public:
     BaseYOLOClassifier(const std::string &modelPath, const std::string &labelsPath,
@@ -133,14 +124,13 @@ public:
     }
     cv::Size getInputShape() const { return inputImageShape_; }
     bool isModelInputShapeDynamic() const { return isDynamicInputShape_; }
-
-protected:
+private:
     Ort::Env env_{nullptr};
     Ort::SessionOptions sessionOptions_{nullptr};
     Ort::Session session_{nullptr};
     bool isDynamicInputShape_{};
     cv::Size inputImageShape_{};
-    std::vector<float> inputBuffer_{};
+    std::vector<float> inputBuffer_{}; // persistent input buffer to avoid reallocations
     std::vector<Ort::AllocatedStringPtr> inputNodeNameAllocatedStrings_{};
     std::vector<const char *> inputNames_{};
     std::vector<Ort::AllocatedStringPtr> outputNodeNameAllocatedStrings_{};
@@ -148,91 +138,71 @@ protected:
     size_t numInputNodes_{}, numOutputNodes_{};
     int numClasses_{0};
     std::vector<std::string> classNames_{};
-
     void preprocess(const cv::Mat &image, float *&blob, std::vector<int64_t> &inputTensorShape);
     ClassificationResult postprocess(const std::vector<Ort::Value> &outputTensors);
 };
 
-// -----------------------------
-// Constructor implementation
-// -----------------------------
-inline BaseYOLOClassifier::BaseYOLOClassifier(const std::string &modelPath,
-        const std::string &labelsPath,
-        bool useGPU,
-        const cv::Size& targetInputShape) {
+inline BaseYOLOClassifier::BaseYOLOClassifier(const std::string &modelPath, const std::string &labelsPath,
+                                 bool useGPU, const cv::Size& targetInputShape)
+    : inputImageShape_(targetInputShape) {
     env_ = Ort::Env(ORT_LOGGING_LEVEL_WARNING, "ONNX_CLASSIFICATION_ENV");
     sessionOptions_ = Ort::SessionOptions();
     sessionOptions_.SetIntraOpNumThreads(std::min(4, static_cast<int>(std::thread::hardware_concurrency())));
     sessionOptions_.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
-
     std::vector<std::string> availableProviders = Ort::GetAvailableProviders();
     auto cudaAvailable = std::find(availableProviders.begin(), availableProviders.end(), "CUDAExecutionProvider");
     OrtCUDAProviderOptions cudaOption{};
     if (useGPU && cudaAvailable != availableProviders.end()) {
         sessionOptions_.AppendExecutionProvider_CUDA(cudaOption);
     }
-
 #ifdef _WIN32
     std::wstring w_modelPath = std::wstring(modelPath.begin(), modelPath.end());
     session_ = Ort::Session(env_, w_modelPath.c_str(), sessionOptions_);
 #else
     session_ = Ort::Session(env_, modelPath.c_str(), sessionOptions_);
 #endif
-
     Ort::AllocatorWithDefaultOptions allocator;
     numInputNodes_ = session_.GetInputCount();
     numOutputNodes_ = session_.GetOutputCount();
-
     auto input_node_name = session_.GetInputNameAllocated(0, allocator);
     inputNodeNameAllocatedStrings_.push_back(std::move(input_node_name));
     inputNames_.push_back(inputNodeNameAllocatedStrings_.back().get());
-
     Ort::TypeInfo inputTypeInfo = session_.GetInputTypeInfo(0);
     auto inputTensorInfo = inputTypeInfo.GetTensorTypeAndShapeInfo();
     std::vector<int64_t> modelInputTensorShapeVec = inputTensorInfo.GetShape();
-
     if (modelInputTensorShapeVec.size() == 4) {
         isDynamicInputShape_ = (modelInputTensorShapeVec[2] == -1 || modelInputTensorShapeVec[3] == -1);
         if (!isDynamicInputShape_) {
             int modelH = static_cast<int>(modelInputTensorShapeVec[2]);
             int modelW = static_cast<int>(modelInputTensorShapeVec[3]);
-            inputImageShape_ = cv::Size(modelW, modelH);
-        } else {
-            inputImageShape_ = targetInputShape;
+            if (modelH != inputImageShape_.height || modelW != inputImageShape_.width) {
+                std::cout << "Warning: Target preprocessing shape (" << inputImageShape_.height << "x" << inputImageShape_.width
+                          << ") differs from model's fixed input shape (" << modelH << "x" << modelW << "). "
+                          << "Image will be preprocessed to " << inputImageShape_.height << "x" << inputImageShape_.width << "." << std::endl;
+            }
         }
     } else {
         isDynamicInputShape_ = true;
-        inputImageShape_ = targetInputShape;
     }
-
     auto output_node_name = session_.GetOutputNameAllocated(0, allocator);
     outputNodeNameAllocatedStrings_.push_back(std::move(output_node_name));
     outputNames_.push_back(outputNodeNameAllocatedStrings_.back().get());
-
     Ort::TypeInfo outputTypeInfo = session_.GetOutputTypeInfo(0);
     auto outputTensorInfo = outputTypeInfo.GetTensorTypeAndShapeInfo();
     std::vector<int64_t> outputTensorShapeVec = outputTensorInfo.GetShape();
-
     if (!outputTensorShapeVec.empty()) {
-        if (outputTensorShapeVec.size() == 2 && outputTensorShapeVec[0] > 0)
+        if (outputTensorShapeVec.size() == 2 && outputTensorShapeVec[0] > 0) {
             numClasses_ = static_cast<int>(outputTensorShapeVec[1]);
-        else if (outputTensorShapeVec.size() == 1 && outputTensorShapeVec[0] > 0)
+        } else if (outputTensorShapeVec.size() == 1 && outputTensorShapeVec[0] > 0) {
             numClasses_ = static_cast<int>(outputTensorShapeVec[0]);
-        else {
-            for (long long dim : outputTensorShapeVec)
-                if (dim > 1 && numClasses_ == 0)
-                    numClasses_ = static_cast<int>(dim);
-            if (numClasses_ == 0 && !outputTensorShapeVec.empty())
-                numClasses_ = static_cast<int>(outputTensorShapeVec.back());
+        } else {
+            for (long long dim : outputTensorShapeVec) if (dim > 1 && numClasses_ == 0) numClasses_ = static_cast<int>(dim);
+            if (numClasses_ == 0 && !outputTensorShapeVec.empty()) numClasses_ = static_cast<int>(outputTensorShapeVec.back());
         }
     }
-
     classNames_ = utils::getClassNames(labelsPath);
 }
 
-// -----------------------------
-// Preprocessing + postprocessing
-// -----------------------------
 inline void BaseYOLOClassifier::preprocess(const cv::Mat &image, float *&blob, std::vector<int64_t> &inputTensorShape) {
     ScopedTimer timer("Preprocessing (Ultralytics-style)");
     if (image.empty()) throw std::runtime_error("Input image to preprocess is empty.");
@@ -259,20 +229,12 @@ inline ClassificationResult BaseYOLOClassifier::postprocess(const std::vector<Or
     const float* rawOutput = outputTensors[0].GetTensorData<float>(); if (!rawOutput) return {};
     const std::vector<int64_t> outputShape = outputTensors[0].GetTensorTypeAndShapeInfo().GetShape();
     size_t numScores = utils::vectorProduct(outputShape);
-    int currentNumClasses = numClasses_ > 0 ? numClasses_ : static_cast<int>(classNames_.size());
-    if (currentNumClasses <= 0) return {};
-    int bestClassId = -1; float maxScore = -std::numeric_limits<float>::infinity();
-    std::vector<float> scores(currentNumClasses);
+    int currentNumClasses = numClasses_ > 0 ? numClasses_ : static_cast<int>(classNames_.size()); if (currentNumClasses <= 0) return {};
+    int bestClassId = -1; float maxScore = -std::numeric_limits<float>::infinity(); std::vector<float> scores(currentNumClasses);
     if (outputShape.size() == 2 && outputShape[0] == 1) {
-        for (int i = 0; i < currentNumClasses && i < static_cast<int>(outputShape[1]); ++i) {
-            scores[i] = rawOutput[i];
-            if (scores[i] > maxScore) { maxScore = scores[i]; bestClassId = i; }
-        }
+        for (int i = 0; i < currentNumClasses && i < static_cast<int>(outputShape[1]); ++i) { scores[i] = rawOutput[i]; if (scores[i] > maxScore) { maxScore = scores[i]; bestClassId = i; } }
     } else {
-        for (int i = 0; i < currentNumClasses && i < static_cast<int>(numScores); ++i) {
-            scores[i] = rawOutput[i];
-            if (scores[i] > maxScore) { maxScore = scores[i]; bestClassId = i; }
-        }
+        for (int i = 0; i < currentNumClasses && i < static_cast<int>(numScores); ++i) { scores[i] = rawOutput[i]; if (scores[i] > maxScore) { maxScore = scores[i]; bestClassId = i; } }
     }
     if (bestClassId == -1) return {};
     float sumExp = 0.0f; std::vector<float> probabilities(currentNumClasses);
@@ -293,89 +255,52 @@ inline ClassificationResult BaseYOLOClassifier::classify(const cv::Mat& image) {
     return postprocess(outputTensors);
 }
 
-// -----------------------------
-// Derived classifiers
-// -----------------------------
-class YOLO5Classifier : public BaseYOLOClassifier {
-    public:
-        using BaseYOLOClassifier::BaseYOLOClassifier;
-    };
-    
-    class YOLO8Classifier : public BaseYOLOClassifier {
-    public:
-        using BaseYOLOClassifier::BaseYOLOClassifier;
-    };
-    
-    class YOLO11Classifier : public BaseYOLOClassifier {
-    public:
-        using BaseYOLOClassifier::BaseYOLOClassifier;
-    };
-    
-    class YOLO12Classifier : public BaseYOLOClassifier {
-    public:
-        using BaseYOLOClassifier::BaseYOLOClassifier;
-    };
-    
-    // -----------------------------
-    // Unified interface
-    // -----------------------------
-    enum class YOLOClassVersion { V5, V8, V11, V12 };
-    
-    class YOLOClassifier {
-    public:
-        YOLOClassifier(const std::string &modelPath,
-                       const std::string &labelsPath,
-                       bool useGPU = false,
-                       YOLOClassVersion version = YOLOClassVersion::V11) {
-            switch (version) {
-                case YOLOClassVersion::V5:
-                    impl_.template emplace<YOLO5Classifier>(modelPath, labelsPath, useGPU);
-                    break;
-                case YOLOClassVersion::V8:
-                    impl_.template emplace<YOLO8Classifier>(modelPath, labelsPath, useGPU);
-                    break;
-                case YOLOClassVersion::V11:
-                    impl_.template emplace<YOLO11Classifier>(modelPath, labelsPath, useGPU);
-                    break;
-                case YOLOClassVersion::V12:
-                    impl_.template emplace<YOLO12Classifier>(modelPath, labelsPath, useGPU);
-                    break;
-            }
+// Thin wrappers for versioned classifiers
+class YOLO11Classifier : public BaseYOLOClassifier {
+public:
+    using BaseYOLOClassifier::BaseYOLOClassifier;
+};
+
+class YOLO12Classifier : public BaseYOLOClassifier {
+public:
+    using BaseYOLOClassifier::BaseYOLOClassifier;
+};
+
+enum class YOLOClassVersion { V11, V12 };
+
+class YOLOClassifier {
+public:
+    YOLOClassifier(const std::string &modelPath,
+                   const std::string &labelsPath,
+                   bool useGPU = false,
+                   YOLOClassVersion version = YOLOClassVersion::V11)
+    {
+        if (version == YOLOClassVersion::V11) {
+            impl_.template emplace<YOLO11Classifier>(modelPath, labelsPath, useGPU);
+        } else {
+            impl_.template emplace<YOLO12Classifier>(modelPath, labelsPath, useGPU);
         }
-    
-        ClassificationResult classify(const cv::Mat &image) {
-            if (auto *p = std::get_if<YOLO5Classifier>(&impl_)) return p->classify(image);
-            if (auto *p = std::get_if<YOLO8Classifier>(&impl_)) return p->classify(image);
-            if (auto *p = std::get_if<YOLO11Classifier>(&impl_)) return p->classify(image);
-            if (auto *p = std::get_if<YOLO12Classifier>(&impl_)) return p->classify(image);
-            return {};
-        }
-    
-        void drawResult(cv::Mat &image, const ClassificationResult &result,
-                        const cv::Point &position = cv::Point(10, 10)) const {
-            if (auto *p = std::get_if<YOLO5Classifier>(&impl_)) { p->drawResult(image, result, position); return; }
-            if (auto *p = std::get_if<YOLO8Classifier>(&impl_)) { p->drawResult(image, result, position); return; }
-            if (auto *p = std::get_if<YOLO11Classifier>(&impl_)) { p->drawResult(image, result, position); return; }
-            if (auto *p = std::get_if<YOLO12Classifier>(&impl_)) { p->drawResult(image, result, position); return; }
-        }
-    
-        cv::Size getInputShape() const {
-            if (auto *p = std::get_if<YOLO5Classifier>(&impl_)) return p->getInputShape();
-            if (auto *p = std::get_if<YOLO8Classifier>(&impl_)) return p->getInputShape();
-            if (auto *p = std::get_if<YOLO11Classifier>(&impl_)) return p->getInputShape();
-            if (auto *p = std::get_if<YOLO12Classifier>(&impl_)) return p->getInputShape();
-            return cv::Size();
-        }
-    
-        bool isModelInputShapeDynamic() const {
-            if (auto *p = std::get_if<YOLO5Classifier>(&impl_)) return p->isModelInputShapeDynamic();
-            if (auto *p = std::get_if<YOLO8Classifier>(&impl_)) return p->isModelInputShapeDynamic();
-            if (auto *p = std::get_if<YOLO11Classifier>(&impl_)) return p->isModelInputShapeDynamic();
-            if (auto *p = std::get_if<YOLO12Classifier>(&impl_)) return p->isModelInputShapeDynamic();
-            return true;
-        }
-    
-    private:
-        std::variant<std::monostate, YOLO5Classifier, YOLO8Classifier, YOLO11Classifier, YOLO12Classifier> impl_;
-    };
-    
+    }
+    ClassificationResult classify(const cv::Mat &image) {
+        if (auto *p = std::get_if<YOLO11Classifier>(&impl_)) return p->classify(image);
+        if (auto *q = std::get_if<YOLO12Classifier>(&impl_)) return q->classify(image);
+        return {};
+    }
+    void drawResult(cv::Mat &image, const ClassificationResult &result,
+                    const cv::Point &position = cv::Point(10, 10)) const {
+        if (auto *p = std::get_if<YOLO11Classifier>(&impl_)) { p->drawResult(image, result, position); return; }
+        if (auto *q = std::get_if<YOLO12Classifier>(&impl_)) { q->drawResult(image, result, position); return; }
+    }
+    cv::Size getInputShape() const {
+        if (auto *p = std::get_if<YOLO11Classifier>(&impl_)) return p->getInputShape();
+        if (auto *q = std::get_if<YOLO12Classifier>(&impl_)) return q->getInputShape();
+        return cv::Size();
+    }
+    bool isModelInputShapeDynamic() const {
+        if (auto *p = std::get_if<YOLO11Classifier>(&impl_)) return p->isModelInputShapeDynamic();
+        if (auto *q = std::get_if<YOLO12Classifier>(&impl_)) return q->isModelInputShapeDynamic();
+        return true;
+    }
+private:
+    std::variant<std::monostate, YOLO11Classifier, YOLO12Classifier> impl_;
+};

@@ -1,4 +1,5 @@
 from ultralytics import YOLO
+<<<<<<< HEAD
 from ultralytics import NAS
 
 # Load the YOLO model
@@ -24,3 +25,11 @@ model.export(format="onnx", dynamic=True, opset=11)
 # This will create an ONNX model with dynamic batch dimension (batch size = -1)
 # Useful for batch processing multiple images at once
 
+=======
+
+# Load the YOLOv11n model
+model = YOLO("yolo11l.pt")
+
+# Export the model to ONNX format
+model.export(format="onnx")
+>>>>>>> 3a6f35477e72dcabb6e5a27c1d2bb2cd06b64750
