@@ -206,19 +206,51 @@ inline BaseYOLOClassifier::BaseYOLOClassifier(const std::string &modelPath, cons
 inline void BaseYOLOClassifier::preprocess(const cv::Mat &image, float *&blob, std::vector<int64_t> &inputTensorShape) {
     ScopedTimer timer("Preprocessing (Ultralytics-style)");
     if (image.empty()) throw std::runtime_error("Input image to preprocess is empty.");
-    cv::Mat processedImage; utils::preprocessImageToTensor(image, processedImage, inputImageShape_, cv::Scalar(0, 0, 0), true, "resize");
-    cv::Mat rgbImageMat; cv::cvtColor(processedImage, rgbImageMat, cv::COLOR_BGR2RGB);
-    cv::Mat floatRgbImage; rgbImageMat.convertTo(floatRgbImage, CV_32F, 1.0/255.0);
+    
+    // Classification preprocessing: resize shortest side to target size, then center crop
+    // This matches Ultralytics' classify_transforms behavior
+    int target_size = inputImageShape_.width; // Assuming square input (224x224)
+    int h = image.rows;
+    int w = image.cols;
+    
+    // Resize: shortest side to target_size, maintaining aspect ratio
+    int new_h, new_w;
+    if (h < w) {
+        new_h = target_size;
+        new_w = static_cast<int>(std::round(w * (static_cast<float>(target_size) / h)));
+    } else {
+        new_w = target_size;
+        new_h = static_cast<int>(std::round(h * (static_cast<float>(target_size) / w)));
+    }
+    
+    cv::Mat resized;
+    cv::resize(image, resized, cv::Size(new_w, new_h), 0, 0, cv::INTER_LINEAR);
+    
+    // Center crop to target_size x target_size
+    int y_start = std::max(0, (new_h - target_size) / 2);
+    int x_start = std::max(0, (new_w - target_size) / 2);
+    cv::Mat cropped = resized(cv::Rect(x_start, y_start, target_size, target_size));
+    
+    // Convert BGR to RGB
+    cv::Mat rgbImageMat;
+    cv::cvtColor(cropped, rgbImageMat, cv::COLOR_BGR2RGB);
+    
+    // Normalize to [0, 1]
+    cv::Mat floatRgbImage;
+    rgbImageMat.convertTo(floatRgbImage, CV_32F, 1.0/255.0);
+    
     inputTensorShape = {1, 3, static_cast<int64_t>(floatRgbImage.rows), static_cast<int64_t>(floatRgbImage.cols)};
-    const int h = static_cast<int>(inputTensorShape[2]);
-    const int w = static_cast<int>(inputTensorShape[3]);
-    const size_t tensorSize = static_cast<size_t>(1) * 3 * h * w;
+    const int final_h = static_cast<int>(inputTensorShape[2]);
+    const int final_w = static_cast<int>(inputTensorShape[3]);
+    const size_t tensorSize = static_cast<size_t>(1) * 3 * final_h * final_w;
     inputBuffer_.resize(tensorSize);
+    
+    // Convert HWC to CHW format
     std::vector<cv::Mat> channels(3);
     cv::split(floatRgbImage, channels);
     for (int c = 0; c < 3; ++c) {
         const cv::Mat &plane = channels[c];
-        std::memcpy(inputBuffer_.data() + c * (h * w), plane.ptr<float>(), static_cast<size_t>(h * w) * sizeof(float));
+        std::memcpy(inputBuffer_.data() + c * (final_h * final_w), plane.ptr<float>(), static_cast<size_t>(final_h * final_w) * sizeof(float));
     }
     blob = inputBuffer_.data();
 }
@@ -230,16 +262,32 @@ inline ClassificationResult BaseYOLOClassifier::postprocess(const std::vector<Or
     const std::vector<int64_t> outputShape = outputTensors[0].GetTensorTypeAndShapeInfo().GetShape();
     size_t numScores = utils::vectorProduct(outputShape);
     int currentNumClasses = numClasses_ > 0 ? numClasses_ : static_cast<int>(classNames_.size()); if (currentNumClasses <= 0) return {};
-    int bestClassId = -1; float maxScore = -std::numeric_limits<float>::infinity(); std::vector<float> scores(currentNumClasses);
+    
+    // Note: YOLO classification models exported to ONNX already include Softmax as the last layer,
+    // so rawOutput contains probabilities (not logits). No need to apply softmax again.
+    int bestClassId = -1; 
+    float maxProb = -std::numeric_limits<float>::infinity();
+    
     if (outputShape.size() == 2 && outputShape[0] == 1) {
-        for (int i = 0; i < currentNumClasses && i < static_cast<int>(outputShape[1]); ++i) { scores[i] = rawOutput[i]; if (scores[i] > maxScore) { maxScore = scores[i]; bestClassId = i; } }
+        // Output shape is [1, num_classes]
+        for (int i = 0; i < currentNumClasses && i < static_cast<int>(outputShape[1]); ++i) {
+            if (rawOutput[i] > maxProb) {
+                maxProb = rawOutput[i];
+                bestClassId = i;
+            }
+        }
     } else {
-        for (int i = 0; i < currentNumClasses && i < static_cast<int>(numScores); ++i) { scores[i] = rawOutput[i]; if (scores[i] > maxScore) { maxScore = scores[i]; bestClassId = i; } }
+        // Output shape is [num_classes]
+        for (int i = 0; i < currentNumClasses && i < static_cast<int>(numScores); ++i) {
+            if (rawOutput[i] > maxProb) {
+                maxProb = rawOutput[i];
+                bestClassId = i;
+            }
+        }
     }
+    
     if (bestClassId == -1) return {};
-    float sumExp = 0.0f; std::vector<float> probabilities(currentNumClasses);
-    for (int i = 0; i < currentNumClasses; ++i) { probabilities[i] = std::exp(scores[i] - maxScore); sumExp += probabilities[i]; }
-    float confidence = sumExp > 0 ? probabilities[bestClassId] / sumExp : 0.0f;
+    float confidence = maxProb;
     std::string className = (bestClassId >= 0 && static_cast<size_t>(bestClassId) < classNames_.size()) ? classNames_[bestClassId] : ("ClassID_" + std::to_string(bestClassId));
     return ClassificationResult(bestClassId, confidence, className);
 }
