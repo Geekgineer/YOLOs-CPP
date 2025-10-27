@@ -31,7 +31,7 @@ def main(device_str: str) -> None:
             "half": False,
             "dynamic": False,
             "simplify": False,
-            "opset": None,
+            "opset": 17,
             "nms": False,
             "batch": 1,
             "device": device,
