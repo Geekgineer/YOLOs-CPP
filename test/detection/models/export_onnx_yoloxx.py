@@ -26,7 +26,7 @@ def main(is_use_gpu = False, is_mac = False):
         "dynamic": False, # Use static shape, if dynamic is True, it may cause issues with some runtimes.
         "simplify": False,
         "opset": None,
-        "nms": False,
+        "nms": True,
         "batch": 1,
         "device": device
     }
