@@ -1134,6 +1134,8 @@ std::vector<Detection> YOLODetector::postprocess_yolo10(
             BoundingBox nmsBox = roundedBox;
             nmsBox.x += classId * 7680; // Arbitrary offset to differentiate classes
             nmsBox.y += classId * 7680;
+            nmsBox.width += classId * 7680;
+            nmsBox.height += classId * 7680;
 
             // Add to respective containers
             nms_boxes.emplace_back(nmsBox);
@@ -1359,6 +1361,8 @@ std::vector<Detection> YOLODetector::postprocess_yolo7(
             BoundingBox nmsBox = roundedBox;
             nmsBox.x += classId * 7680; // Arbitrary offset to differentiate classes
             nmsBox.y += classId * 7680;
+            nmsBox.width += classId * 7680;
+            nmsBox.height += classId * 7680;
 
             // Add to respective containers
             nms_boxes.emplace_back(nmsBox);
