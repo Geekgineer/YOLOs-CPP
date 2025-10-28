@@ -101,7 +101,7 @@ if (testTask STREQUAL "4" OR testTask STREQUAL "5")
                    ${obb_path}/inference_obb_cpp.cpp)
     
     add_executable(compare_obb_results 
-                   ${obb_path}/compare_results.cpp)
+                   ${obb_path}/compare_obb_results.cpp)
     
     list(APPEND EXES inference_obb_cpp)
     list(APPEND TESTS compare_obb_results)
