@@ -38,6 +38,7 @@ Makefile2
 # data/*.jpg
 # data/*.png
 # data/cover.png
+masks/cpp/
 
 # Ignore external libraries or packages
 onnxruntime*
