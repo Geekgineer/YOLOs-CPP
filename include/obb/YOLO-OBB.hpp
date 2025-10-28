@@ -642,6 +642,9 @@ YOLOOBBDetector::YOLOOBBDetector(const std::string &modelPath, const std::string
     std::cout << "]" << std::endl;
 
     // Set the expected input image shape based on the model's input tensor
+    // if (inputTensorShapeVec.size() >= 4) {
+    //     inputImageShape = cv::Size(static_cast<int>(inputTensorShapeVec[3]), static_cast<int>(inputTensorShapeVec[2]));
+    // } 
     if (inputTensorShapeVec.size() >= 4) {
         int height = (inputTensorShapeVec[2] == -1) ? 640 : static_cast<int>(inputTensorShapeVec[2]);
         int width = (inputTensorShapeVec[3] == -1) ? 640 : static_cast<int>(inputTensorShapeVec[3]);
