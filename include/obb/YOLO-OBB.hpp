@@ -11,6 +11,7 @@
 // Authors: 
 // 1- Abdalrahman M. Amer, www.linkedin.com/in/abdalrahman-m-amer
 // 2- Mohamed Samir, www.linkedin.com/in/mohamed-samir-7a730b237/
+// 3- Khaled Gabr, https://www.linkedin.com/in/khalidgabr/
 //
 // Date: 11.03.2025
 // ================================
@@ -20,6 +21,7 @@
  * @brief Header file for the YOLOOBBDetector class, responsible for object detection
  *        using the YOLO OBB model with optimized performance for minimal latency.
  */
+
 
 // Include necessary ONNX Runtime and OpenCV headers
 #include <onnxruntime_cxx_api.h>
@@ -80,185 +82,160 @@ struct Detection {
 
 /**
  * @namespace OBB_NMS
- * @brief Namespace containing NMS functions for the OBB format.
+ * @brief Namespace containing FIXED NMS functions using STANDARD ROTATED IOU (not Probiou)
  */
 namespace OBB_NMS {
 
-    static constexpr float EPS = 1e-7f;
-
     /**
-     * @brief Computes covariance matrix components for a single OBB.
-     * @param box Input oriented bounding box.
-     * @param out1 First component (a).
-     * @param out2 Second component (b).
-     * @param out3 Third component (c).
+     * @brief Computes standard rotated IoU between two oriented bounding boxes
+     * @param box1 First oriented bounding box
+     * @param box2 Second oriented bounding box
+     * @return IoU value between 0 and 1
      */
-    void getCovarianceComponents(const OrientedBoundingBox& box, float& out1, float& out2, float& out3) {
-        float a = (box.width * box.width) / 12.0f;
-        float b = (box.height * box.height) / 12.0f;
-        float angle = box.angle;
-
-        float cos_theta = std::cos(angle);
-        float sin_theta = std::sin(angle);
-        float cos_sq = cos_theta * cos_theta;
-        float sin_sq = sin_theta * sin_theta;
-
-        out1 = a * cos_sq + b * sin_sq;
-        out2 = a * sin_sq + b * cos_sq;
-        out3 = (a - b) * cos_theta * sin_theta;
-    }
-
-    /**
-     * @brief Computes IoU matrix between two sets of OBBs.
-     * @param obb1 First set of OBBs.
-     * @param obb2 Second set of OBBs.
-     * @param eps Small constant for numerical stability.
-     * @return 2D vector of IoU values.
-     */
-    std::vector<std::vector<float>> batchProbiou(const std::vector<OrientedBoundingBox>& obb1, const std::vector<OrientedBoundingBox>& obb2, float eps = EPS) {
-        size_t N = obb1.size();
-        size_t M = obb2.size();
-        std::vector<std::vector<float>> iou_matrix(N, std::vector<float>(M, 0.0f));
-
-        for (size_t i = 0; i < N; ++i) {
-            const OrientedBoundingBox& box1 = obb1[i];
-            float x1 = box1.x, y1 = box1.y;
-            float a1, b1, c1;
-            getCovarianceComponents(box1, a1, b1, c1);
-
-            for (size_t j = 0; j < M; ++j) {
-                const OrientedBoundingBox& box2 = obb2[j];
-                float x2 = box2.x, y2 = box2.y;
-                float a2, b2, c2;
-                getCovarianceComponents(box2, a2, b2, c2);
-
-                // Compute denominator
-                float denom = (a1 + a2) * (b1 + b2) - std::pow(c1 + c2, 2) + eps;
-
-                // Terms t1 and t2
-                float dx = x1 - x2;
-                float dy = y1 - y2;
-                float t1 = ((a1 + a2) * dy * dy + (b1 + b2) * dx * dx) * 0.25f / denom;
-                float t2 = ((c1 + c2) * (x2 - x1) * dy) * 0.5f / denom;
-
-                // Term t3
-                float term1 = a1 * b1 - c1 * c1;
-                term1 = std::max(term1, 0.0f);
-                float term2 = a2 * b2 - c2 * c2;
-                term2 = std::max(term2, 0.0f);
-                float sqrt_term = std::sqrt(term1 * term2);
-
-                float numerator = (a1 + a2) * (b1 + b2) - std::pow(c1 + c2, 2);
-                float denominator_t3 = 4.0f * sqrt_term + eps;
-                float t3 = 0.5f * std::log(numerator / denominator_t3 + eps);
-
-                // Compute final IoU
-                float bd = t1 + t2 + t3;
-                bd = std::clamp(bd, eps, 100.0f);
-                float hd = std::sqrt(1.0f - std::exp(-bd) + eps);
-                iou_matrix[i][j] = 1.0f - hd;
-            }
+    float computeRotatedIoU(const OrientedBoundingBox& box1, const OrientedBoundingBox& box2) {
+        // Convert angle from radians to degrees for OpenCV
+        cv::RotatedRect rect1(
+            cv::Point2f(box1.x, box1.y), 
+            cv::Size2f(box1.width, box1.height), 
+            box1.angle * 180.0f / CV_PI
+        );
+        
+        cv::RotatedRect rect2(
+            cv::Point2f(box2.x, box2.y), 
+            cv::Size2f(box2.width, box2.height), 
+            box2.angle * 180.0f / CV_PI
+        );
+        
+        // Compute intersection using OpenCV's built-in function
+        std::vector<cv::Point2f> intersectionPoints;
+        int result = cv::rotatedRectangleIntersection(rect1, rect2, intersectionPoints);
+        
+        // No intersection
+        if (result == cv::INTERSECT_NONE) {
+            return 0.0f;
         }
-        return iou_matrix;
+        
+        // Compute intersection area
+        float intersectionArea = 0.0f;
+        if (intersectionPoints.size() > 2) {
+            intersectionArea = cv::contourArea(intersectionPoints);
+        }
+        
+        // Compute areas of both boxes
+        float area1 = box1.width * box1.height;
+        float area2 = box2.width * box2.height;
+        
+        // Compute union area
+        float unionArea = area1 + area2 - intersectionArea;
+        
+        // Avoid division by zero
+        if (unionArea < 1e-7f) {
+            return 0.0f;
+        }
+        
+        // Return IoU
+        return intersectionArea / unionArea;
     }
 
     /**
-     * @brief Performs rotated NMS on sorted OBBs.
-     * @param sorted_boxes Boxes sorted by confidence.
-     * @param iou_thres Threshold for IoU suppression.
-     * @return Indices of boxes to keep.
+     * @brief Performs NMS using standard rotated IoU
+     * @param boxes Input bounding boxes
+     * @param scores Confidence scores for each box
+     * @param iou_threshold IoU threshold for suppression
+     * @return Indices of boxes to keep
      */
-    std::vector<int> nmsRotatedImpl(const std::vector<OrientedBoundingBox>& sorted_boxes, float iou_thres) {
-        auto ious = batchProbiou(sorted_boxes, sorted_boxes);
+    std::vector<int> nmsRotated(const std::vector<OrientedBoundingBox>& boxes, 
+                                const std::vector<float>& scores, 
+                                float iou_threshold = 0.45f) {
+        
+        if (boxes.empty()) {
+            return std::vector<int>();
+        }
+        
+        // Create indices and sort by score (descending)
+        std::vector<int> indices(boxes.size());
+        std::iota(indices.begin(), indices.end(), 0);
+        
+        std::sort(indices.begin(), indices.end(), [&scores](int a, int b) {
+            return scores[a] > scores[b];
+        });
+        
+        // Track which boxes have been suppressed
+        std::vector<bool> suppressed(boxes.size(), false);
         std::vector<int> keep;
-        const int n = sorted_boxes.size();
-
-        for (int j = 0; j < n; ++j) {
-            bool keep_j = true;
-            for (int i = 0; i < j; ++i) {
-                if (ious[i][j] >= iou_thres) {
-                    keep_j = false;
-                    break;
+        
+        // Iterate through sorted boxes
+        for (size_t i = 0; i < indices.size(); i++) {
+            int idx = indices[i];
+            
+            // Skip if already suppressed
+            if (suppressed[idx]) continue;
+            
+            // Keep this box
+            keep.push_back(idx);
+            
+            // Suppress boxes with high IoU to this box
+            for (size_t j = i + 1; j < indices.size(); j++) {
+                int idx2 = indices[j];
+                
+                // Skip if already suppressed
+                if (suppressed[idx2]) continue;
+                
+                // Compute IoU
+                float iou = computeRotatedIoU(boxes[idx], boxes[idx2]);
+                
+                // Suppress if IoU exceeds threshold
+                if (iou >= iou_threshold) {
+                    suppressed[idx2] = true;
                 }
             }
-            if (keep_j) keep.push_back(j);
         }
+        
         return keep;
     }
 
     /**
-     * @brief Main NMS function for rotated boxes.
-     * @param boxes Input boxes.
-     * @param scores Confidence scores.
-     * @param threshold IoU threshold.
-     * @return Indices of boxes to keep.
-     */
-    std::vector<int> nmsRotated(const std::vector<OrientedBoundingBox>& boxes, const std::vector<float>& scores, float threshold = 0.75f) {
-        // Sort indices based on scores
-        std::vector<int> indices(boxes.size());
-        std::iota(indices.begin(), indices.end(), 0);
-        std::sort(indices.begin(), indices.end(), [&scores](int a, int b) {
-            return scores[a] > scores[b];
-        });
-
-        // Create sorted boxes list
-        std::vector<OrientedBoundingBox> sorted_boxes;
-        for (int idx : indices) {
-            sorted_boxes.push_back(boxes[idx]);
-        }
-
-        // Perform NMS
-        std::vector<int> keep = nmsRotatedImpl(sorted_boxes, threshold);
-
-        // Map back to original indices
-        std::vector<int> keep_indices;
-        for (int k : keep) {
-            keep_indices.push_back(indices[k]);
-        }
-        return keep_indices;
-    }
-
-    /**
-     * @brief Applies NMS to detections and returns filtered results.
-     * @param input_detections Input detections.
-     * @param conf_thres Confidence threshold.
-     * @param iou_thres IoU threshold.
-     * @param max_det Maximum detections to keep.
-     * @return Filtered detections after NMS.
+     * @brief Main NMS function that takes Detection objects
+     * @param detections Input detections (already filtered by confidence)
+     * @param iou_threshold IoU threshold for suppression
+     * @param max_det Maximum number of detections to keep
+     * @return Filtered detections after NMS
      */
     std::vector<Detection> nonMaxSuppression(
-        const std::vector<Detection>& input_detections,
-        float conf_thres = 0.25f,
-        float iou_thres = 0.75f,
-        int max_det = 1000) {
-
-        // Filter by confidence
-        std::vector<Detection> candidates;
-        for (const auto& det : input_detections) {
-            if (det.conf > conf_thres) {
-                candidates.push_back(det);
-            }
+        const std::vector<Detection>& detections,
+        float iou_threshold = 0.45f,
+        int max_det = 300) {
+        
+        if (detections.empty()) {
+            return std::vector<Detection>();
         }
-        if (candidates.empty()) return {};
-
-        // Extract boxes and scores
+        
+        // Extract boxes and scores (NO confidence filtering here!)
         std::vector<OrientedBoundingBox> boxes;
         std::vector<float> scores;
-        for (const auto& det : candidates) {
+        
+        for (const auto& det : detections) {
             boxes.push_back(det.box);
             scores.push_back(det.conf);
         }
-
-        // Run NMS
-        std::vector<int> keep_indices = nmsRotated(boxes, scores, iou_thres);
-
-        // Collect results
-        std::vector<Detection> results;
-        for (int idx : keep_indices) {
-            if (results.size() >= max_det) break;
-            results.push_back(candidates[idx]);
+        
+        // Perform NMS
+        std::vector<int> keep_indices = nmsRotated(boxes, scores, iou_threshold);
+        
+        // Limit to max_det
+        if (keep_indices.size() > static_cast<size_t>(max_det)) {
+            keep_indices.resize(max_det);
         }
-        return results;
+        
+        // Build result
+        std::vector<Detection> result;
+        result.reserve(keep_indices.size());
+        
+        for (int idx : keep_indices) {
+            result.push_back(detections[idx]);
+        }
+        
+        return result;
     }
 
 }
@@ -344,7 +321,6 @@ namespace utils {
      * @param outImage Output resized and padded image.
      * @param newShape Desired output size.
      * @param color Padding color (default is gray).
-     * @param auto_ Automatically adjust padding to be multiple of stride.
      * @param scaleFill Whether to scale to fill the new shape without keeping aspect ratio.
      * @param scaleUp Whether to allow scaling up of the image.
      * @param stride Stride size for padding alignment.
@@ -352,7 +328,6 @@ namespace utils {
     inline void letterBox(const cv::Mat& image, cv::Mat& outImage,
                         const cv::Size& newShape,
                         const cv::Scalar& color = cv::Scalar(114, 114, 114),
-                        bool auto_ = true,
                         bool scaleFill = false,
                         bool scaleUp = true,
                         int stride = 32) {
@@ -373,18 +348,14 @@ namespace utils {
         int dw = newShape.width - newUnpadW;
         int dh = newShape.height - newUnpadH;
 
-        if (auto_) {
-            // Ensure padding is a multiple of stride for model compatibility
-            dw = (dw % stride) / 2;
-            dh = (dh % stride) / 2;
-        } else if (scaleFill) {
+        if (scaleFill) {
             // Scale to fill without maintaining aspect ratio
+            dw = 0;
+            dh = 0;
             newUnpadW = newShape.width;
             newUnpadH = newShape.height;
             ratio = std::min(static_cast<float>(newShape.width) / image.cols,
                             static_cast<float>(newShape.height) / image.rows);
-            dw = 0;
-            dh = 0;
         } else {
             // Evenly distribute padding on both sides
             // Calculate separate padding for left/right and top/bottom to handle odd padding
@@ -424,67 +395,66 @@ namespace utils {
         cv::copyMakeBorder(outImage, outImage, padTop, padBottom, padLeft, padRight, cv::BORDER_CONSTANT, color);
     }
 
+
     /**
-    * @brief Draws oriented bounding boxes with rotation and labels on the image based on detections
-    * 
-    * @param image Image on which to draw.
-    * @param detections Vector of detections.
-    * @param classNames Vector of class names corresponding to object IDs.
-    * @param colors Vector of colors for each class.
-    */
-   inline void drawBoundingBox(cv::Mat &image, const std::vector<Detection> &detections,
-    const std::vector<std::string> &classNames, const std::vector<cv::Scalar> &colors) {
-        for (const auto& detection : detections) {
-        if (detection.conf < CONFIDENCE_THRESHOLD) continue;
-        if (detection.classId < 0 || static_cast<size_t>(detection.classId) >= classNames.size()) continue;
+     * @brief Draws oriented bounding boxes on an image with labels and confidence scores.
+     * 
+     * @param image Image on which to draw (modified in-place).
+     * @param detections Vector of detections with OBBs.
+     * @param classNames Vector of class names for labeling.
+     * @param classColors Vector of colors for each class.
+     */
+    inline void drawBoundingBox(cv::Mat &image, const std::vector<Detection> &detections,
+                                const std::vector<std::string> &classNames,
+                                const std::vector<cv::Scalar> &classColors) {
+        for (const auto &det : detections) {
+            const OrientedBoundingBox &obb = det.box;
+            cv::Scalar color = classColors[det.classId % classColors.size()];
 
-        // Convert angle from radians to degrees for OpenCV
-        float angle_deg = detection.box.angle * 180.0f / CV_PI;
+            // Create rotated rectangle
+            cv::RotatedRect rotatedRect(
+                cv::Point2f(obb.x, obb.y),
+                cv::Size2f(obb.width, obb.height),
+                obb.angle * 180.0f / CV_PI  // Convert radians to degrees
+            );
 
-        cv::RotatedRect rect(cv::Point2f(detection.box.x, detection.box.y),
-            cv::Size2f(detection.box.width, detection.box.height),
-            angle_deg);
+            // Get the four vertices of the rotated rectangle
+            cv::Point2f vertices[4];
+            rotatedRect.points(vertices);
 
-        // Convert rotated rectangle to polygon points
-        cv::Mat points_mat;
-        cv::boxPoints(rect, points_mat);
-        points_mat.convertTo(points_mat, CV_32SC1);
-
-        // Draw bounding box
-        cv::Scalar color = colors[detection.classId % colors.size()];
-        cv::polylines(image, points_mat, true, color, 3, cv::LINE_AA);
-
-        // Prepare label
-        std::string label = classNames[detection.classId] + ": " + cv::format("%.1f%%", detection.conf * 100);
-        int baseline = 0;
-        float fontScale = 0.6;
-        int thickness = 1;
-        cv::Size labelSize = cv::getTextSize(label, cv::FONT_HERSHEY_DUPLEX, fontScale, thickness, &baseline);
-
-        // Calculate label position using bounding rect of rotated rectangle
-        cv::Rect brect = rect.boundingRect();
-        int x = brect.x;
-        int y = brect.y - labelSize.height - baseline;
-
-        // Adjust label position if it goes off-screen
-        if (y < 0) {
-           y = brect.y + brect.height;
-           if (y + labelSize.height > image.rows) {
-                y = image.rows - labelSize.height;
+            // Draw the rotated box
+            for (int i = 0; i < 4; i++) {
+                cv::line(image, vertices[i], vertices[(i + 1) % 4], color, 2, cv::LINE_AA);
             }
-        }
 
-        x = std::max(0, std::min(x, image.cols - labelSize.width));
+            // Prepare label with class name and confidence
+            std::string label = classNames[det.classId] + ": " + 
+                              std::to_string(det.conf).substr(0, 4);
 
-        // Draw label background (darker version of box color)
-        cv::Scalar labelBgColor = color * 0.6;
-        cv::rectangle(image, cv::Rect(x, y, labelSize.width, labelSize.height + baseline), 
-        labelBgColor, cv::FILLED);
+            // Calculate text size
+            int baseline;
+            double fontScale = 0.5;
+            int thickness = 1;
+            cv::Size labelSize = cv::getTextSize(label, cv::FONT_HERSHEY_DUPLEX, 
+                                                 fontScale, thickness, &baseline);
 
-        // Draw label text
-        cv::putText(image, label, cv::Point(x, y + labelSize.height), 
-        cv::FONT_HERSHEY_DUPLEX, fontScale, cv::Scalar::all(255), 
-        thickness, cv::LINE_AA);
+            // Position label at the top-left corner of the box
+            int x = static_cast<int>(obb.x - obb.width / 2);
+            int y = static_cast<int>(obb.y - obb.height / 2) - 5;
+
+            // Ensure label stays within image bounds
+            x = std::max(0, std::min(x, image.cols - labelSize.width));
+            y = std::max(labelSize.height, std::min(y, image.rows - baseline));
+
+            // Draw label background (darker version of box color)
+            cv::Scalar labelBgColor = color * 0.6;
+            cv::rectangle(image, cv::Rect(x, y - labelSize.height, labelSize.width, labelSize.height + baseline), 
+                         labelBgColor, cv::FILLED);
+
+            // Draw label text
+            cv::putText(image, label, cv::Point(x, y), 
+                       cv::FONT_HERSHEY_DUPLEX, fontScale, cv::Scalar::all(255), 
+                       thickness, cv::LINE_AA);
         }
     }
 
@@ -602,7 +572,7 @@ private:
  * @param resizedImageShape Size of the image after preprocessing.
  * @param outputTensors Vector of output tensors from the model.
  * @param confThreshold Confidence threshold to filter detections.
- * @param iouThreshold IoU threshold for Non-Maximum Suppression (using ProbIoU for rotated boxes).
+ * @param iouThreshold IoU threshold for Non-Maximum Suppression (using standard rotated IoU).
  * @return std::vector<Detection> Vector of detections with oriented bounding boxes.
  */
     std::vector<Detection> postprocess(const cv::Size &originalImageSize,
@@ -663,10 +633,29 @@ YOLOOBBDetector::YOLOOBBDetector(const std::string &modelPath, const std::string
     outputNodeNameAllocatedStrings.push_back(std::move(output_name));
     outputNames.push_back(outputNodeNameAllocatedStrings.back().get());
 
+    // After retrieving inputTensorShapeVec
+    std::cout << "Input tensor shape: [";
+    for(size_t i = 0; i < inputTensorShapeVec.size(); i++) {
+        std::cout << inputTensorShapeVec[i];
+        if(i < inputTensorShapeVec.size()-1) std::cout << ", ";
+    }
+    std::cout << "]" << std::endl;
+
     // Set the expected input image shape based on the model's input tensor
     if (inputTensorShapeVec.size() >= 4) {
-        inputImageShape = cv::Size(static_cast<int>(inputTensorShapeVec[3]), static_cast<int>(inputTensorShapeVec[2]));
-    } else {
+        int height = (inputTensorShapeVec[2] == -1) ? 640 : static_cast<int>(inputTensorShapeVec[2]);
+        int width = (inputTensorShapeVec[3] == -1) ? 640 : static_cast<int>(inputTensorShapeVec[3]);
+        
+        if(height <= 0 || width <= 0) {
+            std::cerr << "Invalid dimensions detected: " << width << "x" << height << std::endl;
+            height = 640;
+            width = 640;
+        }
+        
+        inputImageShape = cv::Size(width, height);
+        std::cout << "Using input shape: " << width << "x" << height << std::endl;
+    }
+    else {
         throw std::runtime_error("Invalid input tensor shape.");
     }
 
@@ -685,9 +674,13 @@ YOLOOBBDetector::YOLOOBBDetector(const std::string &modelPath, const std::string
 cv::Mat YOLOOBBDetector::preprocess(const cv::Mat &image, float *&blob, std::vector<int64_t> &inputTensorShape) {
     ScopedTimer timer("preprocessing");
 
+    // Convert BGR to RGB
+    cv::Mat rgbImage;
+    cv::cvtColor(image, rgbImage, cv::COLOR_BGR2RGB);
+
     cv::Mat resizedImage;
     // Resize and pad the image using letterBox utility
-    utils::letterBox(image, resizedImage, inputImageShape, cv::Scalar(114, 114, 114), isDynamicInputShape, false, true, 32);
+    utils::letterBox(rgbImage, resizedImage, inputImageShape, cv::Scalar(114, 114, 114), isDynamicInputShape, true, 32);
 
     // Update input tensor shape based on resized image dimensions
     inputTensorShape[2] = resizedImage.rows;
@@ -711,6 +704,8 @@ cv::Mat YOLOOBBDetector::preprocess(const cv::Mat &image, float *&blob, std::vec
     return resizedImage;
 }
 
+
+// POSTPROCESS WITH STANDARD IOU AND SINGLE CONFIDENCE FILTERING
 std::vector<Detection> YOLOOBBDetector::postprocess(
     const cv::Size &originalImageSize,
     const cv::Size &resizedImageShape,
@@ -755,12 +750,12 @@ std::vector<Detection> YOLOOBBDetector::postprocess(
     cv::Mat output = cv::Mat(num_features, num_detections, CV_32F, const_cast<float*>(rawOutput));
     output = output.t(); // Now shape: [num_detections, num_features]
 
-    // Extract detections without clamping.
-    std::vector<OrientedBoundingBox> obbs;
-    std::vector<float> scores;
-    std::vector<int> labels;
+
+    // Filter by confidence threshold ONCE
+    std::vector<Detection> detectionsForNMS;
     for (int i = 0; i < num_detections; ++i) {
         float* row_ptr = output.ptr<float>(i);
+        
         // Extract raw bbox parameters in letterbox coordinate space.
         float x = row_ptr[0];
         float y = row_ptr[1];
@@ -782,6 +777,7 @@ std::vector<Detection> YOLOOBBDetector::postprocess(
         // Angle is stored right after the scores.
         float angle = row_ptr[4 + num_labels];
 
+        // Filter by confidence ONCE (and only once!)
         if (maxScore > confThreshold) {
             // Correct the box coordinates with letterbox offsets and scaling.
             float cx = (x - dw) * ratio;
@@ -790,30 +786,18 @@ std::vector<Detection> YOLOOBBDetector::postprocess(
             float bh = h * ratio;
 
             OrientedBoundingBox obb(cx, cy, bw, bh, angle);
-            obbs.push_back(obb);
-            scores.push_back(maxScore);
-            labels.push_back(classId);
+            detectionsForNMS.emplace_back(Detection{ obb, maxScore, classId });
         }
     }
 
-    // Combine detections into a vector<Detection> for NMS.
-    std::vector<Detection> detectionsForNMS;
-    for (size_t i = 0; i < obbs.size(); i++) {
-        detectionsForNMS.emplace_back(Detection{ obbs[i], scores[i], labels[i] });
-    }
 
-    for (auto &det : detectionsForNMS) {
-        det.box.x    = std::min(std::max(det.box.x, 0.f), orig_w);
-        det.box.y    = std::min(std::max(det.box.y, 0.f), orig_h);
-        det.box.width = std::min(std::max(det.box.width, 0.f), orig_w);
-        det.box.height= std::min(std::max(det.box.height, 0.f), orig_h);
-    }
-
-    // Perform rotated NMS.
+    // Apply NMS with FIXED implementation (Standard Rotated IoU)
+    // Only pass iouThreshold, NOT confThreshold!
     std::vector<Detection> post_nms_detections = OBB_NMS::nonMaxSuppression(
-        detectionsForNMS, confThreshold, iouThreshold, topk);
-
- 
+        detectionsForNMS, 
+        iouThreshold,  // Only IoU threshold - no confidence filtering here!
+        topk
+    );
 
     DEBUG_PRINT("Postprocessing completed");
     return post_nms_detections;
@@ -865,8 +849,7 @@ std::vector<Detection> YOLOOBBDetector::detect(const cv::Mat& image, float confT
     // Determine the resized image shape based on input tensor shape
     cv::Size resizedImageShape(static_cast<int>(inputTensorShape[3]), static_cast<int>(inputTensorShape[2]));
 
-    std::vector<Detection> detections = postprocess(image.size(), resizedImageShape, outputTensors, confThreshold, iouThreshold, 100);
+    std::vector<Detection> detections = postprocess(image.size(), resizedImageShape, outputTensors, confThreshold, iouThreshold, 300);
 
     return detections; // Return the vector of detections
 }
-
