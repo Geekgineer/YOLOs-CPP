@@ -623,9 +623,12 @@ YOLOPOSEDetector::YOLOPOSEDetector(const std::string &modelPath, const std::stri
 cv::Mat YOLOPOSEDetector::preprocess(const cv::Mat &image, float *&blob, std::vector<int64_t> &inputTensorShape) {
     ScopedTimer timer("preprocessing");
 
+    cv::Mat rgbImage;
+    cv::cvtColor(image, rgbImage, cv::COLOR_BGR2RGB);
+
     cv::Mat resizedImage;
     // Resize and pad the image using letterBox utility
-    utils::letterBox(image, resizedImage, inputImageShape, cv::Scalar(114, 114, 114), isDynamicInputShape, false, true, 32);
+    utils::letterBox(rgbImage, resizedImage, inputImageShape, cv::Scalar(114, 114, 114), isDynamicInputShape, false, true, 32);
 
     // Update input tensor shape based on resized image dimensions
     inputTensorShape[2] = resizedImage.rows;

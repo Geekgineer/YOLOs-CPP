@@ -222,9 +222,12 @@ inline void BaseYOLOClassifier::preprocess(const cv::Mat &image, float *&blob, s
         new_w = target_size;
         new_h = static_cast<int>(std::round(h * (static_cast<float>(target_size) / w)));
     }
+
+    cv::Mat rgbImage;
+    cv::cvtColor(image, rgbImage, cv::COLOR_BGR2RGB);
     
     cv::Mat resized;
-    cv::resize(image, resized, cv::Size(new_w, new_h), 0, 0, cv::INTER_LINEAR);
+    cv::resize(rgbImage, resized, cv::Size(new_w, new_h), 0, 0, cv::INTER_LINEAR);
     
     // Center crop to target_size x target_size
     int y_start = std::max(0, (new_h - target_size) / 2);
