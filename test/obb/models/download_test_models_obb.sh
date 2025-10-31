@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Download test models
+# Download OBB test models
 
-url_base="https://github.com/imessam/YOLOs-CPP/releases/download/v0.1-test/test_models.zip"
+url_base="https://drive.google.com/file/d/15eBSw3gmUNLoYBuMg8hsZTjsaxios39a/view?usp=sharing"
 output_dir="."
-output_zip="test_models.zip"
+output_zip="test_models_obb.zip"
 
 # Download the zip file
 curl -L "$url_base" -o "$output_zip"
