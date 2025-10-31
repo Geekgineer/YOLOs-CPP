@@ -126,57 +126,6 @@ namespace utils
     {
     public:
 
-    static inline void letterBox_old(const cv::Mat& image, cv::Mat& outImage,
-                        const cv::Size& newShape,
-                        const cv::Scalar& color,
-                        bool auto_,
-                        bool scaleFill,
-                        bool scaleUp,
-                        int stride) {
-        float ratio = std::min(static_cast<float>(newShape.height) / image.rows,
-                            static_cast<float>(newShape.width) / image.cols);
-        if (!scaleUp) {
-            ratio = std::min(ratio, 1.0f);
-        }
-        int newUnpadW = static_cast<int>(std::round(image.cols * ratio));
-        int newUnpadH = static_cast<int>(std::round(image.rows * ratio));
-        int dw = newShape.width - newUnpadW;
-        int dh = newShape.height - newUnpadH;
-
-        if (auto_) {
-            dw = (dw % stride) / 2;
-            dh = (dh % stride) / 2;
-        } else if (scaleFill) {
-            newUnpadW = newShape.width;
-            newUnpadH = newShape.height;
-            ratio = std::min(static_cast<float>(newShape.width) / image.cols,
-                            static_cast<float>(newShape.height) / image.rows);
-            dw = 0;
-            dh = 0;
-        } else {
-            int padLeft = dw / 2;
-            int padRight = dw - padLeft;
-            int padTop = dh / 2;
-            int padBottom = dh - padTop;
-            if (image.cols != newUnpadW || image.rows != newUnpadH) {
-                cv::resize(image, outImage, cv::Size(newUnpadW, newUnpadH), 0, 0, cv::INTER_LINEAR);
-            } else {
-                outImage = image;
-            }
-            cv::copyMakeBorder(outImage, outImage, padTop, padBottom, padLeft, padRight, cv::BORDER_CONSTANT, color);
-            return;
-        }
-        if (image.cols != newUnpadW || image.rows != newUnpadH) {
-            cv::resize(image, outImage, cv::Size(newUnpadW, newUnpadH), 0, 0, cv::INTER_LINEAR);
-        } else {
-            outImage = image;
-        }
-        int padLeft = dw / 2;
-        int padRight = dw - padLeft;
-        int padTop = dh / 2;
-        int padBottom = dh - padTop;
-        cv::copyMakeBorder(outImage, outImage, padTop, padBottom, padLeft, padRight, cv::BORDER_CONSTANT, color);
-    }
         /**
          * @brief Resizes an image with letterboxing to maintain aspect ratio.
          *
