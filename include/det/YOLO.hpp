@@ -886,9 +886,13 @@ cv::Mat YOLODetector::preprocess(const cv::Mat &image, float *&blob, std::vector
 #ifdef TIMING_MODE
     ScopedTimer timer("preprocessing");
 #endif
+
+    cv::Mat rgbImage;
+    cv::cvtColor(image, rgbImage, cv::COLOR_BGR2RGB);
+
     cv::Mat resizedImage;
     // Resize and pad the image using letterBox utility
-    utils::ImagePreprocessingUtils::letterBox(image, resizedImage);
+    utils::ImagePreprocessingUtils::letterBox(rgbImage, resizedImage);
 
     // Update input tensor shape based on resized image dimensions
     inputTensorShape[2] = resizedImage.rows;
