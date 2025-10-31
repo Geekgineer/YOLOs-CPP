@@ -18,22 +18,12 @@
                     },
                     {
                         "class_id": 1,
-                        "confidence": 0.8762856721878052,
+                        "confidence": 0.8762854337692261,
                         "bbox": {
                             "left": 159,
                             "top": 154,
                             "width": 408,
                             "height": 268
-                        }
-                    },
-                    {
-                        "class_id": 11,
-                        "confidence": 0.352694034576416,
-                        "bbox": {
-                            "left": 130,
-                            "top": 226,
-                            "width": 180,
-                            "height": 325
                         }
                     }
                 ]
@@ -59,7 +49,7 @@
                 "inference_results": [
                     {
                         "class_id": 6,
-                        "confidence": 0.9829957485198975,
+                        "confidence": 0.9829956889152527,
                         "bbox": {
                             "left": 466,
                             "top": 74,
@@ -69,7 +59,7 @@
                     },
                     {
                         "class_id": 1,
-                        "confidence": 0.9134907722473145,
+                        "confidence": 0.9134905934333801,
                         "bbox": {
                             "left": 141,
                             "top": 100,
@@ -79,7 +69,7 @@
                     },
                     {
                         "class_id": 11,
-                        "confidence": 0.7692205905914307,
+                        "confidence": 0.7692201137542725,
                         "bbox": {
                             "left": 132,
                             "top": 219,
@@ -100,7 +90,7 @@
                 "inference_results": [
                     {
                         "class_id": 6,
-                        "confidence": 0.913025975227356,
+                        "confidence": 0.9130256175994873,
                         "bbox": {
                             "left": 466,
                             "top": 72,
@@ -110,7 +100,7 @@
                     },
                     {
                         "class_id": 1,
-                        "confidence": 0.7368891835212708,
+                        "confidence": 0.7368897199630737,
                         "bbox": {
                             "left": 127,
                             "top": 136,
@@ -120,22 +110,12 @@
                     },
                     {
                         "class_id": 7,
-                        "confidence": 0.6570658087730408,
+                        "confidence": 0.6570667028427124,
                         "bbox": {
                             "left": 130,
                             "top": 223,
                             "width": 180,
                             "height": 321
-                        }
-                    },
-                    {
-                        "class_id": 14,
-                        "confidence": 0.2755734920501709,
-                        "bbox": {
-                            "left": 683,
-                            "top": 111,
-                            "width": 31,
-                            "height": 42
                         }
                     }
                 ]
@@ -148,28 +128,7 @@
         "results": [
             {
                 "image_path": "data/images/dog_bike_car.jpg",
-                "inference_results": [
-                    {
-                        "class_id": 6,
-                        "confidence": 0.30626246333122253,
-                        "bbox": {
-                            "left": 467,
-                            "top": 73,
-                            "width": 223,
-                            "height": 96
-                        }
-                    },
-                    {
-                        "class_id": 6,
-                        "confidence": 0.2950667440891266,
-                        "bbox": {
-                            "left": 468,
-                            "top": 80,
-                            "width": 224,
-                            "height": 90
-                        }
-                    }
-                ]
+                "inference_results": []
             }
         ]
     },
@@ -182,7 +141,7 @@
                 "inference_results": [
                     {
                         "class_id": 6,
-                        "confidence": 0.9104682207107544,
+                        "confidence": 0.910468578338623,
                         "bbox": {
                             "left": 468,
                             "top": 75,
@@ -192,32 +151,12 @@
                     },
                     {
                         "class_id": 1,
-                        "confidence": 0.6864681839942932,
+                        "confidence": 0.6864686012268066,
                         "bbox": {
                             "left": 193,
                             "top": 129,
                             "width": 372,
                             "height": 388
-                        }
-                    },
-                    {
-                        "class_id": 7,
-                        "confidence": 0.46433591842651367,
-                        "bbox": {
-                            "left": 130,
-                            "top": 218,
-                            "width": 179,
-                            "height": 323
-                        }
-                    },
-                    {
-                        "class_id": 11,
-                        "confidence": 0.32413116097450256,
-                        "bbox": {
-                            "left": 125,
-                            "top": 222,
-                            "width": 185,
-                            "height": 318
                         }
                     }
                 ]
@@ -233,7 +172,7 @@
                 "inference_results": [
                     {
                         "class_id": 6,
-                        "confidence": 0.8589305877685547,
+                        "confidence": 0.8589310646057129,
                         "bbox": {
                             "left": 462,
                             "top": 56,
@@ -253,22 +192,12 @@
                     },
                     {
                         "class_id": 7,
-                        "confidence": 0.5062685012817383,
+                        "confidence": 0.5062676668167114,
                         "bbox": {
                             "left": 127,
                             "top": 224,
                             "width": 179,
                             "height": 321
-                        }
-                    },
-                    {
-                        "class_id": 19,
-                        "confidence": 0.39412355422973633,
-                        "bbox": {
-                            "left": 0,
-                            "top": 3,
-                            "width": 81,
-                            "height": 259
                         }
                     }
                 ]
