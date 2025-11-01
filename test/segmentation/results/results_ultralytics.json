@@ -8,7 +8,7 @@
                 "inference_results": [
                     {
                         "class_id": 2,
-                        "confidence": 0.9086638689041138,
+                        "confidence": 0.9086636900901794,
                         "bbox": {
                             "left": 1574,
                             "top": 427,
@@ -18,7 +18,7 @@
                     },
                     {
                         "class_id": 0,
-                        "confidence": 0.861936092376709,
+                        "confidence": 0.8619362115859985,
                         "bbox": {
                             "left": 2574,
                             "top": 857,
@@ -28,7 +28,7 @@
                     },
                     {
                         "class_id": 0,
-                        "confidence": 0.8342779874801636,
+                        "confidence": 0.8342784643173218,
                         "bbox": {
                             "left": 2647,
                             "top": 1020,
@@ -48,7 +48,7 @@
                     },
                     {
                         "class_id": 2,
-                        "confidence": 0.7703325152397156,
+                        "confidence": 0.7703328728675842,
                         "bbox": {
                             "left": 2680,
                             "top": 334,
@@ -80,7 +80,7 @@
                     },
                     {
                         "class_id": 0,
-                        "confidence": 0.8763781785964966,
+                        "confidence": 0.8763784170150757,
                         "bbox": {
                             "left": 2566,
                             "top": 856,
@@ -90,7 +90,7 @@
                     },
                     {
                         "class_id": 2,
-                        "confidence": 0.8353836536407471,
+                        "confidence": 0.8353838920593262,
                         "bbox": {
                             "left": 2680,
                             "top": 335,
@@ -110,7 +110,7 @@
                     },
                     {
                         "class_id": 0,
-                        "confidence": 0.6884241104125977,
+                        "confidence": 0.6884239912033081,
                         "bbox": {
                             "left": 2638,
                             "top": 1016,
@@ -120,7 +120,7 @@
                     },
                     {
                         "class_id": 7,
-                        "confidence": 0.5562658905982971,
+                        "confidence": 0.5562654137611389,
                         "bbox": {
                             "left": 2013,
                             "top": 71,
@@ -142,7 +142,7 @@
                 "inference_results": [
                     {
                         "class_id": 2,
-                        "confidence": 0.9212387800216675,
+                        "confidence": 0.9212387204170227,
                         "bbox": {
                             "left": 1567,
                             "top": 424,
@@ -152,7 +152,7 @@
                     },
                     {
                         "class_id": 2,
-                        "confidence": 0.8326621055603027,
+                        "confidence": 0.8326616287231445,
                         "bbox": {
                             "left": 520,
                             "top": 564,
@@ -172,7 +172,7 @@
                     },
                     {
                         "class_id": 2,
-                        "confidence": 0.8103240132331848,
+                        "confidence": 0.8103241920471191,
                         "bbox": {
                             "left": 2678,
                             "top": 333,
@@ -182,7 +182,7 @@
                     },
                     {
                         "class_id": 0,
-                        "confidence": 0.7540654540061951,
+                        "confidence": 0.7540661692619324,
                         "bbox": {
                             "left": 2563,
                             "top": 855,

@@ -426,8 +426,11 @@ inline cv::Mat YOLOSegDetector::preprocess(const cv::Mat &image,
 {
     ScopedTimer timer("Preprocess");
 
+    cv::Mat rgbImage;
+    cv::cvtColor(image, rgbImage, cv::COLOR_BGR2RGB);
+
     cv::Mat letterboxImage;
-    utils::letterBox(image, letterboxImage, inputImageShape,
+    utils::letterBox(rgbImage, letterboxImage, inputImageShape,
                      cv::Scalar(114,114,114), /*auto_=*/isDynamicInputShape,
                      /*scaleFill=*/false, /*scaleUp=*/true, /*stride=*/32);
 
