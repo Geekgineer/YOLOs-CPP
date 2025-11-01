@@ -3,18 +3,7 @@
     "results": [
       {
         "image_path": "data/images/dog_bike_car.jpg",
-        "inference_results": [
-          {
-            "bbox": {
-              "height": 90,
-              "left": 466,
-              "top": 80,
-              "width": 244
-            },
-            "class_id": 6,
-            "confidence": 0.565910279750824
-          }
-        ]
+        "inference_results": []
       }
     ],
     "task": "detect",
@@ -28,22 +17,22 @@
           {
             "bbox": {
               "height": 94,
-              "left": 469,
+              "left": 468,
               "top": 74,
-              "width": 220
+              "width": 222
             },
             "class_id": 6,
-            "confidence": 0.9327679872512817
+            "confidence": 0.910468339920044
           },
           {
             "bbox": {
-              "height": 418,
-              "left": 179,
-              "top": 116,
-              "width": 385
+              "height": 388,
+              "left": 193,
+              "top": 128,
+              "width": 372
             },
             "class_id": 1,
-            "confidence": 0.8517178297042847
+            "confidence": 0.6864673495292664
           }
         ]
       }
@@ -58,23 +47,33 @@
         "inference_results": [
           {
             "bbox": {
-              "height": 284,
-              "left": 136,
-              "top": 140,
-              "width": 428
+              "height": 118,
+              "left": 462,
+              "top": 55,
+              "width": 235
             },
-            "class_id": 1,
-            "confidence": 0.7506287693977356
+            "class_id": 6,
+            "confidence": 0.8589301109313965
           },
           {
             "bbox": {
-              "height": 106,
-              "left": 462,
-              "top": 65,
-              "width": 242
+              "height": 292,
+              "left": 136,
+              "top": 134,
+              "width": 427
             },
-            "class_id": 6,
-            "confidence": 0.7468006610870361
+            "class_id": 1,
+            "confidence": 0.7806158065795898
+          },
+          {
+            "bbox": {
+              "height": 322,
+              "left": 127,
+              "top": 224,
+              "width": 179
+            },
+            "class_id": 7,
+            "confidence": 0.5062674283981323
           }
         ]
       }
@@ -89,23 +88,23 @@
         "inference_results": [
           {
             "bbox": {
-              "height": 96,
-              "left": 472,
-              "top": 74,
-              "width": 218
+              "height": 98,
+              "left": 469,
+              "top": 73,
+              "width": 221
             },
             "class_id": 6,
-            "confidence": 0.967854380607605
+            "confidence": 0.971771240234375
           },
           {
             "bbox": {
-              "height": 278,
-              "left": 149,
-              "top": 143,
-              "width": 418
+              "height": 268,
+              "left": 158,
+              "top": 154,
+              "width": 408
             },
             "class_id": 1,
-            "confidence": 0.8377916216850281
+            "confidence": 0.8762853741645813
           }
         ]
       }
@@ -133,30 +132,30 @@
               "height": 97,
               "left": 466,
               "top": 74,
-              "width": 235
+              "width": 230
             },
             "class_id": 6,
-            "confidence": 0.9784296751022339
+            "confidence": 0.9829957485198975
           },
           {
             "bbox": {
-              "height": 312,
+              "height": 316,
               "left": 142,
-              "top": 107,
-              "width": 427
+              "top": 100,
+              "width": 426
             },
             "class_id": 1,
-            "confidence": 0.8778327703475952
+            "confidence": 0.9134906530380249
           },
           {
             "bbox": {
-              "height": 323,
-              "left": 131,
-              "top": 216,
-              "width": 188
+              "height": 320,
+              "left": 132,
+              "top": 220,
+              "width": 176
             },
             "class_id": 11,
-            "confidence": 0.7618352174758911
+            "confidence": 0.7692199349403381
           }
         ]
       }
@@ -171,33 +170,33 @@
         "inference_results": [
           {
             "bbox": {
-              "height": 98,
-              "left": 467,
+              "height": 100,
+              "left": 466,
               "top": 72,
-              "width": 217
+              "width": 216
             },
             "class_id": 6,
-            "confidence": 0.9541544914245605
+            "confidence": 0.9130257368087769
           },
           {
             "bbox": {
-              "height": 281,
+              "height": 288,
               "left": 126,
-              "top": 142,
-              "width": 438
+              "top": 136,
+              "width": 439
             },
             "class_id": 1,
-            "confidence": 0.7383862137794495
+            "confidence": 0.7368898987770081
           },
           {
             "bbox": {
-              "height": 320,
+              "height": 322,
               "left": 130,
-              "top": 223,
-              "width": 182
+              "top": 222,
+              "width": 180
             },
             "class_id": 7,
-            "confidence": 0.6556698083877563
+            "confidence": 0.6570664644241333
           }
         ]
       }
