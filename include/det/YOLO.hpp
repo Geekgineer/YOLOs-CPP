@@ -126,6 +126,108 @@ namespace utils
     {
     public:
 
+
+    /**
+         * @brief Resizes an image with letterboxing to maintain aspect ratio.
+         *
+         * @param image Input image.
+         * @param outImage Output resized and padded image.
+         * @param newShape Desired output size.
+         * @param color Padding color (default is gray).
+         * @param auto_ Automatically adjust padding to be multiple of stride.
+         * @param scaleFill Whether to scale to fill the new shape without keeping aspect ratio.
+         * @param scaleUp Whether to allow scaling up of the image.
+         * @param stride Stride size for padding alignment.
+         */
+        static inline void letterBox(const cv::Mat &image, cv::Mat &outImage,
+                                     const cv::Size &newShape,
+                                     const cv::Scalar &color = cv::Scalar(114, 114, 114),
+                                     bool auto_ = true,
+                                     bool scaleFill = false,
+                                     bool scaleUp = true,
+                                     int stride = 32)
+        {
+            // Calculate the scaling ratio to fit the image within the new shape
+            float ratio = std::min(static_cast<float>(newShape.height) / image.rows,
+                                   static_cast<float>(newShape.width) / image.cols);
+
+            // Prevent scaling up if not allowed
+            if (!scaleUp)
+            {
+                ratio = std::min(ratio, 1.0f);
+            }
+
+            // Calculate new dimensions after scaling
+            int newUnpadW = static_cast<int>(std::round(image.cols * ratio));
+            int newUnpadH = static_cast<int>(std::round(image.rows * ratio));
+
+            // Calculate padding needed to reach the desired shape
+            int dw = newShape.width - newUnpadW;
+            int dh = newShape.height - newUnpadH;
+
+            if (auto_)
+            {
+                // Ensure padding is a multiple of stride for model compatibility
+                dw = (dw % stride) / 2;
+                dh = (dh % stride) / 2;
+            }
+            else if (scaleFill)
+            {
+                // Scale to fill without maintaining aspect ratio
+                newUnpadW = newShape.width;
+                newUnpadH = newShape.height;
+                ratio = std::min(static_cast<float>(newShape.width) / image.cols,
+                                 static_cast<float>(newShape.height) / image.rows);
+                dw = 0;
+                dh = 0;
+            }
+            else
+            {
+                // Evenly distribute padding on both sides
+                // Calculate separate padding for left/right and top/bottom to handle odd padding
+                int padLeft = dw / 2;
+                int padRight = dw - padLeft;
+                int padTop = dh / 2;
+                int padBottom = dh - padTop;
+
+                // Resize the image if the new dimensions differ
+                if (image.cols != newUnpadW || image.rows != newUnpadH)
+                {
+                    cv::resize(image, outImage, cv::Size(newUnpadW, newUnpadH), 0, 0, cv::INTER_LINEAR);
+                }
+                else
+                {
+                    // Avoid unnecessary copying if dimensions are the same
+                    outImage = image;
+                }
+
+                // Apply padding to reach the desired shape
+                cv::copyMakeBorder(outImage, outImage, padTop, padBottom, padLeft, padRight, cv::BORDER_CONSTANT, color);
+                return; // Exit early since padding is already applied
+            }
+
+            // Resize the image if the new dimensions differ
+            if (image.cols != newUnpadW || image.rows != newUnpadH)
+            {
+                cv::resize(image, outImage, cv::Size(newUnpadW, newUnpadH), 0, 0, cv::INTER_LINEAR);
+            }
+            else
+            {
+                // Avoid unnecessary copying if dimensions are the same
+                outImage = image;
+            }
+
+            // Calculate separate padding for left/right and top/bottom to handle odd padding
+            int padLeft = dw / 2;
+            int padRight = dw - padLeft;
+            int padTop = dh / 2;
+            int padBottom = dh - padTop;
+
+            // Apply padding to reach the desired shape
+            cv::copyMakeBorder(outImage, outImage, padTop, padBottom, padLeft, padRight, cv::BORDER_CONSTANT, color);
+        }
+
+
         /**
          * @brief Resizes an image with letterboxing to maintain aspect ratio.
          *
@@ -140,7 +242,7 @@ namespace utils
          * @param padding_value Padding value (default is 114). 
          * @param interpolation Interpolation method (default is cv::INTER_LINEAR).
          */
-        static inline void letterBox(const cv::Mat &image, cv::Mat &outImage,
+        static inline void letterBox_new(const cv::Mat &image, cv::Mat &outImage,
                                      const cv::Size &newShape = cv::Size(640, 640),
                                      bool auto_ = false,
                                      bool scaleFill = false,
@@ -841,7 +943,8 @@ cv::Mat YOLODetector::preprocess(const cv::Mat &image, float *&blob, std::vector
 
     cv::Mat resizedImage;
     // Resize and pad the image using letterBox utility
-    utils::ImagePreprocessingUtils::letterBox(rgbImage, resizedImage);
+    utils::ImagePreprocessingUtils::letterBox(rgbImage, resizedImage, inputImageShape, cv::Scalar(114, 114, 114), isDynamicInputShape, false, true, 32);
+
 
     // Update input tensor shape based on resized image dimensions
     inputTensorShape[2] = resizedImage.rows;
@@ -880,7 +983,9 @@ std::vector<cv::Size> YOLODetector::batch_preprocess(const std::vector<cv::Mat> 
     std::vector<cv::Mat> resizedImages(batchSize);
     std::vector<cv::Size> resizedShapes(batchSize);
     for (size_t i = 0; i < batchSize; ++i) {
-        utils::ImagePreprocessingUtils::letterBox(images[i], resizedImages[i]);
+        cv::Mat rgbImage;
+        cv::cvtColor(images[i], rgbImage, cv::COLOR_BGR2RGB);
+        utils::ImagePreprocessingUtils::letterBox(rgbImage, resizedImages[i], inputImageShape, cv::Scalar(114, 114, 114), isDynamicInputShape, false, true, 32);
         resizedShapes[i] = resizedImages[i].size();
     }
     
@@ -992,8 +1097,6 @@ std::vector<Detection> YOLODetector::postprocess(
             BoundingBox nmsBox = roundedBox;
             nmsBox.x += classId * 7680; // Arbitrary offset to differentiate classes
             nmsBox.y += classId * 7680;
-            nmsBox.width += classId * 7680;
-            nmsBox.height += classId * 7680;
 
             // Add to respective containers
             nms_boxes.emplace_back(nmsBox);
@@ -1087,8 +1190,6 @@ std::vector<Detection> YOLODetector::postprocess_yolo10(
             BoundingBox nmsBox = roundedBox;
             nmsBox.x += classId * 7680; // Arbitrary offset to differentiate classes
             nmsBox.y += classId * 7680;
-            nmsBox.width += classId * 7680;
-            nmsBox.height += classId * 7680;
 
             // Add to respective containers
             nms_boxes.emplace_back(nmsBox);
@@ -1314,8 +1415,6 @@ std::vector<Detection> YOLODetector::postprocess_yolo7(
             BoundingBox nmsBox = roundedBox;
             nmsBox.x += classId * 7680; // Arbitrary offset to differentiate classes
             nmsBox.y += classId * 7680;
-            nmsBox.width += classId * 7680;
-            nmsBox.height += classId * 7680;
 
             // Add to respective containers
             nms_boxes.emplace_back(nmsBox);
