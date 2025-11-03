@@ -9,6 +9,7 @@
 ![OpenCV](https://img.shields.io/badge/OpenCV-4.5.5-brightgreen.svg)
 ![CMake](https://img.shields.io/badge/CMake-3.22.1-blue.svg)
 
+![Build Status](https://github.com/Geekgineer/YOLOs-CPP/actions/workflows/main.yml/badge.svg)
 
 ## Overview
 
