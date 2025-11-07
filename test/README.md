@@ -7,8 +7,10 @@ This document describes the testing pipeline for evaluating inference results of
 Currently, only object detection is supported:
 
 - [x] Object Detection 🦾
-- [ ] Classification (coming soon) 🧠
-- [x] Segmentation (coming soon) 🖼️
+- [x] Classification 🧠
+- [x] Segmentation 🖼️
+- [x] Pose Estimation 🎯
+- [x] Oriented Bounding Boxes 📐
 
 ## Workflow
 

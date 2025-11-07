@@ -93,9 +93,18 @@ TEST_F(ResultsFixture, CompareImagesPaths) {
         for (size_t i = 0; i < ultra_results.size(); ++i) {
 
             std::string path_ultra = ultra_results[i].value("image_path", "");
-            std::string path_cpp = cpp_results[i].value("image_path", "");
+            // std::string path_cpp = cpp_results[i].value("image_path", "");
 
-            ASSERT_EQ(path_ultra, path_cpp)
+            bool path_found = false;
+            for (size_t j = 0; j < cpp_results.size(); ++j) {
+                std::string path_cpp = cpp_results[j].value("image_path", "");
+                if (path_ultra == path_cpp) {
+                    path_found = true;
+                    break;
+                }
+            }
+
+            ASSERT_TRUE(path_found)
                 << "Image path mismatch for model " << model_name << ", image " << i;
         }
     }
@@ -112,13 +121,19 @@ TEST_F(ResultsFixture, CompareDetectionsCount) {
 
         for (size_t i = 0; i < ultra_results.size(); ++i) {
 
-            auto detections_ultra = ultra_results[i].value("inference_results", json::array());
-            auto detections_cpp = cpp_results[i].value("inference_results", json::array());
-
             std::string image_path = ultra_results[i].value("image_path", "");
 
-            ASSERT_EQ(detections_ultra.size(), detections_cpp.size())
-                << "Number of detections mismatch for model " << model_name << ", image: " << image_path;
+            auto detections_ultra = ultra_results[i].value("inference_results", json::array());
+
+            for (size_t j = 0; j < cpp_results.size(); ++j) {
+                if (cpp_results[j].value("image_path", "") == image_path) {
+                    auto detections_cpp = cpp_results[j].value("inference_results", json::array());
+                    ASSERT_EQ(detections_cpp.size(), detections_ultra.size())
+                        << "Number of detections mismatch for model " << model_name << ", image: " << image_path;
+                    break;
+                }
+            }
+            
         }
     }
 }
@@ -135,55 +150,69 @@ TEST_F(ResultsFixture, CompareDetections) {
         for (size_t i = 0; i < ultra_results.size(); ++i) {
 
             auto detections_ultra = ultra_results[i].value("inference_results", json::array());
-            auto detections_cpp = cpp_results[i].value("inference_results", json::array());
 
             std::string image_path = ultra_results[i].value("image_path", "");
 
-            for (size_t j = 0; j < detections_ultra.size(); ++j) {
+            for( size_t j = 0; j < cpp_results.size(); ++j) {
 
-                auto& det_ultra = detections_ultra[j];
-                int class_id_ultra = det_ultra.value("class_id", -1);
-                double conf_ultra = det_ultra.value("confidence", 0.0);
-                auto bbox_ultra = det_ultra["bbox"];
-                bool is_class_found = false;
+                if (cpp_results[j].value("image_path", "") == image_path) {
 
-                for (size_t k = 0; k < detections_cpp.size(); ++k) {
+                    auto detections_cpp = cpp_results[j].value("inference_results", json::array());
+                    
+                    for (size_t j = 0; j < detections_ultra.size(); ++j) {
 
-                    auto& det_cpp = detections_cpp[k];
+                        auto& det_ultra = detections_ultra[j];
+                        int class_id_ultra = det_ultra.value("class_id", -1);
+                        double conf_ultra = det_ultra.value("confidence", 0.0);
+                        auto bbox_ultra = det_ultra["bbox"];
+                        bool is_class_found = false;
 
-                    int class_id_cpp = det_cpp.value("class_id", -2);
+                        for (size_t k = 0; k < detections_cpp.size(); ++k) {
 
-                    if (class_id_ultra == class_id_cpp) {
+                            auto& det_cpp = detections_cpp[k];
 
-                        auto bbox_cpp = det_cpp["bbox"];
+                            int class_id_cpp = det_cpp.value("class_id", -2);
 
-                        int left_diff = std::abs(bbox_ultra["left"].get<int>() - bbox_cpp["left"].get<int>());
-                        int top_diff = std::abs(bbox_ultra["top"].get<int>() - bbox_cpp["top"].get<int>());
-                        int width_diff = std::abs(bbox_ultra["width"].get<int>() - bbox_cpp["width"].get<int>());
-                        int height_diff = std::abs(bbox_ultra["height"].get<int>() - bbox_cpp["height"].get<int>());
+                            bool already_matched = detections_cpp[k].value("_matched", false);
 
-                        if (left_diff <= BBOX_ERROR_MARGIN &&
-                            top_diff <= BBOX_ERROR_MARGIN &&
-                            width_diff <= BBOX_ERROR_MARGIN &&
-                            height_diff <= BBOX_ERROR_MARGIN) {
+                            if (!already_matched && class_id_ultra == class_id_cpp) {
 
-                            double conf_cpp = det_cpp.value("confidence", 0.0);
-                            double conf_diff = std::abs(conf_ultra - conf_cpp);
+                                auto bbox_cpp = det_cpp["bbox"];
 
-                            ASSERT_LE(conf_diff, CONF_ERROR_MARGIN)
-                                << "Confidence mismatch for model " << model_name
-                                << ", image: " << image_path << ", class_id: " << class_id_ultra
-                                << ": ultralytics: " << conf_ultra << " != cpp: " << conf_cpp;
+                                int left_diff = std::abs(bbox_ultra["left"].get<int>() - bbox_cpp["left"].get<int>());
+                                int top_diff = std::abs(bbox_ultra["top"].get<int>() - bbox_cpp["top"].get<int>());
+                                int width_diff = std::abs(bbox_ultra["width"].get<int>() - bbox_cpp["width"].get<int>());
+                                int height_diff = std::abs(bbox_ultra["height"].get<int>() - bbox_cpp["height"].get<int>());
 
-                            is_class_found = true;
-                            break;
+                                if (left_diff <= BBOX_ERROR_MARGIN &&
+                                    top_diff <= BBOX_ERROR_MARGIN &&
+                                    width_diff <= BBOX_ERROR_MARGIN &&
+                                    height_diff <= BBOX_ERROR_MARGIN) {
+
+                                    double conf_cpp = det_cpp.value("confidence", 0.0);
+                                    double conf_diff = std::abs(conf_ultra - conf_cpp);
+
+                                    ASSERT_LE(conf_diff, CONF_ERROR_MARGIN)
+                                        << "Confidence mismatch for model " << model_name
+                                        << ", image: " << image_path << ", class_id: " << class_id_ultra
+                                        << ": ultralytics: " << conf_ultra << " != cpp: " << conf_cpp;
+
+                                    is_class_found = true;
+
+                                    detections_cpp[k]["_matched"] = true; // Mark as matched
+                                    
+                                    break;
+                                }
+                            }
                         }
+                        
+                        ASSERT_TRUE(is_class_found)
+                            << "Class ID " << class_id_ultra << " not found in cpp results for model "
+                            << model_name << ", image: " << image_path;
                     }
+
+                    break;
                 }
-                
-                ASSERT_TRUE(is_class_found)
-                    << "Class ID " << class_id_ultra << " not found in cpp results for model "
-                    << model_name << ", image: " << image_path;
             }
         }
     }
