@@ -93,8 +93,7 @@ TEST_F(ResultsFixture, CompareImagesPaths) {
         for (size_t i = 0; i < ultra_results.size(); ++i) {
 
             std::string path_ultra = ultra_results[i].value("image_path", "");
-            // std::string path_cpp = cpp_results[i].value("image_path", "");
-
+            
             bool path_found = false;
             for (size_t j = 0; j < cpp_results.size(); ++j) {
                 std::string path_cpp = cpp_results[j].value("image_path", "");

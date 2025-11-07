@@ -71,6 +71,15 @@ void loadInferenceConfig(const std::string& configFilePath, std::unordered_map<s
     nlohmann::json jsonConfig;
     file >> jsonConfig;
 
+    if (jsonConfig.contains("conf")) {
+        config["conf"] = std::to_string(jsonConfig["conf"].get<double>());
+        std::cout << "Loaded confidence threshold from " << configFilePath << ": " << config["conf"] << std::endl;
+    }
+    if (jsonConfig.contains("iou")) {
+        config["iou"] = std::to_string(jsonConfig["iou"].get<double>());
+        std::cout << "Loaded IoU threshold from " << configFilePath << ": " << config["iou"] << std::endl;
+    }
+
 }
 
 bool loadImages(const std::string& imagesPath, std::vector<std::string>& imageFiles) {
