@@ -2,7 +2,7 @@
 
 # Download test models
 
-url_base="https://github.com/imessam/YOLOs-CPP/releases/download/v0.1-test/test_models.zip"
+url_base="https://github.com/imessam/YOLOs-CPP/releases/download/v0.1-test/test_cls_models.zip"
 output_dir="."
 output_zip="test_models.zip"
 
