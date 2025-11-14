@@ -36,19 +36,30 @@ def load_inference_config(config_path: str) -> Union[dict, None]:
             return None
 
 def run_inference(model_path: str, images_path: str, inference_config: dict) -> list:
+
     print(f"\n ####### Running inference for model: {model_path} on images in '{images_path}' with configuration: {inference_config} ... ###### \n")
+
     model = YOLO(model=model_path, task="pose", verbose=True)
+
     returned_results = []
+
     model_name = os.path.basename(model_path).split(".")[0]
+
     for image_file in tqdm(os.listdir(images_path), desc="Images to process", unit="image"):
+
         _, file_ext = os.path.splitext(image_file)
+
         image_path = os.path.join(images_path, image_file)
+
         if not os.path.isfile(image_path) or file_ext.lower() not in [".jpg", ".jpeg", ".png"]:
             print(f"Skipping non-image file '{image_file}'.")
             continue
+
         image_name = os.path.splitext(image_file)[0]
         image_results = {"image_path": image_path, "inference_results": []}
+
         returned_results.append(image_results)
+
         inference_results = model.predict(
             source=image_path,
             conf=inference_config["conf"],
@@ -56,43 +67,58 @@ def run_inference(model_path: str, images_path: str, inference_config: dict) -> 
             verbose=True,
             device="cpu"
         )
+
         if not inference_results or len(inference_results) == 0:
             print(f"No inference results for image '{image_file}', skipping.")
             continue
+
         result = inference_results[0]
+
         if result is None:
             print(f"No inference results for image '{image_file}', skipping.")
             continue
+
         boxes = result.boxes
+
         if not boxes:
             print(f"No boxes detected for image '{image_file}', skipping.")
             continue
+
         class_ids = boxes.cls.cpu().numpy()
         confidences = boxes.conf.cpu().numpy()
         xyxy = boxes.xyxy.cpu().numpy()
         xywh = boxes.xywh.cpu().numpy()
         keypoints_data = result.keypoints.data.cpu().numpy()
+
         for idx in range(len(class_ids)):
+
+            kps = []
+
+            for kp in keypoints_data[idx]:
+                kps.append({"x": float(kp[0]), "y": float(kp[1]), "confidence": float(kp[2])})
+
             class_id = int(class_ids[idx])
             confidence = float(confidences[idx])
             x1, y1, x2, y2 = map(int, xyxy[idx])
             x, y, w, h = map(int, xywh[idx])
-            kps = keypoints_data[idx].tolist()
+
             image_results["inference_results"].append({
                 "class_id": class_id,
                 "confidence": confidence,
                 "bbox": {"left": x1, "top": y1, "width": w, "height": h},
                 "keypoints": kps
             })
+            
     print(f"\n ###### Finished running inference for model: {model_path} on images in '{images_path}' with configuration: {inference_config} ... ##### \n")
+   
     return returned_results
 
 def main():
-    base_path = os.path.dirname(__file__)
-    data_path = os.path.join(base_path, "data")
-    images_path = os.path.join(data_path, "images")
-    weights_path = os.path.join(base_path, "models")
-    results_path = os.path.join(base_path, "results")
+    # base_path = os.path.dirname(__file__)
+    data_path = "data" #os.path.join(base_path, "data")
+    images_path =  os.path.join(data_path, "images")
+    weights_path = "models" #os.path.join(base_path, "models")
+    results_path = "results" # os.path.join(base_path, "results")
     paths_to_validate = {
         "data": data_path,
         "images": images_path,
@@ -107,7 +133,7 @@ def main():
         shutil.rmtree(results_path)
     os.makedirs(results_path)
     inference_config = {"conf": 0.50, "iou": 0.50}
-    inference_config_path = os.path.join(base_path, "inference_config.json")
+    inference_config_path = "inference_config.json" # os.path.join(base_path, "inference_config.json")
     inference_config_loaded = load_inference_config(inference_config_path)
     if inference_config_loaded is not None:
         inference_config = inference_config_loaded

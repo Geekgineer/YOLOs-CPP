@@ -64,7 +64,7 @@ TEST_F(ResultsFixture, CompareWeightsPaths) {
         std::string weights_ultra = el.value().value("weights_path", "");
         std::string weights_cpp = results_cpp[model_name].value("weights_path", "");
 
-        ASSERT_EQ(weights_ultra, basePath + weights_cpp) << "Weights path mismatch for model " << model_name;
+        ASSERT_EQ(weights_ultra, weights_cpp) << "Weights path mismatch for model " << model_name;
     }
 }
 
@@ -122,13 +122,21 @@ TEST_F(ResultsFixture, ComparePosesCount) {
 
         for (size_t i = 0; i < ultra_results.size(); ++i) {
 
-            auto poses_ultra = ultra_results[i].value("poses", json::array());
-            auto poses_cpp = cpp_results[i].value("poses", json::array());
-
+            auto poses_ultra = ultra_results[i].value("inference_results", json::array());
             std::string image_path = ultra_results[i].value("image_path", "");
 
-            ASSERT_EQ(poses_ultra.size(), poses_cpp.size())
-                << "Number of poses mismatch for model " << model_name << ", image: " << image_path;
+            for (size_t j = 0; j < cpp_results.size(); ++j) {
+
+                if (cpp_results[j].value("image_path", "") == image_path) {
+
+                    auto poses_cpp = cpp_results[j].value("inference_results", json::array());
+                   
+                    ASSERT_EQ(poses_ultra.size(), poses_cpp.size())
+                        << "Number of poses mismatch for model " << model_name << ", image: " << image_path;
+                
+                    break;
+                }
+            }
         }
     }
 }
