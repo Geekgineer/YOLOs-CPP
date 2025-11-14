@@ -23,6 +23,12 @@ struct Keypoint {
 struct SingleInferenceResult {
     int classId;
     float conf;
+
+    int left;
+    int top;
+    int width;
+    int height;
+
     std::vector<KeyPoint> keypoints;
 };
 
@@ -137,9 +143,17 @@ void runInference(const std::string& modelPath, const std::string& labelsPath, c
         for (const auto& result : results) {
             std::cout << "Pose: Class=" << result.classId << ", Confidence=" << result.conf << ", Keypoints=" << result.keypoints.size() << std::endl;
             SingleInferenceResult singleResult;
+
             singleResult.classId = result.classId;
             singleResult.conf = result.conf;
+
+            singleResult.left = result.box.x;
+            singleResult.top = result.box.y;
+            singleResult.width = result.box.width;
+            singleResult.height = result.box.height;
+
             singleResult.keypoints = result.keypoints;
+
             inferenceResults[imagePath].push_back(singleResult);
         }
     }
@@ -147,29 +161,51 @@ void runInference(const std::string& modelPath, const std::string& labelsPath, c
 
 void fromMapToJson(const std::unordered_map<std::string, Results>& results, std::string basePath, nlohmann::json& outputJson) {
     for (const auto& [modelName, result] : results) {
+       
         outputJson[modelName] = nlohmann::json();
+        
         outputJson[modelName]["weights_path"] = result.weightsPath.substr(basePath.length());
         outputJson[modelName]["task"] = result.task;
         outputJson[modelName]["results"] = nlohmann::json::array();
 
         for (const auto& [imagePath, inferenceResults] : result.inferenceResults) {
+            
             nlohmann::json imageResults;
+            
             imageResults["image_path"] = imagePath.substr(basePath.length());
             imageResults["inference_results"] = nlohmann::json::array();
+            
             for (const auto& res : inferenceResults) {
+                
                 nlohmann::json singleResult;
+               
                 singleResult["class_id"] = res.classId;
                 singleResult["confidence"] = res.conf;
+
+                singleResult["bbox"] = nlohmann::json();
+                singleResult["bbox"]["left"] = res.left;
+                singleResult["bbox"]["top"] = res.top;
+                singleResult["bbox"]["width"] = res.width;
+                singleResult["bbox"]["height"] = res.height;
+
                 singleResult["keypoints"] = nlohmann::json::array();
+                
                 for (const auto& kp : res.keypoints) {
+                    
                     nlohmann::json keypoint;
+                    
                     keypoint["x"] = kp.x;
                     keypoint["y"] = kp.y;
                     keypoint["confidence"] = kp.confidence;
+                    
                     singleResult["keypoints"].push_back(keypoint);
+               
                 }
+                
                 imageResults["inference_results"].push_back(singleResult);
+            
             }
+            
             outputJson[modelName]["results"].push_back(imageResults);
         }
     }
