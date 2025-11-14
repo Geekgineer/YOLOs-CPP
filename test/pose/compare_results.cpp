@@ -14,6 +14,7 @@ using json = nlohmann::json;
 
 constexpr double CONF_ERROR_MARGIN = 0.1;  // ±0.1 difference allowed in confidence scores
 constexpr int KEYPOINT_ERROR_MARGIN = 10;  // ±10 pixels difference allowed in keypoint coordinates
+constexpr int BBOX_ERROR_MARGIN = 50;     // +-50 pixels difference allowed in bounding box coordinates
 
 json read_json(const std::string& path) {
     std::ifstream f(path);
@@ -152,63 +153,108 @@ TEST_F(ResultsFixture, ComparePoses) {
 
         for (size_t i = 0; i < ultra_results.size(); ++i) {
 
-            auto poses_ultra = ultra_results[i].value("poses", json::array());
-            auto poses_cpp = cpp_results[i].value("poses", json::array());
+            auto poses_ultra = ultra_results[i].value("inference_results", json::array());
 
             std::string image_path = ultra_results[i].value("image_path", "");
 
-            for (size_t j = 0; j < poses_ultra.size(); ++j) {
+            for( size_t j = 0; j < cpp_results.size(); ++j) {
+    
+                if (cpp_results[j].value("image_path", "") == image_path) {
+                    
+                    auto poses_cpp = cpp_results[j].value("inference_results", json::array());
 
-                auto& det_ultra = poses_ultra[j];
-                int class_id_ultra = det_ultra.value("class_id", -1);
-                double conf_ultra = det_ultra.value("confidence", 0.0);
-                auto keypoints_ultra = det_ultra["keypoints"];
-                bool is_class_found = false;
+                    for (size_t j = 0; j < poses_ultra.size(); ++j) {
 
-                for (size_t k = 0; k < poses_cpp.size(); ++k) {
+                        auto& det_ultra = poses_ultra[j];
+                        
+                        int class_id_ultra = det_ultra.value("class_id", -1);
+                        double conf_ultra = det_ultra.value("confidence", 0.0);
+                        
+                        auto keypoints_ultra = det_ultra["keypoints"];
+                        
+                        auto bbox_ultra = det_ultra["bbox"];
+                        
+                        bool is_class_found = false;
 
-                    auto& det_cpp = poses_cpp[k];
+                        for (size_t k = 0; k < poses_cpp.size(); ++k) {
 
-                    int class_id_cpp = det_cpp.value("class_id", -2);
+                            auto& det_cpp = poses_cpp[k];
 
-                    if (class_id_ultra == class_id_cpp) {
+                            int class_id_cpp = det_cpp.value("class_id", -2);
 
-                        auto keypoints_cpp = det_cpp["keypoints"];
+                            bool already_matched = poses_cpp[k].value("_matched", false);
 
-                        bool keypoints_match = true;
+                            if (!already_matched && class_id_ultra == class_id_cpp) {
 
-                        for (size_t l = 0; l < keypoints_ultra.size(); ++l) {
+                                auto bbox_cpp = det_cpp["bbox"];
 
-                            float x_ultra = keypoints_ultra[l]["x"].get<float>();
-                            float y_ultra = keypoints_ultra[l]["y"].get<float>();
-                            float x_cpp = keypoints_cpp[l]["x"].get<float>();
-                            float y_cpp = keypoints_cpp[l]["y"].get<float>();
+                                bool bbox_match = false;
 
-                            if (std::abs(x_ultra - x_cpp) > KEYPOINT_ERROR_MARGIN ||
-                                std::abs(y_ultra - y_cpp) > KEYPOINT_ERROR_MARGIN) {
+                                int left_diff = std::abs(bbox_ultra["left"].get<int>() - bbox_cpp["left"].get<int>());
+                                int top_diff = std::abs(bbox_ultra["top"].get<int>() - bbox_cpp["top"].get<int>());
+                                int width_diff = std::abs(bbox_ultra["width"].get<int>() - bbox_cpp["width"].get<int>());
+                                int height_diff = std::abs(bbox_ultra["height"].get<int>() - bbox_cpp["height"].get<int>());
 
-                                keypoints_match = false;
-                                break;
+                                if (left_diff <= BBOX_ERROR_MARGIN &&
+                                    top_diff <= BBOX_ERROR_MARGIN &&
+                                    width_diff <= BBOX_ERROR_MARGIN &&
+                                    height_diff <= BBOX_ERROR_MARGIN) {
+                                        bbox_match = true;
+                                    }
+
+                                ASSERT_EQ(bbox_match, true)
+                                    << "Bounding box mismatch for model " << model_name
+                                    << ", image: " << image_path << ", class_id: " << class_id_ultra
+                                    << ": ultralytics bbox: " << bbox_ultra << " != cpp bbox: " << bbox_cpp;
+
+                                auto keypoints_cpp = det_cpp["keypoints"];
+
+                                bool keypoints_match = true;
+
+                                for (size_t l = 0; l < keypoints_ultra.size(); ++l) {
+
+                                    float x_ultra = keypoints_ultra[l]["x"].get<float>();
+                                    float y_ultra = keypoints_ultra[l]["y"].get<float>();
+
+                                    float x_cpp = keypoints_cpp[l]["x"].get<float>();
+                                    float y_cpp = keypoints_cpp[l]["y"].get<float>();
+
+                                    if (std::abs(x_ultra - x_cpp) > KEYPOINT_ERROR_MARGIN ||
+                                        std::abs(y_ultra - y_cpp) > KEYPOINT_ERROR_MARGIN) {
+
+                                        keypoints_match = false;
+                                        break;
+                                    }
+                                }
+
+                                ASSERT_EQ(keypoints_match, true)
+                                    << "Keypoints mismatch for model " << model_name
+                                    << ", image: " << image_path << ", class_id: " << class_id_ultra;
+
+                                if (bbox_match && keypoints_match) {
+
+                                    double conf_cpp = det_cpp.value("confidence", 0.0);
+                                    double conf_diff = std::abs(conf_ultra - conf_cpp);
+
+                                    ASSERT_LE(conf_diff, CONF_ERROR_MARGIN)
+                                        << "Confidence mismatch for model " << model_name
+                                        << ", image: " << image_path << ", class_id: " << class_id_ultra
+                                        << ": ultralytics: " << conf_ultra << " != cpp: " << conf_cpp;
+                                    
+                                    is_class_found = true;
+
+                                    poses_cpp[k]["_matched"] = true;
+
+                                    break;
+                                }
                             }
                         }
-
-                        if (keypoints_match) {
-
-                            double conf_cpp = det_cpp.value("confidence", 0.0);
-                            double conf_diff = std::abs(conf_ultra - conf_cpp);
-
-                            ASSERT_LE(conf_diff, CONF_ERROR_MARGIN)
-                                << "Confidence mismatch for model " << model_name
-                                << ", image: " << image_path << ", class_id: " << class_id_ultra
-                                << ": ultralytics: " << conf_ultra << " != cpp: " << conf_cpp;
-                            is_class_found = true;
-                            break;
-                        }
+                        ASSERT_TRUE(is_class_found)
+                            << "class ID " << class_id_ultra << " not found in cpp results for model "
+                            << model_name << ", image: " << image_path;
                     }
+                    break;
                 }
-                ASSERT_TRUE(is_class_found)
-                    << "class ID " << class_id_ultra << " not found in cpp results for model "
-                    << model_name << ", image: " << image_path;
             }
         }
     }
