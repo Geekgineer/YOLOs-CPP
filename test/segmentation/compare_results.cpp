@@ -157,7 +157,7 @@ TEST_F(ResultsFixture, CompareSegmentations) {
             
             std::string image_path = ultra_results[i].value("image_path", "");
             
-             for( size_t j = 0; j < cpp_results.size(); ++j) {
+            for( size_t j = 0; j < cpp_results.size(); ++j) {
 
                 if (cpp_results[j].value("image_path", "") == image_path) {
 
