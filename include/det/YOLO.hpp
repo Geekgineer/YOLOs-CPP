@@ -1476,8 +1476,8 @@ std::vector<Detection> YOLODetector::detect(const cv::Mat& image, float confThre
         inputTensorShape.data(),
         inputTensorShape.size()
     );
-    std::cout << "data " << outputNames.data()[0] << std::endl;
-    std::cout << "preprocessing completed in: " << duration.count() << " ms" << std::endl;
+    // std::cout << "data " << outputNames.data()[0] << std::endl;
+    // std::cout << "preprocessing completed in: " << duration.count() << " ms" << std::endl;
 
     start = std::chrono::high_resolution_clock::now();
     // Run the inference session with the input tensor and retrieve output tensors
@@ -1491,13 +1491,13 @@ std::vector<Detection> YOLODetector::detect(const cv::Mat& image, float confThre
     );
     duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                             std::chrono::high_resolution_clock::now() - start);
-    std::cout << "inference completed in: " << duration.count() << " ms" << std::endl;
+    // std::cout << "inference completed in: " << duration.count() << " ms" << std::endl;
     // Determine the resized image shape based on input tensor shape
     start = std::chrono::high_resolution_clock::now();
     cv::Size resizedImageShape(static_cast<int>(inputTensorShape[3]), static_cast<int>(inputTensorShape[2]));
     duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                             std::chrono::high_resolution_clock::now() - start);
-    std::cout << "resizing completed in: " << duration.count() << " ms" << std::endl;
+    // std::cout << "resizing completed in: " << duration.count() << " ms" << std::endl;
     // Postprocess the output tensors to obtain detections
     start = std::chrono::high_resolution_clock::now();
     std::vector<Detection> detections;
@@ -1518,10 +1518,9 @@ std::vector<Detection> YOLODetector::detect(const cv::Mat& image, float confThre
         // std::cout << "yolo not 10 detected" << std::endl;
         detections = postprocess(image.size(), resizedImageShape, outputTensors,0, confThreshold, iouThreshold);
     }
-
     duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                             std::chrono::high_resolution_clock::now() - start);
-    std::cout << "postporcessing completed in: " << duration.count() << " ms" << std::endl;
+    // std::cout << "postporcessing completed in: " << duration.count() << " ms" << std::endl;
     return detections; // Return the vector of detections
 }
 
@@ -1579,7 +1578,6 @@ std::vector<std::vector<Detection>> YOLODetector::detect(const std::vector<cv::M
     // Determine the resized image shape based on input tensor shape
     start = std::chrono::high_resolution_clock::now();
     cv::Size resizedImageShape(static_cast<int>(inputTensorShape[3]), static_cast<int>(inputTensorShape[2]));
-
     std::vector<std::vector<Detection>> alldetections;
     std::vector<Detection> detections;
     
