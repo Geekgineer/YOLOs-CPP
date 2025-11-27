@@ -4,6 +4,21 @@
       {
         "image_path": "data/images/dog_bike_car.jpg",
         "inference_results": []
+      },
+      {
+        "image_path": "data/images/kitti_overlap.png",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 45,
+              "left": 712,
+              "top": 165,
+              "width": 76
+            },
+            "class_id": 6,
+            "confidence": 0.40164127945899963
+          }
+        ]
       }
     ],
     "task": "detect",
@@ -32,7 +47,72 @@
               "width": 372
             },
             "class_id": 1,
-            "confidence": 0.6864686012268066
+            "confidence": 0.6864673495292664
+          },
+          {
+            "bbox": {
+              "height": 323,
+              "left": 130,
+              "top": 217,
+              "width": 179
+            },
+            "class_id": 7,
+            "confidence": 0.46433520317077637
+          }
+        ]
+      },
+      {
+        "image_path": "data/images/kitti_overlap.png",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 95,
+              "left": 373,
+              "top": 169,
+              "width": 177
+            },
+            "class_id": 6,
+            "confidence": 0.8544435501098633
+          },
+          {
+            "bbox": {
+              "height": 91,
+              "left": 891,
+              "top": 116,
+              "width": 204
+            },
+            "class_id": 6,
+            "confidence": 0.7871876955032349
+          },
+          {
+            "bbox": {
+              "height": 41,
+              "left": 714,
+              "top": 167,
+              "width": 70
+            },
+            "class_id": 6,
+            "confidence": 0.7602660059928894
+          },
+          {
+            "bbox": {
+              "height": 58,
+              "left": 522,
+              "top": 163,
+              "width": 82
+            },
+            "class_id": 6,
+            "confidence": 0.5848541259765625
+          },
+          {
+            "bbox": {
+              "height": 76,
+              "left": 406,
+              "top": 163,
+              "width": 200
+            },
+            "class_id": 6,
+            "confidence": 0.46510419249534607
           }
         ]
       }
@@ -53,7 +133,7 @@
               "width": 235
             },
             "class_id": 6,
-            "confidence": 0.8589309453964233
+            "confidence": 0.8589301109313965
           },
           {
             "bbox": {
@@ -73,7 +153,92 @@
               "width": 179
             },
             "class_id": 7,
-            "confidence": 0.5062682628631592
+            "confidence": 0.5062674283981323
+          }
+        ]
+      },
+      {
+        "image_path": "data/images/kitti_overlap.png",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 47,
+              "left": 541,
+              "top": 167,
+              "width": 58
+            },
+            "class_id": 6,
+            "confidence": 0.8205413818359375
+          },
+          {
+            "bbox": {
+              "height": 49,
+              "left": 703,
+              "top": 163,
+              "width": 87
+            },
+            "class_id": 6,
+            "confidence": 0.759238600730896
+          },
+          {
+            "bbox": {
+              "height": 23,
+              "left": 592,
+              "top": 163,
+              "width": 35
+            },
+            "class_id": 6,
+            "confidence": 0.7355121374130249
+          },
+          {
+            "bbox": {
+              "height": 31,
+              "left": 571,
+              "top": 163,
+              "width": 58
+            },
+            "class_id": 6,
+            "confidence": 0.6553314924240112
+          },
+          {
+            "bbox": {
+              "height": 83,
+              "left": 367,
+              "top": 182,
+              "width": 144
+            },
+            "class_id": 6,
+            "confidence": 0.6464342474937439
+          },
+          {
+            "bbox": {
+              "height": 74,
+              "left": 466,
+              "top": 161,
+              "width": 83
+            },
+            "class_id": 6,
+            "confidence": 0.5876061916351318
+          },
+          {
+            "bbox": {
+              "height": 60,
+              "left": 1153,
+              "top": 311,
+              "width": 85
+            },
+            "class_id": 6,
+            "confidence": 0.5688256621360779
+          },
+          {
+            "bbox": {
+              "height": 97,
+              "left": 883,
+              "top": 113,
+              "width": 210
+            },
+            "class_id": 6,
+            "confidence": 0.502025842666626
           }
         ]
       }
@@ -104,7 +269,62 @@
               "width": 408
             },
             "class_id": 1,
-            "confidence": 0.8762856125831604
+            "confidence": 0.8762853741645813
+          }
+        ]
+      },
+      {
+        "image_path": "data/images/kitti_overlap.png",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 87,
+              "left": 369,
+              "top": 179,
+              "width": 144
+            },
+            "class_id": 6,
+            "confidence": 0.9459425806999207
+          },
+          {
+            "bbox": {
+              "height": 76,
+              "left": 472,
+              "top": 163,
+              "width": 78
+            },
+            "class_id": 6,
+            "confidence": 0.8308132886886597
+          },
+          {
+            "bbox": {
+              "height": 50,
+              "left": 712,
+              "top": 165,
+              "width": 74
+            },
+            "class_id": 6,
+            "confidence": 0.8191820383071899
+          },
+          {
+            "bbox": {
+              "height": 50,
+              "left": 543,
+              "top": 165,
+              "width": 56
+            },
+            "class_id": 6,
+            "confidence": 0.7845522165298462
+          },
+          {
+            "bbox": {
+              "height": 27,
+              "left": 582,
+              "top": 165,
+              "width": 47
+            },
+            "class_id": 6,
+            "confidence": 0.6319765448570251
           }
         ]
       }
@@ -116,6 +336,10 @@
     "results": [
       {
         "image_path": "data/images/dog_bike_car.jpg",
+        "inference_results": []
+      },
+      {
+        "image_path": "data/images/kitti_overlap.png",
         "inference_results": []
       }
     ],
@@ -155,7 +379,82 @@
               "width": 176
             },
             "class_id": 11,
-            "confidence": 0.7692201137542725
+            "confidence": 0.7692199349403381
+          }
+        ]
+      },
+      {
+        "image_path": "data/images/kitti_overlap.png",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 50,
+              "left": 536,
+              "top": 167,
+              "width": 64
+            },
+            "class_id": 6,
+            "confidence": 0.9687014818191528
+          },
+          {
+            "bbox": {
+              "height": 50,
+              "left": 710,
+              "top": 163,
+              "width": 74
+            },
+            "class_id": 6,
+            "confidence": 0.9682096242904663
+          },
+          {
+            "bbox": {
+              "height": 60,
+              "left": 472,
+              "top": 165,
+              "width": 130
+            },
+            "class_id": 6,
+            "confidence": 0.8743941187858582
+          },
+          {
+            "bbox": {
+              "height": 95,
+              "left": 883,
+              "top": 114,
+              "width": 215
+            },
+            "class_id": 6,
+            "confidence": 0.8402794599533081
+          },
+          {
+            "bbox": {
+              "height": 33,
+              "left": 574,
+              "top": 163,
+              "width": 54
+            },
+            "class_id": 6,
+            "confidence": 0.8359825015068054
+          },
+          {
+            "bbox": {
+              "height": 89,
+              "left": 371,
+              "top": 177,
+              "width": 136
+            },
+            "class_id": 6,
+            "confidence": 0.7953586578369141
+          },
+          {
+            "bbox": {
+              "height": 16,
+              "left": 658,
+              "top": 171,
+              "width": 54
+            },
+            "class_id": 6,
+            "confidence": 0.4841921627521515
           }
         ]
       }
@@ -176,7 +475,7 @@
               "width": 216
             },
             "class_id": 6,
-            "confidence": 0.9130264520645142
+            "confidence": 0.9130257368087769
           },
           {
             "bbox": {
@@ -196,7 +495,62 @@
               "width": 180
             },
             "class_id": 7,
-            "confidence": 0.6570662260055542
+            "confidence": 0.6570664644241333
+          }
+        ]
+      },
+      {
+        "image_path": "data/images/kitti_overlap.png",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 91,
+              "left": 367,
+              "top": 175,
+              "width": 169
+            },
+            "class_id": 6,
+            "confidence": 0.9418939352035522
+          },
+          {
+            "bbox": {
+              "height": 49,
+              "left": 539,
+              "top": 167,
+              "width": 62
+            },
+            "class_id": 6,
+            "confidence": 0.8021175861358643
+          },
+          {
+            "bbox": {
+              "height": 76,
+              "left": 475,
+              "top": 163,
+              "width": 74
+            },
+            "class_id": 6,
+            "confidence": 0.7988598942756653
+          },
+          {
+            "bbox": {
+              "height": 175,
+              "left": 1122,
+              "top": 196,
+              "width": 118
+            },
+            "class_id": 14,
+            "confidence": 0.7571322917938232
+          },
+          {
+            "bbox": {
+              "height": 45,
+              "left": 712,
+              "top": 165,
+              "width": 74
+            },
+            "class_id": 6,
+            "confidence": 0.5498084425926208
           }
         ]
       }
