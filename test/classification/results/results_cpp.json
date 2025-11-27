@@ -6,8 +6,8 @@
         "inference_results": [
           {
             "class_id": 249,
-            "class_name": "ClassID_249",
-            "confidence": 0.0018464840250089765
+            "class_name": "Alaskan Malamute",
+            "confidence": 0.48996344208717346
           }
         ]
       }
@@ -22,8 +22,8 @@
         "inference_results": [
           {
             "class_id": 249,
-            "class_name": "ClassID_249",
-            "confidence": 0.0012905176263302565
+            "class_name": "Alaskan Malamute",
+            "confidence": 0.49990686774253845
           }
         ]
       }

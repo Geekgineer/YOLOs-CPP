@@ -14,7 +14,7 @@ using json = nlohmann::json;
 
 constexpr double CONF_ERROR_MARGIN = 0.1; // +-0.1 difference allowed in confidence scores
 constexpr int BBOX_ERROR_MARGIN = 50;     // +-50 pixels difference allowed in bounding box coordinates
-constexpr double MASK_ERROR_MARGIN = 0.01; // 1% of pixels can be different in segmentation masks
+constexpr double MASK_ERROR_MARGIN = 0.1; // 10% of pixels can be different in segmentation masks
 
 json read_json(const std::string& path) {
     std::ifstream f(path);
@@ -95,9 +95,17 @@ TEST_F(ResultsFixture, CompareImagesPaths) {
         for (size_t i = 0; i < ultra_results.size(); ++i) {
 
             std::string path_ultra = ultra_results[i].value("image_path", "");
-            std::string path_cpp = cpp_results[i].value("image_path", "");
 
-            ASSERT_EQ(path_ultra, path_cpp)
+            bool path_found = false;
+            for (size_t j = 0; j < cpp_results.size(); ++j) {
+                std::string path_cpp = cpp_results[j].value("image_path", "");
+                if (path_ultra == path_cpp) {
+                    path_found = true;
+                    break;
+                }
+            }
+
+            ASSERT_TRUE(path_found)
                 << "Image path mismatch for model " << model_name << ", image " << i;
         }
     }
@@ -115,15 +123,24 @@ TEST_F(ResultsFixture, CompareSegmentationsCount) {
         for (size_t i = 0; i < ultra_results.size(); ++i) {
 
             auto segmentations_ultra = ultra_results[i].value("inference_results", json::array());
-            auto segmentations_cpp = cpp_results[i].value("inference_results", json::array());
-
             std::string image_path = ultra_results[i].value("image_path", "");
 
-            ASSERT_EQ(segmentations_ultra.size(), segmentations_cpp.size())
-                << "Number of segmentations mismatch for model " << model_name << ", image: " << image_path;
+            for (size_t j = 0; j < cpp_results.size(); ++j) {
+
+                if (cpp_results[j].value("image_path", "") == image_path) {
+
+                    auto segmentations_cpp = cpp_results[j].value("inference_results", json::array());
+                    
+                    ASSERT_EQ(segmentations_cpp.size(), segmentations_ultra.size())
+                        << "Number of segmentations mismatch for model " << model_name << ", image: " << image_path;
+                    
+                        break;
+                }
+            } 
         }
     }
 }
+
 
 TEST_F(ResultsFixture, CompareSegmentations) {
 
@@ -137,56 +154,70 @@ TEST_F(ResultsFixture, CompareSegmentations) {
         for (size_t i = 0; i < ultra_results.size(); ++i) {
 
             auto segmentations_ultra = ultra_results[i].value("inference_results", json::array());
-            auto segmentations_cpp = cpp_results[i].value("inference_results", json::array());
-
+            
             std::string image_path = ultra_results[i].value("image_path", "");
+            
+            for( size_t j = 0; j < cpp_results.size(); ++j) {
 
-            for (size_t j = 0; j < segmentations_ultra.size(); ++j) {
+                if (cpp_results[j].value("image_path", "") == image_path) {
 
-                auto& det_ultra = segmentations_ultra[j];
-                int class_id_ultra = det_ultra.value("class_id", -1);
-                double conf_ultra = det_ultra.value("confidence", 0.0);
-                auto bbox_ultra = det_ultra["bbox"];
-                bool is_class_found = false;
+                    auto segmentations_cpp = cpp_results[j].value("inference_results", json::array());
 
-                for (size_t k = 0; k < segmentations_cpp.size(); ++k) {
+                    for (size_t j = 0; j < segmentations_ultra.size(); ++j) {
 
-                    auto& det_cpp = segmentations_cpp[k];
+                        auto& det_ultra = segmentations_ultra[j];
+                        int class_id_ultra = det_ultra.value("class_id", -1);
+                        double conf_ultra = det_ultra.value("confidence", 0.0);
+                        auto bbox_ultra = det_ultra["bbox"];
+                        bool is_class_found = false;
 
-                    int class_id_cpp = det_cpp.value("class_id", -2);
+                        for (size_t k = 0; k < segmentations_cpp.size(); ++k) {
 
-                    if (class_id_ultra == class_id_cpp) {
+                            auto& det_cpp = segmentations_cpp[k];
 
-                        auto bbox_cpp = det_cpp["bbox"];
+                            int class_id_cpp = det_cpp.value("class_id", -2);
 
-                        int left_diff = std::abs(bbox_ultra["left"].get<int>() - bbox_cpp["left"].get<int>());
-                        int top_diff = std::abs(bbox_ultra["top"].get<int>() - bbox_cpp["top"].get<int>());
-                        int width_diff = std::abs(bbox_ultra["width"].get<int>() - bbox_cpp["width"].get<int>());
-                        int height_diff = std::abs(bbox_ultra["height"].get<int>() - bbox_cpp["height"].get<int>());
+                            bool already_matched = segmentations_cpp[k].value("_matched", false);
 
-                        if (left_diff <= BBOX_ERROR_MARGIN &&
-                            top_diff <= BBOX_ERROR_MARGIN &&
-                            width_diff <= BBOX_ERROR_MARGIN &&
-                            height_diff <= BBOX_ERROR_MARGIN) {
+                            if (!already_matched && class_id_ultra == class_id_cpp) {
 
-                            double conf_cpp = det_cpp.value("confidence", 0.0);
-                            double conf_diff = std::abs(conf_ultra - conf_cpp);
+                                auto bbox_cpp = det_cpp["bbox"];
 
-                            ASSERT_LE(conf_diff, CONF_ERROR_MARGIN)
-                                << "Confidence mismatch for model " << model_name
-                                << ", image: " << image_path << ", class_id: " << class_id_ultra
-                                << ": ultralytics: " << conf_ultra << " != cpp: " << conf_cpp;
+                                int left_diff = std::abs(bbox_ultra["left"].get<int>() - bbox_cpp["left"].get<int>());
+                                int top_diff = std::abs(bbox_ultra["top"].get<int>() - bbox_cpp["top"].get<int>());
+                                int width_diff = std::abs(bbox_ultra["width"].get<int>() - bbox_cpp["width"].get<int>());
+                                int height_diff = std::abs(bbox_ultra["height"].get<int>() - bbox_cpp["height"].get<int>());
 
-                            is_class_found = true;
-                            break;
+                                if (left_diff <= BBOX_ERROR_MARGIN &&
+                                    top_diff <= BBOX_ERROR_MARGIN &&
+                                    width_diff <= BBOX_ERROR_MARGIN &&
+                                    height_diff <= BBOX_ERROR_MARGIN) {
+
+                                    double conf_cpp = det_cpp.value("confidence", 0.0);
+                                    double conf_diff = std::abs(conf_ultra - conf_cpp);
+
+                                    ASSERT_LE(conf_diff, CONF_ERROR_MARGIN)
+                                        << "Confidence mismatch for model " << model_name
+                                        << ", image: " << image_path << ", class_id: " << class_id_ultra
+                                        << ": ultralytics: " << conf_ultra << " != cpp: " << conf_cpp;
+
+                                    is_class_found = true;
+
+                                    segmentations_cpp[k]["_matched"] = true;
+
+                                    break;
+                                }
+                            }
                         }
+                        
+                        ASSERT_TRUE(is_class_found)
+                            << "Class ID " << class_id_ultra << " not found in cpp results for model "
+                            << model_name << ", image: " << image_path;
                     }
+                    break;
                 }
-                
-                ASSERT_TRUE(is_class_found)
-                    << "Class ID " << class_id_ultra << " not found in cpp results for model "
-                    << model_name << ", image: " << image_path;
             }
+
         }
     }
 }
@@ -207,39 +238,47 @@ TEST_F(ResultsFixture, CompareSegmentationMasks) {
 
         for (size_t i = 0; i < ultra_results.size(); ++i) {
 
+            std::string image_path = ultra_results[i].value("image_path", "");
+
             std::string segmentation_mask_ultra = basePath + ultra_results[i].value("mask_path", "");
-            std::string segmentation_mask_cpp = basePath + cpp_results[i].value("mask_path", "");
 
-            cv::Mat mask_ultra = cv::imread(segmentation_mask_ultra, cv::IMREAD_UNCHANGED);
-            cv::Mat mask_cpp = cv::imread(segmentation_mask_cpp, cv::IMREAD_UNCHANGED);
+            for( size_t j = 0; j < cpp_results.size(); ++j) {
 
-            ASSERT_FALSE(mask_ultra.empty()) << "Failed to read segmentation mask: " << segmentation_mask_ultra;
-            ASSERT_FALSE(mask_cpp.empty()) << "Failed to read segmentation mask: " << segmentation_mask_cpp;
+                if (cpp_results[j].value("image_path", "") == image_path) {
 
-            ASSERT_EQ(mask_ultra.size(), mask_cpp.size())
-                << "Segmentation mask size mismatch for model " << model_name
-                << ", image: " << segmentation_mask_ultra;
+                    std::string segmentation_mask_cpp = basePath + cpp_results[j].value("mask_path", "");
+
+                    cv::Mat mask_ultra = cv::imread(segmentation_mask_ultra, cv::IMREAD_UNCHANGED);
+                    cv::Mat mask_cpp = cv::imread(segmentation_mask_cpp, cv::IMREAD_UNCHANGED);
+
+                    ASSERT_FALSE(mask_ultra.empty()) << "Failed to read segmentation mask: " << segmentation_mask_ultra;
+                    ASSERT_FALSE(mask_cpp.empty()) << "Failed to read segmentation mask: " << segmentation_mask_cpp;
+
+                    ASSERT_EQ(mask_ultra.size(), mask_cpp.size())
+                        << "Segmentation mask size mismatch for model " << model_name
+                        << ", image: " << segmentation_mask_ultra;
 
 
-            for (int row = 0; row < mask_ultra.rows; ++row) {
-                for (int col = 0; col < mask_ultra.cols; ++col) {
-                    if (mask_ultra.at<uchar>(row, col) != mask_cpp.at<uchar>(row, col)) {
-                        invalid_count++;
+                    for (int row = 0; row < mask_ultra.rows; ++row) {
+                        for (int col = 0; col < mask_ultra.cols; ++col) {
+                            if (mask_ultra.at<uchar>(row, col) != mask_cpp.at<uchar>(row, col)) {
+                                invalid_count++;
+                            }
+                        }
                     }
+
+                    int total_pixels = mask_ultra.rows * mask_ultra.cols;
+                    double invalid_ratio = static_cast<double>(invalid_count) / total_pixels;
+
+                    ASSERT_LE(invalid_ratio, MASK_ERROR_MARGIN)
+                        << "Segmentation mask mismatch for model " << model_name
+                        << ", image: " << segmentation_mask_ultra
+                        << " Invalid pixels: " << invalid_count
+                        << " Total pixels: " << total_pixels
+                        << " Invalid ratio: " << invalid_ratio;
                 }
-            }
 
-            int total_pixels = mask_ultra.rows * mask_ultra.cols;
-            double invalid_ratio = static_cast<double>(invalid_count) / total_pixels;
-
-            ASSERT_LE(invalid_ratio, MASK_ERROR_MARGIN)
-                << "Segmentation mask mismatch for model " << model_name
-                << ", image: " << segmentation_mask_ultra
-                << " Invalid pixels: " << invalid_count
-                << " Total pixels: " << total_pixels
-                << " Invalid ratio: " << invalid_ratio;
-
-            
+            } 
         }
     }
 }

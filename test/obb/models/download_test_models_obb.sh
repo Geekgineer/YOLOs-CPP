@@ -2,7 +2,7 @@
 
 # Download OBB test models
 
-url_base="https://drive.google.com/file/d/15eBSw3gmUNLoYBuMg8hsZTjsaxios39a/view?usp=sharing"
+url_base="https://github.com/imessam/YOLOs-CPP/releases/download/v0.1-test/test_models_obb.zip"
 output_dir="."
 output_zip="test_models_obb.zip"
 
