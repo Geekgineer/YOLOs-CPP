@@ -745,7 +745,7 @@ std::vector<Detection> YOLOPOSEDetector::postprocess(
             KeyPoint kpt;
             kpt.x = (rawOutput[offset * numDetections + d] - padding.x) / scale;
             kpt.y = (rawOutput[(offset + 1) * numDetections + d] - padding.y) / scale;
-            kpt.confidence = 1.0f / (1.0f + std::exp(-rawOutput[(offset + 2) * numDetections + d]));
+            kpt.confidence = rawOutput[(offset + 2) * numDetections + d] ; // 1.0f / (1.0f + std::exp(-rawOutput[(offset + 2) * numDetections + d]));
 
             // Clip keypoints to image boundaries
             kpt.x = utils::clamp(kpt.x, 0.0f, static_cast<float>(originalImageSize.width - 1));

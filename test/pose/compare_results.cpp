@@ -215,9 +215,13 @@ TEST_F(ResultsFixture, ComparePoses) {
 
                                     float x_ultra = keypoints_ultra[l]["x"].get<float>();
                                     float y_ultra = keypoints_ultra[l]["y"].get<float>();
+                                    float confidence_ultra = keypoints_ultra[l]["confidence"].get<float>();
 
                                     float x_cpp = keypoints_cpp[l]["x"].get<float>();
                                     float y_cpp = keypoints_cpp[l]["y"].get<float>();
+                                    float confidence_cpp = keypoints_cpp[l]["confidence"].get<float>();
+
+                                    double kpp_conf_diff = std::abs(confidence_ultra - confidence_cpp);
 
                                     if (std::abs(x_ultra - x_cpp) > KEYPOINT_ERROR_MARGIN ||
                                         std::abs(y_ultra - y_cpp) > KEYPOINT_ERROR_MARGIN) {
@@ -225,6 +229,13 @@ TEST_F(ResultsFixture, ComparePoses) {
                                         keypoints_match = false;
                                         break;
                                     }
+
+                                    ASSERT_LE(kpp_conf_diff, CONF_ERROR_MARGIN)
+                                        << "Keypoint confidence mismatch for model " << model_name
+                                        << ", image: " << image_path << ", class_id: " << class_id_ultra
+                                        << ", keypoint index: " << l
+                                        << ": ultralytics confidence: " << confidence_ultra
+                                        << " != cpp confidence: " << confidence_cpp;
                                 }
 
                                 ASSERT_EQ(keypoints_match, true)
