@@ -1,122 +1,197 @@
-# 🚀 Dockerize YOLOs-CPP for Easy Deployment and Reproducibility
+# Docker Guide for YOLOs-CPP
 
-Easily run the YOLOs-CPP project using Docker for consistent and portable builds.
+This guide covers building and running YOLOs-CPP with Docker for consistent, portable deployments.
+
+## Prerequisites
+
+### Install Docker
+
+1. **Download Docker Desktop**: [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
+
+2. **Verify installation**:
+   ```bash
+   docker --version
+   docker run hello-world
+   ```
+
+3. **For GPU support** (NVIDIA only):
+   ```bash
+   # Install NVIDIA Container Toolkit
+   distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+   curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+   curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+   sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
+   sudo systemctl restart docker
+   ```
 
 ---
 
-## 📦 Prerequisites: Install Docker
+## Quick Start
 
-Before using Docker, ensure Docker Desktop is installed on your system.
+### Build Images
 
-### 🧰 1. Download Docker Desktop
-
-👉 [Download Docker Desktop](https://www.docker.com/products/docker-desktop/)
-
-Choose the correct version for your operating system:
-- **Windows**: `.exe`
-- **macOS**: `.dmg`
-- **Linux**: Follow distro-specific guide
-
-### 🛠️ 2. Install Docker Desktop
-
-- **Windows**: Run the `.exe` installer
-- **macOS**: Drag Docker into `Applications`
-- **Linux**: Follow [Linux installation guide](https://docs.docker.com/engine/install/)
-
-### ▶️ 3. Start Docker
-
-- Launch Docker Desktop from your applications menu
-- Wait for it to start (Docker icon appears in tray)
-
-### ✅ 4. Verify Installation
-
-Run these commands in your terminal to verify:
 ```bash
-docker --version
-docker-compose --version
+# GPU version (requires NVIDIA GPU)
+docker build -t yolos-cpp:gpu -f Dockerfile .
+
+# CPU version (works everywhere)
+docker build -t yolos-cpp:cpu -f Dockerfile.cpu .
 ```
 
----
+### Run Inference
 
-## 🏗️ Build and Run YOLOs-CPP with Docker
-
-### 🔨 1. Build Docker Image
-
-From the project root directory:
 ```bash
-docker build -t yolos-cpp -f Dockerfile .
+# CPU inference
+docker run --rm -it yolos-cpp:cpu
+
+# GPU inference
+docker run --gpus all --rm -it yolos-cpp:gpu
 ```
 
 ---
 
-## 🖥️ Run the Project (Linux/macOS)
+## Configuration
 
-### 🧪 Inference Modes (CPU)
+### Environment Variables
 
-Choose your target mode:
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `INFERENCE_TARGET` | Executable to run | `image_inference` |
+| `MODEL_PATH` | Path to ONNX model | `models/yolo11n.onnx` |
+| `INPUT_PATH` | Path to input file | `data/dog.jpg` |
+| `LABELS_PATH` | Path to class labels | `models/coco.names` |
 
-**Image Inference**:
+### Examples
+
 ```bash
-docker run --rm -it -e INFERENCE_TARGET=image_inference yolos-cpp
+# Video inference
+docker run --rm -it \
+    -e INFERENCE_TARGET=video_inference \
+    -e INPUT_PATH=data/sample.mp4 \
+    yolos-cpp:cpu
+
+# Camera inference (requires device access)
+docker run --rm -it \
+    --device=/dev/video0 \
+    -e INFERENCE_TARGET=camera_inference \
+    -e INPUT_PATH=0 \
+    yolos-cpp:cpu
+
+# Custom model
+docker run --rm -it \
+    -v /path/to/your/model.onnx:/app/models/custom.onnx \
+    -e MODEL_PATH=models/custom.onnx \
+    yolos-cpp:cpu
 ```
 
-**Video Inference**:
+---
+
+## GUI Support
+
+### Linux
+
 ```bash
-docker run --rm -it -e INFERENCE_TARGET=video_inference yolos-cpp
+docker run --rm -it \
+    -e DISPLAY=$DISPLAY \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    yolos-cpp:cpu
 ```
 
-### ⚡ Enable GPU Acceleration (NVIDIA GPU Required)
+### macOS
 
-**Image Inference with GPU**:
 ```bash
-docker run --gpus all --rm -it -e INFERENCE_TARGET=image_inference yolos-cpp
+# Install XQuartz first: https://www.xquartz.org/
+xhost +localhost
+docker run --rm -it \
+    -e DISPLAY=host.docker.internal:0 \
+    yolos-cpp:cpu
+```
+
+### Windows
+
+1. Install [VcXsrv](https://sourceforge.net/projects/vcxsrv/)
+2. Launch VcXsrv with "Disable access control" checked
+3. Run:
+   ```powershell
+   docker run --rm -it -e DISPLAY=host.docker.internal:0.0 yolos-cpp:cpu
+   ```
+
+---
+
+## Development
+
+### Build with Custom ONNX Runtime Version
+
+```bash
+docker build \
+    --build-arg ONNXRUNTIME_VERSION=1.19.0 \
+    -t yolos-cpp:custom .
+```
+
+### Interactive Development
+
+```bash
+docker run --rm -it \
+    -v $(pwd):/workspace \
+    -w /workspace \
+    yolos-cpp:cpu \
+    /bin/bash
 ```
 
 ---
 
-## 🪟 Run the Project (Windows with OpenCV GUI support)
+## Troubleshooting
 
-### 🧩 2. Install VcXsrv for GUI (imshow)
+### Common Issues
 
-Download and install [VcXsrv](https://sourceforge.net/projects/vcxsrv/), then:
+| Issue | Solution |
+|-------|----------|
+| `permission denied` | Run with `--privileged` or fix permissions |
+| `GPU not found` | Ensure NVIDIA Container Toolkit is installed |
+| `Display not found` | Configure X11 forwarding (see GUI Support) |
+| `Model not found` | Mount your models with `-v` flag |
 
-- Launch **VcXsrv**
-- Set:
-  - **Display number**: `0`
-  - ✅ Check **"Disable access control"**
+### Verify GPU Access
 
-### 🧰 3. Set Display Variable in PowerShell
-
-```powershell
-$env:DISPLAY = "host.docker.internal:0.0"
+```bash
+docker run --gpus all --rm nvidia/cuda:12.2.0-base-ubuntu22.04 nvidia-smi
 ```
 
 ---
 
-### 🚀 4. Run Docker with GUI (Windows)
+## Image Sizes
 
-**Image Inference**:
-```powershell
-docker run --rm -it -e DISPLAY=host.docker.internal:0.0 -e INFERENCE_TARGET=image_inference yolos-cpp
-```
-
-**Video Inference**:
-```powershell
-docker run --rm -it -e INFERENCE_TARGET=video_inference yolos-cpp
-```
-
-**Camera Inference**:
-```powershell
-docker run --rm -it -e INFERENCE_TARGET=camera_inference yolos-cpp
-```
+| Image | Size | Features |
+|-------|------|----------|
+| `yolos-cpp:gpu` | ~4.5 GB | CUDA + cuDNN |
+| `yolos-cpp:cpu` | ~800 MB | CPU only |
 
 ---
 
-## ✅ Tips
+## Docker Compose (Optional)
 
-- You can override `INFERENCE_TARGET` with any of:  
-  `image_inference`, `video_inference`, `camera_inference`
-- Use `--gpus all` **only if** your system supports NVIDIA GPU containers
-- On Linux/macOS, GUI display is typically native; on Windows, VcXsrv is required for `imshow()`
+Create `docker-compose.yml`:
 
----
+```yaml
+version: '3.8'
+services:
+  yolos:
+    build: .
+    environment:
+      - INFERENCE_TARGET=image_inference
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+```
+
+Run with:
+```bash
+docker-compose up
+```
