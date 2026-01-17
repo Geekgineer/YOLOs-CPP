@@ -1,0 +1,47 @@
+{
+    "yolo11l-cls": {
+        "weights_path": "models/yolo11l-cls.onnx",
+        "task": "classify",
+        "results": [
+            {
+                "image_path": "data/images/dog_bike_car.jpg",
+                "inference_results": [
+                    {
+                        "class_id": 249,
+                        "confidence": 0.7768771648406982
+                    }
+                ]
+            }
+        ]
+    },
+    "yolo26n-cls": {
+        "weights_path": "models/yolo26n-cls.onnx",
+        "task": "classify",
+        "results": [
+            {
+                "image_path": "data/images/dog_bike_car.jpg",
+                "inference_results": [
+                    {
+                        "class_id": 249,
+                        "confidence": 0.37687206268310547
+                    }
+                ]
+            }
+        ]
+    },
+    "yolov8n-cls": {
+        "weights_path": "models/yolov8n-cls.onnx",
+        "task": "classify",
+        "results": [
+            {
+                "image_path": "data/images/dog_bike_car.jpg",
+                "inference_results": [
+                    {
+                        "class_id": 249,
+                        "confidence": 0.6561678051948547
+                    }
+                ]
+            }
+        ]
+    }
+}

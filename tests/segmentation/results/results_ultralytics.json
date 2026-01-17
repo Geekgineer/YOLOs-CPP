@@ -1,0 +1,394 @@
+{
+    "yolov8s-seg": {
+        "weights_path": "models/yolov8s-seg.onnx",
+        "task": "segment",
+        "results": [
+            {
+                "image_path": "data/images/car_peds.jpg",
+                "inference_results": [
+                    {
+                        "class_id": 2,
+                        "confidence": 0.8852561712265015,
+                        "bbox": {
+                            "left": 1568,
+                            "top": 429,
+                            "width": 942,
+                            "height": 393
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.711179256439209,
+                        "bbox": {
+                            "left": 517,
+                            "top": 577,
+                            "width": 250,
+                            "height": 180
+                        }
+                    },
+                    {
+                        "class_id": 0,
+                        "confidence": 0.44532424211502075,
+                        "bbox": {
+                            "left": 2630,
+                            "top": 840,
+                            "width": 291,
+                            "height": 593
+                        }
+                    },
+                    {
+                        "class_id": 0,
+                        "confidence": 0.41580864787101746,
+                        "bbox": {
+                            "left": 2653,
+                            "top": 1012,
+                            "width": 420,
+                            "height": 448
+                        }
+                    }
+                ],
+                "mask_path": "results/masks/ultralytics/yolov8s-seg_car_peds_mask.png"
+            },
+            {
+                "image_path": "data/images/kitti_overlap.png",
+                "inference_results": [
+                    {
+                        "class_id": 2,
+                        "confidence": 0.7909229397773743,
+                        "bbox": {
+                            "left": 372,
+                            "top": 178,
+                            "width": 140,
+                            "height": 92
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.6655852794647217,
+                        "bbox": {
+                            "left": 469,
+                            "top": 158,
+                            "width": 83,
+                            "height": 82
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.6185272932052612,
+                        "bbox": {
+                            "left": 714,
+                            "top": 162,
+                            "width": 73,
+                            "height": 47
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.6105430126190186,
+                        "bbox": {
+                            "left": 545,
+                            "top": 165,
+                            "width": 58,
+                            "height": 46
+                        }
+                    },
+                    {
+                        "class_id": 7,
+                        "confidence": 0.5504046678543091,
+                        "bbox": {
+                            "left": 868,
+                            "top": 112,
+                            "width": 222,
+                            "height": 85
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.40695658326148987,
+                        "bbox": {
+                            "left": 853,
+                            "top": 113,
+                            "width": 238,
+                            "height": 87
+                        }
+                    }
+                ],
+                "mask_path": "results/masks/ultralytics/yolov8s-seg_kitti_overlap_mask.png"
+            }
+        ]
+    },
+    "yolov9c-seg": {
+        "weights_path": "models/yolov9c-seg.onnx",
+        "task": "segment",
+        "results": [
+            {
+                "image_path": "data/images/car_peds.jpg",
+                "inference_results": [
+                    {
+                        "class_id": 2,
+                        "confidence": 0.9201700687408447,
+                        "bbox": {
+                            "left": 1570,
+                            "top": 433,
+                            "width": 945,
+                            "height": 394
+                        }
+                    },
+                    {
+                        "class_id": 0,
+                        "confidence": 0.7925140857696533,
+                        "bbox": {
+                            "left": 2641,
+                            "top": 1021,
+                            "width": 421,
+                            "height": 439
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.764175295829773,
+                        "bbox": {
+                            "left": 518,
+                            "top": 567,
+                            "width": 248,
+                            "height": 194
+                        }
+                    },
+                    {
+                        "class_id": 0,
+                        "confidence": 0.6024092435836792,
+                        "bbox": {
+                            "left": 2645,
+                            "top": 841,
+                            "width": 265,
+                            "height": 469
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.43432915210723877,
+                        "bbox": {
+                            "left": 2706,
+                            "top": 338,
+                            "width": 304,
+                            "height": 177
+                        }
+                    }
+                ],
+                "mask_path": "results/masks/ultralytics/yolov9c-seg_car_peds_mask.png"
+            },
+            {
+                "image_path": "data/images/kitti_overlap.png",
+                "inference_results": [
+                    {
+                        "class_id": 2,
+                        "confidence": 0.8212606906890869,
+                        "bbox": {
+                            "left": 371,
+                            "top": 176,
+                            "width": 141,
+                            "height": 90
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.705878496170044,
+                        "bbox": {
+                            "left": 474,
+                            "top": 158,
+                            "width": 79,
+                            "height": 82
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.6678744554519653,
+                        "bbox": {
+                            "left": 720,
+                            "top": 164,
+                            "width": 69,
+                            "height": 51
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.6596869826316833,
+                        "bbox": {
+                            "left": 548,
+                            "top": 166,
+                            "width": 55,
+                            "height": 45
+                        }
+                    },
+                    {
+                        "class_id": 7,
+                        "confidence": 0.6513921022415161,
+                        "bbox": {
+                            "left": 873,
+                            "top": 114,
+                            "width": 222,
+                            "height": 94
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.5016477108001709,
+                        "bbox": {
+                            "left": 594,
+                            "top": 161,
+                            "width": 33,
+                            "height": 28
+                        }
+                    }
+                ],
+                "mask_path": "results/masks/ultralytics/yolov9c-seg_kitti_overlap_mask.png"
+            }
+        ]
+    },
+    "yolo11s-seg": {
+        "weights_path": "models/yolo11s-seg.onnx",
+        "task": "segment",
+        "results": [
+            {
+                "image_path": "data/images/car_peds.jpg",
+                "inference_results": [
+                    {
+                        "class_id": 2,
+                        "confidence": 0.8866046667098999,
+                        "bbox": {
+                            "left": 1575,
+                            "top": 424,
+                            "width": 938,
+                            "height": 389
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.5621386766433716,
+                        "bbox": {
+                            "left": 516,
+                            "top": 557,
+                            "width": 250,
+                            "height": 205
+                        }
+                    },
+                    {
+                        "class_id": 0,
+                        "confidence": 0.5183926224708557,
+                        "bbox": {
+                            "left": 2646,
+                            "top": 854,
+                            "width": 276,
+                            "height": 415
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.5159457325935364,
+                        "bbox": {
+                            "left": 2701,
+                            "top": 325,
+                            "width": 287,
+                            "height": 184
+                        }
+                    },
+                    {
+                        "class_id": 0,
+                        "confidence": 0.4710680842399597,
+                        "bbox": {
+                            "left": 2681,
+                            "top": 1018,
+                            "width": 377,
+                            "height": 441
+                        }
+                    }
+                ],
+                "mask_path": "results/masks/ultralytics/yolo11s-seg_car_peds_mask.png"
+            },
+            {
+                "image_path": "data/images/kitti_overlap.png",
+                "inference_results": [
+                    {
+                        "class_id": 2,
+                        "confidence": 0.7960898876190186,
+                        "bbox": {
+                            "left": 371,
+                            "top": 176,
+                            "width": 144,
+                            "height": 90
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.6909884810447693,
+                        "bbox": {
+                            "left": 474,
+                            "top": 158,
+                            "width": 78,
+                            "height": 80
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.6047536730766296,
+                        "bbox": {
+                            "left": 548,
+                            "top": 164,
+                            "width": 55,
+                            "height": 46
+                        }
+                    }
+                ],
+                "mask_path": "results/masks/ultralytics/yolo11s-seg_kitti_overlap_mask.png"
+            }
+        ]
+    },
+    "yolo26n-seg": {
+        "weights_path": "models/yolo26n-seg.onnx",
+        "task": "segment",
+        "results": [
+            {
+                "image_path": "data/images/car_peds.jpg",
+                "inference_results": [
+                    {
+                        "class_id": 2,
+                        "confidence": 0.6047627925872803,
+                        "bbox": {
+                            "left": 1565,
+                            "top": 427,
+                            "width": 945,
+                            "height": 390
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.5592355132102966,
+                        "bbox": {
+                            "left": 501,
+                            "top": 572,
+                            "width": 263,
+                            "height": 187
+                        }
+                    }
+                ],
+                "mask_path": "results/masks/ultralytics/yolo26n-seg_car_peds_mask.png"
+            },
+            {
+                "image_path": "data/images/kitti_overlap.png",
+                "inference_results": [
+                    {
+                        "class_id": 2,
+                        "confidence": 0.6395483016967773,
+                        "bbox": {
+                            "left": 367,
+                            "top": 165,
+                            "width": 178,
+                            "height": 107
+                        }
+                    }
+                ],
+                "mask_path": "results/masks/ultralytics/yolo26n-seg_kitti_overlap_mask.png"
+            }
+        ]
+    }
+}

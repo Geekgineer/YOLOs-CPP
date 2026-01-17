@@ -1,0 +1,50 @@
+{
+  "yolo11l-cls": {
+    "results": [
+      {
+        "image_path": "data/images/dog_bike_car.jpg",
+        "inference_results": [
+          {
+            "class_id": 249,
+            "class_name": "Alaskan Malamute",
+            "confidence": 0.7768772840499878
+          }
+        ]
+      }
+    ],
+    "task": "classify",
+    "weights_path": "models/yolo11l-cls.onnx"
+  },
+  "yolo26n-cls": {
+    "results": [
+      {
+        "image_path": "data/images/dog_bike_car.jpg",
+        "inference_results": [
+          {
+            "class_id": 249,
+            "class_name": "Alaskan Malamute",
+            "confidence": 0.3768722116947174
+          }
+        ]
+      }
+    ],
+    "task": "classify",
+    "weights_path": "models/yolo26n-cls.onnx"
+  },
+  "yolov8n-cls": {
+    "results": [
+      {
+        "image_path": "data/images/dog_bike_car.jpg",
+        "inference_results": [
+          {
+            "class_id": 249,
+            "class_name": "Alaskan Malamute",
+            "confidence": 0.6561679244041443
+          }
+        ]
+      }
+    ],
+    "task": "classify",
+    "weights_path": "models/yolov8n-cls.onnx"
+  }
+}

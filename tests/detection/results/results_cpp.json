@@ -1,0 +1,476 @@
+{
+  "YOLO26n_voc": {
+    "results": [
+      {
+        "image_path": "data/images/dog_bike_car.jpg",
+        "inference_results": []
+      },
+      {
+        "image_path": "data/images/kitti_overlap.png",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 95,
+              "left": 369,
+              "top": 180,
+              "width": 177
+            },
+            "class_id": 6,
+            "confidence": 0.6209904551506042
+          }
+        ]
+      }
+    ],
+    "task": "detect",
+    "weights_path": "models/YOLO26n_voc.onnx"
+  },
+  "YOLOv10n_voc": {
+    "results": [
+      {
+        "image_path": "data/images/dog_bike_car.jpg",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 264,
+              "left": 275,
+              "top": 158,
+              "width": 287
+            },
+            "class_id": 1,
+            "confidence": 0.708569347858429
+          },
+          {
+            "bbox": {
+              "height": 321,
+              "left": 131,
+              "top": 225,
+              "width": 188
+            },
+            "class_id": 11,
+            "confidence": 0.6620882749557495
+          }
+        ]
+      },
+      {
+        "image_path": "data/images/kitti_overlap.png",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 98,
+              "left": 361,
+              "top": 180,
+              "width": 181
+            },
+            "class_id": 6,
+            "confidence": 0.8993121385574341
+          },
+          {
+            "bbox": {
+              "height": 87,
+              "left": 363,
+              "top": 190,
+              "width": 158
+            },
+            "class_id": 6,
+            "confidence": 0.6242226362228394
+          },
+          {
+            "bbox": {
+              "height": 76,
+              "left": 440,
+              "top": 164,
+              "width": 112
+            },
+            "class_id": 6,
+            "confidence": 0.406413733959198
+          }
+        ]
+      }
+    ],
+    "task": "detect",
+    "weights_path": "models/YOLOv10n_voc.onnx"
+  },
+  "YOLOv11n_voc": {
+    "results": [
+      {
+        "image_path": "data/images/dog_bike_car.jpg",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 92,
+              "left": 457,
+              "top": 76,
+              "width": 240
+            },
+            "class_id": 6,
+            "confidence": 0.7257456183433533
+          },
+          {
+            "bbox": {
+              "height": 461,
+              "left": 129,
+              "top": 62,
+              "width": 436
+            },
+            "class_id": 1,
+            "confidence": 0.6454122066497803
+          }
+        ]
+      },
+      {
+        "image_path": "data/images/kitti_overlap.png",
+        "inference_results": []
+      }
+    ],
+    "task": "detect",
+    "weights_path": "models/YOLOv11n_voc.onnx"
+  },
+  "YOLOv12n_voc": {
+    "results": [
+      {
+        "image_path": "data/images/dog_bike_car.jpg",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 88,
+              "left": 470,
+              "top": 75,
+              "width": 217
+            },
+            "class_id": 6,
+            "confidence": 0.8832056522369385
+          },
+          {
+            "bbox": {
+              "height": 290,
+              "left": 112,
+              "top": 130,
+              "width": 449
+            },
+            "class_id": 1,
+            "confidence": 0.8454514741897583
+          },
+          {
+            "bbox": {
+              "height": 322,
+              "left": 127,
+              "top": 218,
+              "width": 179
+            },
+            "class_id": 11,
+            "confidence": 0.4141068458557129
+          }
+        ]
+      },
+      {
+        "image_path": "data/images/kitti_overlap.png",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 103,
+              "left": 371,
+              "top": 167,
+              "width": 164
+            },
+            "class_id": 6,
+            "confidence": 0.9077714681625366
+          },
+          {
+            "bbox": {
+              "height": 46,
+              "left": 715,
+              "top": 169,
+              "width": 75
+            },
+            "class_id": 6,
+            "confidence": 0.7066982984542847
+          },
+          {
+            "bbox": {
+              "height": 53,
+              "left": 615,
+              "top": 167,
+              "width": 105
+            },
+            "class_id": 6,
+            "confidence": 0.6631648540496826
+          },
+          {
+            "bbox": {
+              "height": 61,
+              "left": 534,
+              "top": 164,
+              "width": 184
+            },
+            "class_id": 6,
+            "confidence": 0.4284300208091736
+          }
+        ]
+      }
+    ],
+    "task": "detect",
+    "weights_path": "models/YOLOv12n_voc.onnx"
+  },
+  "YOLOv5nu_voc": {
+    "results": [
+      {
+        "image_path": "data/images/dog_bike_car.jpg",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 98,
+              "left": 461,
+              "top": 71,
+              "width": 229
+            },
+            "class_id": 6,
+            "confidence": 0.8584145307540894
+          },
+          {
+            "bbox": {
+              "height": 274,
+              "left": 116,
+              "top": 144,
+              "width": 453
+            },
+            "class_id": 1,
+            "confidence": 0.5603837370872498
+          },
+          {
+            "bbox": {
+              "height": 334,
+              "left": 131,
+              "top": 209,
+              "width": 181
+            },
+            "class_id": 11,
+            "confidence": 0.5519133806228638
+          }
+        ]
+      },
+      {
+        "image_path": "data/images/kitti_overlap.png",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 86,
+              "left": 368,
+              "top": 182,
+              "width": 181
+            },
+            "class_id": 6,
+            "confidence": 0.887596607208252
+          },
+          {
+            "bbox": {
+              "height": 50,
+              "left": 718,
+              "top": 167,
+              "width": 72
+            },
+            "class_id": 6,
+            "confidence": 0.6722925901412964
+          },
+          {
+            "bbox": {
+              "height": 52,
+              "left": 600,
+              "top": 168,
+              "width": 112
+            },
+            "class_id": 6,
+            "confidence": 0.5049508213996887
+          }
+        ]
+      }
+    ],
+    "task": "detect",
+    "weights_path": "models/YOLOv5nu_voc.onnx"
+  },
+  "YOLOv6n_voc": {
+    "results": [
+      {
+        "image_path": "data/images/dog_bike_car.jpg",
+        "inference_results": []
+      },
+      {
+        "image_path": "data/images/kitti_overlap.png",
+        "inference_results": []
+      }
+    ],
+    "task": "detect",
+    "weights_path": "models/YOLOv6n_voc.onnx"
+  },
+  "YOLOv8n_voc": {
+    "results": [
+      {
+        "image_path": "data/images/dog_bike_car.jpg",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 319,
+              "left": 117,
+              "top": 124,
+              "width": 447
+            },
+            "class_id": 1,
+            "confidence": 0.9196680188179016
+          },
+          {
+            "bbox": {
+              "height": 95,
+              "left": 462,
+              "top": 72,
+              "width": 255
+            },
+            "class_id": 6,
+            "confidence": 0.7502152919769287
+          }
+        ]
+      },
+      {
+        "image_path": "data/images/kitti_overlap.png",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 51,
+              "left": 537,
+              "top": 166,
+              "width": 67
+            },
+            "class_id": 6,
+            "confidence": 0.9792008399963379
+          },
+          {
+            "bbox": {
+              "height": 116,
+              "left": 365,
+              "top": 166,
+              "width": 184
+            },
+            "class_id": 6,
+            "confidence": 0.9620606899261475
+          },
+          {
+            "bbox": {
+              "height": 58,
+              "left": 717,
+              "top": 166,
+              "width": 76
+            },
+            "class_id": 6,
+            "confidence": 0.9314365386962891
+          },
+          {
+            "bbox": {
+              "height": 67,
+              "left": 477,
+              "top": 163,
+              "width": 128
+            },
+            "class_id": 6,
+            "confidence": 0.9155987501144409
+          },
+          {
+            "bbox": {
+              "height": 60,
+              "left": 586,
+              "top": 164,
+              "width": 138
+            },
+            "class_id": 6,
+            "confidence": 0.9013780951499939
+          },
+          {
+            "bbox": {
+              "height": 77,
+              "left": 465,
+              "top": 161,
+              "width": 81
+            },
+            "class_id": 6,
+            "confidence": 0.6662042140960693
+          }
+        ]
+      }
+    ],
+    "task": "detect",
+    "weights_path": "models/YOLOv8n_voc.onnx"
+  },
+  "YOLOv9t_voc": {
+    "results": [
+      {
+        "image_path": "data/images/dog_bike_car.jpg",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 93,
+              "left": 467,
+              "top": 76,
+              "width": 235
+            },
+            "class_id": 6,
+            "confidence": 0.7530848979949951
+          },
+          {
+            "bbox": {
+              "height": 280,
+              "left": 128,
+              "top": 137,
+              "width": 438
+            },
+            "class_id": 1,
+            "confidence": 0.7427449226379395
+          },
+          {
+            "bbox": {
+              "height": 322,
+              "left": 130,
+              "top": 217,
+              "width": 183
+            },
+            "class_id": 7,
+            "confidence": 0.7223836183547974
+          }
+        ]
+      },
+      {
+        "image_path": "data/images/kitti_overlap.png",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 95,
+              "left": 366,
+              "top": 175,
+              "width": 149
+            },
+            "class_id": 6,
+            "confidence": 0.6572116613388062
+          },
+          {
+            "bbox": {
+              "height": 74,
+              "left": 451,
+              "top": 153,
+              "width": 156
+            },
+            "class_id": 6,
+            "confidence": 0.41605156660079956
+          },
+          {
+            "bbox": {
+              "height": 97,
+              "left": 366,
+              "top": 156,
+              "width": 238
+            },
+            "class_id": 6,
+            "confidence": 0.40496009588241577
+          }
+        ]
+      }
+    ],
+    "task": "detect",
+    "weights_path": "models/YOLOv9t_voc.onnx"
+  }
+}

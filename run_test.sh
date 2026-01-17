@@ -25,7 +25,7 @@ if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
     usage
 fi
 
-cd test
+cd tests
 
 case "$TEST_TASK" in
     0)
