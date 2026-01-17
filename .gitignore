@@ -1,59 +1,121 @@
-# Ignore build directories
-/build
-/benchmark/build/
-/build/*
+# ============================================================================
+# YOLOs-CPP .gitignore
+# ============================================================================
 
-# CMake files
+# Build directories
+build/
+*/build/
+**/build/
+cmake-build-*/
+
+# CMake generated files
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
 Makefile
-Makefile2
 *.cmake
+!CMakeLists.txt
+compile_commands.json
 
-# Ignore compiled object files and binaries
+# Compiled binaries and objects
 *.o
+*.obj
 *.out
 *.exe
+*.dll
 *.so
+*.so.*
+*.dylib
 *.a
-*.dSYM
+*.lib
+*.dSYM/
 
-# Ignore logs
+# ONNX Runtime (downloaded separately)
+onnxruntime*/
+
+# Model files (download separately)
+*.onnx
+*.pt
+*.pth
+*.weights
+*.engine
+*.trt
+!models/*.names
+!quantized_models/*.names
+
+# Large media files
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+*.gif
+!data/cover.png
+
+# Logs and temporary files
 *.log
-
-# Ignore temporary files
 *.tmp
 *.temp
 *.swp
 *.swo
+*~
 
-# Ignore environment files
-.env
-*.pt
-*.onnx
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.egg-info/
+.eggs/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+ENV/
 
-# Ignore any data that should not be version controlled
-# data/*.mp4
-# data/*.jpg
-# data/*.png
-# data/cover.png
-masks/cpp/
+# IDE and editor files
+.idea/
+.vscode/
+*.sublime-*
+.cache/
+.ccls-cache/
+.clangd/
 
-# Ignore external libraries or packages
-onnxruntime*
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
 
-
-# Ignore any additional files you want to exclude
+# Archive files
 *.tgz
+*.tar.gz
 *.zip
 *.rar
 *.7z
 
-# Ignore any IDE-specific files 
-.idea/
-.vscode/
-.cache/
-build/
-__pycache__/
-.pytest_cache/
+# Environment files
+.env
+.env.*
+
+# Benchmark results (keep structure, ignore data)
+results/*.csv
+results/*.json
+benchmark_unified/results/*.csv
+benchmark_unified/results/*.json
+!results/.gitkeep
+!benchmark_unified/results/.gitkeep
+
+# Test artifacts
+test/*/results/*.json
+test/*/results/*.png
+test/*/data/videos/*
+
+# Coverage and profiling
+*.gcda
+*.gcno
+*.gcov
+coverage/
+
+# Dev
+.cursor/
