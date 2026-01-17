@@ -1,60 +1,153 @@
-# Usage Guide for YOLOs-CPP
+# Usage Guide
 
-## Running Inference
-After building, you can run inference using these scripts:
+Complete API reference and code examples for YOLOs-CPP.
 
-### Image Inference
-```bash
-./run_image.sh
-```
-- Ensure the image file (e.g. `dogs.jpg`) is placed in the `data/` folder.
-- The output will display bounding boxes, masks, or keypoints depending on the selected model.
+## Quick Start
 
-### Video Inference
-```bash
-./run_video.sh
-```
-- Place your video file in the data path defined in `src/video_inference.cpp`.
-- Output will be shown in a display window and/or saved to file.
-
-### Camera Inference
-```bash
-./run_camera.sh
-```
-- Uses USB webcam (default index 0)
-- Displays real-time detection output
-
-## Choosing Models
-- Select the correct header and model file path inside your C++ source file.
-  - Example: `#include "det/YOLO11.hpp"`
-- Supported model types:
-  - Detection: `YOLO11Detector`
-  - Segmentation: `YOLOv11SegDetector`
-  - Oriented Detection: `YOLO11OBBDetector`
-  - Pose Estimation: `YOLO11POSEDetector`
-
-## Input and Output
-- Input: Images/videos loaded via OpenCV
-- Output: Modified image with visual overlays (bounding boxes, masks, keypoints)
-
-## Example Paths
 ```cpp
-const std::string labelsPath = "../models/coco.names";
-const std::string modelPath  = "../models/yolo11n.onnx";
-const std::string imagePath  = "../data/dogs.jpg";
+#include "yolos/yolos.hpp"
+
+// Initialize any detector
+yolos::det::YOLODetector detector("model.onnx", "labels.txt", /*gpu=*/true);
+
+// Run inference
+auto detections = detector.detect(frame, /*conf=*/0.25f, /*iou=*/0.45f);
+
+// Visualize
+detector.drawDetections(frame, detections);
 ```
 
-## Notes
-- Toggle CPU/GPU in constructor using `bool isGPU = true;`
-- Models and class label files should match (e.g., `coco.names`, `Dota.names`)
+## Namespace Structure
 
-## Debugging
-To enable debug prints and performance logs:
+| Namespace | Purpose |
+|-----------|---------|
+| `yolos::det::` | Object detection |
+| `yolos::seg::` | Instance segmentation |
+| `yolos::pose::` | Pose estimation |
+| `yolos::obb::` | Oriented bounding boxes |
+| `yolos::cls::` | Image classification |
+
+## Object Detection
+
 ```cpp
-// Edit tools/Config.hpp
-#define DEBUG true
-#define TIMING true
+#include "yolos/yolos.hpp"
+
+yolos::det::YOLODetector detector(
+    "models/yolo11n.onnx",
+    "models/coco.names",
+    true  // GPU
+);
+
+cv::Mat image = cv::imread("image.jpg");
+auto detections = detector.detect(image, 0.25f, 0.45f);
+
+for (const auto& det : detections) {
+    std::cout << det.className << ": " << det.confidence << std::endl;
+}
+
+detector.drawDetections(image, detections);
 ```
 
-See `docs/MODELS.md` for more information about available models.
+## Instance Segmentation
 
+```cpp
+yolos::seg::YOLOSegDetector detector(
+    "models/yolo11n-seg.onnx",
+    "models/coco.names",
+    true
+);
+
+auto segments = detector.segment(image, 0.25f, 0.45f);
+detector.drawSegmentations(image, segments, 0.5f);  // 50% opacity
+```
+
+## Pose Estimation
+
+```cpp
+yolos::pose::YOLOPoseDetector detector(
+    "models/yolo11n-pose.onnx",
+    "",  // No labels needed
+    true
+);
+
+auto poses = detector.detect(image, 0.25f, 0.45f);
+detector.drawPoses(image, poses);
+```
+
+## Oriented Bounding Boxes
+
+```cpp
+yolos::obb::YOLOOBBDetector detector(
+    "models/yolo11n-obb.onnx",
+    "models/Dota.names",
+    true
+);
+
+auto boxes = detector.detect(image, 0.25f, 0.45f);
+detector.drawOBBs(image, boxes);
+```
+
+## Image Classification
+
+```cpp
+yolos::cls::YOLOClassifier classifier(
+    "models/yolo11n-cls.onnx",
+    "models/imagenet_classes.txt",
+    true
+);
+
+auto result = classifier.classify(image);
+std::cout << result.className << ": " << result.confidence * 100 << "%" << std::endl;
+```
+
+## Video Processing
+
+```cpp
+cv::VideoCapture cap("video.mp4");
+cv::Mat frame;
+
+while (cap.read(frame)) {
+    auto detections = detector.detect(frame);
+    detector.drawDetections(frame, detections);
+    cv::imshow("Detection", frame);
+    if (cv::waitKey(1) == 27) break;
+}
+```
+
+## Camera Stream
+
+```cpp
+cv::VideoCapture cap(0);
+cap.set(cv::CAP_PROP_FRAME_WIDTH, 1280);
+cap.set(cv::CAP_PROP_FRAME_HEIGHT, 720);
+
+cv::Mat frame;
+while (cap.read(frame)) {
+    auto detections = detector.detect(frame);
+    detector.drawDetections(frame, detections);
+    cv::imshow("Live", frame);
+    if (cv::waitKey(1) == 27) break;
+}
+```
+
+## Performance Tips
+
+1. **Reuse detector instances** — Create once, infer many times
+2. **Use GPU when available** — 5-10x faster than CPU
+3. **Adjust thresholds** — Higher confidence = fewer detections, faster NMS
+4. **Match input resolution** — Use model's expected size (640x640)
+
+## Error Handling
+
+```cpp
+try {
+    yolos::det::YOLODetector detector("model.onnx", "labels.txt", true);
+} catch (const Ort::Exception& e) {
+    std::cerr << "ONNX error: " << e.what() << std::endl;
+}
+```
+
+## Next Steps
+
+- [Model Guide](models.md) — Export and optimize models
+- [Development](development.md) — Extend the library
