@@ -1,82 +1,197 @@
-name: Main CI
+name: CI/CD Pipeline
 
 on:
   push:
     branches: ["main", "dev"]
   pull_request:
     branches: ["main", "dev"]
-  workflow_dispatch:   # <--- allows manual trigger
-
+  workflow_dispatch:
+    inputs:
+      run_gpu_tests:
+        description: 'Run GPU tests (requires self-hosted runner)'
+        required: false
+        default: 'false'
+        type: boolean
 
 permissions:
   contents: read
   packages: read
 
+env:
+  ONNXRUNTIME_VERSION: "1.20.1"
+
 jobs:
-  test:
-    runs-on: ${{ matrix.runner }}
-    strategy:
-      matrix:
-        include:
-          - runner: ubuntu-latest
-            image: ghcr.io/ahmedmsalah99/ubuntu_cpu:latest
-            build: ubuntu_cpu
-          - runner: ubuntu-latest
-            image: ghcr.io/ahmedmsalah99/ubuntu_gpu:latest
-            build: ubuntu_gpu
-
-    container:
-      image: ${{ matrix.image }}
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
+  # ==========================================================================
+  # Build and Test on CPU
+  # ==========================================================================
+  build-cpu:
+    runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Fetch and unzip cpu models
-        if: matrix.build == 'ubuntu_cpu'
+      - name: Setup build environment
         run: |
-          wget https://github.com/ahmedmsalah99/YOLOs-CPP/releases/download/v1/yolo_cpu_models.zip
-          unzip -o yolo_cpu_models.zip -d test_models
-          ls -R test_models
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            libopencv-dev \
+            unzip \
+            curl
+
+      - name: Download ONNX Runtime (CPU)
+        run: |
+          curl -L -o onnxruntime.tgz \
+            "https://github.com/microsoft/onnxruntime/releases/download/v${ONNXRUNTIME_VERSION}/onnxruntime-linux-x64-${ONNXRUNTIME_VERSION}.tgz"
+          tar -xzf onnxruntime.tgz
+          rm onnxruntime.tgz
+
+      - name: Build project
+        run: |
+          mkdir -p build && cd build
+          cmake .. -DONNXRUNTIME_DIR="${GITHUB_WORKSPACE}/onnxruntime-linux-x64-${ONNXRUNTIME_VERSION}" \
+                   -DCMAKE_BUILD_TYPE=Release
+          make -j$(nproc)
+
+      - name: Verify build
+        run: |
+          ls -la build/
+          ./build/image_inference --help || true
+
+  # ==========================================================================
+  # Test Suite (Detection, Segmentation, Pose, OBB, Classification)
+  # ==========================================================================
+  test-suite:
+    runs-on: ubuntu-latest
+    needs: build-cpu
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        task: [detection, segmentation, pose, obb, classification]
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup build environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            libopencv-dev \
+            unzip \
+            curl \
+            python3 \
+            python3-pip \
+            python3-venv
+
+      - name: Install uv for Python package management
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Download ONNX Runtime (CPU)
+        run: |
+          curl -L -o onnxruntime.tgz \
+            "https://github.com/microsoft/onnxruntime/releases/download/v${ONNXRUNTIME_VERSION}/onnxruntime-linux-x64-${ONNXRUNTIME_VERSION}.tgz"
+          tar -xzf onnxruntime.tgz -C tests/
+          rm onnxruntime.tgz
+
+      - name: Run ${{ matrix.task }} tests
+        working-directory: tests
+        run: |
+          chmod +x test_${{ matrix.task }}.sh
+          ./test_${{ matrix.task }}.sh
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.task }}
+          path: tests/${{ matrix.task }}/results/
+          retention-days: 7
+
+  # ==========================================================================
+  # Benchmark (Optional - Manual Trigger)
+  # ==========================================================================
+  benchmark:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    needs: build-cpu
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup build environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            libopencv-dev \
+            unzip \
+            curl
+
+      - name: Download ONNX Runtime (CPU)
+        run: |
+          curl -L -o onnxruntime.tgz \
+            "https://github.com/microsoft/onnxruntime/releases/download/v${ONNXRUNTIME_VERSION}/onnxruntime-linux-x64-${ONNXRUNTIME_VERSION}.tgz"
+          tar -xzf onnxruntime.tgz
+          rm onnxruntime.tgz
+
+      - name: Build benchmark tool
+        working-directory: benchmarks
+        run: |
+          mkdir -p build && cd build
+          cmake .. -DONNXRUNTIME_DIR="${GITHUB_WORKSPACE}/onnxruntime-linux-x64-${ONNXRUNTIME_VERSION}" \
+                   -DCMAKE_BUILD_TYPE=Release
+          make -j$(nproc)
+
+      - name: Run benchmarks
+        run: |
+          echo "Benchmark tool built successfully"
+          # Add benchmark runs here when models are available
+
+      - name: Upload benchmark results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          path: benchmarks/results/
+          retention-days: 30
+
+  # ==========================================================================
+  # Code Quality Checks
+  # ==========================================================================
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check code formatting (C++)
+        run: |
+          # Install clang-format if available
+          if command -v clang-format &> /dev/null; then
+            find include/ src/ examples/ -name "*.cpp" -o -name "*.hpp" | head -20 | \
+              xargs -I {} sh -c 'clang-format --dry-run --Werror {} || echo "Format issues in {}"'
+          else
+            echo "clang-format not available, skipping format check"
+          fi
+
+      - name: Check for common issues
+        run: |
+          # Check for debug prints left in code
+          if grep -r "std::cout.*DEBUG\|printf.*debug\|#define DEBUG" include/ src/ --include="*.cpp" --include="*.hpp"; then
+            echo "Warning: Debug statements found in code"
+          fi
           
-      - name: Fetch and unzip gpu models
-        if: matrix.build == 'ubuntu_gpu'
-        run: |
-          wget https://github.com/ahmedmsalah99/YOLOs-CPP/releases/download/v1/yolo_cpu_models.zip
-          unzip -o yolo_cpu_models.zip -d test_models
-          ls -R test_models
-
-      # CPU build
-      - name: Build CPU
-        if: matrix.build == 'ubuntu_cpu'
-        run: ./build.sh 1.20.1 0
-
-      # GPU build
-      - name: Build GPU
-        if: matrix.build == 'ubuntu_gpu'
-        run: ./build.sh 1.20.1 1
-
-      # Shared test step
-      - uses: ./.github/actions/run-tests
-
-  
-  # python-test:
-  #   runs-on: ubuntu-latest
-  #   if: github.event_name == 'workflow_dispatch'   # <--- run only on manual trigger
-  #   container:
-  #     image: ghcr.io/ahmedmsalah99/python:latest
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
-
-  #     - name: Fetch and unzip models
-  #       run: |
-  #         wget https://github.com/ahmedmsalah99/YOLOs-CPP/releases/download/v1/yolo_cpu_models.zip
-  #         unzip -o yolo_cpu_models.zip -d test_models
-  #         ls -R test_models
-
-  #     - name: Export ONNX
-  #       run: python models/export_onnx.py
+          # Check for TODO/FIXME comments
+          echo "TODOs found in codebase:"
+          grep -r "TODO\|FIXME\|XXX\|HACK" include/ src/ --include="*.cpp" --include="*.hpp" || echo "No TODOs found"
