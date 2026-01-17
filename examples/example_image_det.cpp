@@ -10,8 +10,10 @@
 #include <chrono>
 #include <filesystem>
 #include <vector>
-#include "det/YOLO.hpp"
+#include "yolos/tasks/detection.hpp"
 #include "utils.hpp"
+
+using namespace yolos::det;
 
 int main(int argc, char* argv[]) {
     namespace fs = std::filesystem;
@@ -98,7 +100,7 @@ int main(int argc, char* argv[]) {
             
             // Draw detections
             cv::Mat resultImage = image.clone();
-            detector.drawBoundingBox(resultImage, detections);
+            detector.drawDetections(resultImage, detections);
             
             // Save output with timestamp
             std::string outputPath = utils::saveImage(resultImage, imgPath, outputDir);

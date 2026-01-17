@@ -9,8 +9,10 @@
 #include <chrono>
 #include <filesystem>
 #include <vector>
-#include "obb/YOLO-OBB.hpp"
+#include "yolos/tasks/obb.hpp"
 #include "utils.hpp"
+
+using namespace yolos::obb;
 
 int main(int argc, char* argv[]) {
     namespace fs = std::filesystem;
@@ -69,7 +71,7 @@ int main(int argc, char* argv[]) {
             
             // Run OBB detection with timing
             auto start = std::chrono::high_resolution_clock::now();
-            std::vector<Detection> detections = detector.detect(image);
+            std::vector<OBBResult> detections = detector.detect(image);
             auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::high_resolution_clock::now() - start);
             
@@ -87,7 +89,7 @@ int main(int argc, char* argv[]) {
             
             // Draw oriented bounding boxes
             cv::Mat resultImage = image.clone();
-            detector.drawBoundingBox(resultImage, detections);
+            detector.drawDetections(resultImage, detections);
             
             // Save output with timestamp
             std::string outputPath = utils::saveImage(resultImage, imgPath, outputDir);

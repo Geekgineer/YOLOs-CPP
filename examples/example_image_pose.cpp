@@ -9,8 +9,10 @@
 #include <chrono>
 #include <filesystem>
 #include <vector>
-#include "pose/YOLO-POSE.hpp"
+#include "yolos/tasks/pose.hpp"
 #include "utils.hpp"
+
+using namespace yolos::pose;
 
 int main(int argc, char* argv[]) {
     namespace fs = std::filesystem;
@@ -53,7 +55,7 @@ int main(int argc, char* argv[]) {
     std::cout << "🔄 Loading pose estimation model: " << modelPath << std::endl;
     
     try {
-        YOLOPOSEDetector detector(modelPath, labelsPath, useGPU);
+        YOLOPoseDetector detector(modelPath, labelsPath, useGPU);
         std::cout << "✅ Model loaded successfully!" << std::endl;
         
         // Process each image
@@ -69,7 +71,7 @@ int main(int argc, char* argv[]) {
             
             // Run pose detection with timing
             auto start = std::chrono::high_resolution_clock::now();
-            std::vector<Detection> detections = detector.detect(image, 0.4f, 0.5f);
+            std::vector<PoseResult> detections = detector.detect(image, 0.4f, 0.5f);
             auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::high_resolution_clock::now() - start);
             
@@ -87,7 +89,7 @@ int main(int argc, char* argv[]) {
             
             // Draw pose keypoints and skeleton
             cv::Mat resultImage = image.clone();
-            detector.drawBoundingBox(resultImage, detections);
+            detector.drawPoses(resultImage, detections);
             
             // Save output with timestamp
             std::string outputPath = utils::saveImage(resultImage, imgPath, outputDir);

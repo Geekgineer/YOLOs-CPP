@@ -8,8 +8,10 @@
 #include <iostream>
 #include <chrono>
 #include <filesystem>
-#include "obb/YOLO-OBB.hpp"
+#include "yolos/tasks/obb.hpp"
 #include "utils.hpp"
+
+using namespace yolos::obb;
 
 int main(int argc, char* argv[]) {
     namespace fs = std::filesystem;
@@ -73,10 +75,10 @@ int main(int argc, char* argv[]) {
             frameCount++;
             
             // Run OBB detection
-            std::vector<Detection> detections = detector.detect(frame);
+            std::vector<OBBResult> detections = detector.detect(frame);
             
             // Draw oriented boxes
-            detector.drawBoundingBox(frame, detections);
+            detector.drawDetections(frame, detections);
             
             // Add frame info
             std::string frameInfo = "Frame: " + std::to_string(frameCount) + "/" + std::to_string(totalFrames) +

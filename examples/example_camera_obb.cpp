@@ -7,8 +7,10 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <chrono>
-#include "obb/YOLO-OBB.hpp"
+#include "yolos/tasks/obb.hpp"
 #include "utils.hpp"
+
+using namespace yolos::obb;
 
 int main(int argc, char* argv[]) {
     std::string modelPath = "../../models/yolo11n-obb.onnx";
@@ -48,8 +50,8 @@ int main(int argc, char* argv[]) {
             if (frame.empty()) break;
             
             frameCount++;
-            std::vector<Detection> detections = detector.detect(frame);
-            detector.drawBoundingBox(frame, detections);
+            std::vector<OBBResult> detections = detector.detect(frame);
+            detector.drawDetections(frame, detections);
             
             auto currentTime = std::chrono::high_resolution_clock::now();
             auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(currentTime - startTime);

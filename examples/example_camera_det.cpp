@@ -7,8 +7,10 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <chrono>
-#include "det/YOLO.hpp"
+#include "yolos/tasks/detection.hpp"
 #include "utils.hpp"
+
+using namespace yolos::det;
 
 int main(int argc, char* argv[]) {
     // Default configuration
@@ -64,7 +66,7 @@ int main(int argc, char* argv[]) {
             auto detectDuration = std::chrono::duration_cast<std::chrono::milliseconds>(detectEnd - detectStart);
             
             // Draw detections
-            detector.drawBoundingBox(frame, detections);
+            detector.drawDetections(frame, detections);
             
             // Calculate FPS
             auto currentTime = std::chrono::high_resolution_clock::now();

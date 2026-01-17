@@ -17,13 +17,19 @@
 #include <mutex>
 #include <condition_variable>
 #include <atomic>
-#include "tools/Debug.hpp" // Include the config file to access the flags
+
+// Debug print macro - only active when DEBUG_MODE is defined
+#ifdef DEBUG_MODE
+    #define DEBUG_PRINT(x) do { std::cout << "[DEBUG] " << x << std::endl; } while(0)
+#else
+    #define DEBUG_PRINT(x) do {} while(0)
+#endif
 
 
 template<typename T>
 class BoundedThreadSafeQueue {
 public:
-    BoundedThreadSafeQueue(size_t max_size) : max_size_(max_size), finished(false) {
+    explicit BoundedThreadSafeQueue(size_t max_size) : max_size_(max_size), finished(false) {
         DEBUG_PRINT("BoundedThreadSafeQueue initialized with max size: " << max_size_);
     }
 

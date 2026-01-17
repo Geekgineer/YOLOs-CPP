@@ -8,8 +8,10 @@
 #include <iostream>
 #include <chrono>
 #include <filesystem>
-#include "det/YOLO.hpp"
+#include "yolos/tasks/detection.hpp"
 #include "utils.hpp"
+
+using namespace yolos::det;
 
 int main(int argc, char* argv[]) {
     namespace fs = std::filesystem;
@@ -76,7 +78,7 @@ int main(int argc, char* argv[]) {
             std::vector<Detection> detections = detector.detect(frame);
             
             // Draw detections
-            detector.drawBoundingBox(frame, detections);
+            detector.drawDetections(frame, detections);
             
             // Add frame info
             std::string frameInfo = "Frame: " + std::to_string(frameCount) + "/" + std::to_string(totalFrames) +

@@ -33,7 +33,7 @@
  * @note The code includes commented-out sections to demonstrate how to switch 
  * between different YOLO models and video inputs.
  *
- * Author: Abdalrahman M. Amer, www.linkedin.com/in/abdalrahman-m-amer
+ * Author: YOLOs-CPP Team, https://github.com/Geekgineer/YOLOs-CPP
  * Date: 29.09.2024
  */
 // Include necessary headers
@@ -52,7 +52,9 @@
 // #ifndef TIMING_MODE
 // #define TIMING_MODE
 // #endif
-#include "det/YOLO.hpp"
+#include "yolos/tasks/detection.hpp"
+
+using namespace yolos::det;
 // Thread-safe queue implementation
 template <typename T>
 class SafeQueue {
@@ -169,7 +171,7 @@ int main(int argc, char* argv[])
             std::vector<Detection> results = detector.detect(frame);
 
             // Draw bounding boxes on the frame
-            detector.drawBoundingBoxMask(frame, results); // Uncomment for mask drawing
+            detector.drawDetectionsWithMask(frame, results); // Uses mask-style drawing
 
             // Enqueue the processed frame
             processedQueue.enqueue(std::make_pair(frameIndex++, frame));

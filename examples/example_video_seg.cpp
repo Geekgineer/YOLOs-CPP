@@ -8,8 +8,10 @@
 #include <iostream>
 #include <chrono>
 #include <filesystem>
-#include "seg/YOLO-Seg.hpp"
+#include "yolos/tasks/segmentation.hpp"
 #include "utils.hpp"
+
+using namespace yolos::seg;
 
 int main(int argc, char* argv[]) {
     namespace fs = std::filesystem;
@@ -76,7 +78,7 @@ int main(int argc, char* argv[]) {
             std::vector<Segmentation> results = detector.segment(frame);
             
             // Draw segmentations
-            detector.drawSegmentationsAndBoxes(frame, results);
+            detector.drawSegmentations(frame, results);
             
             // Add frame info
             std::string frameInfo = "Frame: " + std::to_string(frameCount) + "/" + std::to_string(totalFrames) +

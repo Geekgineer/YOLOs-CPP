@@ -8,8 +8,10 @@
 #include <iostream>
 #include <chrono>
 #include <filesystem>
-#include "pose/YOLO-POSE.hpp"
+#include "yolos/tasks/pose.hpp"
 #include "utils.hpp"
+
+using namespace yolos::pose;
 
 int main(int argc, char* argv[]) {
     namespace fs = std::filesystem;
@@ -33,7 +35,7 @@ int main(int argc, char* argv[]) {
     std::cout << "🔄 Loading pose estimation model: " << modelPath << std::endl;
     
     try {
-        YOLOPOSEDetector detector(modelPath, labelsPath, useGPU);
+        YOLOPoseDetector detector(modelPath, labelsPath, useGPU);
         std::cout << "✅ Model loaded successfully!" << std::endl;
         
         // Open video file
@@ -73,10 +75,10 @@ int main(int argc, char* argv[]) {
             frameCount++;
             
             // Run pose detection
-            std::vector<Detection> detections = detector.detect(frame, 0.4f, 0.5f);
+            std::vector<PoseResult> detections = detector.detect(frame, 0.4f, 0.5f);
             
             // Draw pose keypoints
-            detector.drawBoundingBox(frame, detections);
+            detector.drawPoses(frame, detections);
             
             // Add frame info
             std::string frameInfo = "Frame: " + std::to_string(frameCount) + "/" + std::to_string(totalFrames) +

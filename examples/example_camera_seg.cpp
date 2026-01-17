@@ -7,8 +7,10 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <chrono>
-#include "seg/YOLO-Seg.hpp"
+#include "yolos/tasks/segmentation.hpp"
 #include "utils.hpp"
+
+using namespace yolos::seg;
 
 int main(int argc, char* argv[]) {
     // Default configuration
@@ -52,7 +54,7 @@ int main(int argc, char* argv[]) {
             
             frameCount++;
             std::vector<Segmentation> results = detector.segment(frame);
-            detector.drawSegmentationsAndBoxes(frame, results);
+            detector.drawSegmentations(frame, results);
             
             auto currentTime = std::chrono::high_resolution_clock::now();
             auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(currentTime - startTime);

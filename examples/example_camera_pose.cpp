@@ -7,8 +7,10 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <chrono>
-#include "pose/YOLO-POSE.hpp"
+#include "yolos/tasks/pose.hpp"
 #include "utils.hpp"
+
+using namespace yolos::pose;
 
 int main(int argc, char* argv[]) {
     std::string modelPath = "../../models/yolo11n-pose.onnx";
@@ -28,7 +30,7 @@ int main(int argc, char* argv[]) {
     std::cout << "🔄 Loading pose estimation model..." << std::endl;
     
     try {
-        YOLOPOSEDetector detector(modelPath, labelsPath, useGPU);
+        YOLOPoseDetector detector(modelPath, labelsPath, useGPU);
         std::cout << "✅ Model loaded!" << std::endl;
         
         cv::VideoCapture cap(cameraId);
@@ -48,8 +50,8 @@ int main(int argc, char* argv[]) {
             if (frame.empty()) break;
             
             frameCount++;
-            std::vector<Detection> detections = detector.detect(frame, 0.4f, 0.5f);
-            detector.drawBoundingBox(frame, detections);
+            std::vector<PoseResult> detections = detector.detect(frame, 0.4f, 0.5f);
+            detector.drawPoses(frame, detections);
             
             auto currentTime = std::chrono::high_resolution_clock::now();
             auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(currentTime - startTime);

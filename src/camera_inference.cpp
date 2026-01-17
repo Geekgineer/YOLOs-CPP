@@ -43,7 +43,7 @@
  * @note Ensure that the required model files and labels are present in the 
  * specified paths before running the application.
  *
- * Author: Abdalrahman M. Amer, www.linkedin.com/in/abdalrahman-m-amer
+ * Author: YOLOs-CPP Team, https://github.com/Geekgineer/YOLOs-CPP
  * Date: 29.09.2024
  */
 
@@ -60,7 +60,9 @@
 // #ifndef TIMING_MODE
 // #define TIMING_MODE
 // #endif
-#include "det/YOLO.hpp"
+#include "yolos/tasks/detection.hpp"
+
+using namespace yolos::det;
 
 
 // Include the bounded queue
@@ -139,7 +141,7 @@ int main(int argc, char* argv[])
     while (!stopFlag.load() && processedQueue.dequeue(item))
     {
         cv::Mat displayFrame = item.first;
-        detector.drawBoundingBoxMask(displayFrame, item.second);
+        detector.drawDetectionsWithMask(displayFrame, item.second);
 
         cv::imshow("Detections", displayFrame);
         if (cv::waitKey(1) == 'q')
@@ -156,8 +158,8 @@ int main(int argc, char* argv[])
         while (!stopFlag.load() && processedQueue.dequeue(item))
         {
             cv::Mat displayFrame = item.first;
-            // detector.drawBoundingBox(displayFrame, item.second);
-            detector.drawBoundingBoxMask(displayFrame, item.second);
+            // detector.drawDetections(displayFrame, item.second);
+            detector.drawDetectionsWithMask(displayFrame, item.second);
 
             // Display the frame
             cv::imshow("Detections", displayFrame);

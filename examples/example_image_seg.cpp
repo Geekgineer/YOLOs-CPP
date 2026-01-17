@@ -9,8 +9,10 @@
 #include <chrono>
 #include <filesystem>
 #include <vector>
-#include "seg/YOLO-Seg.hpp"
+#include "yolos/tasks/segmentation.hpp"
 #include "utils.hpp"
+
+using namespace yolos::seg;
 
 int main(int argc, char* argv[]) {
     namespace fs = std::filesystem;
@@ -87,7 +89,7 @@ int main(int argc, char* argv[]) {
             
             // Draw segmentations with boxes and masks
             cv::Mat resultImage = image.clone();
-            detector.drawSegmentationsAndBoxes(resultImage, results);
+            detector.drawSegmentations(resultImage, results);
             
             // Save output with timestamp
             std::string outputPath = utils::saveImage(resultImage, imgPath, outputDir);

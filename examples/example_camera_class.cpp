@@ -7,8 +7,10 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <chrono>
-#include "class/YOLOCLASS.hpp"
+#include "yolos/tasks/classification.hpp"
 #include "utils.hpp"
+
+using namespace yolos::cls;
 
 int main(int argc, char* argv[]) {
     std::string modelPath = "../../models/yolo11n-cls.onnx";
@@ -28,7 +30,7 @@ int main(int argc, char* argv[]) {
     std::cout << "🔄 Loading classification model..." << std::endl;
     
     try {
-        YOLOClassifier classifier(modelPath, labelsPath, useGPU, YOLOClassVersion::V11);
+        YOLOClassifier classifier(modelPath, labelsPath, useGPU);
         std::cout << "✅ Model loaded!" << std::endl;
         
         cv::VideoCapture cap(cameraId);

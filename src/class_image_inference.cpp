@@ -3,7 +3,9 @@
 #include <iostream>
 #include <string>
 
-#include "class/YOLOCLASS.hpp"
+#include "yolos/tasks/classification.hpp"
+
+using namespace yolos::cls;
 
 int main(int argc, char** argv){
     const std::string labelsPath = "../models/coco.names";     // detection labels; use proper labels for your model
@@ -13,8 +15,7 @@ int main(int argc, char** argv){
 
     // Init classifier
     bool useGPU = false;    
-    YOLOClassVersion ver = (versionArg == 11) ? YOLOClassVersion::V11 : YOLOClassVersion::V12;
-    YOLOClassifier classifier(modelPath, labelsPath, useGPU, ver);
+    YOLOClassifier classifier(modelPath, labelsPath, useGPU);
 
     // Load image
     cv::Mat image = cv::imread(imagePath);

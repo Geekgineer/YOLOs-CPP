@@ -8,8 +8,10 @@
 #include <iostream>
 #include <chrono>
 #include <filesystem>
-#include "class/YOLOCLASS.hpp"
+#include "yolos/tasks/classification.hpp"
 #include "utils.hpp"
+
+using namespace yolos::cls;
 
 int main(int argc, char* argv[]) {
     namespace fs = std::filesystem;
@@ -33,7 +35,7 @@ int main(int argc, char* argv[]) {
     std::cout << "🔄 Loading classification model: " << modelPath << std::endl;
     
     try {
-        YOLOClassifier classifier(modelPath, labelsPath, useGPU, YOLOClassVersion::V11);
+        YOLOClassifier classifier(modelPath, labelsPath, useGPU);
         std::cout << "✅ Model loaded successfully!" << std::endl;
         std::cout << "📐 Input shape: " << classifier.getInputShape() << std::endl;
         

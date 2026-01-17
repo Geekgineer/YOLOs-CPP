@@ -10,7 +10,7 @@
  * 2. Provide the model path and image folder or list of images as arguments.
  * 3. Run the executable to initiate batch object detection.
  *
- * Author: Abdalrahman M. Amer, www.linkedin.com/in/abdalrahman-m-amer
+ * Author: YOLOs-CPP Team, https://github.com/Geekgineer/YOLOs-CPP
  * Date: 29.09.2024
  */
 
@@ -20,7 +20,9 @@
 #include <chrono>
 #include <filesystem>
 #include <algorithm>
-#include "det/YOLO.hpp"
+#include "yolos/tasks/detection.hpp"
+
+using namespace yolos::det;
 
 int main(int argc, char* argv[]){
     namespace fs = std::filesystem;
@@ -93,26 +95,33 @@ int main(int argc, char* argv[]){
     bool isGPU = true; // Set to false for CPU processing
     YOLODetector detector(modelPath, labelsPath, isGPU);
 
+    // Process all images
+    std::vector<std::vector<Detection>> allResults;
+    allResults.reserve(images.size());
+
     auto start = std::chrono::high_resolution_clock::now();
-    for (const auto& img : images)
-        std::cout << "image size " << img.size() << std::endl;
-    std::vector<std::vector<Detection>> batchResults = detector.detect(images, 0.45f);
+    for(size_t i = 0; i < images.size(); ++i){
+        std::cout << "Processing image " << (i + 1) << "/" << images.size() 
+                  << " size: " << images[i].size() << std::endl;
+        std::vector<Detection> results = detector.detect(images[i], 0.45f);
+        allResults.push_back(results);
+    }
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                         std::chrono::high_resolution_clock::now() - start);
-    std::cout << "Batch detection completed in: " << duration.count() << " ms" << std::endl;
+    std::cout << "Detection completed in: " << duration.count() << " ms" << std::endl;
 
-    for(size_t i = 0; i < batchResults.size(); ++i){
+    for(size_t i = 0; i < allResults.size(); ++i){
         std::cout << "\nImage: " << imageFiles[i] << std::endl;
-        std::cout << "Number of detections: " << batchResults[i].size() << std::endl;
-        for(size_t j = 0; j < batchResults[i].size(); ++j){
-            const Detection& det = batchResults[i][j];
+        std::cout << "Number of detections: " << allResults[i].size() << std::endl;
+        for(size_t j = 0; j < allResults[i].size(); ++j){
+            const Detection& det = allResults[i][j];
             std::cout << "Detection " << j << ": Class=" << det.classId
                       << ", Confidence=" << det.conf
                       << ", Box=(" << det.box.x << "," << det.box.y
                       << "," << det.box.width << "," << det.box.height << ")" << std::endl;
         }
         // Draw bounding boxes on the image
-        detector.drawBoundingBox(images[i], batchResults[i]);
+        detector.drawDetections(images[i], allResults[i]);
         cv::imshow("Detections - " + std::to_string(i), images[i]);
     }
     cv::waitKey(0);
