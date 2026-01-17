@@ -60,6 +60,10 @@ onnxruntime*/
 *.swo
 *~
 
+# Cache files
+*.cache
+*.cache.*
+
 # Python
 __pycache__/
 *.py[cod]
@@ -93,6 +97,9 @@ desktop.ini
 *.zip
 *.rar
 *.7z
+
+# Release assets (large model files - use GitHub Releases instead)
+release_assets/
 
 # Environment files
 .env
