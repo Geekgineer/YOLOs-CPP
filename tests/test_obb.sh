@@ -15,6 +15,10 @@ print_header "YOLOs-CPP OBB Test"
 cd "$SCRIPT_DIR/obb"
 echo "Working directory: $(pwd)"
 
+# Ensure test images exist
+print_header "Checking Test Images"
+download_test_images "$(pwd)/data/images" "obb"
+
 # Install uv and dependencies
 print_header "Installing Dependencies"
 install_uv

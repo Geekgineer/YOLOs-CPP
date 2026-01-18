@@ -15,6 +15,10 @@ print_header "YOLOs-CPP Pose Test"
 cd "$SCRIPT_DIR/pose"
 echo "Working directory: $(pwd)"
 
+# Ensure test images exist
+print_header "Checking Test Images"
+download_test_images "$(pwd)/data/images" "pose"
+
 # Install uv and dependencies
 print_header "Installing Dependencies"
 install_uv

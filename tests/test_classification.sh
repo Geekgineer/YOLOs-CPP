@@ -15,6 +15,10 @@ print_header "YOLOs-CPP Classification Test"
 cd "$SCRIPT_DIR/classification"
 echo "Working directory: $(pwd)"
 
+# Ensure test images exist
+print_header "Checking Test Images"
+download_test_images "$(pwd)/data/images" "classification"
+
 # Install uv and dependencies
 print_header "Installing Dependencies"
 install_uv

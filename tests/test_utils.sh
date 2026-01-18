@@ -153,3 +153,65 @@ print_success() {
 print_error() {
     echo -e "${RED}✗ $1${NC}"
 }
+
+# ============================================================================
+# Download test images if missing
+# Downloads sample images from Ultralytics assets for testing
+# ============================================================================
+download_test_images() {
+    local images_dir="$1"
+    local test_type="$2"  # detection, pose, obb, segmentation, classification
+    
+    mkdir -p "$images_dir"
+    cd "$images_dir" || return 1
+    
+    # Remove any .REMOVED.git-id placeholder files
+    rm -f *.REMOVED.git-id 2>/dev/null
+    
+    # Check if we have valid images (not placeholder files)
+    local valid_images=$(find . -maxdepth 1 -type f \( -name "*.jpg" -o -name "*.png" -o -name "*.jpeg" \) ! -name "*.REMOVED*" 2>/dev/null | wc -l)
+    
+    if [ "$valid_images" -gt 0 ]; then
+        echo -e "${GREEN}Found $valid_images existing test image(s)${NC}"
+        return 0
+    fi
+    
+    echo -e "${YELLOW}Downloading test images for $test_type...${NC}"
+    
+    # Ultralytics sample images (public domain / freely available)
+    case "$test_type" in
+        "detection"|"segmentation")
+            # Standard COCO-style test images
+            curl -sL "https://ultralytics.com/images/bus.jpg" -o "bus.jpg" 2>/dev/null || true
+            curl -sL "https://ultralytics.com/images/zidane.jpg" -o "zidane.jpg" 2>/dev/null || true
+            ;;
+        "pose")
+            # Images with people for pose estimation
+            curl -sL "https://ultralytics.com/images/zidane.jpg" -o "test1.jpg" 2>/dev/null || true
+            curl -sL "https://ultralytics.com/images/bus.jpg" -o "test2.jpg" 2>/dev/null || true
+            ;;
+        "obb")
+            # Aerial/rotated images for OBB
+            curl -sL "https://ultralytics.com/images/bus.jpg" -o "image.png" 2>/dev/null || true
+            ;;
+        "classification")
+            # Any image works for classification
+            curl -sL "https://ultralytics.com/images/bus.jpg" -o "bus.jpg" 2>/dev/null || true
+            ;;
+        *)
+            echo -e "${YELLOW}Unknown test type: $test_type${NC}"
+            curl -sL "https://ultralytics.com/images/bus.jpg" -o "test.jpg" 2>/dev/null || true
+            ;;
+    esac
+    
+    # Verify we have images
+    valid_images=$(find . -maxdepth 1 -type f \( -name "*.jpg" -o -name "*.png" -o -name "*.jpeg" \) ! -name "*.REMOVED*" 2>/dev/null | wc -l)
+    
+    if [ "$valid_images" -eq 0 ]; then
+        echo -e "${RED}ERROR: Failed to download test images${NC}"
+        return 1
+    fi
+    
+    echo -e "${GREEN}Downloaded $valid_images test image(s)${NC}"
+    return 0
+}
