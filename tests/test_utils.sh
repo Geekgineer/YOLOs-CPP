@@ -161,18 +161,20 @@ print_error() {
 download_test_images() {
     local images_dir="$1"
     local test_type="$2"  # detection, pose, obb, segmentation, classification
+    local original_dir="$(pwd)"
     
     mkdir -p "$images_dir"
     cd "$images_dir" || return 1
     
     # Remove any .REMOVED.git-id placeholder files
-    rm -f *.REMOVED.git-id 2>/dev/null
+    rm -f *.REMOVED.git-id 2>/dev/null || true
     
     # Check if we have valid images (not placeholder files)
     local valid_images=$(find . -maxdepth 1 -type f \( -name "*.jpg" -o -name "*.png" -o -name "*.jpeg" \) ! -name "*.REMOVED*" 2>/dev/null | wc -l)
     
     if [ "$valid_images" -gt 0 ]; then
         echo -e "${GREEN}Found $valid_images existing test image(s)${NC}"
+        cd "$original_dir"
         return 0
     fi
     
@@ -206,6 +208,8 @@ download_test_images() {
     
     # Verify we have images
     valid_images=$(find . -maxdepth 1 -type f \( -name "*.jpg" -o -name "*.png" -o -name "*.jpeg" \) ! -name "*.REMOVED*" 2>/dev/null | wc -l)
+    
+    cd "$original_dir"
     
     if [ "$valid_images" -eq 0 ]; then
         echo -e "${RED}ERROR: Failed to download test images${NC}"
