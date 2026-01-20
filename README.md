@@ -28,6 +28,22 @@
 
 ---
 
+## 📰 Latest News
+
+* **[2026.01.22]** ROS 2 integration released. [ros2_yolos_cpp](https://github.com/Geekgineer/ros2_yolos_cpp)
+* **[2026.01.18]** Production-ready v1.0.0 released. [Watch video](https://www.youtube.com/watch?v=Ax5vaYJ-mVQ)
+* **[2025.05.15]** Classification support added.
+* **[2025.04.04]** [Depths-CPP](https://github.com/Geekgineer/Depths-CPP) - New project for real-time metric depth estimation.
+* **[2025.03.16]** Pose estimation support added.
+* **[2025.02.19]** YOLOv12 support for object detection.
+* **[2025.02.11]** Oriented bounding box (OBB) format support added.
+* **[2025.01.29]** YOLOv9 support for object detection.
+* **[2025.01.26]** Segmentation support for YOLOv9.
+* **[2025.01.26]** Segmentation support for YOLOv8 and YOLOv11 with quantized models.
+* **[2024.10.23]** Initial release v0.0.1 with object detection support.
+
+---
+
 ## Why YOLOs-CPP?
 
 **YOLOs-CPP** is a production-grade inference engine that brings the entire YOLO ecosystem to C++. Unlike scattered implementations, YOLOs-CPP provides a **unified, consistent API** across all YOLO versions and tasks.
