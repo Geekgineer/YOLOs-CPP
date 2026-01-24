@@ -30,6 +30,7 @@
 
 ## 📰 Latest News
 
+* **[2026.01.22]** CPP Implementation of popular MOT trackers released. [motcpp](https://github.com/Geekgineer/motcpp)
 * **[2026.01.22]** ROS 2 integration released. [ros2_yolos_cpp](https://github.com/Geekgineer/ros2_yolos_cpp)
 * **[2026.01.18]** Production-ready v1.0.0 released. [Watch video](https://www.youtube.com/watch?v=Ax5vaYJ-mVQ)
 * **[2025.05.15]** Classification support added.
