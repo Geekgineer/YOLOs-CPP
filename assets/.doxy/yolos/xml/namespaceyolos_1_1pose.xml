@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="namespaceyolos_1_1pose" kind="namespace" language="C++">
+    <compoundname>yolos::pose</compoundname>
+    <innerclass refid="structyolos_1_1pose_1_1PoseResult" prot="public">yolos::pose::PoseResult</innerclass>
+    <innerclass refid="classyolos_1_1pose_1_1YOLOPoseDetector" prot="public">yolos::pose::YOLOPoseDetector</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/yolos/tasks/pose.hpp" line="29" column="14"/>
+  </compounddef>
+</doxygen>

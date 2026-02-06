@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="structyolos_1_1KeyPoint" kind="struct" language="C++" prot="public">
+    <compoundname>yolos::KeyPoint</compoundname>
+    <includes refid="types_8hpp" local="no">types.hpp</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structyolos_1_1KeyPoint_1a30f19e6f1820d7f35d863acdc7b98ed8" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float yolos::KeyPoint::x</definition>
+        <argsstring></argsstring>
+        <name>x</name>
+        <initializer>{0.0f}</initializer>
+        <briefdescription>
+<para>X-coordinate. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="81" column="11" bodyfile="include/yolos/core/types.hpp" bodystart="81" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1KeyPoint_1af1867e7c7f6318dc2ad5346527f096e9" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float yolos::KeyPoint::y</definition>
+        <argsstring></argsstring>
+        <name>y</name>
+        <initializer>{0.0f}</initializer>
+        <briefdescription>
+<para>Y-coordinate. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="82" column="11" bodyfile="include/yolos/core/types.hpp" bodystart="82" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1KeyPoint_1a1662158f8886fb6e9464f2bdaf3fc5da" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float yolos::KeyPoint::confidence</definition>
+        <argsstring></argsstring>
+        <name>confidence</name>
+        <initializer>{0.0f}</initializer>
+        <briefdescription>
+<para>Confidence score. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="83" column="11" bodyfile="include/yolos/core/types.hpp" bodystart="83" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structyolos_1_1KeyPoint_1a4e0608cb0fa9a791717a13ed8b56cbeb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>yolos::KeyPoint::KeyPoint</definition>
+        <argsstring>()=default</argsstring>
+        <name>KeyPoint</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="85" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="structyolos_1_1KeyPoint_1a82a979277c2b17aaa9856256d25f4245" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>yolos::KeyPoint::KeyPoint</definition>
+        <argsstring>(float x_, float y_, float conf_=0.0f)</argsstring>
+        <name>KeyPoint</name>
+        <param>
+          <type>float</type>
+          <declname>x_</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y_</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>conf_</declname>
+          <defval>0.0f</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="87" column="5" bodyfile="include/yolos/core/types.hpp" bodystart="87" bodyend="88"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/yolos/core/types.hpp" line="80" column="15" bodyfile="include/yolos/core/types.hpp" bodystart="80" bodyend="89"/>
+    <listofallmembers>
+      <member refid="structyolos_1_1KeyPoint_1a1662158f8886fb6e9464f2bdaf3fc5da" prot="public" virt="non-virtual"><scope>yolos::KeyPoint</scope><name>confidence</name></member>
+      <member refid="structyolos_1_1KeyPoint_1a4e0608cb0fa9a791717a13ed8b56cbeb" prot="public" virt="non-virtual"><scope>yolos::KeyPoint</scope><name>KeyPoint</name></member>
+      <member refid="structyolos_1_1KeyPoint_1a82a979277c2b17aaa9856256d25f4245" prot="public" virt="non-virtual"><scope>yolos::KeyPoint</scope><name>KeyPoint</name></member>
+      <member refid="structyolos_1_1KeyPoint_1a30f19e6f1820d7f35d863acdc7b98ed8" prot="public" virt="non-virtual"><scope>yolos::KeyPoint</scope><name>x</name></member>
+      <member refid="structyolos_1_1KeyPoint_1af1867e7c7f6318dc2ad5346527f096e9" prot="public" virt="non-virtual"><scope>yolos::KeyPoint</scope><name>y</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

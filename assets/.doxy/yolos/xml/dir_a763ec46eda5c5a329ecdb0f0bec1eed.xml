@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="dir_a763ec46eda5c5a329ecdb0f0bec1eed" kind="dir">
+    <compoundname>include/yolos/core</compoundname>
+    <innerfile refid="drawing_8hpp">drawing.hpp</innerfile>
+    <innerfile refid="nms_8hpp">nms.hpp</innerfile>
+    <innerfile refid="preprocessing_8hpp">preprocessing.hpp</innerfile>
+    <innerfile refid="session__base_8hpp">session_base.hpp</innerfile>
+    <innerfile refid="types_8hpp">types.hpp</innerfile>
+    <innerfile refid="utils_8hpp">utils.hpp</innerfile>
+    <innerfile refid="version_8hpp">version.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/yolos/core/"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classyolos_1_1det_1_1YOLOv7Detector" kind="class" language="C++" prot="public">
+    <compoundname>yolos::det::YOLOv7Detector</compoundname>
+    <basecompoundref refid="classyolos_1_1det_1_1YOLODetector" prot="public" virt="non-virtual">yolos::det::YOLODetector</basecompoundref>
+    <includes refid="detection_8hpp" local="no">detection.hpp</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classyolos_1_1det_1_1YOLOv7Detector_1a11cc706b7b6b64339c66f419f7c5e93e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>yolos::det::YOLOv7Detector::YOLOv7Detector</definition>
+        <argsstring>(const std::string &amp;modelPath, const std::string &amp;labelsPath, bool useGPU=false)</argsstring>
+        <name>YOLOv7Detector</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>modelPath</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>labelsPath</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>useGPU</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="445" column="5" bodyfile="include/yolos/tasks/detection.hpp" bodystart="445" bodyend="446"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>YOLOv7 detector (forces V7 postprocessing) </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>yolos::det::YOLODetector</label>
+        <link refid="classyolos_1_1det_1_1YOLODetector"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>yolos::OrtSessionBase</label>
+        <link refid="classyolos_1_1OrtSessionBase"/>
+      </node>
+      <node id="1">
+        <label>yolos::det::YOLOv7Detector</label>
+        <link refid="classyolos_1_1det_1_1YOLOv7Detector"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>yolos::det::YOLODetector</label>
+        <link refid="classyolos_1_1det_1_1YOLODetector"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+        <childnode refid="4" relation="usage">
+          <edgelabel>buffer_</edgelabel>
+        </childnode>
+      </node>
+      <node id="4">
+        <label>yolos::preprocessing::InferenceBuffer</label>
+        <link refid="structyolos_1_1preprocessing_1_1InferenceBuffer"/>
+      </node>
+      <node id="3">
+        <label>yolos::OrtSessionBase</label>
+        <link refid="classyolos_1_1OrtSessionBase"/>
+      </node>
+      <node id="1">
+        <label>yolos::det::YOLOv7Detector</label>
+        <link refid="classyolos_1_1det_1_1YOLOv7Detector"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="include/yolos/tasks/detection.hpp" line="443" column="41" bodyfile="include/yolos/tasks/detection.hpp" bodystart="443" bodyend="447"/>
+    <listofallmembers>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a095865ebce999d9bd014c08ee34e41ab" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>buffer_</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a13bf703380daecb4d3157afc2849ac75" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>classColors_</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1ad84ca7c01ae1d46d47b1e2da08b64b56" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>classNames_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a4d9b7b6b9923511d7a4df70dc2276581" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>createInputTensor</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a8398c7dc31aefdda49eb026e8847e591" prot="public" virt="virtual"><scope>yolos::det::YOLOv7Detector</scope><name>detect</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1aba727742e9e518a2eea3903dc4fc8380" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>detectVersion</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1aa6698a2700f0f81c7779e7d1b8ed7fdd" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>device_</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a05b1fa0932b5f99d5ed42225c32afa02" prot="public" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>drawDetections</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a327075e0788a255e272e91133c9c8e7b" prot="public" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>drawDetectionsWithMask</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a1c73ea2faea65b4cbde35cc805f1c899" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>env_</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a483005c45462b83ab073c5f6e8ec7f52" prot="public" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>getClassColors</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1ab54b697d497f477590cefd90f1ffdece" prot="public" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>getClassNames</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a11510c00f9adb9fbe4fe1c1fee79f02a" prot="public" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>getDevice</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a4be1237b1a62b4a50a817ce6ef7837f1" prot="public" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>getInputShape</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a36cee1b35ce518f6bba0c7901ad0f596" prot="public" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>getNumInputNodes</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a30a8722c68a2fa1ab0a0ab665afd19d3" prot="public" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>getNumOutputNodes</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a8b263597883f18d2f66fd3f0f598eb9f" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>inputNameAllocs_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a8c46588054da42098c9d5ee54772ee14" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>inputNames_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1abfbb75048b68bfadcfbb5fd29c9be55d" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>inputShape_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a875aafb35cc44916e3b5e153cb2ea404" prot="public" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>isDynamicBatchSize</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ace6a50df18afdc8571368803d9e7dd34" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>isDynamicBatchSize_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1aae5a5a958fabccb91ae9e8d6c394b43a" prot="public" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>isDynamicInputShape</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a15be4c2ddac39ccc90a1170fbae15786" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>isDynamicInputShape_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a424511d525512f4c42733ae1dbfd70ae" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>numInputNodes_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a8397d65ebebd090a4f5079ab1ea93f21" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>numOutputNodes_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ac40efe124490a78e5df4d108a5f19f5c" prot="public" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>operator=</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a97f3227d2f90aed9a79a618dc31c9ffa" prot="public" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>operator=</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ac7dda465eadfec6738e474a07a1c2e4c" prot="public" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>OrtSessionBase</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a41661c634079de533e5ddf7ca5b8f5c6" prot="public" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>OrtSessionBase</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ae64770ff5188681dbe8d6567ccdfbbb6" prot="public" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>OrtSessionBase</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a5ea17351450cfcf4c286138657cd5dcb" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>outputNameAllocs_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a70896c168ab6762c3bf96b60cf77c88b" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>outputNames_</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a2cb429caf43cfff7944fb9827c61288c" prot="protected" virt="virtual"><scope>yolos::det::YOLOv7Detector</scope><name>postprocess</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1ac1ca5501d82edf9ce783bfca6bfb3c18" prot="protected" virt="virtual"><scope>yolos::det::YOLOv7Detector</scope><name>postprocessNAS</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a82dcad4ce6768a59a8b12dd59e9966a6" prot="protected" virt="virtual"><scope>yolos::det::YOLOv7Detector</scope><name>postprocessStandard</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1af259ac99b09801575716d9ce19ad0978" prot="protected" virt="virtual"><scope>yolos::det::YOLOv7Detector</scope><name>postprocessV10</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a344a04c5ea0bb5d32bd83a0328bbe17c" prot="protected" virt="virtual"><scope>yolos::det::YOLOv7Detector</scope><name>postprocessV7</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a8318858109b6bfb9c7ee61b96b1c70c6" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>runInference</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a0066a883faf4551f54dffd2b4a3495ba" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>session_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1aedfa3da5fe054f0e2b3b5df4acb768bd" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>sessionOptions_</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a9b2408b9f750ee5ee510472af2360985" prot="protected" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>version_</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a3b73f3d2ef6323fbadf1b6e3f18a74e4" prot="public" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>YOLODetector</name></member>
+      <member refid="classyolos_1_1det_1_1YOLOv7Detector_1a11cc706b7b6b64339c66f419f7c5e93e" prot="public" virt="non-virtual"><scope>yolos::det::YOLOv7Detector</scope><name>YOLOv7Detector</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ad8ee6fae9a5de2944e6e1d79ec26c78e" prot="public" virt="virtual"><scope>yolos::det::YOLOv7Detector</scope><name>~OrtSessionBase</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a2a29169871bb49965fd23539a61e3225" prot="public" virt="virtual"><scope>yolos::det::YOLOv7Detector</scope><name>~YOLODetector</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

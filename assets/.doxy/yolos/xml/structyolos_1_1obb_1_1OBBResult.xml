@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="structyolos_1_1obb_1_1OBBResult" kind="struct" language="C++" prot="public">
+    <compoundname>yolos::obb::OBBResult</compoundname>
+    <includes refid="obb_8hpp" local="no">obb.hpp</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structyolos_1_1obb_1_1OBBResult_1ae46edd89a5f7a2ac7cd6cabefe46248e" prot="public" static="no" mutable="no">
+        <type><ref refid="structyolos_1_1OrientedBoundingBox" kindref="compound">OrientedBoundingBox</ref></type>
+        <definition>OrientedBoundingBox yolos::obb::OBBResult::box</definition>
+        <argsstring></argsstring>
+        <name>box</name>
+        <briefdescription>
+<para>Oriented bounding box (center-based with angle) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/obb.hpp" line="41" column="25" bodyfile="include/yolos/tasks/obb.hpp" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1obb_1_1OBBResult_1aa92fe58e61f3a4cb65f3460b95e6cb59" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float yolos::obb::OBBResult::conf</definition>
+        <argsstring></argsstring>
+        <name>conf</name>
+        <initializer>{0.0f}</initializer>
+        <briefdescription>
+<para>Confidence score. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/obb.hpp" line="42" column="11" bodyfile="include/yolos/tasks/obb.hpp" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1obb_1_1OBBResult_1af22ea6fdf6af548d1cf7c95cc4676a0d" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int yolos::obb::OBBResult::classId</definition>
+        <argsstring></argsstring>
+        <name>classId</name>
+        <initializer>{-1}</initializer>
+        <briefdescription>
+<para>Class ID. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/obb.hpp" line="43" column="9" bodyfile="include/yolos/tasks/obb.hpp" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structyolos_1_1obb_1_1OBBResult_1a1ca960e75ebaad72ecba6f4fbab9e625" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>yolos::obb::OBBResult::OBBResult</definition>
+        <argsstring>()=default</argsstring>
+        <name>OBBResult</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/obb.hpp" line="45" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="structyolos_1_1obb_1_1OBBResult_1a1d3ff1548c382a28429ccfd216cf135b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>yolos::obb::OBBResult::OBBResult</definition>
+        <argsstring>(const OrientedBoundingBox &amp;box_, float conf_, int classId_)</argsstring>
+        <name>OBBResult</name>
+        <param>
+          <type>const <ref refid="structyolos_1_1OrientedBoundingBox" kindref="compound">OrientedBoundingBox</ref> &amp;</type>
+          <declname>box_</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>conf_</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>classId_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/obb.hpp" line="46" column="5" bodyfile="include/yolos/tasks/obb.hpp" bodystart="46" bodyend="47"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>OBB detection result containing oriented bounding box, confidence, and class ID. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="2">
+        <label>yolos::OrientedBoundingBox</label>
+        <link refid="structyolos_1_1OrientedBoundingBox"/>
+      </node>
+      <node id="1">
+        <label>yolos::obb::OBBResult</label>
+        <link refid="structyolos_1_1obb_1_1OBBResult"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>box</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="include/yolos/tasks/obb.hpp" line="40" column="16" bodyfile="include/yolos/tasks/obb.hpp" bodystart="40" bodyend="48"/>
+    <listofallmembers>
+      <member refid="structyolos_1_1obb_1_1OBBResult_1ae46edd89a5f7a2ac7cd6cabefe46248e" prot="public" virt="non-virtual"><scope>yolos::obb::OBBResult</scope><name>box</name></member>
+      <member refid="structyolos_1_1obb_1_1OBBResult_1af22ea6fdf6af548d1cf7c95cc4676a0d" prot="public" virt="non-virtual"><scope>yolos::obb::OBBResult</scope><name>classId</name></member>
+      <member refid="structyolos_1_1obb_1_1OBBResult_1aa92fe58e61f3a4cb65f3460b95e6cb59" prot="public" virt="non-virtual"><scope>yolos::obb::OBBResult</scope><name>conf</name></member>
+      <member refid="structyolos_1_1obb_1_1OBBResult_1a1ca960e75ebaad72ecba6f4fbab9e625" prot="public" virt="non-virtual"><scope>yolos::obb::OBBResult</scope><name>OBBResult</name></member>
+      <member refid="structyolos_1_1obb_1_1OBBResult_1a1d3ff1548c382a28429ccfd216cf135b" prot="public" virt="non-virtual"><scope>yolos::obb::OBBResult</scope><name>OBBResult</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

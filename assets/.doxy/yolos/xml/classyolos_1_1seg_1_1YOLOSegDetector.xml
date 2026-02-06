@@ -1,0 +1,454 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classyolos_1_1seg_1_1YOLOSegDetector" kind="class" language="C++" prot="public">
+    <compoundname>yolos::seg::YOLOSegDetector</compoundname>
+    <basecompoundref refid="classyolos_1_1OrtSessionBase" prot="public" virt="non-virtual">yolos::OrtSessionBase</basecompoundref>
+    <includes refid="segmentation_8hpp" local="no">segmentation.hpp</includes>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classyolos_1_1seg_1_1YOLOSegDetector_1aa0a54a640840066aee8518edc0b661c5" prot="protected" static="no" mutable="no">
+        <type>std::vector&lt; std::string &gt;</type>
+        <definition>std::vector&lt;std::string&gt; yolos::seg::YOLOSegDetector::classNames_</definition>
+        <argsstring></argsstring>
+        <name>classNames_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/segmentation.hpp" line="147" column="17" bodyfile="include/yolos/tasks/segmentation.hpp" bodystart="147" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classyolos_1_1seg_1_1YOLOSegDetector_1a1685bb2e8040342f183f5f648d57d500" prot="protected" static="no" mutable="no">
+        <type>std::vector&lt; cv::Scalar &gt;</type>
+        <definition>std::vector&lt;cv::Scalar&gt; yolos::seg::YOLOSegDetector::classColors_</definition>
+        <argsstring></argsstring>
+        <name>classColors_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/segmentation.hpp" line="148" column="17" bodyfile="include/yolos/tasks/segmentation.hpp" bodystart="148" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classyolos_1_1seg_1_1YOLOSegDetector_1a983bbf1421c64c5fddb0a295cc9fbcc8" prot="protected" static="no" mutable="yes">
+        <type><ref refid="structyolos_1_1preprocessing_1_1InferenceBuffer" kindref="compound">preprocessing::InferenceBuffer</ref></type>
+        <definition>preprocessing::InferenceBuffer yolos::seg::YOLOSegDetector::buffer_</definition>
+        <argsstring></argsstring>
+        <name>buffer_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/segmentation.hpp" line="152" column="44" bodyfile="include/yolos/tasks/segmentation.hpp" bodystart="152" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-static-attrib">
+      <memberdef kind="variable" id="classyolos_1_1seg_1_1YOLOSegDetector_1a2efae35443615e398936233f2d2020c0" prot="protected" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr float</type>
+        <definition>constexpr float yolos::seg::YOLOSegDetector::MASK_THRESHOLD</definition>
+        <argsstring></argsstring>
+        <name>MASK_THRESHOLD</name>
+        <initializer>= 0.5f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/segmentation.hpp" line="149" column="28" bodyfile="include/yolos/tasks/segmentation.hpp" bodystart="149" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classyolos_1_1seg_1_1YOLOSegDetector_1a9cb8b66fb226ff75c649a1bfc04fa069" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>yolos::seg::YOLOSegDetector::YOLOSegDetector</definition>
+        <argsstring>(const std::string &amp;modelPath, const std::string &amp;labelsPath, bool useGPU=false)</argsstring>
+        <name>YOLOSegDetector</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>modelPath</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>labelsPath</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>useGPU</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>Constructor. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>modelPath</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Path to the ONNX model file </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>labelsPath</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Path to the class names file </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>useGPU</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Whether to use GPU for inference </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/segmentation.hpp" line="57" column="5" bodyfile="include/yolos/tasks/segmentation.hpp" bodystart="57" bodyend="72"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1seg_1_1YOLOSegDetector_1af9eb70cc2dfbdc426cb682414085274b" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual yolos::seg::YOLOSegDetector::~YOLOSegDetector</definition>
+        <argsstring>()=default</argsstring>
+        <name>~YOLOSegDetector</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/segmentation.hpp" line="74" column="13"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1seg_1_1YOLOSegDetector_1a73f142e25c170b01f9b5d411221ba0f6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; <ref refid="structyolos_1_1seg_1_1Segmentation" kindref="compound">Segmentation</ref> &gt;</type>
+        <definition>std::vector&lt;Segmentation&gt; yolos::seg::YOLOSegDetector::segment</definition>
+        <argsstring>(const cv::Mat &amp;image, float confThreshold=0.4f, float iouThreshold=0.45f)</argsstring>
+        <name>segment</name>
+        <param>
+          <type>const cv::Mat &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>confThreshold</declname>
+          <defval>0.4f</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>iouThreshold</declname>
+          <defval>0.45f</defval>
+        </param>
+        <briefdescription>
+<para>Run segmentation on an image (optimized with buffer reuse) </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>image</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Input image (BGR format) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>confThreshold</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Confidence threshold </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>iouThreshold</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IoU threshold for NMS </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Vector of segmentation results </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/segmentation.hpp" line="81" column="17" bodyfile="include/yolos/tasks/segmentation.hpp" bodystart="81" bodyend="97"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1seg_1_1YOLOSegDetector_1ac3c35b765b60dc4d7e1bab11198b61ca" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::seg::YOLOSegDetector::drawSegmentations</definition>
+        <argsstring>(cv::Mat &amp;image, const std::vector&lt; Segmentation &gt; &amp;results, float maskAlpha=0.5f) const</argsstring>
+        <name>drawSegmentations</name>
+        <param>
+          <type>cv::Mat &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; <ref refid="structyolos_1_1seg_1_1Segmentation" kindref="compound">Segmentation</ref> &gt; &amp;</type>
+          <declname>results</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>maskAlpha</declname>
+          <defval>0.5f</defval>
+        </param>
+        <briefdescription>
+<para>Draw segmentations with boxes and labels on an image. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>image</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Image to draw on </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>results</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector of segmentation results </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>maskAlpha</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Mask transparency (0-1) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/segmentation.hpp" line="103" column="10" bodyfile="include/yolos/tasks/segmentation.hpp" bodystart="103" bodyend="123"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1seg_1_1YOLOSegDetector_1ae2c2c352e58f2edbded0cc96e79aaae8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::seg::YOLOSegDetector::drawMasksOnly</definition>
+        <argsstring>(cv::Mat &amp;image, const std::vector&lt; Segmentation &gt; &amp;results, float maskAlpha=0.5f) const</argsstring>
+        <name>drawMasksOnly</name>
+        <param>
+          <type>cv::Mat &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; <ref refid="structyolos_1_1seg_1_1Segmentation" kindref="compound">Segmentation</ref> &gt; &amp;</type>
+          <declname>results</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>maskAlpha</declname>
+          <defval>0.5f</defval>
+        </param>
+        <briefdescription>
+<para>Draw only segmentation masks (no boxes) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/segmentation.hpp" line="126" column="10" bodyfile="include/yolos/tasks/segmentation.hpp" bodystart="126" bodyend="138"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1seg_1_1YOLOSegDetector_1ab571fbf73b91ee8e1e407e88e37ada64" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const std::vector&lt; std::string &gt; &amp;</type>
+        <definition>const std::vector&lt;std::string&gt;&amp; yolos::seg::YOLOSegDetector::getClassNames</definition>
+        <argsstring>() const</argsstring>
+        <name>getClassNames</name>
+        <briefdescription>
+<para>Get class names. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/segmentation.hpp" line="141" column="24" bodyfile="include/yolos/tasks/segmentation.hpp" bodystart="141" bodyend="141"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1seg_1_1YOLOSegDetector_1a8f3b701bc19f665137d3fca7f9554ad7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const std::vector&lt; cv::Scalar &gt; &amp;</type>
+        <definition>const std::vector&lt;cv::Scalar&gt;&amp; yolos::seg::YOLOSegDetector::getClassColors</definition>
+        <argsstring>() const</argsstring>
+        <name>getClassColors</name>
+        <briefdescription>
+<para>Get class colors. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/segmentation.hpp" line="144" column="24" bodyfile="include/yolos/tasks/segmentation.hpp" bodystart="144" bodyend="144"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classyolos_1_1seg_1_1YOLOSegDetector_1a1b567b6854552b9743560129ab5ebea1" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; <ref refid="structyolos_1_1seg_1_1Segmentation" kindref="compound">Segmentation</ref> &gt;</type>
+        <definition>std::vector&lt;Segmentation&gt; yolos::seg::YOLOSegDetector::postprocess</definition>
+        <argsstring>(const cv::Size &amp;originalSize, const cv::Size &amp;letterboxSize, const std::vector&lt; Ort::Value &gt; &amp;outputTensors, float confThreshold, float iouThreshold)</argsstring>
+        <name>postprocess</name>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>originalSize</declname>
+        </param>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>letterboxSize</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; Ort::Value &gt; &amp;</type>
+          <declname>outputTensors</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>confThreshold</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>iouThreshold</declname>
+        </param>
+        <briefdescription>
+<para>Postprocess segmentation outputs. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/segmentation.hpp" line="155" column="17" bodyfile="include/yolos/tasks/segmentation.hpp" bodystart="155" bodyend="329"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1seg_1_1YOLOSegDetector_1a207814e812df2f586abf6df7fb43ef26" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; <ref refid="structyolos_1_1seg_1_1Segmentation" kindref="compound">Segmentation</ref> &gt;</type>
+        <definition>std::vector&lt;Segmentation&gt; yolos::seg::YOLOSegDetector::postprocessV26</definition>
+        <argsstring>(const cv::Size &amp;originalSize, const cv::Size &amp;letterboxSize, const float *output0, const float *output1, const std::vector&lt; int64_t &gt; &amp;shape0, const std::vector&lt; int64_t &gt; &amp;shape1, float confThreshold)</argsstring>
+        <name>postprocessV26</name>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>originalSize</declname>
+        </param>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>letterboxSize</declname>
+        </param>
+        <param>
+          <type>const float *</type>
+          <declname>output0</declname>
+        </param>
+        <param>
+          <type>const float *</type>
+          <declname>output1</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; int64_t &gt; &amp;</type>
+          <declname>shape0</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; int64_t &gt; &amp;</type>
+          <declname>shape1</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>confThreshold</declname>
+        </param>
+        <briefdescription>
+<para>Postprocess YOLO26-seg format outputs (end-to-end, no NMS needed) Output0 shape: [1, num_detections, 38] where 38 = 4 (x1,y1,x2,y2) + 1 (conf) + 1 (class_id) + 32 (mask_coeffs) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/segmentation.hpp" line="333" column="17" bodyfile="include/yolos/tasks/segmentation.hpp" bodystart="333" bodyend="448"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>YOLO segmentation detector with mask prediction. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>yolos::OrtSessionBase</label>
+        <link refid="classyolos_1_1OrtSessionBase"/>
+      </node>
+      <node id="1">
+        <label>yolos::seg::YOLOSegDetector</label>
+        <link refid="classyolos_1_1seg_1_1YOLOSegDetector"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="3">
+        <label>yolos::preprocessing::InferenceBuffer</label>
+        <link refid="structyolos_1_1preprocessing_1_1InferenceBuffer"/>
+      </node>
+      <node id="2">
+        <label>yolos::OrtSessionBase</label>
+        <link refid="classyolos_1_1OrtSessionBase"/>
+      </node>
+      <node id="1">
+        <label>yolos::seg::YOLOSegDetector</label>
+        <link refid="classyolos_1_1seg_1_1YOLOSegDetector"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>buffer_</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="include/yolos/tasks/segmentation.hpp" line="51" column="44" bodyfile="include/yolos/tasks/segmentation.hpp" bodystart="51" bodyend="449"/>
+    <listofallmembers>
+      <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1a983bbf1421c64c5fddb0a295cc9fbcc8" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>buffer_</name></member>
+      <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1a1685bb2e8040342f183f5f648d57d500" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>classColors_</name></member>
+      <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1aa0a54a640840066aee8518edc0b661c5" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>classNames_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a4d9b7b6b9923511d7a4df70dc2276581" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>createInputTensor</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1aa6698a2700f0f81c7779e7d1b8ed7fdd" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>device_</name></member>
+      <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1ae2c2c352e58f2edbded0cc96e79aaae8" prot="public" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>drawMasksOnly</name></member>
+      <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1ac3c35b765b60dc4d7e1bab11198b61ca" prot="public" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>drawSegmentations</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a1c73ea2faea65b4cbde35cc805f1c899" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>env_</name></member>
+      <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1a8f3b701bc19f665137d3fca7f9554ad7" prot="public" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>getClassColors</name></member>
+      <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1ab571fbf73b91ee8e1e407e88e37ada64" prot="public" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>getClassNames</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a11510c00f9adb9fbe4fe1c1fee79f02a" prot="public" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>getDevice</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a4be1237b1a62b4a50a817ce6ef7837f1" prot="public" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>getInputShape</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a36cee1b35ce518f6bba0c7901ad0f596" prot="public" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>getNumInputNodes</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a30a8722c68a2fa1ab0a0ab665afd19d3" prot="public" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>getNumOutputNodes</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a8b263597883f18d2f66fd3f0f598eb9f" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>inputNameAllocs_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a8c46588054da42098c9d5ee54772ee14" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>inputNames_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1abfbb75048b68bfadcfbb5fd29c9be55d" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>inputShape_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a875aafb35cc44916e3b5e153cb2ea404" prot="public" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>isDynamicBatchSize</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ace6a50df18afdc8571368803d9e7dd34" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>isDynamicBatchSize_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1aae5a5a958fabccb91ae9e8d6c394b43a" prot="public" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>isDynamicInputShape</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a15be4c2ddac39ccc90a1170fbae15786" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>isDynamicInputShape_</name></member>
+      <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1a2efae35443615e398936233f2d2020c0" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>MASK_THRESHOLD</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a424511d525512f4c42733ae1dbfd70ae" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>numInputNodes_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a8397d65ebebd090a4f5079ab1ea93f21" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>numOutputNodes_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ac40efe124490a78e5df4d108a5f19f5c" prot="public" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>operator=</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a97f3227d2f90aed9a79a618dc31c9ffa" prot="public" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>operator=</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ac7dda465eadfec6738e474a07a1c2e4c" prot="public" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>OrtSessionBase</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a41661c634079de533e5ddf7ca5b8f5c6" prot="public" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>OrtSessionBase</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ae64770ff5188681dbe8d6567ccdfbbb6" prot="public" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>OrtSessionBase</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a5ea17351450cfcf4c286138657cd5dcb" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>outputNameAllocs_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a70896c168ab6762c3bf96b60cf77c88b" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>outputNames_</name></member>
+      <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1a1b567b6854552b9743560129ab5ebea1" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>postprocess</name></member>
+      <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1a207814e812df2f586abf6df7fb43ef26" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>postprocessV26</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a8318858109b6bfb9c7ee61b96b1c70c6" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>runInference</name></member>
+      <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1a73f142e25c170b01f9b5d411221ba0f6" prot="public" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>segment</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a0066a883faf4551f54dffd2b4a3495ba" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>session_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1aedfa3da5fe054f0e2b3b5df4acb768bd" prot="protected" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>sessionOptions_</name></member>
+      <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1a9cb8b66fb226ff75c649a1bfc04fa069" prot="public" virt="non-virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>YOLOSegDetector</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ad8ee6fae9a5de2944e6e1d79ec26c78e" prot="public" virt="virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>~OrtSessionBase</name></member>
+      <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1af9eb70cc2dfbdc426cb682414085274b" prot="public" virt="virtual"><scope>yolos::seg::YOLOSegDetector</scope><name>~YOLOSegDetector</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

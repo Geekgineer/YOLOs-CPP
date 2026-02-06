@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="structyolos_1_1pose_1_1PoseResult" kind="struct" language="C++" prot="public">
+    <compoundname>yolos::pose::PoseResult</compoundname>
+    <includes refid="pose_8hpp" local="no">pose.hpp</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structyolos_1_1pose_1_1PoseResult_1a69d054ef9831922bd81bdb126aec2878" prot="public" static="no" mutable="no">
+        <type><ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref></type>
+        <definition>BoundingBox yolos::pose::PoseResult::box</definition>
+        <argsstring></argsstring>
+        <name>box</name>
+        <briefdescription>
+<para>Bounding box around the person. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="37" column="17" bodyfile="include/yolos/tasks/pose.hpp" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1pose_1_1PoseResult_1a80a4d87d8ccf8f044aca6f59782be988" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float yolos::pose::PoseResult::conf</definition>
+        <argsstring></argsstring>
+        <name>conf</name>
+        <initializer>{0.0f}</initializer>
+        <briefdescription>
+<para>Detection confidence. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="38" column="11" bodyfile="include/yolos/tasks/pose.hpp" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1pose_1_1PoseResult_1afcdf0baaaa9a2c63a3272bc79802ac45" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int yolos::pose::PoseResult::classId</definition>
+        <argsstring></argsstring>
+        <name>classId</name>
+        <initializer>{0}</initializer>
+        <briefdescription>
+<para>Class ID (typically 0 for person) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="39" column="9" bodyfile="include/yolos/tasks/pose.hpp" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1pose_1_1PoseResult_1ac92b5134cb2367863649a6cbbe459ec9" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; <ref refid="structyolos_1_1KeyPoint" kindref="compound">KeyPoint</ref> &gt;</type>
+        <definition>std::vector&lt;KeyPoint&gt; yolos::pose::PoseResult::keypoints</definition>
+        <argsstring></argsstring>
+        <name>keypoints</name>
+        <briefdescription>
+<para>Detected keypoints (17 for COCO format) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="40" column="17" bodyfile="include/yolos/tasks/pose.hpp" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structyolos_1_1pose_1_1PoseResult_1a6163b89d573622ccf2e158b2e249db97" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>yolos::pose::PoseResult::PoseResult</definition>
+        <argsstring>()=default</argsstring>
+        <name>PoseResult</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="42" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="structyolos_1_1pose_1_1PoseResult_1adc706ea662dc0c914f08066112278995" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>yolos::pose::PoseResult::PoseResult</definition>
+        <argsstring>(const BoundingBox &amp;box_, float conf_, int classId_, const std::vector&lt; KeyPoint &gt; &amp;kpts)</argsstring>
+        <name>PoseResult</name>
+        <param>
+          <type>const <ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref> &amp;</type>
+          <declname>box_</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>conf_</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>classId_</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; <ref refid="structyolos_1_1KeyPoint" kindref="compound">KeyPoint</ref> &gt; &amp;</type>
+          <declname>kpts</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="43" column="5" bodyfile="include/yolos/tasks/pose.hpp" bodystart="43" bodyend="44"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Pose estimation result containing bounding box, confidence, and keypoints. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="2">
+        <label>yolos::BoundingBox</label>
+        <link refid="structyolos_1_1BoundingBox"/>
+      </node>
+      <node id="1">
+        <label>yolos::pose::PoseResult</label>
+        <link refid="structyolos_1_1pose_1_1PoseResult"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>box</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="include/yolos/tasks/pose.hpp" line="36" column="17" bodyfile="include/yolos/tasks/pose.hpp" bodystart="36" bodyend="45"/>
+    <listofallmembers>
+      <member refid="structyolos_1_1pose_1_1PoseResult_1a69d054ef9831922bd81bdb126aec2878" prot="public" virt="non-virtual"><scope>yolos::pose::PoseResult</scope><name>box</name></member>
+      <member refid="structyolos_1_1pose_1_1PoseResult_1afcdf0baaaa9a2c63a3272bc79802ac45" prot="public" virt="non-virtual"><scope>yolos::pose::PoseResult</scope><name>classId</name></member>
+      <member refid="structyolos_1_1pose_1_1PoseResult_1a80a4d87d8ccf8f044aca6f59782be988" prot="public" virt="non-virtual"><scope>yolos::pose::PoseResult</scope><name>conf</name></member>
+      <member refid="structyolos_1_1pose_1_1PoseResult_1ac92b5134cb2367863649a6cbbe459ec9" prot="public" virt="non-virtual"><scope>yolos::pose::PoseResult</scope><name>keypoints</name></member>
+      <member refid="structyolos_1_1pose_1_1PoseResult_1a6163b89d573622ccf2e158b2e249db97" prot="public" virt="non-virtual"><scope>yolos::pose::PoseResult</scope><name>PoseResult</name></member>
+      <member refid="structyolos_1_1pose_1_1PoseResult_1adc706ea662dc0c914f08066112278995" prot="public" virt="non-virtual"><scope>yolos::pose::PoseResult</scope><name>PoseResult</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

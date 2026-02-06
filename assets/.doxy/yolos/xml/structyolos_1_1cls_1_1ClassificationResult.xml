@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="structyolos_1_1cls_1_1ClassificationResult" kind="struct" language="C++" prot="public">
+    <compoundname>yolos::cls::ClassificationResult</compoundname>
+    <includes refid="classification_8hpp" local="no">classification.hpp</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structyolos_1_1cls_1_1ClassificationResult_1a60fcec5e932c10c55c761fbcdf27144f" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int yolos::cls::ClassificationResult::classId</definition>
+        <argsstring></argsstring>
+        <name>classId</name>
+        <initializer>{-1}</initializer>
+        <briefdescription>
+<para>Predicted class ID. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/classification.hpp" line="38" column="9" bodyfile="include/yolos/tasks/classification.hpp" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1cls_1_1ClassificationResult_1a421c8b599d573a3d037915c429a9d338" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float yolos::cls::ClassificationResult::confidence</definition>
+        <argsstring></argsstring>
+        <name>confidence</name>
+        <initializer>{0.0f}</initializer>
+        <briefdescription>
+<para>Confidence score. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/classification.hpp" line="39" column="11" bodyfile="include/yolos/tasks/classification.hpp" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1cls_1_1ClassificationResult_1af9565a9358aa9bd5990c2f97d327e004" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string yolos::cls::ClassificationResult::className</definition>
+        <argsstring></argsstring>
+        <name>className</name>
+        <initializer>{}</initializer>
+        <briefdescription>
+<para>Human-readable class name. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/classification.hpp" line="40" column="17" bodyfile="include/yolos/tasks/classification.hpp" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structyolos_1_1cls_1_1ClassificationResult_1ab270dfcfaf33fd8512dcf80b8eed2ef3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>yolos::cls::ClassificationResult::ClassificationResult</definition>
+        <argsstring>()=default</argsstring>
+        <name>ClassificationResult</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/classification.hpp" line="42" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="structyolos_1_1cls_1_1ClassificationResult_1af2cd861406a454ec7649b7ad82798139" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>yolos::cls::ClassificationResult::ClassificationResult</definition>
+        <argsstring>(int id, float conf, std::string name)</argsstring>
+        <name>ClassificationResult</name>
+        <param>
+          <type>int</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>conf</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/classification.hpp" line="43" column="5" bodyfile="include/yolos/tasks/classification.hpp" bodystart="43" bodyend="44"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Classification result containing class ID, confidence, and class name. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/yolos/tasks/classification.hpp" line="37" column="27" bodyfile="include/yolos/tasks/classification.hpp" bodystart="37" bodyend="45"/>
+    <listofallmembers>
+      <member refid="structyolos_1_1cls_1_1ClassificationResult_1a60fcec5e932c10c55c761fbcdf27144f" prot="public" virt="non-virtual"><scope>yolos::cls::ClassificationResult</scope><name>classId</name></member>
+      <member refid="structyolos_1_1cls_1_1ClassificationResult_1ab270dfcfaf33fd8512dcf80b8eed2ef3" prot="public" virt="non-virtual"><scope>yolos::cls::ClassificationResult</scope><name>ClassificationResult</name></member>
+      <member refid="structyolos_1_1cls_1_1ClassificationResult_1af2cd861406a454ec7649b7ad82798139" prot="public" virt="non-virtual"><scope>yolos::cls::ClassificationResult</scope><name>ClassificationResult</name></member>
+      <member refid="structyolos_1_1cls_1_1ClassificationResult_1af9565a9358aa9bd5990c2f97d327e004" prot="public" virt="non-virtual"><scope>yolos::cls::ClassificationResult</scope><name>className</name></member>
+      <member refid="structyolos_1_1cls_1_1ClassificationResult_1a421c8b599d573a3d037915c429a9d338" prot="public" virt="non-virtual"><scope>yolos::cls::ClassificationResult</scope><name>confidence</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

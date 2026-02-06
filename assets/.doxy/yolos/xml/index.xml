@@ -1,0 +1,337 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.17">
+  <compound refid="structyolos_1_1BoundingBox" kind="struct"><name>yolos::BoundingBox</name>
+    <member refid="structyolos_1_1BoundingBox_1ad85f3e95f2ad795be5f2bd12041b10dc" kind="variable"><name>x</name></member>
+    <member refid="structyolos_1_1BoundingBox_1a731835604aace04fdf6f23a5f8c2ae68" kind="variable"><name>y</name></member>
+    <member refid="structyolos_1_1BoundingBox_1a464109f4a375d2077c90a80982a3d6c2" kind="variable"><name>width</name></member>
+    <member refid="structyolos_1_1BoundingBox_1ac3dbce0d7173115e8f10aa0c2e319193" kind="variable"><name>height</name></member>
+    <member refid="structyolos_1_1BoundingBox_1a0a27e068e272fd80af29690112f22e89" kind="function"><name>BoundingBox</name></member>
+    <member refid="structyolos_1_1BoundingBox_1a929c30146763fdac71149c06cdb7e482" kind="function"><name>BoundingBox</name></member>
+    <member refid="structyolos_1_1BoundingBox_1a44ee24ee9c32fd3aa4aed3ef9b8c0549" kind="function"><name>area</name></member>
+    <member refid="structyolos_1_1BoundingBox_1a5e9c650a9494bd4fc3a462a432f5bf86" kind="function"><name>intersect</name></member>
+    <member refid="structyolos_1_1BoundingBox_1a407c96241bebe76195a1bc27394f5750" kind="function"><name>iou</name></member>
+  </compound>
+  <compound refid="structyolos_1_1cls_1_1ClassificationResult" kind="struct"><name>yolos::cls::ClassificationResult</name>
+    <member refid="structyolos_1_1cls_1_1ClassificationResult_1a60fcec5e932c10c55c761fbcdf27144f" kind="variable"><name>classId</name></member>
+    <member refid="structyolos_1_1cls_1_1ClassificationResult_1a421c8b599d573a3d037915c429a9d338" kind="variable"><name>confidence</name></member>
+    <member refid="structyolos_1_1cls_1_1ClassificationResult_1af9565a9358aa9bd5990c2f97d327e004" kind="variable"><name>className</name></member>
+    <member refid="structyolos_1_1cls_1_1ClassificationResult_1ab270dfcfaf33fd8512dcf80b8eed2ef3" kind="function"><name>ClassificationResult</name></member>
+    <member refid="structyolos_1_1cls_1_1ClassificationResult_1af2cd861406a454ec7649b7ad82798139" kind="function"><name>ClassificationResult</name></member>
+  </compound>
+  <compound refid="structyolos_1_1det_1_1Detection" kind="struct"><name>yolos::det::Detection</name>
+    <member refid="structyolos_1_1det_1_1Detection_1a782dc616d12b7152a1c236a3e3018f26" kind="variable"><name>box</name></member>
+    <member refid="structyolos_1_1det_1_1Detection_1adcd3ebe69c4a48be9b7fe16ef0a76388" kind="variable"><name>conf</name></member>
+    <member refid="structyolos_1_1det_1_1Detection_1a2a73bc7e2c5192d541f00722e58d4f50" kind="variable"><name>classId</name></member>
+    <member refid="structyolos_1_1det_1_1Detection_1a93c16340d2b8f618b6ae7fa6d384f33a" kind="function"><name>Detection</name></member>
+    <member refid="structyolos_1_1det_1_1Detection_1aa2be681c9a8934acb230f3db4f51fbf9" kind="function"><name>Detection</name></member>
+  </compound>
+  <compound refid="structyolos_1_1preprocessing_1_1InferenceBuffer" kind="struct"><name>yolos::preprocessing::InferenceBuffer</name>
+    <member refid="structyolos_1_1preprocessing_1_1InferenceBuffer_1afbecaa236caabcb607ec21634bdeb7de" kind="variable"><name>blob</name></member>
+    <member refid="structyolos_1_1preprocessing_1_1InferenceBuffer_1a2d8701d52e6582bc53546a3db1832921" kind="variable"><name>resized</name></member>
+    <member refid="structyolos_1_1preprocessing_1_1InferenceBuffer_1ad54e005fa8251109297050116bf7a2b1" kind="variable"><name>rgbFloat</name></member>
+    <member refid="structyolos_1_1preprocessing_1_1InferenceBuffer_1aeeaa0d96993d9a7d19fd08d9c9bd2f13" kind="variable"><name>lastInputSize</name></member>
+    <member refid="structyolos_1_1preprocessing_1_1InferenceBuffer_1ae5020bc10604f54f6b6e550a77423785" kind="variable"><name>lastTargetSize</name></member>
+    <member refid="structyolos_1_1preprocessing_1_1InferenceBuffer_1a0e7dd56a018a143f1f6e984c67a0904e" kind="function"><name>ensureCapacity</name></member>
+  </compound>
+  <compound refid="structyolos_1_1KeyPoint" kind="struct"><name>yolos::KeyPoint</name>
+    <member refid="structyolos_1_1KeyPoint_1a30f19e6f1820d7f35d863acdc7b98ed8" kind="variable"><name>x</name></member>
+    <member refid="structyolos_1_1KeyPoint_1af1867e7c7f6318dc2ad5346527f096e9" kind="variable"><name>y</name></member>
+    <member refid="structyolos_1_1KeyPoint_1a1662158f8886fb6e9464f2bdaf3fc5da" kind="variable"><name>confidence</name></member>
+    <member refid="structyolos_1_1KeyPoint_1a4e0608cb0fa9a791717a13ed8b56cbeb" kind="function"><name>KeyPoint</name></member>
+    <member refid="structyolos_1_1KeyPoint_1a82a979277c2b17aaa9856256d25f4245" kind="function"><name>KeyPoint</name></member>
+  </compound>
+  <compound refid="structyolos_1_1obb_1_1OBBResult" kind="struct"><name>yolos::obb::OBBResult</name>
+    <member refid="structyolos_1_1obb_1_1OBBResult_1ae46edd89a5f7a2ac7cd6cabefe46248e" kind="variable"><name>box</name></member>
+    <member refid="structyolos_1_1obb_1_1OBBResult_1aa92fe58e61f3a4cb65f3460b95e6cb59" kind="variable"><name>conf</name></member>
+    <member refid="structyolos_1_1obb_1_1OBBResult_1af22ea6fdf6af548d1cf7c95cc4676a0d" kind="variable"><name>classId</name></member>
+    <member refid="structyolos_1_1obb_1_1OBBResult_1a1ca960e75ebaad72ecba6f4fbab9e625" kind="function"><name>OBBResult</name></member>
+    <member refid="structyolos_1_1obb_1_1OBBResult_1a1d3ff1548c382a28429ccfd216cf135b" kind="function"><name>OBBResult</name></member>
+  </compound>
+  <compound refid="structyolos_1_1OrientedBoundingBox" kind="struct"><name>yolos::OrientedBoundingBox</name>
+    <member refid="structyolos_1_1OrientedBoundingBox_1a7ad21c9635d4414a0313ed974e3996f3" kind="variable"><name>x</name></member>
+    <member refid="structyolos_1_1OrientedBoundingBox_1a3253f27e301a64bfcb74cd68c7959555" kind="variable"><name>y</name></member>
+    <member refid="structyolos_1_1OrientedBoundingBox_1a16fe5334e82edc9d2d9ad197cd97e30c" kind="variable"><name>width</name></member>
+    <member refid="structyolos_1_1OrientedBoundingBox_1a496df47584004b97f32d35ced50a719e" kind="variable"><name>height</name></member>
+    <member refid="structyolos_1_1OrientedBoundingBox_1abbe08f5a9ef58d747a8aeeb424bfc59d" kind="variable"><name>angle</name></member>
+    <member refid="structyolos_1_1OrientedBoundingBox_1a38688baf99f962de66a99064d5bd55c9" kind="function"><name>OrientedBoundingBox</name></member>
+    <member refid="structyolos_1_1OrientedBoundingBox_1a9f884afe3279e7e068ad43908c8cef1b" kind="function"><name>OrientedBoundingBox</name></member>
+    <member refid="structyolos_1_1OrientedBoundingBox_1af8e833fcd90526ea506108138a00959c" kind="function"><name>area</name></member>
+  </compound>
+  <compound refid="classyolos_1_1OrtSessionBase" kind="class"><name>yolos::OrtSessionBase</name>
+    <member refid="classyolos_1_1OrtSessionBase_1a1c73ea2faea65b4cbde35cc805f1c899" kind="variable"><name>env_</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1aedfa3da5fe054f0e2b3b5df4acb768bd" kind="variable"><name>sessionOptions_</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1a0066a883faf4551f54dffd2b4a3495ba" kind="variable"><name>session_</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1a8b263597883f18d2f66fd3f0f598eb9f" kind="variable"><name>inputNameAllocs_</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1a8c46588054da42098c9d5ee54772ee14" kind="variable"><name>inputNames_</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1a5ea17351450cfcf4c286138657cd5dcb" kind="variable"><name>outputNameAllocs_</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1a70896c168ab6762c3bf96b60cf77c88b" kind="variable"><name>outputNames_</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1a424511d525512f4c42733ae1dbfd70ae" kind="variable"><name>numInputNodes_</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1a8397d65ebebd090a4f5079ab1ea93f21" kind="variable"><name>numOutputNodes_</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1abfbb75048b68bfadcfbb5fd29c9be55d" kind="variable"><name>inputShape_</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1a15be4c2ddac39ccc90a1170fbae15786" kind="variable"><name>isDynamicInputShape_</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1ace6a50df18afdc8571368803d9e7dd34" kind="variable"><name>isDynamicBatchSize_</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1aa6698a2700f0f81c7779e7d1b8ed7fdd" kind="variable"><name>device_</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1ac7dda465eadfec6738e474a07a1c2e4c" kind="function"><name>OrtSessionBase</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1ad8ee6fae9a5de2944e6e1d79ec26c78e" kind="function"><name>~OrtSessionBase</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1a41661c634079de533e5ddf7ca5b8f5c6" kind="function"><name>OrtSessionBase</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1ac40efe124490a78e5df4d108a5f19f5c" kind="function"><name>operator=</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1ae64770ff5188681dbe8d6567ccdfbbb6" kind="function"><name>OrtSessionBase</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1a97f3227d2f90aed9a79a618dc31c9ffa" kind="function"><name>operator=</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1a4be1237b1a62b4a50a817ce6ef7837f1" kind="function"><name>getInputShape</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1aae5a5a958fabccb91ae9e8d6c394b43a" kind="function"><name>isDynamicInputShape</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1a875aafb35cc44916e3b5e153cb2ea404" kind="function"><name>isDynamicBatchSize</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1a11510c00f9adb9fbe4fe1c1fee79f02a" kind="function"><name>getDevice</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1a36cee1b35ce518f6bba0c7901ad0f596" kind="function"><name>getNumInputNodes</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1a30a8722c68a2fa1ab0a0ab665afd19d3" kind="function"><name>getNumOutputNodes</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1a8318858109b6bfb9c7ee61b96b1c70c6" kind="function"><name>runInference</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1a4d9b7b6b9923511d7a4df70dc2276581" kind="function"><name>createInputTensor</name></member>
+    <member refid="classyolos_1_1OrtSessionBase_1ae850b9aebdbbcdeaa250626c3014faf0" kind="function"><name>initSession</name></member>
+  </compound>
+  <compound refid="structyolos_1_1pose_1_1PoseResult" kind="struct"><name>yolos::pose::PoseResult</name>
+    <member refid="structyolos_1_1pose_1_1PoseResult_1a69d054ef9831922bd81bdb126aec2878" kind="variable"><name>box</name></member>
+    <member refid="structyolos_1_1pose_1_1PoseResult_1a80a4d87d8ccf8f044aca6f59782be988" kind="variable"><name>conf</name></member>
+    <member refid="structyolos_1_1pose_1_1PoseResult_1afcdf0baaaa9a2c63a3272bc79802ac45" kind="variable"><name>classId</name></member>
+    <member refid="structyolos_1_1pose_1_1PoseResult_1ac92b5134cb2367863649a6cbbe459ec9" kind="variable"><name>keypoints</name></member>
+    <member refid="structyolos_1_1pose_1_1PoseResult_1a6163b89d573622ccf2e158b2e249db97" kind="function"><name>PoseResult</name></member>
+    <member refid="structyolos_1_1pose_1_1PoseResult_1adc706ea662dc0c914f08066112278995" kind="function"><name>PoseResult</name></member>
+  </compound>
+  <compound refid="structyolos_1_1seg_1_1Segmentation" kind="struct"><name>yolos::seg::Segmentation</name>
+    <member refid="structyolos_1_1seg_1_1Segmentation_1ae3ebab10484c6b9182ffd4c55f9e2d26" kind="variable"><name>box</name></member>
+    <member refid="structyolos_1_1seg_1_1Segmentation_1a85d79d0a584c18e3ccef4d3cd4127074" kind="variable"><name>conf</name></member>
+    <member refid="structyolos_1_1seg_1_1Segmentation_1a71ea0ab4306cac7c85fb93ff16d4a046" kind="variable"><name>classId</name></member>
+    <member refid="structyolos_1_1seg_1_1Segmentation_1a5e4cce5c6dddd9b75a2de8dee63ed789" kind="variable"><name>mask</name></member>
+    <member refid="structyolos_1_1seg_1_1Segmentation_1a2162f7c2d48fcc39413829041b477eef" kind="function"><name>Segmentation</name></member>
+    <member refid="structyolos_1_1seg_1_1Segmentation_1a7b6cc2b2b475e8d078888271007f9a8b" kind="function"><name>Segmentation</name></member>
+  </compound>
+  <compound refid="classyolos_1_1cls_1_1YOLO11Classifier" kind="class"><name>yolos::cls::YOLO11Classifier</name>
+    <member refid="classyolos_1_1cls_1_1YOLO11Classifier_1ab6216432a7f8718ae62aff200c44c6d4" kind="function"><name>YOLO11Classifier</name></member>
+  </compound>
+  <compound refid="classyolos_1_1cls_1_1YOLO12Classifier" kind="class"><name>yolos::cls::YOLO12Classifier</name>
+    <member refid="classyolos_1_1cls_1_1YOLO12Classifier_1ab792b7f28bb2358df97c94da1fd01a3a" kind="function"><name>YOLO12Classifier</name></member>
+  </compound>
+  <compound refid="classyolos_1_1cls_1_1YOLO26Classifier" kind="class"><name>yolos::cls::YOLO26Classifier</name>
+    <member refid="classyolos_1_1cls_1_1YOLO26Classifier_1a25d3edd478b91b8f4a669b2d8ed02b98" kind="function"><name>YOLO26Classifier</name></member>
+  </compound>
+  <compound refid="classyolos_1_1det_1_1YOLO26Detector" kind="class"><name>yolos::det::YOLO26Detector</name>
+    <member refid="classyolos_1_1det_1_1YOLO26Detector_1ac8e4e6b560e49ba0516debaf0bbd894e" kind="function"><name>YOLO26Detector</name></member>
+  </compound>
+  <compound refid="classyolos_1_1cls_1_1YOLOClassifier" kind="class"><name>yolos::cls::YOLOClassifier</name>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a2ab9df5c8c1550cbc1b49ff34bae59be" kind="variable"><name>inputImageShape_</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1aacf6fd426d7252fe7352e610216be290" kind="variable"><name>env_</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a424ab0b56052bf42203c9e93a8bf42a5" kind="variable"><name>sessionOptions_</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a3076950b1d6aded294c93fd66751a8b5" kind="variable"><name>session_</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1abf3b1fd5c611c64340db2b0bea037b2c" kind="variable"><name>isDynamicInputShape_</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a21ded727242509b519686794259f0b60" kind="variable"><name>inputBuffer_</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a829fc15fc0237546f219057aca13ee28" kind="variable"><name>inputNameAllocs_</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1af1b7d090face986046c84b140cb4aaa4" kind="variable"><name>inputNames_</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a71539dc48ba4722b366cf109105eab54" kind="variable"><name>outputNameAllocs_</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a551be600f7677b2c9c1c8a2296d6ef9e" kind="variable"><name>outputNames_</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1ac68243a99de6adf1c2f050feb96c2e88" kind="variable"><name>numInputNodes_</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1af59f0d5ad377a648c44207314ffa4bfc" kind="variable"><name>numOutputNodes_</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a774cc2d8e384e4c1fc3451a4f424b954" kind="variable"><name>numClasses_</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1aa74851fb6b1acc90f8e94ea777b3245f" kind="variable"><name>classNames_</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a8393e402d5b9a72410bc777c9568f3ef" kind="function"><name>YOLOClassifier</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a69f21675c3a0572aa5750cf91807184f" kind="function"><name>~YOLOClassifier</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a9528434eb856e9367de91c042dcbb4f9" kind="function"><name>classify</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1aaff9c2dd9c165680ee3ea94167086b4e" kind="function"><name>drawResult</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1aa88391d814553b2b2a2aecdc8174d49f" kind="function"><name>getInputShape</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a8485adee80f6b4feb7a6b45cf4d72233" kind="function"><name>isDynamicInputShape</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1abb3e8ede9fe6d8888e94613314598e73" kind="function"><name>getClassNames</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a6077ca72f8e1a76c41395cf210650972" kind="function"><name>initSession</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a8a5cce2f6ebc3b648b67817d4eadd2f7" kind="function"><name>preprocess</name></member>
+    <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a65ab73f4056ca3cd39588c0bac9d0bc3" kind="function"><name>postprocess</name></member>
+  </compound>
+  <compound refid="classyolos_1_1det_1_1YOLODetector" kind="class"><name>yolos::det::YOLODetector</name>
+    <member refid="classyolos_1_1det_1_1YOLODetector_1a9b2408b9f750ee5ee510472af2360985" kind="variable"><name>version_</name></member>
+    <member refid="classyolos_1_1det_1_1YOLODetector_1ad84ca7c01ae1d46d47b1e2da08b64b56" kind="variable"><name>classNames_</name></member>
+    <member refid="classyolos_1_1det_1_1YOLODetector_1a13bf703380daecb4d3157afc2849ac75" kind="variable"><name>classColors_</name></member>
+    <member refid="classyolos_1_1det_1_1YOLODetector_1a095865ebce999d9bd014c08ee34e41ab" kind="variable"><name>buffer_</name></member>
+    <member refid="classyolos_1_1det_1_1YOLODetector_1a3b73f3d2ef6323fbadf1b6e3f18a74e4" kind="function"><name>YOLODetector</name></member>
+    <member refid="classyolos_1_1det_1_1YOLODetector_1a2a29169871bb49965fd23539a61e3225" kind="function"><name>~YOLODetector</name></member>
+    <member refid="classyolos_1_1det_1_1YOLODetector_1a8398c7dc31aefdda49eb026e8847e591" kind="function"><name>detect</name></member>
+    <member refid="classyolos_1_1det_1_1YOLODetector_1a05b1fa0932b5f99d5ed42225c32afa02" kind="function"><name>drawDetections</name></member>
+    <member refid="classyolos_1_1det_1_1YOLODetector_1a327075e0788a255e272e91133c9c8e7b" kind="function"><name>drawDetectionsWithMask</name></member>
+    <member refid="classyolos_1_1det_1_1YOLODetector_1ab54b697d497f477590cefd90f1ffdece" kind="function"><name>getClassNames</name></member>
+    <member refid="classyolos_1_1det_1_1YOLODetector_1a483005c45462b83ab073c5f6e8ec7f52" kind="function"><name>getClassColors</name></member>
+    <member refid="classyolos_1_1det_1_1YOLODetector_1aba727742e9e518a2eea3903dc4fc8380" kind="function"><name>detectVersion</name></member>
+    <member refid="classyolos_1_1det_1_1YOLODetector_1a2cb429caf43cfff7944fb9827c61288c" kind="function"><name>postprocess</name></member>
+    <member refid="classyolos_1_1det_1_1YOLODetector_1a82dcad4ce6768a59a8b12dd59e9966a6" kind="function"><name>postprocessStandard</name></member>
+    <member refid="classyolos_1_1det_1_1YOLODetector_1a344a04c5ea0bb5d32bd83a0328bbe17c" kind="function"><name>postprocessV7</name></member>
+    <member refid="classyolos_1_1det_1_1YOLODetector_1af259ac99b09801575716d9ce19ad0978" kind="function"><name>postprocessV10</name></member>
+    <member refid="classyolos_1_1det_1_1YOLODetector_1ac1ca5501d82edf9ce783bfca6bfb3c18" kind="function"><name>postprocessNAS</name></member>
+  </compound>
+  <compound refid="classyolos_1_1det_1_1YOLONASDetector" kind="class"><name>yolos::det::YOLONASDetector</name>
+    <member refid="classyolos_1_1det_1_1YOLONASDetector_1a74986b433932d391dc5eb6135f54aea8" kind="function"><name>YOLONASDetector</name></member>
+  </compound>
+  <compound refid="classyolos_1_1obb_1_1YOLOOBBDetector" kind="class"><name>yolos::obb::YOLOOBBDetector</name>
+    <member refid="classyolos_1_1obb_1_1YOLOOBBDetector_1ae26b62ae7c30d3595ac460e7d2fd5b64" kind="variable"><name>classNames_</name></member>
+    <member refid="classyolos_1_1obb_1_1YOLOOBBDetector_1ae9e8063d682c85440d92f278a1e32f52" kind="variable"><name>classColors_</name></member>
+    <member refid="classyolos_1_1obb_1_1YOLOOBBDetector_1a841c6f74e7c6d12afacbbbaee72829d9" kind="variable"><name>buffer_</name></member>
+    <member refid="classyolos_1_1obb_1_1YOLOOBBDetector_1ac790d7a09445a15b9cef6086d98895ed" kind="function"><name>YOLOOBBDetector</name></member>
+    <member refid="classyolos_1_1obb_1_1YOLOOBBDetector_1affac1db67d18e1444d7066dc7670e717" kind="function"><name>~YOLOOBBDetector</name></member>
+    <member refid="classyolos_1_1obb_1_1YOLOOBBDetector_1a398984effb7e986f99f56fd62ab8d1e3" kind="function"><name>detect</name></member>
+    <member refid="classyolos_1_1obb_1_1YOLOOBBDetector_1a1ccc390fd6e08135839c3e68d65af346" kind="function"><name>drawDetections</name></member>
+    <member refid="classyolos_1_1obb_1_1YOLOOBBDetector_1a15dd1bca2b519e7860ea9cc17439087c" kind="function"><name>getClassNames</name></member>
+    <member refid="classyolos_1_1obb_1_1YOLOOBBDetector_1aabc9756d5a101c993f2d9ddbb5c04770" kind="function"><name>getClassColors</name></member>
+    <member refid="classyolos_1_1obb_1_1YOLOOBBDetector_1a77e684294c4ce69993cc17cfad861a66" kind="function"><name>postprocess</name></member>
+    <member refid="classyolos_1_1obb_1_1YOLOOBBDetector_1a607d7c7122101dbefcffd2bbe5157a66" kind="function"><name>postprocessV8</name></member>
+    <member refid="classyolos_1_1obb_1_1YOLOOBBDetector_1ad586805a76874df163795dcd103b444d" kind="function"><name>postprocessV26</name></member>
+  </compound>
+  <compound refid="classyolos_1_1pose_1_1YOLOPoseDetector" kind="class"><name>yolos::pose::YOLOPoseDetector</name>
+    <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1ac2021527f3a7623731c942bfa70f95c1" kind="variable"><name>classNames_</name></member>
+    <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a5c1fb0daa38441b217f5f2d88748058c" kind="variable"><name>classColors_</name></member>
+    <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1ac87d9ace13bbb462f18eb392c35cabf0" kind="variable"><name>buffer_</name></member>
+    <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a9ffc4f34b553dd5442a5f66072320ab2" kind="variable"><name>NUM_KEYPOINTS</name></member>
+    <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a44c03120272e7dfeee24504da58c295c" kind="variable"><name>FEATURES_PER_KEYPOINT</name></member>
+    <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a1f9cdfa9c388e94e08e8f7c8eb58d013" kind="function"><name>YOLOPoseDetector</name></member>
+    <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1ad041f84e95ce506737f0e85a1d1a5b18" kind="function"><name>~YOLOPoseDetector</name></member>
+    <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a1b5210b89fb0c714bd330c3d231c9116" kind="function"><name>detect</name></member>
+    <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1aeba5940bb4c5fd01ed93b9d957d9858d" kind="function"><name>drawPoses</name></member>
+    <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1af4a68fa837ec9aa2b87c87c2c4ba6fe7" kind="function"><name>drawSkeletonsOnly</name></member>
+    <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1acdb69eaabd517c5ef202870e15a21032" kind="function"><name>getClassNames</name></member>
+    <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a353f088597a4ad6af93d4064d6ae6796" kind="function"><name>getPoseSkeleton</name></member>
+    <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a3cf1c5f33c607ed75d50433f7094e8f5" kind="function"><name>postprocess</name></member>
+    <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1aeea45dc550effbaebc49f0cc970e718c" kind="function"><name>postprocessV8</name></member>
+    <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a6e171c96fff8c3931c6ae6d0318eb03d" kind="function"><name>postprocessV26</name></member>
+  </compound>
+  <compound refid="classyolos_1_1seg_1_1YOLOSegDetector" kind="class"><name>yolos::seg::YOLOSegDetector</name>
+    <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1aa0a54a640840066aee8518edc0b661c5" kind="variable"><name>classNames_</name></member>
+    <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1a1685bb2e8040342f183f5f648d57d500" kind="variable"><name>classColors_</name></member>
+    <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1a983bbf1421c64c5fddb0a295cc9fbcc8" kind="variable"><name>buffer_</name></member>
+    <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1a2efae35443615e398936233f2d2020c0" kind="variable"><name>MASK_THRESHOLD</name></member>
+    <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1a9cb8b66fb226ff75c649a1bfc04fa069" kind="function"><name>YOLOSegDetector</name></member>
+    <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1af9eb70cc2dfbdc426cb682414085274b" kind="function"><name>~YOLOSegDetector</name></member>
+    <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1a73f142e25c170b01f9b5d411221ba0f6" kind="function"><name>segment</name></member>
+    <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1ac3c35b765b60dc4d7e1bab11198b61ca" kind="function"><name>drawSegmentations</name></member>
+    <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1ae2c2c352e58f2edbded0cc96e79aaae8" kind="function"><name>drawMasksOnly</name></member>
+    <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1ab571fbf73b91ee8e1e407e88e37ada64" kind="function"><name>getClassNames</name></member>
+    <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1a8f3b701bc19f665137d3fca7f9554ad7" kind="function"><name>getClassColors</name></member>
+    <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1a1b567b6854552b9743560129ab5ebea1" kind="function"><name>postprocess</name></member>
+    <member refid="classyolos_1_1seg_1_1YOLOSegDetector_1a207814e812df2f586abf6df7fb43ef26" kind="function"><name>postprocessV26</name></member>
+  </compound>
+  <compound refid="classyolos_1_1det_1_1YOLOv10Detector" kind="class"><name>yolos::det::YOLOv10Detector</name>
+    <member refid="classyolos_1_1det_1_1YOLOv10Detector_1a7d89b49c9053872897091c1879cc55fc" kind="function"><name>YOLOv10Detector</name></member>
+  </compound>
+  <compound refid="classyolos_1_1det_1_1YOLOv11Detector" kind="class"><name>yolos::det::YOLOv11Detector</name>
+    <member refid="classyolos_1_1det_1_1YOLOv11Detector_1ac5ca6768f21171e4d122a8c196314a34" kind="function"><name>YOLOv11Detector</name></member>
+  </compound>
+  <compound refid="classyolos_1_1det_1_1YOLOv7Detector" kind="class"><name>yolos::det::YOLOv7Detector</name>
+    <member refid="classyolos_1_1det_1_1YOLOv7Detector_1a11cc706b7b6b64339c66f419f7c5e93e" kind="function"><name>YOLOv7Detector</name></member>
+  </compound>
+  <compound refid="classyolos_1_1det_1_1YOLOv8Detector" kind="class"><name>yolos::det::YOLOv8Detector</name>
+    <member refid="classyolos_1_1det_1_1YOLOv8Detector_1a1a550b79deaa71292577aab78dedcf96" kind="function"><name>YOLOv8Detector</name></member>
+  </compound>
+  <compound refid="namespaceyolos" kind="namespace"><name>yolos</name>
+    <member refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84e" kind="enum"><name>YOLOVersion</name></member>
+    <member refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84ea06b9281e396db002010bde1de57262eb" kind="enumvalue"><name>Auto</name></member>
+    <member refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84ea01d2f61fa66001f438aa2a65cb0aa9e5" kind="enumvalue"><name>V7</name></member>
+    <member refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84eaea7c1b92ccf2869f7f23c13385782d7c" kind="enumvalue"><name>V8</name></member>
+    <member refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84ea3ffc64fa10df9a884ba82f3e49e8282e" kind="enumvalue"><name>V10</name></member>
+    <member refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84ea9899bd62c7871e70c080ea7235bfc19c" kind="enumvalue"><name>V11</name></member>
+    <member refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84eaac1ce2eaebf8d94f6bb6605bd3b71a65" kind="enumvalue"><name>V12</name></member>
+    <member refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84ea2881fc13b616c05ba222887376f7858b" kind="enumvalue"><name>V26</name></member>
+    <member refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84eac07ee5debf5f3a3fef16c1ee5e8e4942" kind="enumvalue"><name>NAS</name></member>
+    <member refid="namespaceyolos_1aaafe5b42decda86fdf45897ee565dffb" kind="typedef"><name>Detection</name></member>
+    <member refid="namespaceyolos_1a65b9f499a58fdf87841ea2cf161fc6a7" kind="typedef"><name>YOLODetector</name></member>
+    <member refid="namespaceyolos_1afcf09a0104c07b38f6236338ffeb2d81" kind="typedef"><name>YOLO26Detector</name></member>
+    <member refid="namespaceyolos_1a07ac586374c2144fc11f0e8e91541346" kind="typedef"><name>Segmentation</name></member>
+    <member refid="namespaceyolos_1ab5b8210d42792c7fef69bbea6b0b896c" kind="typedef"><name>YOLOSegDetector</name></member>
+    <member refid="namespaceyolos_1ad023698f8e2490ff464083b37a17c458" kind="typedef"><name>PoseResult</name></member>
+    <member refid="namespaceyolos_1ab86f0e602090b25d6aa4e646577dc1b2" kind="typedef"><name>YOLOPoseDetector</name></member>
+    <member refid="namespaceyolos_1afca32cc27ad7b3edb8dcda6cbe23bc6b" kind="typedef"><name>OBBResult</name></member>
+    <member refid="namespaceyolos_1a96dd886ad39f3fbbf085cf1a365c56c5" kind="typedef"><name>YOLOOBBDetector</name></member>
+    <member refid="namespaceyolos_1a61dc6ff5a33767ae269b9d29522fa909" kind="typedef"><name>ClassificationResult</name></member>
+    <member refid="namespaceyolos_1a82043b20af3edd58209212b5fe4df577" kind="typedef"><name>YOLOClassifier</name></member>
+    <member refid="namespaceyolos_1a1cf5e2273793e3a858df1401cef2e692" kind="typedef"><name>YOLO26Classifier</name></member>
+    <member refid="namespaceyolos_1a823fcef4ca2980d2db71f60d4b72231c" kind="function"><name>getPoseSkeleton</name></member>
+  </compound>
+  <compound refid="namespaceyolos_1_1cls" kind="namespace"><name>yolos::cls</name>
+    <member refid="namespaceyolos_1_1cls_1a72e2c856052d6cdbb810de0b0c5aa17d" kind="function"><name>drawClassificationResult</name></member>
+    <member refid="namespaceyolos_1_1cls_1a24b66c8e4b3f314203b72052c7de9722" kind="function"><name>createClassifier</name></member>
+  </compound>
+  <compound refid="namespaceyolos_1_1det" kind="namespace"><name>yolos::det</name>
+    <member refid="namespaceyolos_1_1det_1a316204b86fdfc637bb4641dc80523318" kind="function"><name>createDetector</name></member>
+  </compound>
+  <compound refid="namespaceyolos_1_1drawing" kind="namespace"><name>yolos::drawing</name>
+    <member refid="namespaceyolos_1_1drawing_1af19596cebd6f040bb3197b8e68a472e1" kind="function"><name>generateColors</name></member>
+    <member refid="namespaceyolos_1_1drawing_1a07e7f05f4fbc2d9ee0761e4368b66f7b" kind="function"><name>getPosePalette</name></member>
+    <member refid="namespaceyolos_1_1drawing_1a32584307a3116c291cfbdf34484d5641" kind="function"><name>drawBoundingBox</name></member>
+    <member refid="namespaceyolos_1_1drawing_1a59cd089c283ac68fbf34326259aa429e" kind="function"><name>drawBoundingBoxWithMask</name></member>
+    <member refid="namespaceyolos_1_1drawing_1a17c67f2aa2e5b1edc7367cad78a5ce07" kind="function"><name>drawOrientedBoundingBox</name></member>
+    <member refid="namespaceyolos_1_1drawing_1a41292119e70c24aafd29d10a037948f3" kind="function"><name>drawPoseSkeleton</name></member>
+    <member refid="namespaceyolos_1_1drawing_1a6cfd1b82f6eb8d8f37234ea6f678a24a" kind="function"><name>drawSegmentationMask</name></member>
+  </compound>
+  <compound refid="namespaceyolos_1_1nms" kind="namespace"><name>yolos::nms</name>
+    <member refid="namespaceyolos_1_1nms_1add93ce1526def5881f2c927e737ffe0d" kind="function"><name>NMSBoxes</name></member>
+    <member refid="namespaceyolos_1_1nms_1aea1f97258067215d5c40cb4608805708" kind="function"><name>NMSBoxesF</name></member>
+    <member refid="namespaceyolos_1_1nms_1a2dd9a57036fa5c21d1c46e898d77e966" kind="function"><name>NMSBoxesFBatched</name></member>
+    <member refid="namespaceyolos_1_1nms_1acf9f49eef3d2fdfce4434e9412ad8cf8" kind="function"><name>computeRotatedIoU</name></member>
+    <member refid="namespaceyolos_1_1nms_1a5bd7890cd771b4385007cb3989cf485b" kind="function"><name>NMSRotated</name></member>
+    <member refid="namespaceyolos_1_1nms_1a324e20b0bb6cc0a6b1d465688c0ddad7" kind="function"><name>NMSBoxesBatched</name></member>
+    <member refid="namespaceyolos_1_1nms_1a8d2b207c40b4c20ddbc1fccafcb12bb9" kind="function"><name>NMSRotatedBatched</name></member>
+  </compound>
+  <compound refid="namespaceyolos_1_1obb" kind="namespace"><name>yolos::obb</name>
+  </compound>
+  <compound refid="namespaceyolos_1_1pose" kind="namespace"><name>yolos::pose</name>
+  </compound>
+  <compound refid="namespaceyolos_1_1preprocessing" kind="namespace"><name>yolos::preprocessing</name>
+    <member refid="namespaceyolos_1_1preprocessing_1a4f1cfd04406c7f1de5aa23dc909a12ad" kind="function"><name>letterBox</name></member>
+    <member refid="namespaceyolos_1_1preprocessing_1a982980c8af4d0d9c21317d95697d8311" kind="function"><name>letterBoxCentered</name></member>
+    <member refid="namespaceyolos_1_1preprocessing_1af89861958b0dce4e1f774edee55bd663" kind="function"><name>scaleCoords</name></member>
+    <member refid="namespaceyolos_1_1preprocessing_1a0431dbe86e03173b3c10ec6981eb3fa4" kind="function"><name>scaleKeypoint</name></member>
+    <member refid="namespaceyolos_1_1preprocessing_1a3c6b065beef33f0c2be26224d90ddca8" kind="function"><name>getLetterboxParams</name></member>
+    <member refid="namespaceyolos_1_1preprocessing_1a489cf4511f0b08f7457401a9acdea75d" kind="function"><name>letterBoxToBlob</name></member>
+    <member refid="namespaceyolos_1_1preprocessing_1a0df6a0ff7f94ae681b39b4311a387162" kind="function"><name>letterBoxToBlob</name></member>
+    <member refid="namespaceyolos_1_1preprocessing_1a06d539e568c7b9bbe5351ad45f9f76cb" kind="function"><name>getScalePad</name></member>
+    <member refid="namespaceyolos_1_1preprocessing_1acbde8a06c10caeb7d145ac214c4b0932" kind="function"><name>descaleCoordsBatch</name></member>
+  </compound>
+  <compound refid="namespaceyolos_1_1seg" kind="namespace"><name>yolos::seg</name>
+  </compound>
+  <compound refid="namespaceyolos_1_1utils" kind="namespace"><name>yolos::utils</name>
+    <member refid="namespaceyolos_1_1utils_1a0543823fd9643950db69da37be2f85c8" kind="function"><name>clamp</name></member>
+    <member refid="namespaceyolos_1_1utils_1abde567f83ae1f3ca9b7b682eab3fddbb" kind="function"><name>vectorProduct</name></member>
+    <member refid="namespaceyolos_1_1utils_1a9b6de69cf5c7dfe837d42ad66a4c75e0" kind="function"><name>getClassNames</name></member>
+    <member refid="namespaceyolos_1_1utils_1a7d00278e0386fb49ff3ecac05181a362" kind="function"><name>sigmoid</name></member>
+    <member refid="namespaceyolos_1_1utils_1a4658ca733b9730367b3e9b7f22c5bae6" kind="function"><name>sigmoidInplace</name></member>
+  </compound>
+  <compound refid="namespaceyolos_1_1version" kind="namespace"><name>yolos::version</name>
+    <member refid="namespaceyolos_1_1version_1a801646e5ac4c8052e83c3d10582c4410" kind="function"><name>toString</name></member>
+    <member refid="namespaceyolos_1_1version_1abda229ca93c6851f82dfc671e662376f" kind="function"><name>detectFromOutputShape</name></member>
+    <member refid="namespaceyolos_1_1version_1aa9a27c9b68f69480d90ef29401385bc9" kind="function"><name>detectClassificationVersion</name></member>
+    <member refid="namespaceyolos_1_1version_1a83b4be8e14be7b5e469e52cdfb877500" kind="function"><name>requiresNMS</name></member>
+  </compound>
+  <compound refid="drawing_8hpp" kind="file"><name>drawing.hpp</name>
+  </compound>
+  <compound refid="nms_8hpp" kind="file"><name>nms.hpp</name>
+  </compound>
+  <compound refid="preprocessing_8hpp" kind="file"><name>preprocessing.hpp</name>
+  </compound>
+  <compound refid="session__base_8hpp" kind="file"><name>session_base.hpp</name>
+  </compound>
+  <compound refid="types_8hpp" kind="file"><name>types.hpp</name>
+  </compound>
+  <compound refid="utils_8hpp" kind="file"><name>utils.hpp</name>
+  </compound>
+  <compound refid="version_8hpp" kind="file"><name>version.hpp</name>
+  </compound>
+  <compound refid="classification_8hpp" kind="file"><name>classification.hpp</name>
+  </compound>
+  <compound refid="detection_8hpp" kind="file"><name>detection.hpp</name>
+  </compound>
+  <compound refid="obb_8hpp" kind="file"><name>obb.hpp</name>
+  </compound>
+  <compound refid="pose_8hpp" kind="file"><name>pose.hpp</name>
+  </compound>
+  <compound refid="segmentation_8hpp" kind="file"><name>segmentation.hpp</name>
+  </compound>
+  <compound refid="yolos_8hpp" kind="file"><name>yolos.hpp</name>
+  </compound>
+  <compound refid="dir_a763ec46eda5c5a329ecdb0f0bec1eed" kind="dir"><name>include/yolos/core</name>
+  </compound>
+  <compound refid="dir_d44c64559bbebec7f509842c48db8b23" kind="dir"><name>include</name>
+  </compound>
+  <compound refid="dir_2bef6d8bc01c1b0d186aba6b16825c1e" kind="dir"><name>include/yolos/tasks</name>
+  </compound>
+  <compound refid="dir_0663062e3f7bb1f439b575391d32cc63" kind="dir"><name>include/yolos</name>
+  </compound>
+</doxygenindex>

@@ -1,0 +1,534 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="pose_8hpp" kind="file" language="C++">
+    <compoundname>pose.hpp</compoundname>
+    <includes local="no">opencv2/opencv.hpp</includes>
+    <includes local="no">vector</includes>
+    <includes local="no">string</includes>
+    <includes local="no">memory</includes>
+    <includes local="no">cmath</includes>
+    <includes refid="types_8hpp" local="yes">yolos/core/types.hpp</includes>
+    <includes refid="version_8hpp" local="yes">yolos/core/version.hpp</includes>
+    <includes refid="utils_8hpp" local="yes">yolos/core/utils.hpp</includes>
+    <includes refid="preprocessing_8hpp" local="yes">yolos/core/preprocessing.hpp</includes>
+    <includes refid="nms_8hpp" local="yes">yolos/core/nms.hpp</includes>
+    <includes refid="drawing_8hpp" local="yes">yolos/core/drawing.hpp</includes>
+    <includes refid="session__base_8hpp" local="yes">yolos/core/session_base.hpp</includes>
+    <includedby refid="yolos_8hpp" local="yes">include/yolos/yolos.hpp</includedby>
+    <incdepgraph>
+      <node id="22">
+        <label>onnxruntime_cxx_api.h</label>
+      </node>
+      <node id="16">
+        <label>yolos/core/preprocessing.hpp</label>
+        <link refid="preprocessing_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>cstdint</label>
+      </node>
+      <node id="1">
+        <label>include/yolos/tasks/pose.hpp</label>
+        <link refid="pose_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>cmath</label>
+      </node>
+      <node id="18">
+        <label>yolos/core/drawing.hpp</label>
+        <link refid="drawing_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>numeric</label>
+      </node>
+      <node id="9">
+        <label>yolos/core/version.hpp</label>
+        <link refid="version_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>opencv2/opencv.hpp</label>
+      </node>
+      <node id="4">
+        <label>string</label>
+      </node>
+      <node id="11">
+        <label>yolos/core/utils.hpp</label>
+        <link refid="utils_8hpp"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="12">
+        <label>fstream</label>
+      </node>
+      <node id="21">
+        <label>yolos/core/session_base.hpp</label>
+        <link refid="session__base_8hpp"/>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="19">
+        <label>random</label>
+      </node>
+      <node id="17">
+        <label>yolos/core/nms.hpp</label>
+        <link refid="nms_8hpp"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>yolos/core/types.hpp</label>
+        <link refid="types_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>vector</label>
+      </node>
+      <node id="13">
+        <label>iostream</label>
+      </node>
+      <node id="20">
+        <label>unordered_map</label>
+      </node>
+      <node id="23">
+        <label>thread</label>
+      </node>
+      <node id="15">
+        <label>type_traits</label>
+      </node>
+      <node id="8">
+        <label>algorithm</label>
+      </node>
+      <node id="5">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1">
+        <label>include/yolos/tasks/pose.hpp</label>
+        <link refid="pose_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>include/yolos/yolos.hpp</label>
+        <link refid="yolos_8hpp"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="structyolos_1_1pose_1_1PoseResult" prot="public">yolos::pose::PoseResult</innerclass>
+    <innerclass refid="classyolos_1_1pose_1_1YOLOPoseDetector" prot="public">yolos::pose::YOLOPoseDetector</innerclass>
+    <innernamespace refid="namespaceyolos">yolos</innernamespace>
+    <innernamespace refid="namespaceyolos_1_1pose">yolos::pose</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">//<sp/>YOLO<sp/>Pose<sp/>Estimation</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Human<sp/>pose<sp/>estimation<sp/>using<sp/>YOLO<sp/>models<sp/>with<sp/>keypoint<sp/>detection.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Supports<sp/>YOLOv8-pose,<sp/>YOLOv11-pose,<sp/>and<sp/>YOLO26-pose<sp/>models.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Authors:<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="comment">//<sp/>YOLOs-CPP<sp/>Team,<sp/>https://github.com/Geekgineer/YOLOs-CPP</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">//<sp/>2-<sp/>Mohamed<sp/>Samir,<sp/>www.linkedin.com/in/mohamed-samir-7a730b237/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;opencv2/opencv.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vector&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;string&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;memory&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cmath&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="types_8hpp" kindref="compound">yolos/core/types.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="version_8hpp" kindref="compound">yolos/core/version.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="utils_8hpp" kindref="compound">yolos/core/utils.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="preprocessing_8hpp" kindref="compound">yolos/core/preprocessing.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="nms_8hpp" kindref="compound">yolos/core/nms.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="drawing_8hpp" kindref="compound">yolos/core/drawing.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="session__base_8hpp" kindref="compound">yolos/core/session_base.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespaceyolos" kindref="compound">yolos</ref><sp/>{</highlight></codeline>
+<codeline lineno="29" refid="namespaceyolos_1_1pose" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pose<sp/>{</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Pose<sp/>Result<sp/>Structure</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36" refid="structyolos_1_1pose_1_1PoseResult" refkind="compound"><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structyolos_1_1pose_1_1PoseResult" kindref="compound">PoseResult</ref><sp/>{</highlight></codeline>
+<codeline lineno="37" refid="structyolos_1_1pose_1_1PoseResult_1a69d054ef9831922bd81bdb126aec2878" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref><sp/><ref refid="structyolos_1_1pose_1_1PoseResult_1a69d054ef9831922bd81bdb126aec2878" kindref="member">box</ref>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="38" refid="structyolos_1_1pose_1_1PoseResult_1a80a4d87d8ccf8f044aca6f59782be988" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1pose_1_1PoseResult_1a80a4d87d8ccf8f044aca6f59782be988" kindref="member">conf</ref>{0.0f};<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="39" refid="structyolos_1_1pose_1_1PoseResult_1afcdf0baaaa9a2c63a3272bc79802ac45" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1pose_1_1PoseResult_1afcdf0baaaa9a2c63a3272bc79802ac45" kindref="member">classId</ref>{0};<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="40" refid="structyolos_1_1pose_1_1PoseResult_1ac92b5134cb2367863649a6cbbe459ec9" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::vector&lt;KeyPoint&gt;<sp/><ref refid="structyolos_1_1pose_1_1PoseResult_1ac92b5134cb2367863649a6cbbe459ec9" kindref="member">keypoints</ref>;<sp/></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structyolos_1_1pose_1_1PoseResult_1a6163b89d573622ccf2e158b2e249db97" kindref="member">PoseResult</ref>()<sp/>=<sp/></highlight><highlight class="keywordflow">default</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="43" refid="structyolos_1_1pose_1_1PoseResult_1adc706ea662dc0c914f08066112278995" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structyolos_1_1pose_1_1PoseResult_1adc706ea662dc0c914f08066112278995" kindref="member">PoseResult</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref>&amp;<sp/>box_,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>conf_,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>classId_,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;KeyPoint&gt;&amp;<sp/>kpts)</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/><ref refid="structyolos_1_1pose_1_1PoseResult_1a69d054ef9831922bd81bdb126aec2878" kindref="member">box</ref>(box_),<sp/><ref refid="structyolos_1_1pose_1_1PoseResult_1a80a4d87d8ccf8f044aca6f59782be988" kindref="member">conf</ref>(conf_),<sp/><ref refid="structyolos_1_1pose_1_1PoseResult_1afcdf0baaaa9a2c63a3272bc79802ac45" kindref="member">classId</ref>(classId_),<sp/><ref refid="structyolos_1_1pose_1_1PoseResult_1ac92b5134cb2367863649a6cbbe459ec9" kindref="member">keypoints</ref>(kpts)<sp/>{}</highlight></codeline>
+<codeline lineno="45"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight><highlight class="comment">//<sp/>YOLOPoseDetector<sp/>Class</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="52" refid="classyolos_1_1pose_1_1YOLOPoseDetector" refkind="compound"><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector" kindref="compound">YOLOPoseDetector</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classyolos_1_1OrtSessionBase" kindref="compound">OrtSessionBase</ref><sp/>{</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="58" refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a1f9cdfa9c388e94e08e8f7c8eb58d013" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a1f9cdfa9c388e94e08e8f7c8eb58d013" kindref="member">YOLOPoseDetector</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>modelPath,</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>labelsPath<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;&quot;</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>useGPU<sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/><ref refid="classyolos_1_1OrtSessionBase" kindref="compound">OrtSessionBase</ref>(modelPath,<sp/>useGPU)<sp/>{</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(!labelsPath.empty())<sp/>{</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1ac2021527f3a7623731c942bfa70f95c1" kindref="member">classNames_</ref><sp/>=<sp/><ref refid="namespaceyolos_1_1utils_1a9b6de69cf5c7dfe837d42ad66a4c75e0" kindref="member">utils::getClassNames</ref>(labelsPath);</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1ac2021527f3a7623731c942bfa70f95c1" kindref="member">classNames_</ref><sp/>=<sp/>{</highlight><highlight class="stringliteral">&quot;person&quot;</highlight><highlight class="normal">};</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a5c1fb0daa38441b217f5f2d88748058c" kindref="member">classColors_</ref><sp/>=<sp/><ref refid="namespaceyolos_1_1drawing_1af19596cebd6f040bb3197b8e68a472e1" kindref="member">drawing::generateColors</ref>(<ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1ac2021527f3a7623731c942bfa70f95c1" kindref="member">classNames_</ref>);</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Pre-allocate<sp/>inference<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1ac87d9ace13bbb462f18eb392c35cabf0" kindref="member">buffer_</ref>.<ref refid="structyolos_1_1preprocessing_1_1InferenceBuffer_1a0e7dd56a018a143f1f6e984c67a0904e" kindref="member">ensureCapacity</ref>(<ref refid="classyolos_1_1OrtSessionBase_1abfbb75048b68bfadcfbb5fd29c9be55d" kindref="member">inputShape_</ref>.height,<sp/><ref refid="classyolos_1_1OrtSessionBase_1abfbb75048b68bfadcfbb5fd29c9be55d" kindref="member">inputShape_</ref>.width,<sp/>3);</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1ad041f84e95ce506737f0e85a1d1a5b18" kindref="member">~YOLOPoseDetector</ref>()<sp/>=<sp/></highlight><highlight class="keywordflow">default</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight></codeline>
+<codeline lineno="81" refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a1b5210b89fb0c714bd330c3d231c9116" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::vector&lt;PoseResult&gt;<sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a1b5210b89fb0c714bd330c3d231c9116" kindref="member">detect</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>cv::Mat&amp;<sp/>image,</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>confThreshold<sp/>=<sp/>0.4f,</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>iouThreshold<sp/>=<sp/>0.5f)<sp/>{</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Optimized<sp/>preprocessing<sp/>with<sp/>buffer<sp/>reuse</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cv::Size<sp/>actualSize;</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespaceyolos_1_1preprocessing_1a489cf4511f0b08f7457401a9acdea75d" kindref="member">preprocessing::letterBoxToBlob</ref>(image,<sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1ac87d9ace13bbb462f18eb392c35cabf0" kindref="member">buffer_</ref>,<sp/><ref refid="classyolos_1_1OrtSessionBase_1abfbb75048b68bfadcfbb5fd29c9be55d" kindref="member">inputShape_</ref>,<sp/>actualSize,<sp/><ref refid="classyolos_1_1OrtSessionBase_1a15be4c2ddac39ccc90a1170fbae15786" kindref="member">isDynamicInputShape_</ref>);</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Create<sp/>input<sp/>tensor<sp/>(uses<sp/>pre-allocated<sp/>blob)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;int64_t&gt;<sp/>inputTensorShape<sp/>=<sp/>{1,<sp/>3,<sp/>actualSize.height,<sp/>actualSize.width};</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Ort::Value<sp/>inputTensor<sp/>=<sp/><ref refid="classyolos_1_1OrtSessionBase_1a4d9b7b6b9923511d7a4df70dc2276581" kindref="member">createInputTensor</ref>(<ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1ac87d9ace13bbb462f18eb392c35cabf0" kindref="member">buffer_</ref>.<ref refid="structyolos_1_1preprocessing_1_1InferenceBuffer_1afbecaa236caabcb607ec21634bdeb7de" kindref="member">blob</ref>.data(),<sp/>inputTensorShape);</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"></highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Run<sp/>inference</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;Ort::Value&gt;<sp/>outputTensors<sp/>=<sp/><ref refid="classyolos_1_1OrtSessionBase_1a8318858109b6bfb9c7ee61b96b1c70c6" kindref="member">runInference</ref>(inputTensor);</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"></highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Postprocess</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a3cf1c5f33c607ed75d50433f7094e8f5" kindref="member">postprocess</ref>(image.size(),<sp/>actualSize,<sp/>outputTensors,<sp/>confThreshold,<sp/>iouThreshold);</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"></highlight></codeline>
+<codeline lineno="105" refid="classyolos_1_1pose_1_1YOLOPoseDetector_1aeba5940bb4c5fd01ed93b9d957d9858d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1aeba5940bb4c5fd01ed93b9d957d9858d" kindref="member">drawPoses</ref>(cv::Mat&amp;<sp/>image,</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;PoseResult&gt;&amp;<sp/>results,</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>kptRadius<sp/>=<sp/>4,</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>kptThreshold<sp/>=<sp/>0.5f,</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>lineThickness<sp/>=<sp/>2)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>pose<sp/>:<sp/>results)<sp/>{</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Draw<sp/>bounding<sp/>box</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="113"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cv::rectangle(image,</highlight></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cv::Point(pose.box.x,<sp/>pose.box.y),</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cv::Point(pose.box.x<sp/>+<sp/>pose.box.width,<sp/>pose.box.y<sp/>+<sp/>pose.box.height),</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cv::Scalar(0,<sp/>255,<sp/>0),<sp/>lineThickness);</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"></highlight></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Draw<sp/>keypoints<sp/>and<sp/>skeleton</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespaceyolos_1_1drawing_1a41292119e70c24aafd29d10a037948f3" kindref="member">drawing::drawPoseSkeleton</ref>(image,<sp/>pose.keypoints,<sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a353f088597a4ad6af93d4064d6ae6796" kindref="member">getPoseSkeleton</ref>(),</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>kptRadius,<sp/>kptThreshold,<sp/>lineThickness);</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"></highlight></codeline>
+<codeline lineno="125" refid="classyolos_1_1pose_1_1YOLOPoseDetector_1af4a68fa837ec9aa2b87c87c2c4ba6fe7" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1af4a68fa837ec9aa2b87c87c2c4ba6fe7" kindref="member">drawSkeletonsOnly</ref>(cv::Mat&amp;<sp/>image,</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;PoseResult&gt;&amp;<sp/>results,</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>kptRadius<sp/>=<sp/>4,</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>kptThreshold<sp/>=<sp/>0.5f,</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>lineThickness<sp/>=<sp/>2)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>pose<sp/>:<sp/>results)<sp/>{</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespaceyolos_1_1drawing_1a41292119e70c24aafd29d10a037948f3" kindref="member">drawing::drawPoseSkeleton</ref>(image,<sp/>pose.keypoints,<sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a353f088597a4ad6af93d4064d6ae6796" kindref="member">getPoseSkeleton</ref>(),</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>kptRadius,<sp/>kptThreshold,<sp/>lineThickness);</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"></highlight></codeline>
+<codeline lineno="137" refid="classyolos_1_1pose_1_1YOLOPoseDetector_1acdb69eaabd517c5ef202870e15a21032" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>[[nodiscard]]<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::string&gt;&amp;<sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1acdb69eaabd517c5ef202870e15a21032" kindref="member">getClassNames</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1ac2021527f3a7623731c942bfa70f95c1" kindref="member">classNames_</ref>;<sp/>}</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"></highlight></codeline>
+<codeline lineno="140" refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a353f088597a4ad6af93d4064d6ae6796" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>[[nodiscard]]<sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::pair&lt;int,<sp/>int&gt;&gt;&amp;<sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a353f088597a4ad6af93d4064d6ae6796" kindref="member">getPoseSkeleton</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::pair&lt;int,<sp/>int&gt;&gt;<sp/>skeleton<sp/>=<sp/>{</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{0,<sp/>1},<sp/>{0,<sp/>2},<sp/>{1,<sp/>3},<sp/>{2,<sp/>4},<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Face</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{3,<sp/>5},<sp/>{4,<sp/>6},<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Head<sp/>to<sp/>shoulders</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{5,<sp/>7},<sp/>{7,<sp/>9},<sp/>{6,<sp/>8},<sp/>{8,<sp/>10},<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Arms</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{5,<sp/>6},<sp/>{5,<sp/>11},<sp/>{6,<sp/>12},<sp/>{11,<sp/>12},<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Body</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{11,<sp/>13},<sp/>{13,<sp/>15},<sp/>{12,<sp/>14},<sp/>{14,<sp/>16}<sp/></highlight><highlight class="comment">//<sp/>Legs</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>skeleton;</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"></highlight></codeline>
+<codeline lineno="151"><highlight class="normal"></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="152" refid="classyolos_1_1pose_1_1YOLOPoseDetector_1ac2021527f3a7623731c942bfa70f95c1" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::vector&lt;std::string&gt;<sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1ac2021527f3a7623731c942bfa70f95c1" kindref="member">classNames_</ref>;</highlight></codeline>
+<codeline lineno="153" refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a5c1fb0daa38441b217f5f2d88748058c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::vector&lt;cv::Scalar&gt;<sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a5c1fb0daa38441b217f5f2d88748058c" kindref="member">classColors_</ref>;</highlight></codeline>
+<codeline lineno="154" refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a9ffc4f34b553dd5442a5f66072320ab2" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>constexpr<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a9ffc4f34b553dd5442a5f66072320ab2" kindref="member">NUM_KEYPOINTS</ref><sp/>=<sp/>17;</highlight></codeline>
+<codeline lineno="155" refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a44c03120272e7dfeee24504da58c295c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>constexpr<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a44c03120272e7dfeee24504da58c295c" kindref="member">FEATURES_PER_KEYPOINT</ref><sp/>=<sp/>3;</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="157"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Pre-allocated<sp/>buffer<sp/>for<sp/>inference</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="158" refid="classyolos_1_1pose_1_1YOLOPoseDetector_1ac87d9ace13bbb462f18eb392c35cabf0" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">mutable</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1preprocessing_1_1InferenceBuffer" kindref="compound">preprocessing::InferenceBuffer</ref><sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1ac87d9ace13bbb462f18eb392c35cabf0" kindref="member">buffer_</ref>;</highlight></codeline>
+<codeline lineno="159"><highlight class="normal"></highlight></codeline>
+<codeline lineno="161" refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a3cf1c5f33c607ed75d50433f7094e8f5" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::vector&lt;PoseResult&gt;<sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a3cf1c5f33c607ed75d50433f7094e8f5" kindref="member">postprocess</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>cv::Size&amp;<sp/>originalSize,</highlight></codeline>
+<codeline lineno="162"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>cv::Size&amp;<sp/>resizedShape,</highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;Ort::Value&gt;&amp;<sp/>outputTensors,</highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>confThreshold,</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>iouThreshold)<sp/>{</highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal">*<sp/>rawOutput<sp/>=<sp/>outputTensors[0].GetTensorData&lt;</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">&gt;();</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int64_t&gt;<sp/>outputShape<sp/>=<sp/>outputTensors[0].GetTensorTypeAndShapeInfo().GetShape();</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"></highlight></codeline>
+<codeline lineno="169"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Detect<sp/>output<sp/>format<sp/>based<sp/>on<sp/>shape:</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>YOLOv8/v11:<sp/>[1,<sp/>56,<sp/>num_detections]<sp/>-<sp/>requires<sp/>NMS</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>YOLO26:<sp/><sp/><sp/><sp/><sp/>[1,<sp/>300,<sp/>57]<sp/>-<sp/>end-to-end,<sp/>NMS-free</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>expectedFeaturesV8<sp/>=<sp/>4<sp/>+<sp/>1<sp/>+<sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a9ffc4f34b553dd5442a5f66072320ab2" kindref="member">NUM_KEYPOINTS</ref><sp/>*<sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a44c03120272e7dfeee24504da58c295c" kindref="member">FEATURES_PER_KEYPOINT</ref>;<sp/><sp/></highlight><highlight class="comment">//<sp/>56</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>expectedFeaturesV26<sp/>=<sp/>4<sp/>+<sp/>1<sp/>+<sp/>1<sp/>+<sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a9ffc4f34b553dd5442a5f66072320ab2" kindref="member">NUM_KEYPOINTS</ref><sp/>*<sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a44c03120272e7dfeee24504da58c295c" kindref="member">FEATURES_PER_KEYPOINT</ref>;<sp/><sp/></highlight><highlight class="comment">//<sp/>57</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="174"><highlight class="normal"></highlight></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(outputShape.size()<sp/>==<sp/>3<sp/>&amp;&amp;<sp/>outputShape[2]<sp/>==<sp/>expectedFeaturesV26)<sp/>{</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>YOLO26<sp/>end-to-end<sp/>format:<sp/>[1,<sp/>num_detections,<sp/>57]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="177"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a6e171c96fff8c3931c6ae6d0318eb03d" kindref="member">postprocessV26</ref>(originalSize,<sp/>resizedShape,<sp/>rawOutput,<sp/>outputShape,<sp/>confThreshold);</highlight></codeline>
+<codeline lineno="178"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(outputShape.size()<sp/>==<sp/>3<sp/>&amp;&amp;<sp/>outputShape[1]<sp/>==<sp/>expectedFeaturesV8)<sp/>{</highlight></codeline>
+<codeline lineno="179"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>YOLOv8/v11<sp/>format:<sp/>[1,<sp/>56,<sp/>num_detections]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="180"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1aeea45dc550effbaebc49f0cc970e718c" kindref="member">postprocessV8</ref>(originalSize,<sp/>resizedShape,<sp/>rawOutput,<sp/>outputShape,<sp/>confThreshold,<sp/>iouThreshold);</highlight></codeline>
+<codeline lineno="181"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="182"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::cerr<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;[ERROR]<sp/>Unsupported<sp/>pose<sp/>model<sp/>output<sp/>shape:<sp/>[&quot;</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline lineno="183"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/>outputShape[0]<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;,<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>outputShape[1]<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;,<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>outputShape[2]<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;]&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+<codeline lineno="184"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>{};</highlight></codeline>
+<codeline lineno="185"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="186"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="187"><highlight class="normal"></highlight></codeline>
+<codeline lineno="189" refid="classyolos_1_1pose_1_1YOLOPoseDetector_1aeea45dc550effbaebc49f0cc970e718c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::vector&lt;PoseResult&gt;<sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1aeea45dc550effbaebc49f0cc970e718c" kindref="member">postprocessV8</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>cv::Size&amp;<sp/>originalSize,</highlight></codeline>
+<codeline lineno="190"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>cv::Size&amp;<sp/>resizedShape,</highlight></codeline>
+<codeline lineno="191"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal">*<sp/>rawOutput,</highlight></codeline>
+<codeline lineno="192"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int64_t&gt;&amp;<sp/>outputShape,</highlight></codeline>
+<codeline lineno="193"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>confThreshold,</highlight></codeline>
+<codeline lineno="194"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>iouThreshold)<sp/>{</highlight></codeline>
+<codeline lineno="195"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;PoseResult&gt;<sp/>results;</highlight></codeline>
+<codeline lineno="196"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="197"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>numDetections<sp/>=<sp/>outputShape[2];</highlight></codeline>
+<codeline lineno="198"><highlight class="normal"></highlight></codeline>
+<codeline lineno="199"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Pre-compute<sp/>scale<sp/>and<sp/>padding</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="200"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>scale,<sp/>padX,<sp/>padY;</highlight></codeline>
+<codeline lineno="201"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespaceyolos_1_1preprocessing_1a06d539e568c7b9bbe5351ad45f9f76cb" kindref="member">preprocessing::getScalePad</ref>(originalSize,<sp/>resizedShape,<sp/>scale,<sp/>padX,<sp/>padY);</highlight></codeline>
+<codeline lineno="202"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>invScale<sp/>=<sp/>1.0f<sp/>/<sp/>scale;</highlight></codeline>
+<codeline lineno="203"><highlight class="normal"></highlight></codeline>
+<codeline lineno="204"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;BoundingBox&gt;<sp/>boxes;</highlight></codeline>
+<codeline lineno="205"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;float&gt;<sp/>confidences;</highlight></codeline>
+<codeline lineno="206"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;std::vector&lt;KeyPoint&gt;&gt;<sp/>allKeypoints;</highlight></codeline>
+<codeline lineno="207"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>boxes.reserve(64);</highlight></codeline>
+<codeline lineno="208"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>confidences.reserve(64);</highlight></codeline>
+<codeline lineno="209"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>allKeypoints.reserve(64);</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"></highlight></codeline>
+<codeline lineno="211"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>d<sp/>=<sp/>0;<sp/>d<sp/>&lt;<sp/>numDetections;<sp/>++d)<sp/>{</highlight></codeline>
+<codeline lineno="212"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>objConfidence<sp/>=<sp/>rawOutput[4<sp/>*<sp/>numDetections<sp/>+<sp/>d];</highlight></codeline>
+<codeline lineno="213"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(objConfidence<sp/>&lt;<sp/>confThreshold)<sp/></highlight><highlight class="keywordflow">continue</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="214"><highlight class="normal"></highlight></codeline>
+<codeline lineno="215"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Decode<sp/>bounding<sp/>box<sp/>(cx,<sp/>cy,<sp/>w,<sp/>h<sp/>format)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="216"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>cx<sp/>=<sp/>rawOutput[0<sp/>*<sp/>numDetections<sp/>+<sp/>d];</highlight></codeline>
+<codeline lineno="217"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>cy<sp/>=<sp/>rawOutput[1<sp/>*<sp/>numDetections<sp/>+<sp/>d];</highlight></codeline>
+<codeline lineno="218"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>w<sp/>=<sp/>rawOutput[2<sp/>*<sp/>numDetections<sp/>+<sp/>d];</highlight></codeline>
+<codeline lineno="219"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>h<sp/>=<sp/>rawOutput[3<sp/>*<sp/>numDetections<sp/>+<sp/>d];</highlight></codeline>
+<codeline lineno="220"><highlight class="normal"></highlight></codeline>
+<codeline lineno="221"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Convert<sp/>to<sp/>original<sp/>image<sp/>coordinates</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="222"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref><sp/>box;</highlight></codeline>
+<codeline lineno="223"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>box.<ref refid="structyolos_1_1BoundingBox_1ad85f3e95f2ad795be5f2bd12041b10dc" kindref="member">x</ref><sp/>=<sp/><ref refid="namespaceyolos_1_1utils_1a0543823fd9643950db69da37be2f85c8" kindref="member">utils::clamp</ref>(</highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">((cx<sp/>-<sp/>w<sp/>*<sp/>0.5f<sp/>-<sp/>padX)<sp/>*<sp/>invScale),<sp/>0,<sp/>originalSize.width<sp/>-<sp/>1);</highlight></codeline>
+<codeline lineno="224"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>box.<ref refid="structyolos_1_1BoundingBox_1a731835604aace04fdf6f23a5f8c2ae68" kindref="member">y</ref><sp/>=<sp/><ref refid="namespaceyolos_1_1utils_1a0543823fd9643950db69da37be2f85c8" kindref="member">utils::clamp</ref>(</highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">((cy<sp/>-<sp/>h<sp/>*<sp/>0.5f<sp/>-<sp/>padY)<sp/>*<sp/>invScale),<sp/>0,<sp/>originalSize.height<sp/>-<sp/>1);</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>box.<ref refid="structyolos_1_1BoundingBox_1a464109f4a375d2077c90a80982a3d6c2" kindref="member">width</ref><sp/>=<sp/><ref refid="namespaceyolos_1_1utils_1a0543823fd9643950db69da37be2f85c8" kindref="member">utils::clamp</ref>(</highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(w<sp/>*<sp/>invScale),<sp/>1,<sp/>originalSize.width<sp/>-<sp/>box.<ref refid="structyolos_1_1BoundingBox_1ad85f3e95f2ad795be5f2bd12041b10dc" kindref="member">x</ref>);</highlight></codeline>
+<codeline lineno="226"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>box.<ref refid="structyolos_1_1BoundingBox_1ac3dbce0d7173115e8f10aa0c2e319193" kindref="member">height</ref><sp/>=<sp/><ref refid="namespaceyolos_1_1utils_1a0543823fd9643950db69da37be2f85c8" kindref="member">utils::clamp</ref>(</highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(h<sp/>*<sp/>invScale),<sp/>1,<sp/>originalSize.height<sp/>-<sp/>box.<ref refid="structyolos_1_1BoundingBox_1a731835604aace04fdf6f23a5f8c2ae68" kindref="member">y</ref>);</highlight></codeline>
+<codeline lineno="227"><highlight class="normal"></highlight></codeline>
+<codeline lineno="228"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Extract<sp/>keypoints</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="229"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;KeyPoint&gt;<sp/>keypoints;</highlight></codeline>
+<codeline lineno="230"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>keypoints.reserve(<ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a9ffc4f34b553dd5442a5f66072320ab2" kindref="member">NUM_KEYPOINTS</ref>);</highlight></codeline>
+<codeline lineno="231"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k<sp/>=<sp/>0;<sp/>k<sp/>&lt;<sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a9ffc4f34b553dd5442a5f66072320ab2" kindref="member">NUM_KEYPOINTS</ref>;<sp/>++k)<sp/>{</highlight></codeline>
+<codeline lineno="232"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>offset<sp/>=<sp/>5<sp/>+<sp/>k<sp/>*<sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a44c03120272e7dfeee24504da58c295c" kindref="member">FEATURES_PER_KEYPOINT</ref>;</highlight></codeline>
+<codeline lineno="233"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structyolos_1_1KeyPoint" kindref="compound">KeyPoint</ref><sp/>kpt;</highlight></codeline>
+<codeline lineno="234"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>kpt.<ref refid="structyolos_1_1KeyPoint_1a30f19e6f1820d7f35d863acdc7b98ed8" kindref="member">x</ref><sp/>=<sp/>(rawOutput[offset<sp/>*<sp/>numDetections<sp/>+<sp/>d]<sp/>-<sp/>padX)<sp/>*<sp/>invScale;</highlight></codeline>
+<codeline lineno="235"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>kpt.<ref refid="structyolos_1_1KeyPoint_1af1867e7c7f6318dc2ad5346527f096e9" kindref="member">y</ref><sp/>=<sp/>(rawOutput[(offset<sp/>+<sp/>1)<sp/>*<sp/>numDetections<sp/>+<sp/>d]<sp/>-<sp/>padY)<sp/>*<sp/>invScale;</highlight></codeline>
+<codeline lineno="236"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>rawConf<sp/>=<sp/>rawOutput[(offset<sp/>+<sp/>2)<sp/>*<sp/>numDetections<sp/>+<sp/>d];</highlight></codeline>
+<codeline lineno="237"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>kpt.<ref refid="structyolos_1_1KeyPoint_1a1662158f8886fb6e9464f2bdaf3fc5da" kindref="member">confidence</ref><sp/>=<sp/>1.0f<sp/>/<sp/>(1.0f<sp/>+<sp/>std::exp(-rawConf));<sp/></highlight><highlight class="comment">//<sp/>Sigmoid</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="238"><highlight class="normal"></highlight></codeline>
+<codeline lineno="239"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Clip<sp/>keypoints<sp/>to<sp/>image<sp/>boundaries</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="240"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>kpt.<ref refid="structyolos_1_1KeyPoint_1a30f19e6f1820d7f35d863acdc7b98ed8" kindref="member">x</ref><sp/>=<sp/><ref refid="namespaceyolos_1_1utils_1a0543823fd9643950db69da37be2f85c8" kindref="member">utils::clamp</ref>(kpt.<ref refid="structyolos_1_1KeyPoint_1a30f19e6f1820d7f35d863acdc7b98ed8" kindref="member">x</ref>,<sp/>0.0f,<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">float</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(originalSize.width<sp/>-<sp/>1));</highlight></codeline>
+<codeline lineno="241"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>kpt.<ref refid="structyolos_1_1KeyPoint_1af1867e7c7f6318dc2ad5346527f096e9" kindref="member">y</ref><sp/>=<sp/><ref refid="namespaceyolos_1_1utils_1a0543823fd9643950db69da37be2f85c8" kindref="member">utils::clamp</ref>(kpt.<ref refid="structyolos_1_1KeyPoint_1af1867e7c7f6318dc2ad5346527f096e9" kindref="member">y</ref>,<sp/>0.0f,<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">float</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(originalSize.height<sp/>-<sp/>1));</highlight></codeline>
+<codeline lineno="242"><highlight class="normal"></highlight></codeline>
+<codeline lineno="243"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>keypoints.push_back(kpt);</highlight></codeline>
+<codeline lineno="244"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="245"><highlight class="normal"></highlight></codeline>
+<codeline lineno="246"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>boxes.push_back(box);</highlight></codeline>
+<codeline lineno="247"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>confidences.push_back(objConfidence);</highlight></codeline>
+<codeline lineno="248"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>allKeypoints.push_back(std::move(keypoints));</highlight></codeline>
+<codeline lineno="249"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="250"><highlight class="normal"></highlight></codeline>
+<codeline lineno="251"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(boxes.empty())<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>results;</highlight></codeline>
+<codeline lineno="252"><highlight class="normal"></highlight></codeline>
+<codeline lineno="253"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Apply<sp/>NMS</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="254"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;int&gt;<sp/>indices;</highlight></codeline>
+<codeline lineno="255"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespaceyolos_1_1nms_1add93ce1526def5881f2c927e737ffe0d" kindref="member">nms::NMSBoxes</ref>(boxes,<sp/>confidences,<sp/>confThreshold,<sp/>iouThreshold,<sp/>indices);</highlight></codeline>
+<codeline lineno="256"><highlight class="normal"></highlight></codeline>
+<codeline lineno="257"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>results.reserve(indices.size());</highlight></codeline>
+<codeline lineno="258"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>idx<sp/>:<sp/>indices)<sp/>{</highlight></codeline>
+<codeline lineno="259"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>results.emplace_back(boxes[idx],<sp/>confidences[idx],<sp/>0,<sp/>allKeypoints[idx]);</highlight></codeline>
+<codeline lineno="260"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="261"><highlight class="normal"></highlight></codeline>
+<codeline lineno="262"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>results;</highlight></codeline>
+<codeline lineno="263"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="264"><highlight class="normal"></highlight></codeline>
+<codeline lineno="266" refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a6e171c96fff8c3931c6ae6d0318eb03d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::vector&lt;PoseResult&gt;<sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a6e171c96fff8c3931c6ae6d0318eb03d" kindref="member">postprocessV26</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>cv::Size&amp;<sp/>originalSize,</highlight></codeline>
+<codeline lineno="267"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>cv::Size&amp;<sp/>resizedShape,</highlight></codeline>
+<codeline lineno="268"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal">*<sp/>rawOutput,</highlight></codeline>
+<codeline lineno="269"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;int64_t&gt;&amp;<sp/>outputShape,</highlight></codeline>
+<codeline lineno="270"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>confThreshold)<sp/>{</highlight></codeline>
+<codeline lineno="271"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;PoseResult&gt;<sp/>results;</highlight></codeline>
+<codeline lineno="272"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="273"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>numDetections<sp/>=<sp/>outputShape[1];<sp/><sp/></highlight><highlight class="comment">//<sp/>300</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="274"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>numFeatures<sp/>=<sp/>outputShape[2];<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>57</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="275"><highlight class="normal"></highlight></codeline>
+<codeline lineno="276"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Pre-compute<sp/>scale<sp/>and<sp/>padding</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="277"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>scale,<sp/>padX,<sp/>padY;</highlight></codeline>
+<codeline lineno="278"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespaceyolos_1_1preprocessing_1a06d539e568c7b9bbe5351ad45f9f76cb" kindref="member">preprocessing::getScalePad</ref>(originalSize,<sp/>resizedShape,<sp/>scale,<sp/>padX,<sp/>padY);</highlight></codeline>
+<codeline lineno="279"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>invScale<sp/>=<sp/>1.0f<sp/>/<sp/>scale;</highlight></codeline>
+<codeline lineno="280"><highlight class="normal"></highlight></codeline>
+<codeline lineno="281"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>d<sp/>=<sp/>0;<sp/>d<sp/>&lt;<sp/>numDetections;<sp/>++d)<sp/>{</highlight></codeline>
+<codeline lineno="282"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>base<sp/>=<sp/>d<sp/>*<sp/>numFeatures;</highlight></codeline>
+<codeline lineno="283"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="284"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>YOLO26<sp/>format:<sp/>[x1,<sp/>y1,<sp/>x2,<sp/>y2,<sp/>conf,<sp/>class_id,<sp/>kpt1_x,<sp/>kpt1_y,<sp/>kpt1_conf,<sp/>...]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="285"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>x1<sp/>=<sp/>rawOutput[base<sp/>+<sp/>0];</highlight></codeline>
+<codeline lineno="286"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>y1<sp/>=<sp/>rawOutput[base<sp/>+<sp/>1];</highlight></codeline>
+<codeline lineno="287"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>x2<sp/>=<sp/>rawOutput[base<sp/>+<sp/>2];</highlight></codeline>
+<codeline lineno="288"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>y2<sp/>=<sp/>rawOutput[base<sp/>+<sp/>3];</highlight></codeline>
+<codeline lineno="289"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>conf<sp/>=<sp/>rawOutput[base<sp/>+<sp/>4];</highlight></codeline>
+<codeline lineno="290"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>const<sp/>int<sp/>classId<sp/>=<sp/>static_cast&lt;int&gt;(rawOutput[base<sp/>+<sp/>5]);<sp/><sp/>//<sp/>Always<sp/>0<sp/>for<sp/>person</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="291"><highlight class="normal"></highlight></codeline>
+<codeline lineno="292"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(conf<sp/>&lt;<sp/>confThreshold)<sp/></highlight><highlight class="keywordflow">continue</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="293"><highlight class="normal"></highlight></codeline>
+<codeline lineno="294"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Convert<sp/>to<sp/>original<sp/>image<sp/>coordinates</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="295"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref><sp/>box;</highlight></codeline>
+<codeline lineno="296"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>box.<ref refid="structyolos_1_1BoundingBox_1ad85f3e95f2ad795be5f2bd12041b10dc" kindref="member">x</ref><sp/>=<sp/><ref refid="namespaceyolos_1_1utils_1a0543823fd9643950db69da37be2f85c8" kindref="member">utils::clamp</ref>(</highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">((x1<sp/>-<sp/>padX)<sp/>*<sp/>invScale),<sp/>0,<sp/>originalSize.width<sp/>-<sp/>1);</highlight></codeline>
+<codeline lineno="297"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>box.<ref refid="structyolos_1_1BoundingBox_1a731835604aace04fdf6f23a5f8c2ae68" kindref="member">y</ref><sp/>=<sp/><ref refid="namespaceyolos_1_1utils_1a0543823fd9643950db69da37be2f85c8" kindref="member">utils::clamp</ref>(</highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">((y1<sp/>-<sp/>padY)<sp/>*<sp/>invScale),<sp/>0,<sp/>originalSize.height<sp/>-<sp/>1);</highlight></codeline>
+<codeline lineno="298"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>x2_scaled<sp/>=<sp/><ref refid="namespaceyolos_1_1utils_1a0543823fd9643950db69da37be2f85c8" kindref="member">utils::clamp</ref>(</highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">((x2<sp/>-<sp/>padX)<sp/>*<sp/>invScale),<sp/>0,<sp/>originalSize.width<sp/>-<sp/>1);</highlight></codeline>
+<codeline lineno="299"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>y2_scaled<sp/>=<sp/><ref refid="namespaceyolos_1_1utils_1a0543823fd9643950db69da37be2f85c8" kindref="member">utils::clamp</ref>(</highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">((y2<sp/>-<sp/>padY)<sp/>*<sp/>invScale),<sp/>0,<sp/>originalSize.height<sp/>-<sp/>1);</highlight></codeline>
+<codeline lineno="300"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>box.<ref refid="structyolos_1_1BoundingBox_1a464109f4a375d2077c90a80982a3d6c2" kindref="member">width</ref><sp/>=<sp/>std::max(1,<sp/>x2_scaled<sp/>-<sp/>box.<ref refid="structyolos_1_1BoundingBox_1ad85f3e95f2ad795be5f2bd12041b10dc" kindref="member">x</ref>);</highlight></codeline>
+<codeline lineno="301"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>box.<ref refid="structyolos_1_1BoundingBox_1ac3dbce0d7173115e8f10aa0c2e319193" kindref="member">height</ref><sp/>=<sp/>std::max(1,<sp/>y2_scaled<sp/>-<sp/>box.<ref refid="structyolos_1_1BoundingBox_1a731835604aace04fdf6f23a5f8c2ae68" kindref="member">y</ref>);</highlight></codeline>
+<codeline lineno="302"><highlight class="normal"></highlight></codeline>
+<codeline lineno="303"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Extract<sp/>keypoints<sp/>(starting<sp/>at<sp/>index<sp/>6)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="304"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;KeyPoint&gt;<sp/>keypoints;</highlight></codeline>
+<codeline lineno="305"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>keypoints.reserve(<ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a9ffc4f34b553dd5442a5f66072320ab2" kindref="member">NUM_KEYPOINTS</ref>);</highlight></codeline>
+<codeline lineno="306"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k<sp/>=<sp/>0;<sp/>k<sp/>&lt;<sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a9ffc4f34b553dd5442a5f66072320ab2" kindref="member">NUM_KEYPOINTS</ref>;<sp/>++k)<sp/>{</highlight></codeline>
+<codeline lineno="307"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>kptBase<sp/>=<sp/>base<sp/>+<sp/>6<sp/>+<sp/>k<sp/>*<sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a44c03120272e7dfeee24504da58c295c" kindref="member">FEATURES_PER_KEYPOINT</ref>;</highlight></codeline>
+<codeline lineno="308"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structyolos_1_1KeyPoint" kindref="compound">KeyPoint</ref><sp/>kpt;</highlight></codeline>
+<codeline lineno="309"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>kpt.<ref refid="structyolos_1_1KeyPoint_1a30f19e6f1820d7f35d863acdc7b98ed8" kindref="member">x</ref><sp/>=<sp/>(rawOutput[kptBase<sp/>+<sp/>0]<sp/>-<sp/>padX)<sp/>*<sp/>invScale;</highlight></codeline>
+<codeline lineno="310"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>kpt.<ref refid="structyolos_1_1KeyPoint_1af1867e7c7f6318dc2ad5346527f096e9" kindref="member">y</ref><sp/>=<sp/>(rawOutput[kptBase<sp/>+<sp/>1]<sp/>-<sp/>padY)<sp/>*<sp/>invScale;</highlight></codeline>
+<codeline lineno="311"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>kpt.<ref refid="structyolos_1_1KeyPoint_1a1662158f8886fb6e9464f2bdaf3fc5da" kindref="member">confidence</ref><sp/>=<sp/>rawOutput[kptBase<sp/>+<sp/>2];<sp/><sp/></highlight><highlight class="comment">//<sp/>Already<sp/>sigmoid-applied<sp/>in<sp/>end-to-end</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="312"><highlight class="normal"></highlight></codeline>
+<codeline lineno="313"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Clip<sp/>keypoints<sp/>to<sp/>image<sp/>boundaries</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="314"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>kpt.<ref refid="structyolos_1_1KeyPoint_1a30f19e6f1820d7f35d863acdc7b98ed8" kindref="member">x</ref><sp/>=<sp/><ref refid="namespaceyolos_1_1utils_1a0543823fd9643950db69da37be2f85c8" kindref="member">utils::clamp</ref>(kpt.<ref refid="structyolos_1_1KeyPoint_1a30f19e6f1820d7f35d863acdc7b98ed8" kindref="member">x</ref>,<sp/>0.0f,<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">float</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(originalSize.width<sp/>-<sp/>1));</highlight></codeline>
+<codeline lineno="315"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>kpt.<ref refid="structyolos_1_1KeyPoint_1af1867e7c7f6318dc2ad5346527f096e9" kindref="member">y</ref><sp/>=<sp/><ref refid="namespaceyolos_1_1utils_1a0543823fd9643950db69da37be2f85c8" kindref="member">utils::clamp</ref>(kpt.<ref refid="structyolos_1_1KeyPoint_1af1867e7c7f6318dc2ad5346527f096e9" kindref="member">y</ref>,<sp/>0.0f,<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">float</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(originalSize.height<sp/>-<sp/>1));</highlight></codeline>
+<codeline lineno="316"><highlight class="normal"></highlight></codeline>
+<codeline lineno="317"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>keypoints.push_back(kpt);</highlight></codeline>
+<codeline lineno="318"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="319"><highlight class="normal"></highlight></codeline>
+<codeline lineno="320"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>results.emplace_back(box,<sp/>conf,<sp/>0,<sp/>std::move(keypoints));</highlight></codeline>
+<codeline lineno="321"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="322"><highlight class="normal"></highlight></codeline>
+<codeline lineno="323"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>results;</highlight></codeline>
+<codeline lineno="324"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="325"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="326"><highlight class="normal"></highlight></codeline>
+<codeline lineno="327"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>pose</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="328"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>yolos</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="include/yolos/tasks/pose.hpp"/>
+  </compounddef>
+</doxygen>

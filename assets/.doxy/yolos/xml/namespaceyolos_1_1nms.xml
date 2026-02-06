@@ -1,0 +1,481 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="namespaceyolos_1_1nms" kind="namespace" language="C++">
+    <compoundname>yolos::nms</compoundname>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespaceyolos_1_1nms_1add93ce1526def5881f2c927e737ffe0d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::nms::NMSBoxes</definition>
+        <argsstring>(const std::vector&lt; BoundingBox &gt; &amp;boxes, const std::vector&lt; float &gt; &amp;scores, float scoreThreshold, float nmsThreshold, std::vector&lt; int &gt; &amp;indices)</argsstring>
+        <name>NMSBoxes</name>
+        <param>
+          <type>const std::vector&lt; <ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref> &gt; &amp;</type>
+          <declname>boxes</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; float &gt; &amp;</type>
+          <declname>scores</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>scoreThreshold</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>nmsThreshold</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; int &gt; &amp;</type>
+          <declname>indices</declname>
+        </param>
+        <briefdescription>
+<para>Perform Non-Maximum Suppression on bounding boxes. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>boxes</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector of bounding boxes </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>scores</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector of confidence scores </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>scoreThreshold</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Minimum score to consider </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>nmsThreshold</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IoU threshold for suppression </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">indices</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output indices of boxes that survived NMS </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/nms.hpp" line="33" column="13" bodyfile="include/yolos/core/nms.hpp" bodystart="33" bodyend="114"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1nms_1aea1f97258067215d5c40cb4608805708" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::nms::NMSBoxesF</definition>
+        <argsstring>(const std::vector&lt; cv::Rect2f &gt; &amp;boxes, const std::vector&lt; float &gt; &amp;scores, float scoreThreshold, float nmsThreshold, std::vector&lt; int &gt; &amp;indices)</argsstring>
+        <name>NMSBoxesF</name>
+        <param>
+          <type>const std::vector&lt; cv::Rect2f &gt; &amp;</type>
+          <declname>boxes</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; float &gt; &amp;</type>
+          <declname>scores</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>scoreThreshold</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>nmsThreshold</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; int &gt; &amp;</type>
+          <declname>indices</declname>
+        </param>
+        <briefdescription>
+<para>Perform NMS on float-precision bounding boxes (for letterbox space) </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>boxes</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector of cv::Rect2f boxes </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>scores</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector of confidence scores </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>scoreThreshold</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Minimum score to consider </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>nmsThreshold</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IoU threshold for suppression </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">indices</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output indices of boxes that survived NMS </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/nms.hpp" line="126" column="13" bodyfile="include/yolos/core/nms.hpp" bodystart="126" bodyend="207"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1nms_1a2dd9a57036fa5c21d1c46e898d77e966" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::nms::NMSBoxesFBatched</definition>
+        <argsstring>(const std::vector&lt; cv::Rect2f &gt; &amp;boxes, const std::vector&lt; float &gt; &amp;scores, const std::vector&lt; int &gt; &amp;classIds, float scoreThreshold, float nmsThreshold, std::vector&lt; int &gt; &amp;indices)</argsstring>
+        <name>NMSBoxesFBatched</name>
+        <param>
+          <type>const std::vector&lt; cv::Rect2f &gt; &amp;</type>
+          <declname>boxes</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; float &gt; &amp;</type>
+          <declname>scores</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; int &gt; &amp;</type>
+          <declname>classIds</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>scoreThreshold</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>nmsThreshold</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; int &gt; &amp;</type>
+          <declname>indices</declname>
+        </param>
+        <briefdescription>
+<para>Perform class-aware NMS on float-precision boxes. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/nms.hpp" line="210" column="13" bodyfile="include/yolos/core/nms.hpp" bodystart="210" bodyend="227"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1nms_1acf9f49eef3d2fdfce4434e9412ad8cf8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>float</type>
+        <definition>float yolos::nms::computeRotatedIoU</definition>
+        <argsstring>(const OrientedBoundingBox &amp;box1, const OrientedBoundingBox &amp;box2)</argsstring>
+        <name>computeRotatedIoU</name>
+        <param>
+          <type>const <ref refid="structyolos_1_1OrientedBoundingBox" kindref="compound">OrientedBoundingBox</ref> &amp;</type>
+          <declname>box1</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structyolos_1_1OrientedBoundingBox" kindref="compound">OrientedBoundingBox</ref> &amp;</type>
+          <declname>box2</declname>
+        </param>
+        <briefdescription>
+<para>Compute IoU between two oriented bounding boxes using OpenCV. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>box1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>First oriented bounding box </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>box2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Second oriented bounding box </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>IoU value between 0 and 1 </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/nms.hpp" line="237" column="14" bodyfile="include/yolos/core/nms.hpp" bodystart="237" bodyend="273"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1nms_1a5bd7890cd771b4385007cb3989cf485b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; int &gt;</type>
+        <definition>std::vector&lt;int&gt; yolos::nms::NMSRotated</definition>
+        <argsstring>(const std::vector&lt; OrientedBoundingBox &gt; &amp;boxes, const std::vector&lt; float &gt; &amp;scores, float nmsThreshold=0.45f, int maxDet=300)</argsstring>
+        <name>NMSRotated</name>
+        <param>
+          <type>const std::vector&lt; <ref refid="structyolos_1_1OrientedBoundingBox" kindref="compound">OrientedBoundingBox</ref> &gt; &amp;</type>
+          <declname>boxes</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; float &gt; &amp;</type>
+          <declname>scores</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>nmsThreshold</declname>
+          <defval>0.45f</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>maxDet</declname>
+          <defval>300</defval>
+        </param>
+        <briefdescription>
+<para>Perform NMS on oriented bounding boxes using rotated IoU. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>boxes</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector of oriented bounding boxes </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>scores</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector of confidence scores </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>nmsThreshold</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IoU threshold for suppression </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>maxDet</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Maximum number of detections to keep </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Indices of boxes that survived NMS </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/nms.hpp" line="281" column="20" bodyfile="include/yolos/core/nms.hpp" bodystart="281" bodyend="329"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1nms_1a324e20b0bb6cc0a6b1d465688c0ddad7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::nms::NMSBoxesBatched</definition>
+        <argsstring>(const std::vector&lt; BoundingBox &gt; &amp;boxes, const std::vector&lt; float &gt; &amp;scores, const std::vector&lt; int &gt; &amp;classIds, float scoreThreshold, float nmsThreshold, std::vector&lt; int &gt; &amp;indices)</argsstring>
+        <name>NMSBoxesBatched</name>
+        <param>
+          <type>const std::vector&lt; <ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref> &gt; &amp;</type>
+          <declname>boxes</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; float &gt; &amp;</type>
+          <declname>scores</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; int &gt; &amp;</type>
+          <declname>classIds</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>scoreThreshold</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>nmsThreshold</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; int &gt; &amp;</type>
+          <declname>indices</declname>
+        </param>
+        <briefdescription>
+<para>Perform class-aware NMS by offsetting boxes by class ID. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>boxes</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector of bounding boxes </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>scores</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector of confidence scores </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>classIds</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector of class IDs </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>scoreThreshold</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Minimum score to consider </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>nmsThreshold</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IoU threshold for suppression </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">indices</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output indices of boxes that survived NMS </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/nms.hpp" line="342" column="13" bodyfile="include/yolos/core/nms.hpp" bodystart="342" bodyend="359"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1nms_1a8d2b207c40b4c20ddbc1fccafcb12bb9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; int &gt;</type>
+        <definition>std::vector&lt;int&gt; yolos::nms::NMSRotatedBatched</definition>
+        <argsstring>(const std::vector&lt; OrientedBoundingBox &gt; &amp;boxes, const std::vector&lt; float &gt; &amp;scores, const std::vector&lt; int &gt; &amp;classIds, float nmsThreshold=0.45f, int maxDet=300)</argsstring>
+        <name>NMSRotatedBatched</name>
+        <param>
+          <type>const std::vector&lt; <ref refid="structyolos_1_1OrientedBoundingBox" kindref="compound">OrientedBoundingBox</ref> &gt; &amp;</type>
+          <declname>boxes</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; float &gt; &amp;</type>
+          <declname>scores</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; int &gt; &amp;</type>
+          <declname>classIds</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>nmsThreshold</declname>
+          <defval>0.45f</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>maxDet</declname>
+          <defval>300</defval>
+        </param>
+        <briefdescription>
+<para>Perform class-aware NMS on oriented bounding boxes. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>boxes</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector of oriented bounding boxes </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>scores</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector of confidence scores </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>classIds</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector of class IDs </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>nmsThreshold</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IoU threshold for suppression </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>maxDet</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Maximum number of detections to keep </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Indices of boxes that survived NMS </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/nms.hpp" line="368" column="20" bodyfile="include/yolos/core/nms.hpp" bodystart="368" bodyend="388"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/yolos/core/nms.hpp" line="21" column="13"/>
+  </compounddef>
+</doxygen>

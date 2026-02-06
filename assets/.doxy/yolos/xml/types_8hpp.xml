@@ -1,0 +1,247 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="types_8hpp" kind="file" language="C++">
+    <compoundname>types.hpp</compoundname>
+    <includes local="no">vector</includes>
+    <includes local="no">algorithm</includes>
+    <includes local="no">cmath</includes>
+    <includedby refid="drawing_8hpp" local="yes">include/yolos/core/drawing.hpp</includedby>
+    <includedby refid="nms_8hpp" local="yes">include/yolos/core/nms.hpp</includedby>
+    <includedby refid="preprocessing_8hpp" local="yes">include/yolos/core/preprocessing.hpp</includedby>
+    <includedby refid="detection_8hpp" local="yes">include/yolos/tasks/detection.hpp</includedby>
+    <includedby refid="obb_8hpp" local="yes">include/yolos/tasks/obb.hpp</includedby>
+    <includedby refid="pose_8hpp" local="yes">include/yolos/tasks/pose.hpp</includedby>
+    <includedby refid="segmentation_8hpp" local="yes">include/yolos/tasks/segmentation.hpp</includedby>
+    <includedby refid="yolos_8hpp" local="yes">include/yolos/yolos.hpp</includedby>
+    <incdepgraph>
+      <node id="4">
+        <label>cmath</label>
+      </node>
+      <node id="1">
+        <label>include/yolos/core/types.hpp</label>
+        <link refid="types_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>vector</label>
+      </node>
+      <node id="3">
+        <label>algorithm</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="9">
+        <label>include/yolos/core/preprocessing.hpp</label>
+        <link refid="preprocessing_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>include/yolos/tasks/pose.hpp</label>
+        <link refid="pose_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>include/yolos/core/drawing.hpp</label>
+        <link refid="drawing_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>include/yolos/tasks/detection.hpp</label>
+        <link refid="detection_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>include/yolos/core/nms.hpp</label>
+        <link refid="nms_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>include/yolos/core/types.hpp</label>
+        <link refid="types_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>include/yolos/tasks/obb.hpp</label>
+        <link refid="obb_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>include/yolos/tasks/segmentation.hpp</label>
+        <link refid="segmentation_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>include/yolos/yolos.hpp</label>
+        <link refid="yolos_8hpp"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="structyolos_1_1BoundingBox" prot="public">yolos::BoundingBox</innerclass>
+    <innerclass refid="structyolos_1_1OrientedBoundingBox" prot="public">yolos::OrientedBoundingBox</innerclass>
+    <innerclass refid="structyolos_1_1KeyPoint" prot="public">yolos::KeyPoint</innerclass>
+    <innernamespace refid="namespaceyolos">yolos</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">//<sp/>YOLO<sp/>Core<sp/>Types</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Single<sp/>source<sp/>of<sp/>truth<sp/>for<sp/>shared<sp/>data<sp/>structures<sp/>used<sp/>across<sp/>all<sp/>YOLO<sp/>tasks.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">//<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Author:<sp/>YOLOs-CPP<sp/>Team,<sp/>https://github.com/Geekgineer/YOLOs-CPP</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vector&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;algorithm&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cmath&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespaceyolos" kindref="compound">yolos</ref><sp/>{</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="comment">//<sp/>BoundingBox<sp/>-<sp/>Axis-aligned<sp/>bounding<sp/>box<sp/>for<sp/>detection,<sp/>segmentation,<sp/>pose</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20" refid="structyolos_1_1BoundingBox" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref><sp/>{</highlight></codeline>
+<codeline lineno="21" refid="structyolos_1_1BoundingBox_1ad85f3e95f2ad795be5f2bd12041b10dc" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1BoundingBox_1ad85f3e95f2ad795be5f2bd12041b10dc" kindref="member">x</ref>{0};<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="22" refid="structyolos_1_1BoundingBox_1a731835604aace04fdf6f23a5f8c2ae68" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1BoundingBox_1a731835604aace04fdf6f23a5f8c2ae68" kindref="member">y</ref>{0};<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="23" refid="structyolos_1_1BoundingBox_1a464109f4a375d2077c90a80982a3d6c2" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1BoundingBox_1a464109f4a375d2077c90a80982a3d6c2" kindref="member">width</ref>{0};<sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="24" refid="structyolos_1_1BoundingBox_1ac3dbce0d7173115e8f10aa0c2e319193" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1BoundingBox_1ac3dbce0d7173115e8f10aa0c2e319193" kindref="member">height</ref>{0};<sp/><sp/></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structyolos_1_1BoundingBox_1a0a27e068e272fd80af29690112f22e89" kindref="member">BoundingBox</ref>()<sp/>=<sp/></highlight><highlight class="keywordflow">default</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="28" refid="structyolos_1_1BoundingBox_1a929c30146763fdac71149c06cdb7e482" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structyolos_1_1BoundingBox_1a929c30146763fdac71149c06cdb7e482" kindref="member">BoundingBox</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>x_,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>y_,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>width_,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>height_)</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/><ref refid="structyolos_1_1BoundingBox_1ad85f3e95f2ad795be5f2bd12041b10dc" kindref="member">x</ref>(x_),<sp/><ref refid="structyolos_1_1BoundingBox_1a731835604aace04fdf6f23a5f8c2ae68" kindref="member">y</ref>(y_),<sp/><ref refid="structyolos_1_1BoundingBox_1a464109f4a375d2077c90a80982a3d6c2" kindref="member">width</ref>(width_),<sp/><ref refid="structyolos_1_1BoundingBox_1ac3dbce0d7173115e8f10aa0c2e319193" kindref="member">height</ref>(height_)<sp/>{}</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="32" refid="structyolos_1_1BoundingBox_1a44ee24ee9c32fd3aa4aed3ef9b8c0549" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>[[nodiscard]]<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1BoundingBox_1a44ee24ee9c32fd3aa4aed3ef9b8c0549" kindref="member">area</ref>()<sp/>const<sp/>noexcept<sp/>{</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">float</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<ref refid="structyolos_1_1BoundingBox_1a464109f4a375d2077c90a80982a3d6c2" kindref="member">width</ref><sp/>*<sp/><ref refid="structyolos_1_1BoundingBox_1ac3dbce0d7173115e8f10aa0c2e319193" kindref="member">height</ref>);</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37" refid="structyolos_1_1BoundingBox_1a5e9c650a9494bd4fc3a462a432f5bf86" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>[[nodiscard]]<sp/><ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref><sp/><ref refid="structyolos_1_1BoundingBox_1a5e9c650a9494bd4fc3a462a432f5bf86" kindref="member">intersect</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref>&amp;<sp/>other)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>noexcept<sp/>{</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>xStart<sp/>=<sp/>std::max(<ref refid="structyolos_1_1BoundingBox_1ad85f3e95f2ad795be5f2bd12041b10dc" kindref="member">x</ref>,<sp/>other.x);</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>yStart<sp/>=<sp/>std::max(<ref refid="structyolos_1_1BoundingBox_1a731835604aace04fdf6f23a5f8c2ae68" kindref="member">y</ref>,<sp/>other.y);</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>xEnd<sp/>=<sp/>std::min(<ref refid="structyolos_1_1BoundingBox_1ad85f3e95f2ad795be5f2bd12041b10dc" kindref="member">x</ref><sp/>+<sp/><ref refid="structyolos_1_1BoundingBox_1a464109f4a375d2077c90a80982a3d6c2" kindref="member">width</ref>,<sp/>other.x<sp/>+<sp/>other.width);</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>yEnd<sp/>=<sp/>std::min(<ref refid="structyolos_1_1BoundingBox_1a731835604aace04fdf6f23a5f8c2ae68" kindref="member">y</ref><sp/>+<sp/><ref refid="structyolos_1_1BoundingBox_1ac3dbce0d7173115e8f10aa0c2e319193" kindref="member">height</ref>,<sp/>other.y<sp/>+<sp/>other.height);</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>iw<sp/>=<sp/>std::max(0,<sp/>xEnd<sp/>-<sp/>xStart);</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>ih<sp/>=<sp/>std::max(0,<sp/>yEnd<sp/>-<sp/>yStart);</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1BoundingBox_1a0a27e068e272fd80af29690112f22e89" kindref="member">BoundingBox</ref>(xStart,<sp/>yStart,<sp/>iw,<sp/>ih);</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="48" refid="structyolos_1_1BoundingBox_1a407c96241bebe76195a1bc27394f5750" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>[[nodiscard]]<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1BoundingBox_1a407c96241bebe76195a1bc27394f5750" kindref="member">iou</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref>&amp;<sp/>other)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>noexcept<sp/>{</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref><sp/>inter<sp/>=<sp/><ref refid="structyolos_1_1BoundingBox_1a5e9c650a9494bd4fc3a462a432f5bf86" kindref="member">intersect</ref>(other);</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>interArea<sp/>=<sp/>inter.<ref refid="structyolos_1_1BoundingBox_1a44ee24ee9c32fd3aa4aed3ef9b8c0549" kindref="member">area</ref>();</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>unionArea<sp/>=<sp/><ref refid="structyolos_1_1BoundingBox_1a44ee24ee9c32fd3aa4aed3ef9b8c0549" kindref="member">area</ref>()<sp/>+<sp/>other.area()<sp/>-<sp/>interArea;</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(unionArea<sp/>&gt;<sp/>0.0f)<sp/>?<sp/>(interArea<sp/>/<sp/>unionArea)<sp/>:<sp/>0.0f;</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="54"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight></codeline>
+<codeline lineno="56"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight><highlight class="comment">//<sp/>OrientedBoundingBox<sp/>-<sp/>Rotated<sp/>bounding<sp/>box<sp/>for<sp/>OBB<sp/>detection</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="59" refid="structyolos_1_1OrientedBoundingBox" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structyolos_1_1OrientedBoundingBox" kindref="compound">OrientedBoundingBox</ref><sp/>{</highlight></codeline>
+<codeline lineno="60" refid="structyolos_1_1OrientedBoundingBox_1a7ad21c9635d4414a0313ed974e3996f3" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1OrientedBoundingBox_1a7ad21c9635d4414a0313ed974e3996f3" kindref="member">x</ref>{0.0f};<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="61" refid="structyolos_1_1OrientedBoundingBox_1a3253f27e301a64bfcb74cd68c7959555" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1OrientedBoundingBox_1a3253f27e301a64bfcb74cd68c7959555" kindref="member">y</ref>{0.0f};<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="62" refid="structyolos_1_1OrientedBoundingBox_1a16fe5334e82edc9d2d9ad197cd97e30c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1OrientedBoundingBox_1a16fe5334e82edc9d2d9ad197cd97e30c" kindref="member">width</ref>{0.0f};<sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="63" refid="structyolos_1_1OrientedBoundingBox_1a496df47584004b97f32d35ced50a719e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1OrientedBoundingBox_1a496df47584004b97f32d35ced50a719e" kindref="member">height</ref>{0.0f};<sp/><sp/></highlight></codeline>
+<codeline lineno="64" refid="structyolos_1_1OrientedBoundingBox_1abbe08f5a9ef58d747a8aeeb424bfc59d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1OrientedBoundingBox_1abbe08f5a9ef58d747a8aeeb424bfc59d" kindref="member">angle</ref>{0.0f};<sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structyolos_1_1OrientedBoundingBox_1a38688baf99f962de66a99064d5bd55c9" kindref="member">OrientedBoundingBox</ref>()<sp/>=<sp/></highlight><highlight class="keywordflow">default</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight></codeline>
+<codeline lineno="68" refid="structyolos_1_1OrientedBoundingBox_1a9f884afe3279e7e068ad43908c8cef1b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structyolos_1_1OrientedBoundingBox_1a9f884afe3279e7e068ad43908c8cef1b" kindref="member">OrientedBoundingBox</ref>(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>x_,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>y_,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>width_,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>height_,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>angle_)</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/><ref refid="structyolos_1_1OrientedBoundingBox_1a7ad21c9635d4414a0313ed974e3996f3" kindref="member">x</ref>(x_),<sp/><ref refid="structyolos_1_1OrientedBoundingBox_1a3253f27e301a64bfcb74cd68c7959555" kindref="member">y</ref>(y_),<sp/><ref refid="structyolos_1_1OrientedBoundingBox_1a16fe5334e82edc9d2d9ad197cd97e30c" kindref="member">width</ref>(width_),<sp/><ref refid="structyolos_1_1OrientedBoundingBox_1a496df47584004b97f32d35ced50a719e" kindref="member">height</ref>(height_),<sp/><ref refid="structyolos_1_1OrientedBoundingBox_1abbe08f5a9ef58d747a8aeeb424bfc59d" kindref="member">angle</ref>(angle_)<sp/>{}</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight></codeline>
+<codeline lineno="72" refid="structyolos_1_1OrientedBoundingBox_1af8e833fcd90526ea506108138a00959c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>[[nodiscard]]<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1OrientedBoundingBox_1af8e833fcd90526ea506108138a00959c" kindref="member">area</ref>()<sp/>const<sp/>noexcept<sp/>{</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1OrientedBoundingBox_1a16fe5334e82edc9d2d9ad197cd97e30c" kindref="member">width</ref><sp/>*<sp/><ref refid="structyolos_1_1OrientedBoundingBox_1a496df47584004b97f32d35ced50a719e" kindref="member">height</ref>;</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="75"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight><highlight class="comment">//<sp/>KeyPoint<sp/>-<sp/>Single<sp/>keypoint<sp/>for<sp/>pose<sp/>estimation</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="80" refid="structyolos_1_1KeyPoint" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structyolos_1_1KeyPoint" kindref="compound">KeyPoint</ref><sp/>{</highlight></codeline>
+<codeline lineno="81" refid="structyolos_1_1KeyPoint_1a30f19e6f1820d7f35d863acdc7b98ed8" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1KeyPoint_1a30f19e6f1820d7f35d863acdc7b98ed8" kindref="member">x</ref>{0.0f};<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="82" refid="structyolos_1_1KeyPoint_1af1867e7c7f6318dc2ad5346527f096e9" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1KeyPoint_1af1867e7c7f6318dc2ad5346527f096e9" kindref="member">y</ref>{0.0f};<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="83" refid="structyolos_1_1KeyPoint_1a1662158f8886fb6e9464f2bdaf3fc5da" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1KeyPoint_1a1662158f8886fb6e9464f2bdaf3fc5da" kindref="member">confidence</ref>{0.0f};<sp/></highlight></codeline>
+<codeline lineno="84"><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structyolos_1_1KeyPoint_1a4e0608cb0fa9a791717a13ed8b56cbeb" kindref="member">KeyPoint</ref>()<sp/>=<sp/></highlight><highlight class="keywordflow">default</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight></codeline>
+<codeline lineno="87" refid="structyolos_1_1KeyPoint_1a82a979277c2b17aaa9856256d25f4245" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structyolos_1_1KeyPoint_1a82a979277c2b17aaa9856256d25f4245" kindref="member">KeyPoint</ref>(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>x_,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>y_,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>conf_<sp/>=<sp/>0.0f)</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/><ref refid="structyolos_1_1KeyPoint_1a30f19e6f1820d7f35d863acdc7b98ed8" kindref="member">x</ref>(x_),<sp/><ref refid="structyolos_1_1KeyPoint_1af1867e7c7f6318dc2ad5346527f096e9" kindref="member">y</ref>(y_),<sp/><ref refid="structyolos_1_1KeyPoint_1a1662158f8886fb6e9464f2bdaf3fc5da" kindref="member">confidence</ref>(conf_)<sp/>{}</highlight></codeline>
+<codeline lineno="89"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="92"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Skeleton<sp/>connections<sp/>for<sp/>COCO<sp/>pose<sp/>format<sp/>(17<sp/>keypoints)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="93"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="94" refid="namespaceyolos_1a823fcef4ca2980d2db71f60d4b72231c" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::pair&lt;int,<sp/>int&gt;&gt;&amp;<sp/><ref refid="namespaceyolos_1a823fcef4ca2980d2db71f60d4b72231c" kindref="member">getPoseSkeleton</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::pair&lt;int,<sp/>int&gt;&gt;<sp/>POSE_SKELETON<sp/>=<sp/>{</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Face<sp/>connections</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{0,<sp/>1},<sp/>{0,<sp/>2},<sp/>{1,<sp/>3},<sp/>{2,<sp/>4},</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Head-to-shoulder<sp/>connections</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{3,<sp/>5},<sp/>{4,<sp/>6},</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Arms</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{5,<sp/>7},<sp/>{7,<sp/>9},<sp/>{6,<sp/>8},<sp/>{8,<sp/>10},</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Body</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{5,<sp/>6},<sp/>{5,<sp/>11},<sp/>{6,<sp/>12},<sp/>{11,<sp/>12},</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Legs</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{11,<sp/>13},<sp/>{13,<sp/>15},<sp/>{12,<sp/>14},<sp/>{14,<sp/>16}</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>POSE_SKELETON;</highlight></codeline>
+<codeline lineno="108"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"></highlight></codeline>
+<codeline lineno="110"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>yolos</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="include/yolos/core/types.hpp"/>
+  </compounddef>
+</doxygen>

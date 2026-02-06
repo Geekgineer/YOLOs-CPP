@@ -1,0 +1,539 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classyolos_1_1pose_1_1YOLOPoseDetector" kind="class" language="C++" prot="public">
+    <compoundname>yolos::pose::YOLOPoseDetector</compoundname>
+    <basecompoundref refid="classyolos_1_1OrtSessionBase" prot="public" virt="non-virtual">yolos::OrtSessionBase</basecompoundref>
+    <includes refid="pose_8hpp" local="no">pose.hpp</includes>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classyolos_1_1pose_1_1YOLOPoseDetector_1ac2021527f3a7623731c942bfa70f95c1" prot="protected" static="no" mutable="no">
+        <type>std::vector&lt; std::string &gt;</type>
+        <definition>std::vector&lt;std::string&gt; yolos::pose::YOLOPoseDetector::classNames_</definition>
+        <argsstring></argsstring>
+        <name>classNames_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="152" column="17" bodyfile="include/yolos/tasks/pose.hpp" bodystart="152" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classyolos_1_1pose_1_1YOLOPoseDetector_1a5c1fb0daa38441b217f5f2d88748058c" prot="protected" static="no" mutable="no">
+        <type>std::vector&lt; cv::Scalar &gt;</type>
+        <definition>std::vector&lt;cv::Scalar&gt; yolos::pose::YOLOPoseDetector::classColors_</definition>
+        <argsstring></argsstring>
+        <name>classColors_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="153" column="17" bodyfile="include/yolos/tasks/pose.hpp" bodystart="153" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classyolos_1_1pose_1_1YOLOPoseDetector_1ac87d9ace13bbb462f18eb392c35cabf0" prot="protected" static="no" mutable="yes">
+        <type><ref refid="structyolos_1_1preprocessing_1_1InferenceBuffer" kindref="compound">preprocessing::InferenceBuffer</ref></type>
+        <definition>preprocessing::InferenceBuffer yolos::pose::YOLOPoseDetector::buffer_</definition>
+        <argsstring></argsstring>
+        <name>buffer_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="158" column="44" bodyfile="include/yolos/tasks/pose.hpp" bodystart="158" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-static-attrib">
+      <memberdef kind="variable" id="classyolos_1_1pose_1_1YOLOPoseDetector_1a9ffc4f34b553dd5442a5f66072320ab2" prot="protected" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr int</type>
+        <definition>constexpr int yolos::pose::YOLOPoseDetector::NUM_KEYPOINTS</definition>
+        <argsstring></argsstring>
+        <name>NUM_KEYPOINTS</name>
+        <initializer>= 17</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="154" column="26" bodyfile="include/yolos/tasks/pose.hpp" bodystart="154" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classyolos_1_1pose_1_1YOLOPoseDetector_1a44c03120272e7dfeee24504da58c295c" prot="protected" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr int</type>
+        <definition>constexpr int yolos::pose::YOLOPoseDetector::FEATURES_PER_KEYPOINT</definition>
+        <argsstring></argsstring>
+        <name>FEATURES_PER_KEYPOINT</name>
+        <initializer>= 3</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="155" column="26" bodyfile="include/yolos/tasks/pose.hpp" bodystart="155" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classyolos_1_1pose_1_1YOLOPoseDetector_1a1f9cdfa9c388e94e08e8f7c8eb58d013" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>yolos::pose::YOLOPoseDetector::YOLOPoseDetector</definition>
+        <argsstring>(const std::string &amp;modelPath, const std::string &amp;labelsPath=&quot;&quot;, bool useGPU=false)</argsstring>
+        <name>YOLOPoseDetector</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>modelPath</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>labelsPath</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>useGPU</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>Constructor. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>modelPath</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Path to the ONNX model file </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>labelsPath</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Path to the class names file (optional for pose) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>useGPU</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Whether to use GPU for inference </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="58" column="5" bodyfile="include/yolos/tasks/pose.hpp" bodystart="58" bodyend="72"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1pose_1_1YOLOPoseDetector_1ad041f84e95ce506737f0e85a1d1a5b18" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual yolos::pose::YOLOPoseDetector::~YOLOPoseDetector</definition>
+        <argsstring>()=default</argsstring>
+        <name>~YOLOPoseDetector</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="74" column="13"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1pose_1_1YOLOPoseDetector_1a1b5210b89fb0c714bd330c3d231c9116" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; <ref refid="structyolos_1_1pose_1_1PoseResult" kindref="compound">PoseResult</ref> &gt;</type>
+        <definition>std::vector&lt;PoseResult&gt; yolos::pose::YOLOPoseDetector::detect</definition>
+        <argsstring>(const cv::Mat &amp;image, float confThreshold=0.4f, float iouThreshold=0.5f)</argsstring>
+        <name>detect</name>
+        <param>
+          <type>const cv::Mat &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>confThreshold</declname>
+          <defval>0.4f</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>iouThreshold</declname>
+          <defval>0.5f</defval>
+        </param>
+        <briefdescription>
+<para>Run pose detection on an image (optimized with buffer reuse) </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>image</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Input image (BGR format) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>confThreshold</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Confidence threshold </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>iouThreshold</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IoU threshold for NMS </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Vector of pose results </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="81" column="17" bodyfile="include/yolos/tasks/pose.hpp" bodystart="81" bodyend="97"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1pose_1_1YOLOPoseDetector_1aeba5940bb4c5fd01ed93b9d957d9858d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::pose::YOLOPoseDetector::drawPoses</definition>
+        <argsstring>(cv::Mat &amp;image, const std::vector&lt; PoseResult &gt; &amp;results, int kptRadius=4, float kptThreshold=0.5f, int lineThickness=2) const</argsstring>
+        <name>drawPoses</name>
+        <param>
+          <type>cv::Mat &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; <ref refid="structyolos_1_1pose_1_1PoseResult" kindref="compound">PoseResult</ref> &gt; &amp;</type>
+          <declname>results</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>kptRadius</declname>
+          <defval>4</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>kptThreshold</declname>
+          <defval>0.5f</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>lineThickness</declname>
+          <defval>2</defval>
+        </param>
+        <briefdescription>
+<para>Draw pose estimations on an image. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>image</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Image to draw on </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>results</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector of pose results </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>kptRadius</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Keypoint circle radius </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>kptThreshold</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Minimum confidence to draw keypoint </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>lineThickness</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Skeleton line thickness </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="105" column="10" bodyfile="include/yolos/tasks/pose.hpp" bodystart="105" bodyend="122"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1pose_1_1YOLOPoseDetector_1af4a68fa837ec9aa2b87c87c2c4ba6fe7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::pose::YOLOPoseDetector::drawSkeletonsOnly</definition>
+        <argsstring>(cv::Mat &amp;image, const std::vector&lt; PoseResult &gt; &amp;results, int kptRadius=4, float kptThreshold=0.5f, int lineThickness=2) const</argsstring>
+        <name>drawSkeletonsOnly</name>
+        <param>
+          <type>cv::Mat &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; <ref refid="structyolos_1_1pose_1_1PoseResult" kindref="compound">PoseResult</ref> &gt; &amp;</type>
+          <declname>results</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>kptRadius</declname>
+          <defval>4</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>kptThreshold</declname>
+          <defval>0.5f</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>lineThickness</declname>
+          <defval>2</defval>
+        </param>
+        <briefdescription>
+<para>Draw only skeletons (no bounding boxes) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="125" column="10" bodyfile="include/yolos/tasks/pose.hpp" bodystart="125" bodyend="134"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1pose_1_1YOLOPoseDetector_1acdb69eaabd517c5ef202870e15a21032" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const std::vector&lt; std::string &gt; &amp;</type>
+        <definition>const std::vector&lt;std::string&gt;&amp; yolos::pose::YOLOPoseDetector::getClassNames</definition>
+        <argsstring>() const</argsstring>
+        <name>getClassNames</name>
+        <briefdescription>
+<para>Get class names. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="137" column="24" bodyfile="include/yolos/tasks/pose.hpp" bodystart="137" bodyend="137"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classyolos_1_1pose_1_1YOLOPoseDetector_1a353f088597a4ad6af93d4064d6ae6796" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>const std::vector&lt; std::pair&lt; int, int &gt; &gt; &amp;</type>
+        <definition>static const std::vector&lt;std::pair&lt;int, int&gt; &gt;&amp; yolos::pose::YOLOPoseDetector::getPoseSkeleton</definition>
+        <argsstring>()</argsstring>
+        <name>getPoseSkeleton</name>
+        <briefdescription>
+<para>Get COCO pose skeleton connections. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="140" column="31" bodyfile="include/yolos/tasks/pose.hpp" bodystart="140" bodyend="149"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classyolos_1_1pose_1_1YOLOPoseDetector_1a3cf1c5f33c607ed75d50433f7094e8f5" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; <ref refid="structyolos_1_1pose_1_1PoseResult" kindref="compound">PoseResult</ref> &gt;</type>
+        <definition>std::vector&lt;PoseResult&gt; yolos::pose::YOLOPoseDetector::postprocess</definition>
+        <argsstring>(const cv::Size &amp;originalSize, const cv::Size &amp;resizedShape, const std::vector&lt; Ort::Value &gt; &amp;outputTensors, float confThreshold, float iouThreshold)</argsstring>
+        <name>postprocess</name>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>originalSize</declname>
+        </param>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>resizedShape</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; Ort::Value &gt; &amp;</type>
+          <declname>outputTensors</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>confThreshold</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>iouThreshold</declname>
+        </param>
+        <briefdescription>
+<para>Postprocess pose detection outputs. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="161" column="17" bodyfile="include/yolos/tasks/pose.hpp" bodystart="161" bodyend="186"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1pose_1_1YOLOPoseDetector_1aeea45dc550effbaebc49f0cc970e718c" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; <ref refid="structyolos_1_1pose_1_1PoseResult" kindref="compound">PoseResult</ref> &gt;</type>
+        <definition>std::vector&lt;PoseResult&gt; yolos::pose::YOLOPoseDetector::postprocessV8</definition>
+        <argsstring>(const cv::Size &amp;originalSize, const cv::Size &amp;resizedShape, const float *rawOutput, const std::vector&lt; int64_t &gt; &amp;outputShape, float confThreshold, float iouThreshold)</argsstring>
+        <name>postprocessV8</name>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>originalSize</declname>
+        </param>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>resizedShape</declname>
+        </param>
+        <param>
+          <type>const float *</type>
+          <declname>rawOutput</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; int64_t &gt; &amp;</type>
+          <declname>outputShape</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>confThreshold</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>iouThreshold</declname>
+        </param>
+        <briefdescription>
+<para>Postprocess YOLOv8/v11 pose detection outputs (requires NMS) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="189" column="17" bodyfile="include/yolos/tasks/pose.hpp" bodystart="189" bodyend="263"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1pose_1_1YOLOPoseDetector_1a6e171c96fff8c3931c6ae6d0318eb03d" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; <ref refid="structyolos_1_1pose_1_1PoseResult" kindref="compound">PoseResult</ref> &gt;</type>
+        <definition>std::vector&lt;PoseResult&gt; yolos::pose::YOLOPoseDetector::postprocessV26</definition>
+        <argsstring>(const cv::Size &amp;originalSize, const cv::Size &amp;resizedShape, const float *rawOutput, const std::vector&lt; int64_t &gt; &amp;outputShape, float confThreshold)</argsstring>
+        <name>postprocessV26</name>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>originalSize</declname>
+        </param>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>resizedShape</declname>
+        </param>
+        <param>
+          <type>const float *</type>
+          <declname>rawOutput</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; int64_t &gt; &amp;</type>
+          <declname>outputShape</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>confThreshold</declname>
+        </param>
+        <briefdescription>
+<para>Postprocess YOLO26 pose detection outputs (end-to-end, NMS-free) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/pose.hpp" line="266" column="17" bodyfile="include/yolos/tasks/pose.hpp" bodystart="266" bodyend="324"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>YOLO pose estimation detector with keypoint detection. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>yolos::pose::YOLOPoseDetector</label>
+        <link refid="classyolos_1_1pose_1_1YOLOPoseDetector"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>yolos::OrtSessionBase</label>
+        <link refid="classyolos_1_1OrtSessionBase"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>yolos::pose::YOLOPoseDetector</label>
+        <link refid="classyolos_1_1pose_1_1YOLOPoseDetector"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>buffer_</edgelabel>
+        </childnode>
+      </node>
+      <node id="3">
+        <label>yolos::preprocessing::InferenceBuffer</label>
+        <link refid="structyolos_1_1preprocessing_1_1InferenceBuffer"/>
+      </node>
+      <node id="2">
+        <label>yolos::OrtSessionBase</label>
+        <link refid="classyolos_1_1OrtSessionBase"/>
+      </node>
+    </collaborationgraph>
+    <location file="include/yolos/tasks/pose.hpp" line="52" column="45" bodyfile="include/yolos/tasks/pose.hpp" bodystart="52" bodyend="325"/>
+    <listofallmembers>
+      <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1ac87d9ace13bbb462f18eb392c35cabf0" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>buffer_</name></member>
+      <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a5c1fb0daa38441b217f5f2d88748058c" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>classColors_</name></member>
+      <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1ac2021527f3a7623731c942bfa70f95c1" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>classNames_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a4d9b7b6b9923511d7a4df70dc2276581" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>createInputTensor</name></member>
+      <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a1b5210b89fb0c714bd330c3d231c9116" prot="public" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>detect</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1aa6698a2700f0f81c7779e7d1b8ed7fdd" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>device_</name></member>
+      <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1aeba5940bb4c5fd01ed93b9d957d9858d" prot="public" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>drawPoses</name></member>
+      <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1af4a68fa837ec9aa2b87c87c2c4ba6fe7" prot="public" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>drawSkeletonsOnly</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a1c73ea2faea65b4cbde35cc805f1c899" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>env_</name></member>
+      <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a44c03120272e7dfeee24504da58c295c" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>FEATURES_PER_KEYPOINT</name></member>
+      <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1acdb69eaabd517c5ef202870e15a21032" prot="public" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>getClassNames</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a11510c00f9adb9fbe4fe1c1fee79f02a" prot="public" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>getDevice</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a4be1237b1a62b4a50a817ce6ef7837f1" prot="public" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>getInputShape</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a36cee1b35ce518f6bba0c7901ad0f596" prot="public" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>getNumInputNodes</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a30a8722c68a2fa1ab0a0ab665afd19d3" prot="public" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>getNumOutputNodes</name></member>
+      <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a353f088597a4ad6af93d4064d6ae6796" prot="public" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>getPoseSkeleton</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a8b263597883f18d2f66fd3f0f598eb9f" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>inputNameAllocs_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a8c46588054da42098c9d5ee54772ee14" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>inputNames_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1abfbb75048b68bfadcfbb5fd29c9be55d" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>inputShape_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a875aafb35cc44916e3b5e153cb2ea404" prot="public" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>isDynamicBatchSize</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ace6a50df18afdc8571368803d9e7dd34" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>isDynamicBatchSize_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1aae5a5a958fabccb91ae9e8d6c394b43a" prot="public" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>isDynamicInputShape</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a15be4c2ddac39ccc90a1170fbae15786" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>isDynamicInputShape_</name></member>
+      <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a9ffc4f34b553dd5442a5f66072320ab2" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>NUM_KEYPOINTS</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a424511d525512f4c42733ae1dbfd70ae" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>numInputNodes_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a8397d65ebebd090a4f5079ab1ea93f21" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>numOutputNodes_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ac40efe124490a78e5df4d108a5f19f5c" prot="public" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>operator=</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a97f3227d2f90aed9a79a618dc31c9ffa" prot="public" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>operator=</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ac7dda465eadfec6738e474a07a1c2e4c" prot="public" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>OrtSessionBase</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a41661c634079de533e5ddf7ca5b8f5c6" prot="public" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>OrtSessionBase</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ae64770ff5188681dbe8d6567ccdfbbb6" prot="public" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>OrtSessionBase</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a5ea17351450cfcf4c286138657cd5dcb" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>outputNameAllocs_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a70896c168ab6762c3bf96b60cf77c88b" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>outputNames_</name></member>
+      <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a3cf1c5f33c607ed75d50433f7094e8f5" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>postprocess</name></member>
+      <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a6e171c96fff8c3931c6ae6d0318eb03d" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>postprocessV26</name></member>
+      <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1aeea45dc550effbaebc49f0cc970e718c" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>postprocessV8</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a8318858109b6bfb9c7ee61b96b1c70c6" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>runInference</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a0066a883faf4551f54dffd2b4a3495ba" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>session_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1aedfa3da5fe054f0e2b3b5df4acb768bd" prot="protected" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>sessionOptions_</name></member>
+      <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1a1f9cdfa9c388e94e08e8f7c8eb58d013" prot="public" virt="non-virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>YOLOPoseDetector</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ad8ee6fae9a5de2944e6e1d79ec26c78e" prot="public" virt="virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>~OrtSessionBase</name></member>
+      <member refid="classyolos_1_1pose_1_1YOLOPoseDetector_1ad041f84e95ce506737f0e85a1d1a5b18" prot="public" virt="virtual"><scope>yolos::pose::YOLOPoseDetector</scope><name>~YOLOPoseDetector</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

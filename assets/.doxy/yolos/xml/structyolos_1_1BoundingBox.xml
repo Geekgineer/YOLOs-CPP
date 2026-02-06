@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="structyolos_1_1BoundingBox" kind="struct" language="C++" prot="public">
+    <compoundname>yolos::BoundingBox</compoundname>
+    <includes refid="types_8hpp" local="no">types.hpp</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structyolos_1_1BoundingBox_1ad85f3e95f2ad795be5f2bd12041b10dc" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int yolos::BoundingBox::x</definition>
+        <argsstring></argsstring>
+        <name>x</name>
+        <initializer>{0}</initializer>
+        <briefdescription>
+<para>X-coordinate of top-left corner. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="21" column="9" bodyfile="include/yolos/core/types.hpp" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1BoundingBox_1a731835604aace04fdf6f23a5f8c2ae68" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int yolos::BoundingBox::y</definition>
+        <argsstring></argsstring>
+        <name>y</name>
+        <initializer>{0}</initializer>
+        <briefdescription>
+<para>Y-coordinate of top-left corner. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="22" column="9" bodyfile="include/yolos/core/types.hpp" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1BoundingBox_1a464109f4a375d2077c90a80982a3d6c2" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int yolos::BoundingBox::width</definition>
+        <argsstring></argsstring>
+        <name>width</name>
+        <initializer>{0}</initializer>
+        <briefdescription>
+<para>Width of the bounding box. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="23" column="9" bodyfile="include/yolos/core/types.hpp" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1BoundingBox_1ac3dbce0d7173115e8f10aa0c2e319193" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int yolos::BoundingBox::height</definition>
+        <argsstring></argsstring>
+        <name>height</name>
+        <initializer>{0}</initializer>
+        <briefdescription>
+<para>Height of the bounding box. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="24" column="9" bodyfile="include/yolos/core/types.hpp" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structyolos_1_1BoundingBox_1a0a27e068e272fd80af29690112f22e89" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>yolos::BoundingBox::BoundingBox</definition>
+        <argsstring>()=default</argsstring>
+        <name>BoundingBox</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="26" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="structyolos_1_1BoundingBox_1a929c30146763fdac71149c06cdb7e482" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>yolos::BoundingBox::BoundingBox</definition>
+        <argsstring>(int x_, int y_, int width_, int height_)</argsstring>
+        <name>BoundingBox</name>
+        <param>
+          <type>int</type>
+          <declname>x_</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>y_</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>width_</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>height_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="28" column="5" bodyfile="include/yolos/core/types.hpp" bodystart="28" bodyend="29"/>
+      </memberdef>
+      <memberdef kind="function" id="structyolos_1_1BoundingBox_1a44ee24ee9c32fd3aa4aed3ef9b8c0549" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type>float</type>
+        <definition>float yolos::BoundingBox::area</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>area</name>
+        <briefdescription>
+<para>Compute area of the bounding box. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="32" column="12" bodyfile="include/yolos/core/types.hpp" bodystart="32" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="structyolos_1_1BoundingBox_1a5e9c650a9494bd4fc3a462a432f5bf86" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type><ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref></type>
+        <definition>BoundingBox yolos::BoundingBox::intersect</definition>
+        <argsstring>(const BoundingBox &amp;other) const noexcept</argsstring>
+        <name>intersect</name>
+        <param>
+          <type>const <ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref> &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+<para>Compute intersection with another bounding box. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="37" column="18" bodyfile="include/yolos/core/types.hpp" bodystart="37" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="structyolos_1_1BoundingBox_1a407c96241bebe76195a1bc27394f5750" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type>float</type>
+        <definition>float yolos::BoundingBox::iou</definition>
+        <argsstring>(const BoundingBox &amp;other) const noexcept</argsstring>
+        <name>iou</name>
+        <param>
+          <type>const <ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref> &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+<para>Compute IoU (Intersection over Union) with another bounding box. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="48" column="12" bodyfile="include/yolos/core/types.hpp" bodystart="48" bodyend="53"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/yolos/core/types.hpp" line="20" column="18" bodyfile="include/yolos/core/types.hpp" bodystart="20" bodyend="54"/>
+    <listofallmembers>
+      <member refid="structyolos_1_1BoundingBox_1a44ee24ee9c32fd3aa4aed3ef9b8c0549" prot="public" virt="non-virtual"><scope>yolos::BoundingBox</scope><name>area</name></member>
+      <member refid="structyolos_1_1BoundingBox_1a0a27e068e272fd80af29690112f22e89" prot="public" virt="non-virtual"><scope>yolos::BoundingBox</scope><name>BoundingBox</name></member>
+      <member refid="structyolos_1_1BoundingBox_1a929c30146763fdac71149c06cdb7e482" prot="public" virt="non-virtual"><scope>yolos::BoundingBox</scope><name>BoundingBox</name></member>
+      <member refid="structyolos_1_1BoundingBox_1ac3dbce0d7173115e8f10aa0c2e319193" prot="public" virt="non-virtual"><scope>yolos::BoundingBox</scope><name>height</name></member>
+      <member refid="structyolos_1_1BoundingBox_1a5e9c650a9494bd4fc3a462a432f5bf86" prot="public" virt="non-virtual"><scope>yolos::BoundingBox</scope><name>intersect</name></member>
+      <member refid="structyolos_1_1BoundingBox_1a407c96241bebe76195a1bc27394f5750" prot="public" virt="non-virtual"><scope>yolos::BoundingBox</scope><name>iou</name></member>
+      <member refid="structyolos_1_1BoundingBox_1a464109f4a375d2077c90a80982a3d6c2" prot="public" virt="non-virtual"><scope>yolos::BoundingBox</scope><name>width</name></member>
+      <member refid="structyolos_1_1BoundingBox_1ad85f3e95f2ad795be5f2bd12041b10dc" prot="public" virt="non-virtual"><scope>yolos::BoundingBox</scope><name>x</name></member>
+      <member refid="structyolos_1_1BoundingBox_1a731835604aace04fdf6f23a5f8c2ae68" prot="public" virt="non-virtual"><scope>yolos::BoundingBox</scope><name>y</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

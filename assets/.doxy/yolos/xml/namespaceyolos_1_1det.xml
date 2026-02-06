@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="namespaceyolos_1_1det" kind="namespace" language="C++">
+    <compoundname>yolos::det</compoundname>
+    <innerclass refid="structyolos_1_1det_1_1Detection" prot="public">yolos::det::Detection</innerclass>
+    <innerclass refid="classyolos_1_1det_1_1YOLO26Detector" prot="public">yolos::det::YOLO26Detector</innerclass>
+    <innerclass refid="classyolos_1_1det_1_1YOLODetector" prot="public">yolos::det::YOLODetector</innerclass>
+    <innerclass refid="classyolos_1_1det_1_1YOLONASDetector" prot="public">yolos::det::YOLONASDetector</innerclass>
+    <innerclass refid="classyolos_1_1det_1_1YOLOv10Detector" prot="public">yolos::det::YOLOv10Detector</innerclass>
+    <innerclass refid="classyolos_1_1det_1_1YOLOv11Detector" prot="public">yolos::det::YOLOv11Detector</innerclass>
+    <innerclass refid="classyolos_1_1det_1_1YOLOv7Detector" prot="public">yolos::det::YOLOv7Detector</innerclass>
+    <innerclass refid="classyolos_1_1det_1_1YOLOv8Detector" prot="public">yolos::det::YOLOv8Detector</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespaceyolos_1_1det_1a316204b86fdfc637bb4641dc80523318" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::unique_ptr&lt; <ref refid="classyolos_1_1det_1_1YOLODetector" kindref="compound">YOLODetector</ref> &gt;</type>
+        <definition>std::unique_ptr&lt;YOLODetector&gt; yolos::det::createDetector</definition>
+        <argsstring>(const std::string &amp;modelPath, const std::string &amp;labelsPath, YOLOVersion version=YOLOVersion::Auto, bool useGPU=false)</argsstring>
+        <name>createDetector</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>modelPath</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>labelsPath</declname>
+        </param>
+        <param>
+          <type><ref refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84e" kindref="member">YOLOVersion</ref></type>
+          <declname>version</declname>
+          <defval><ref refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84ea06b9281e396db002010bde1de57262eb" kindref="member">YOLOVersion::Auto</ref></defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>useGPU</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>Create a detector with explicit version selection. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>modelPath</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Path to the ONNX model </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>labelsPath</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Path to the class names file </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>version</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>YOLO version (Auto for runtime detection) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>useGPU</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Whether to use GPU </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Unique pointer to detector </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="494" column="24" bodyfile="include/yolos/tasks/detection.hpp" bodystart="494" bodyend="514"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/yolos/tasks/detection.hpp" line="27" column="13"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="structyolos_1_1OrientedBoundingBox" kind="struct" language="C++" prot="public">
+    <compoundname>yolos::OrientedBoundingBox</compoundname>
+    <includes refid="types_8hpp" local="no">types.hpp</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structyolos_1_1OrientedBoundingBox_1a7ad21c9635d4414a0313ed974e3996f3" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float yolos::OrientedBoundingBox::x</definition>
+        <argsstring></argsstring>
+        <name>x</name>
+        <initializer>{0.0f}</initializer>
+        <briefdescription>
+<para>X-coordinate of center. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="60" column="11" bodyfile="include/yolos/core/types.hpp" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1OrientedBoundingBox_1a3253f27e301a64bfcb74cd68c7959555" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float yolos::OrientedBoundingBox::y</definition>
+        <argsstring></argsstring>
+        <name>y</name>
+        <initializer>{0.0f}</initializer>
+        <briefdescription>
+<para>Y-coordinate of center. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="61" column="11" bodyfile="include/yolos/core/types.hpp" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1OrientedBoundingBox_1a16fe5334e82edc9d2d9ad197cd97e30c" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float yolos::OrientedBoundingBox::width</definition>
+        <argsstring></argsstring>
+        <name>width</name>
+        <initializer>{0.0f}</initializer>
+        <briefdescription>
+<para>Width of the box. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="62" column="11" bodyfile="include/yolos/core/types.hpp" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1OrientedBoundingBox_1a496df47584004b97f32d35ced50a719e" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float yolos::OrientedBoundingBox::height</definition>
+        <argsstring></argsstring>
+        <name>height</name>
+        <initializer>{0.0f}</initializer>
+        <briefdescription>
+<para>Height of the box. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="63" column="11" bodyfile="include/yolos/core/types.hpp" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1OrientedBoundingBox_1abbe08f5a9ef58d747a8aeeb424bfc59d" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float yolos::OrientedBoundingBox::angle</definition>
+        <argsstring></argsstring>
+        <name>angle</name>
+        <initializer>{0.0f}</initializer>
+        <briefdescription>
+<para>Rotation angle in radians. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="64" column="11" bodyfile="include/yolos/core/types.hpp" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structyolos_1_1OrientedBoundingBox_1a38688baf99f962de66a99064d5bd55c9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>yolos::OrientedBoundingBox::OrientedBoundingBox</definition>
+        <argsstring>()=default</argsstring>
+        <name>OrientedBoundingBox</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="66" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="structyolos_1_1OrientedBoundingBox_1a9f884afe3279e7e068ad43908c8cef1b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>yolos::OrientedBoundingBox::OrientedBoundingBox</definition>
+        <argsstring>(float x_, float y_, float width_, float height_, float angle_)</argsstring>
+        <name>OrientedBoundingBox</name>
+        <param>
+          <type>float</type>
+          <declname>x_</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y_</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>width_</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>height_</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>angle_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="68" column="5" bodyfile="include/yolos/core/types.hpp" bodystart="68" bodyend="69"/>
+      </memberdef>
+      <memberdef kind="function" id="structyolos_1_1OrientedBoundingBox_1af8e833fcd90526ea506108138a00959c" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type>float</type>
+        <definition>float yolos::OrientedBoundingBox::area</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>area</name>
+        <briefdescription>
+<para>Compute area of the oriented bounding box. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="72" column="12" bodyfile="include/yolos/core/types.hpp" bodystart="72" bodyend="74"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/yolos/core/types.hpp" line="59" column="26" bodyfile="include/yolos/core/types.hpp" bodystart="59" bodyend="75"/>
+    <listofallmembers>
+      <member refid="structyolos_1_1OrientedBoundingBox_1abbe08f5a9ef58d747a8aeeb424bfc59d" prot="public" virt="non-virtual"><scope>yolos::OrientedBoundingBox</scope><name>angle</name></member>
+      <member refid="structyolos_1_1OrientedBoundingBox_1af8e833fcd90526ea506108138a00959c" prot="public" virt="non-virtual"><scope>yolos::OrientedBoundingBox</scope><name>area</name></member>
+      <member refid="structyolos_1_1OrientedBoundingBox_1a496df47584004b97f32d35ced50a719e" prot="public" virt="non-virtual"><scope>yolos::OrientedBoundingBox</scope><name>height</name></member>
+      <member refid="structyolos_1_1OrientedBoundingBox_1a38688baf99f962de66a99064d5bd55c9" prot="public" virt="non-virtual"><scope>yolos::OrientedBoundingBox</scope><name>OrientedBoundingBox</name></member>
+      <member refid="structyolos_1_1OrientedBoundingBox_1a9f884afe3279e7e068ad43908c8cef1b" prot="public" virt="non-virtual"><scope>yolos::OrientedBoundingBox</scope><name>OrientedBoundingBox</name></member>
+      <member refid="structyolos_1_1OrientedBoundingBox_1a16fe5334e82edc9d2d9ad197cd97e30c" prot="public" virt="non-virtual"><scope>yolos::OrientedBoundingBox</scope><name>width</name></member>
+      <member refid="structyolos_1_1OrientedBoundingBox_1a7ad21c9635d4414a0313ed974e3996f3" prot="public" virt="non-virtual"><scope>yolos::OrientedBoundingBox</scope><name>x</name></member>
+      <member refid="structyolos_1_1OrientedBoundingBox_1a3253f27e301a64bfcb74cd68c7959555" prot="public" virt="non-virtual"><scope>yolos::OrientedBoundingBox</scope><name>y</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

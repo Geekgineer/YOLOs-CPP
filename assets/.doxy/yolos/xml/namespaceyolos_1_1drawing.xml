@@ -1,0 +1,460 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="namespaceyolos_1_1drawing" kind="namespace" language="C++">
+    <compoundname>yolos::drawing</compoundname>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespaceyolos_1_1drawing_1af19596cebd6f040bb3197b8e68a472e1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; cv::Scalar &gt;</type>
+        <definition>std::vector&lt;cv::Scalar&gt; yolos::drawing::generateColors</definition>
+        <argsstring>(const std::vector&lt; std::string &gt; &amp;classNames, int seed=42)</argsstring>
+        <name>generateColors</name>
+        <param>
+          <type>const std::vector&lt; std::string &gt; &amp;</type>
+          <declname>classNames</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>seed</declname>
+          <defval>42</defval>
+        </param>
+        <briefdescription>
+<para>Generate consistent random colors for each class. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>classNames</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector of class names </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>seed</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Random seed for reproducibility </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Vector of BGR colors </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/drawing.hpp" line="32" column="20" bodyfile="include/yolos/core/drawing.hpp" bodystart="32" bodyend="61"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1drawing_1a07e7f05f4fbc2d9ee0761e4368b66f7b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>const std::vector&lt; cv::Scalar &gt; &amp;</type>
+        <definition>const std::vector&lt;cv::Scalar&gt;&amp; yolos::drawing::getPosePalette</definition>
+        <argsstring>()</argsstring>
+        <name>getPosePalette</name>
+        <briefdescription>
+<para>Get the Ultralytics pose palette colors. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Vector of BGR colors for pose visualization </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/drawing.hpp" line="65" column="26" bodyfile="include/yolos/core/drawing.hpp" bodystart="65" bodyend="89"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1drawing_1a32584307a3116c291cfbdf34484d5641" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::drawing::drawBoundingBox</definition>
+        <argsstring>(cv::Mat &amp;image, const BoundingBox &amp;box, const std::string &amp;label, const cv::Scalar &amp;color, int thickness=2)</argsstring>
+        <name>drawBoundingBox</name>
+        <param>
+          <type>cv::Mat &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref> &amp;</type>
+          <declname>box</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>label</declname>
+        </param>
+        <param>
+          <type>const cv::Scalar &amp;</type>
+          <declname>color</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>thickness</declname>
+          <defval>2</defval>
+        </param>
+        <briefdescription>
+<para>Draw a single bounding box with label on an image. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>image</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Image to draw on </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>box</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Bounding box </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>label</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Text label </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>color</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Box color </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>thickness</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Line thickness </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/drawing.hpp" line="101" column="13" bodyfile="include/yolos/core/drawing.hpp" bodystart="101" bodyend="130"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1drawing_1a59cd089c283ac68fbf34326259aa429e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::drawing::drawBoundingBoxWithMask</definition>
+        <argsstring>(cv::Mat &amp;image, const BoundingBox &amp;box, const std::string &amp;label, const cv::Scalar &amp;color, float maskAlpha=0.4f)</argsstring>
+        <name>drawBoundingBoxWithMask</name>
+        <param>
+          <type>cv::Mat &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref> &amp;</type>
+          <declname>box</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>label</declname>
+        </param>
+        <param>
+          <type>const cv::Scalar &amp;</type>
+          <declname>color</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>maskAlpha</declname>
+          <defval>0.4f</defval>
+        </param>
+        <briefdescription>
+<para>Draw a bounding box with semi-transparent mask fill. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>image</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Image to draw on </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>box</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Bounding box </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>label</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Text label </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>color</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Box color </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>maskAlpha</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Transparency of the mask fill (0-1) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/drawing.hpp" line="138" column="13" bodyfile="include/yolos/core/drawing.hpp" bodystart="138" bodyend="152"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1drawing_1a17c67f2aa2e5b1edc7367cad78a5ce07" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::drawing::drawOrientedBoundingBox</definition>
+        <argsstring>(cv::Mat &amp;image, const OrientedBoundingBox &amp;obb, const std::string &amp;label, const cv::Scalar &amp;color, int thickness=2)</argsstring>
+        <name>drawOrientedBoundingBox</name>
+        <param>
+          <type>cv::Mat &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structyolos_1_1OrientedBoundingBox" kindref="compound">OrientedBoundingBox</ref> &amp;</type>
+          <declname>obb</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>label</declname>
+        </param>
+        <param>
+          <type>const cv::Scalar &amp;</type>
+          <declname>color</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>thickness</declname>
+          <defval>2</defval>
+        </param>
+        <briefdescription>
+<para>Draw an oriented bounding box on an image. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>image</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Image to draw on </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>obb</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Oriented bounding box </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>label</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Text label </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>color</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Box color </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>thickness</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Line thickness </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/drawing.hpp" line="164" column="13" bodyfile="include/yolos/core/drawing.hpp" bodystart="164" bodyend="206"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1drawing_1a41292119e70c24aafd29d10a037948f3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::drawing::drawPoseSkeleton</definition>
+        <argsstring>(cv::Mat &amp;image, const std::vector&lt; KeyPoint &gt; &amp;keypoints, const std::vector&lt; std::pair&lt; int, int &gt;&gt; &amp;skeleton, int kptRadius=4, float kptThreshold=0.5f, int lineThickness=2)</argsstring>
+        <name>drawPoseSkeleton</name>
+        <param>
+          <type>cv::Mat &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; <ref refid="structyolos_1_1KeyPoint" kindref="compound">KeyPoint</ref> &gt; &amp;</type>
+          <declname>keypoints</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; std::pair&lt; int, int &gt;&gt; &amp;</type>
+          <declname>skeleton</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>kptRadius</declname>
+          <defval>4</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>kptThreshold</declname>
+          <defval>0.5f</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>lineThickness</declname>
+          <defval>2</defval>
+        </param>
+        <briefdescription>
+<para>Draw pose keypoints and skeleton on an image. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>image</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Image to draw on </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>keypoints</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector of keypoints </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>skeleton</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Skeleton connections </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>kptRadius</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Keypoint circle radius </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>kptThreshold</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Minimum confidence to draw keypoint </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>lineThickness</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Skeleton line thickness </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/drawing.hpp" line="219" column="13" bodyfile="include/yolos/core/drawing.hpp" bodystart="219" bodyend="262"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1drawing_1a6cfd1b82f6eb8d8f37234ea6f678a24a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::drawing::drawSegmentationMask</definition>
+        <argsstring>(cv::Mat &amp;image, const cv::Mat &amp;mask, const cv::Scalar &amp;color, float alpha=0.5f)</argsstring>
+        <name>drawSegmentationMask</name>
+        <param>
+          <type>cv::Mat &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>const cv::Mat &amp;</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>const cv::Scalar &amp;</type>
+          <declname>color</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>alpha</declname>
+          <defval>0.5f</defval>
+        </param>
+        <briefdescription>
+<para>Draw a segmentation mask on an image. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>image</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Image to draw on </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>mask</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Binary mask (CV_8UC1) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>color</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Mask color </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>alpha</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Mask transparency (0-1) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/drawing.hpp" line="273" column="13" bodyfile="include/yolos/core/drawing.hpp" bodystart="273" bodyend="296"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/yolos/core/drawing.hpp" line="22" column="17"/>
+  </compounddef>
+</doxygen>

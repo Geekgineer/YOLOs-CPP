@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="structyolos_1_1seg_1_1Segmentation" kind="struct" language="C++" prot="public">
+    <compoundname>yolos::seg::Segmentation</compoundname>
+    <includes refid="segmentation_8hpp" local="no">segmentation.hpp</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structyolos_1_1seg_1_1Segmentation_1ae3ebab10484c6b9182ffd4c55f9e2d26" prot="public" static="no" mutable="no">
+        <type><ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref></type>
+        <definition>BoundingBox yolos::seg::Segmentation::box</definition>
+        <argsstring></argsstring>
+        <name>box</name>
+        <briefdescription>
+<para>Axis-aligned bounding box. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/segmentation.hpp" line="36" column="17" bodyfile="include/yolos/tasks/segmentation.hpp" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1seg_1_1Segmentation_1a85d79d0a584c18e3ccef4d3cd4127074" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float yolos::seg::Segmentation::conf</definition>
+        <argsstring></argsstring>
+        <name>conf</name>
+        <initializer>{0.0f}</initializer>
+        <briefdescription>
+<para>Confidence score. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/segmentation.hpp" line="37" column="11" bodyfile="include/yolos/tasks/segmentation.hpp" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1seg_1_1Segmentation_1a71ea0ab4306cac7c85fb93ff16d4a046" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int yolos::seg::Segmentation::classId</definition>
+        <argsstring></argsstring>
+        <name>classId</name>
+        <initializer>{0}</initializer>
+        <briefdescription>
+<para>Class ID. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/segmentation.hpp" line="38" column="9" bodyfile="include/yolos/tasks/segmentation.hpp" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1seg_1_1Segmentation_1a5e4cce5c6dddd9b75a2de8dee63ed789" prot="public" static="no" mutable="no">
+        <type>cv::Mat</type>
+        <definition>cv::Mat yolos::seg::Segmentation::mask</definition>
+        <argsstring></argsstring>
+        <name>mask</name>
+        <briefdescription>
+<para>Binary mask (CV_8UC1) in original image coordinates. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/segmentation.hpp" line="39" column="13" bodyfile="include/yolos/tasks/segmentation.hpp" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structyolos_1_1seg_1_1Segmentation_1a2162f7c2d48fcc39413829041b477eef" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>yolos::seg::Segmentation::Segmentation</definition>
+        <argsstring>()=default</argsstring>
+        <name>Segmentation</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/segmentation.hpp" line="41" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="structyolos_1_1seg_1_1Segmentation_1a7b6cc2b2b475e8d078888271007f9a8b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>yolos::seg::Segmentation::Segmentation</definition>
+        <argsstring>(const BoundingBox &amp;box_, float conf_, int classId_, const cv::Mat &amp;mask_)</argsstring>
+        <name>Segmentation</name>
+        <param>
+          <type>const <ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref> &amp;</type>
+          <declname>box_</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>conf_</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>classId_</declname>
+        </param>
+        <param>
+          <type>const cv::Mat &amp;</type>
+          <declname>mask_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/segmentation.hpp" line="42" column="5" bodyfile="include/yolos/tasks/segmentation.hpp" bodystart="42" bodyend="43"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para><ref refid="structyolos_1_1seg_1_1Segmentation" kindref="compound">Segmentation</ref> result containing bounding box, confidence, class ID, and mask. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="2">
+        <label>yolos::BoundingBox</label>
+        <link refid="structyolos_1_1BoundingBox"/>
+      </node>
+      <node id="1">
+        <label>yolos::seg::Segmentation</label>
+        <link refid="structyolos_1_1seg_1_1Segmentation"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>box</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="include/yolos/tasks/segmentation.hpp" line="35" column="19" bodyfile="include/yolos/tasks/segmentation.hpp" bodystart="35" bodyend="44"/>
+    <listofallmembers>
+      <member refid="structyolos_1_1seg_1_1Segmentation_1ae3ebab10484c6b9182ffd4c55f9e2d26" prot="public" virt="non-virtual"><scope>yolos::seg::Segmentation</scope><name>box</name></member>
+      <member refid="structyolos_1_1seg_1_1Segmentation_1a71ea0ab4306cac7c85fb93ff16d4a046" prot="public" virt="non-virtual"><scope>yolos::seg::Segmentation</scope><name>classId</name></member>
+      <member refid="structyolos_1_1seg_1_1Segmentation_1a85d79d0a584c18e3ccef4d3cd4127074" prot="public" virt="non-virtual"><scope>yolos::seg::Segmentation</scope><name>conf</name></member>
+      <member refid="structyolos_1_1seg_1_1Segmentation_1a5e4cce5c6dddd9b75a2de8dee63ed789" prot="public" virt="non-virtual"><scope>yolos::seg::Segmentation</scope><name>mask</name></member>
+      <member refid="structyolos_1_1seg_1_1Segmentation_1a2162f7c2d48fcc39413829041b477eef" prot="public" virt="non-virtual"><scope>yolos::seg::Segmentation</scope><name>Segmentation</name></member>
+      <member refid="structyolos_1_1seg_1_1Segmentation_1a7b6cc2b2b475e8d078888271007f9a8b" prot="public" virt="non-virtual"><scope>yolos::seg::Segmentation</scope><name>Segmentation</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

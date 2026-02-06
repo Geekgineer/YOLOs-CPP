@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classyolos_1_1cls_1_1YOLO26Classifier" kind="class" language="C++" prot="public">
+    <compoundname>yolos::cls::YOLO26Classifier</compoundname>
+    <basecompoundref refid="classyolos_1_1cls_1_1YOLOClassifier" prot="public" virt="non-virtual">yolos::cls::YOLOClassifier</basecompoundref>
+    <includes refid="classification_8hpp" local="no">classification.hpp</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classyolos_1_1cls_1_1YOLO26Classifier_1a25d3edd478b91b8f4a669b2d8ed02b98" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>yolos::cls::YOLO26Classifier::YOLO26Classifier</definition>
+        <argsstring>(const std::string &amp;modelPath, const std::string &amp;labelsPath, bool useGPU=false)</argsstring>
+        <name>YOLO26Classifier</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>modelPath</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>labelsPath</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>useGPU</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/classification.hpp" line="330" column="5" bodyfile="include/yolos/tasks/classification.hpp" bodystart="330" bodyend="331"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>YOLO26 classifier. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>yolos::cls::YOLOClassifier</label>
+        <link refid="classyolos_1_1cls_1_1YOLOClassifier"/>
+      </node>
+      <node id="1">
+        <label>yolos::cls::YOLO26Classifier</label>
+        <link refid="classyolos_1_1cls_1_1YOLO26Classifier"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>yolos::cls::YOLOClassifier</label>
+        <link refid="classyolos_1_1cls_1_1YOLOClassifier"/>
+      </node>
+      <node id="1">
+        <label>yolos::cls::YOLO26Classifier</label>
+        <link refid="classyolos_1_1cls_1_1YOLO26Classifier"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="include/yolos/tasks/classification.hpp" line="328" column="45" bodyfile="include/yolos/tasks/classification.hpp" bodystart="328" bodyend="332"/>
+    <listofallmembers>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a9528434eb856e9367de91c042dcbb4f9" prot="public" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>classify</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1aa74851fb6b1acc90f8e94ea777b3245f" prot="protected" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>classNames_</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1aaff9c2dd9c165680ee3ea94167086b4e" prot="public" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>drawResult</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1aacf6fd426d7252fe7352e610216be290" prot="protected" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>env_</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1abb3e8ede9fe6d8888e94613314598e73" prot="public" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>getClassNames</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1aa88391d814553b2b2a2aecdc8174d49f" prot="public" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>getInputShape</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a6077ca72f8e1a76c41395cf210650972" prot="protected" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>initSession</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a21ded727242509b519686794259f0b60" prot="protected" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>inputBuffer_</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a2ab9df5c8c1550cbc1b49ff34bae59be" prot="protected" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>inputImageShape_</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a829fc15fc0237546f219057aca13ee28" prot="protected" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>inputNameAllocs_</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1af1b7d090face986046c84b140cb4aaa4" prot="protected" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>inputNames_</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a8485adee80f6b4feb7a6b45cf4d72233" prot="public" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>isDynamicInputShape</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1abf3b1fd5c611c64340db2b0bea037b2c" prot="protected" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>isDynamicInputShape_</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a774cc2d8e384e4c1fc3451a4f424b954" prot="protected" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>numClasses_</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1ac68243a99de6adf1c2f050feb96c2e88" prot="protected" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>numInputNodes_</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1af59f0d5ad377a648c44207314ffa4bfc" prot="protected" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>numOutputNodes_</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a71539dc48ba4722b366cf109105eab54" prot="protected" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>outputNameAllocs_</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a551be600f7677b2c9c1c8a2296d6ef9e" prot="protected" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>outputNames_</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a65ab73f4056ca3cd39588c0bac9d0bc3" prot="protected" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>postprocess</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a8a5cce2f6ebc3b648b67817d4eadd2f7" prot="protected" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>preprocess</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a3076950b1d6aded294c93fd66751a8b5" prot="protected" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>session_</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a424ab0b56052bf42203c9e93a8bf42a5" prot="protected" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>sessionOptions_</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLO26Classifier_1a25d3edd478b91b8f4a669b2d8ed02b98" prot="public" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>YOLO26Classifier</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a8393e402d5b9a72410bc777c9568f3ef" prot="public" virt="non-virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>YOLOClassifier</name></member>
+      <member refid="classyolos_1_1cls_1_1YOLOClassifier_1a69f21675c3a0572aa5750cf91807184f" prot="public" virt="virtual"><scope>yolos::cls::YOLO26Classifier</scope><name>~YOLOClassifier</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

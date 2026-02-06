@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="structyolos_1_1preprocessing_1_1InferenceBuffer" kind="struct" language="C++" prot="public">
+    <compoundname>yolos::preprocessing::InferenceBuffer</compoundname>
+    <includes refid="preprocessing_8hpp" local="no">preprocessing.hpp</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structyolos_1_1preprocessing_1_1InferenceBuffer_1afbecaa236caabcb607ec21634bdeb7de" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; float &gt;</type>
+        <definition>std::vector&lt;float&gt; yolos::preprocessing::InferenceBuffer::blob</definition>
+        <argsstring></argsstring>
+        <name>blob</name>
+        <briefdescription>
+<para>CHW format blob for ONNX. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/preprocessing.hpp" line="28" column="17" bodyfile="include/yolos/core/preprocessing.hpp" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1preprocessing_1_1InferenceBuffer_1a2d8701d52e6582bc53546a3db1832921" prot="public" static="no" mutable="no">
+        <type>cv::Mat</type>
+        <definition>cv::Mat yolos::preprocessing::InferenceBuffer::resized</definition>
+        <argsstring></argsstring>
+        <name>resized</name>
+        <briefdescription>
+<para>Letterboxed image. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/preprocessing.hpp" line="29" column="13" bodyfile="include/yolos/core/preprocessing.hpp" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1preprocessing_1_1InferenceBuffer_1ad54e005fa8251109297050116bf7a2b1" prot="public" static="no" mutable="no">
+        <type>cv::Mat</type>
+        <definition>cv::Mat yolos::preprocessing::InferenceBuffer::rgbFloat</definition>
+        <argsstring></argsstring>
+        <name>rgbFloat</name>
+        <briefdescription>
+<para>RGB float image. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/preprocessing.hpp" line="30" column="13" bodyfile="include/yolos/core/preprocessing.hpp" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1preprocessing_1_1InferenceBuffer_1aeeaa0d96993d9a7d19fd08d9c9bd2f13" prot="public" static="no" mutable="no">
+        <type>cv::Size</type>
+        <definition>cv::Size yolos::preprocessing::InferenceBuffer::lastInputSize</definition>
+        <argsstring></argsstring>
+        <name>lastInputSize</name>
+        <briefdescription>
+<para>Last input size (for reuse check) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/preprocessing.hpp" line="31" column="14" bodyfile="include/yolos/core/preprocessing.hpp" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1preprocessing_1_1InferenceBuffer_1ae5020bc10604f54f6b6e550a77423785" prot="public" static="no" mutable="no">
+        <type>cv::Size</type>
+        <definition>cv::Size yolos::preprocessing::InferenceBuffer::lastTargetSize</definition>
+        <argsstring></argsstring>
+        <name>lastTargetSize</name>
+        <briefdescription>
+<para>Last target size. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/preprocessing.hpp" line="32" column="14" bodyfile="include/yolos/core/preprocessing.hpp" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structyolos_1_1preprocessing_1_1InferenceBuffer_1a0e7dd56a018a143f1f6e984c67a0904e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::preprocessing::InferenceBuffer::ensureCapacity</definition>
+        <argsstring>(int height, int width, int channels=3)</argsstring>
+        <name>ensureCapacity</name>
+        <param>
+          <type>int</type>
+          <declname>height</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>channels</declname>
+          <defval>3</defval>
+        </param>
+        <briefdescription>
+<para>Ensure blob has required capacity. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/preprocessing.hpp" line="35" column="10" bodyfile="include/yolos/core/preprocessing.hpp" bodystart="35" bodyend="40"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Pre-allocated inference buffer to avoid per-frame allocations. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/yolos/core/preprocessing.hpp" line="27" column="22" bodyfile="include/yolos/core/preprocessing.hpp" bodystart="27" bodyend="41"/>
+    <listofallmembers>
+      <member refid="structyolos_1_1preprocessing_1_1InferenceBuffer_1afbecaa236caabcb607ec21634bdeb7de" prot="public" virt="non-virtual"><scope>yolos::preprocessing::InferenceBuffer</scope><name>blob</name></member>
+      <member refid="structyolos_1_1preprocessing_1_1InferenceBuffer_1a0e7dd56a018a143f1f6e984c67a0904e" prot="public" virt="non-virtual"><scope>yolos::preprocessing::InferenceBuffer</scope><name>ensureCapacity</name></member>
+      <member refid="structyolos_1_1preprocessing_1_1InferenceBuffer_1aeeaa0d96993d9a7d19fd08d9c9bd2f13" prot="public" virt="non-virtual"><scope>yolos::preprocessing::InferenceBuffer</scope><name>lastInputSize</name></member>
+      <member refid="structyolos_1_1preprocessing_1_1InferenceBuffer_1ae5020bc10604f54f6b6e550a77423785" prot="public" virt="non-virtual"><scope>yolos::preprocessing::InferenceBuffer</scope><name>lastTargetSize</name></member>
+      <member refid="structyolos_1_1preprocessing_1_1InferenceBuffer_1a2d8701d52e6582bc53546a3db1832921" prot="public" virt="non-virtual"><scope>yolos::preprocessing::InferenceBuffer</scope><name>resized</name></member>
+      <member refid="structyolos_1_1preprocessing_1_1InferenceBuffer_1ad54e005fa8251109297050116bf7a2b1" prot="public" virt="non-virtual"><scope>yolos::preprocessing::InferenceBuffer</scope><name>rgbFloat</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

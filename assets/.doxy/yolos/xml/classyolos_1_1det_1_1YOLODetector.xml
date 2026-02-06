@@ -1,0 +1,613 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classyolos_1_1det_1_1YOLODetector" kind="class" language="C++" prot="public">
+    <compoundname>yolos::det::YOLODetector</compoundname>
+    <basecompoundref refid="classyolos_1_1OrtSessionBase" prot="public" virt="non-virtual">yolos::OrtSessionBase</basecompoundref>
+    <derivedcompoundref refid="classyolos_1_1det_1_1YOLO26Detector" prot="public" virt="non-virtual">yolos::det::YOLO26Detector</derivedcompoundref>
+    <derivedcompoundref refid="classyolos_1_1det_1_1YOLONASDetector" prot="public" virt="non-virtual">yolos::det::YOLONASDetector</derivedcompoundref>
+    <derivedcompoundref refid="classyolos_1_1det_1_1YOLOv10Detector" prot="public" virt="non-virtual">yolos::det::YOLOv10Detector</derivedcompoundref>
+    <derivedcompoundref refid="classyolos_1_1det_1_1YOLOv11Detector" prot="public" virt="non-virtual">yolos::det::YOLOv11Detector</derivedcompoundref>
+    <derivedcompoundref refid="classyolos_1_1det_1_1YOLOv7Detector" prot="public" virt="non-virtual">yolos::det::YOLOv7Detector</derivedcompoundref>
+    <derivedcompoundref refid="classyolos_1_1det_1_1YOLOv8Detector" prot="public" virt="non-virtual">yolos::det::YOLOv8Detector</derivedcompoundref>
+    <includes refid="detection_8hpp" local="no">detection.hpp</includes>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classyolos_1_1det_1_1YOLODetector_1a9b2408b9f750ee5ee510472af2360985" prot="protected" static="no" mutable="no">
+        <type><ref refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84e" kindref="member">YOLOVersion</ref></type>
+        <definition>YOLOVersion yolos::det::YOLODetector::version_</definition>
+        <argsstring></argsstring>
+        <name>version_</name>
+        <initializer>{<ref refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84ea06b9281e396db002010bde1de57262eb" kindref="member">YOLOVersion::Auto</ref>}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="133" column="17" bodyfile="include/yolos/tasks/detection.hpp" bodystart="133" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classyolos_1_1det_1_1YOLODetector_1ad84ca7c01ae1d46d47b1e2da08b64b56" prot="protected" static="no" mutable="no">
+        <type>std::vector&lt; std::string &gt;</type>
+        <definition>std::vector&lt;std::string&gt; yolos::det::YOLODetector::classNames_</definition>
+        <argsstring></argsstring>
+        <name>classNames_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="134" column="17" bodyfile="include/yolos/tasks/detection.hpp" bodystart="134" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classyolos_1_1det_1_1YOLODetector_1a13bf703380daecb4d3157afc2849ac75" prot="protected" static="no" mutable="no">
+        <type>std::vector&lt; cv::Scalar &gt;</type>
+        <definition>std::vector&lt;cv::Scalar&gt; yolos::det::YOLODetector::classColors_</definition>
+        <argsstring></argsstring>
+        <name>classColors_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="135" column="17" bodyfile="include/yolos/tasks/detection.hpp" bodystart="135" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classyolos_1_1det_1_1YOLODetector_1a095865ebce999d9bd014c08ee34e41ab" prot="protected" static="no" mutable="yes">
+        <type><ref refid="structyolos_1_1preprocessing_1_1InferenceBuffer" kindref="compound">preprocessing::InferenceBuffer</ref></type>
+        <definition>preprocessing::InferenceBuffer yolos::det::YOLODetector::buffer_</definition>
+        <argsstring></argsstring>
+        <name>buffer_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="138" column="44" bodyfile="include/yolos/tasks/detection.hpp" bodystart="138" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classyolos_1_1det_1_1YOLODetector_1a3b73f3d2ef6323fbadf1b6e3f18a74e4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>yolos::det::YOLODetector::YOLODetector</definition>
+        <argsstring>(const std::string &amp;modelPath, const std::string &amp;labelsPath, bool useGPU=false, YOLOVersion version=YOLOVersion::Auto)</argsstring>
+        <name>YOLODetector</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>modelPath</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>labelsPath</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>useGPU</declname>
+          <defval>false</defval>
+        </param>
+        <param>
+          <type><ref refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84e" kindref="member">YOLOVersion</ref></type>
+          <declname>version</declname>
+          <defval><ref refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84ea06b9281e396db002010bde1de57262eb" kindref="member">YOLOVersion::Auto</ref></defval>
+        </param>
+        <briefdescription>
+<para>Constructor. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>modelPath</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Path to the ONNX model file </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>labelsPath</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Path to the class names file </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>useGPU</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Whether to use GPU for inference </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>version</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>YOLO version (Auto for runtime detection) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="56" column="5" bodyfile="include/yolos/tasks/detection.hpp" bodystart="56" bodyend="67"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1det_1_1YOLODetector_1a2a29169871bb49965fd23539a61e3225" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual yolos::det::YOLODetector::~YOLODetector</definition>
+        <argsstring>()=default</argsstring>
+        <name>~YOLODetector</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="69" column="13"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1det_1_1YOLODetector_1a8398c7dc31aefdda49eb026e8847e591" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>std::vector&lt; <ref refid="structyolos_1_1det_1_1Detection" kindref="compound">Detection</ref> &gt;</type>
+        <definition>virtual std::vector&lt;Detection&gt; yolos::det::YOLODetector::detect</definition>
+        <argsstring>(const cv::Mat &amp;image, float confThreshold=0.4f, float iouThreshold=0.45f)</argsstring>
+        <name>detect</name>
+        <param>
+          <type>const cv::Mat &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>confThreshold</declname>
+          <defval>0.4f</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>iouThreshold</declname>
+          <defval>0.45f</defval>
+        </param>
+        <briefdescription>
+<para>Run detection on an image (optimized with buffer reuse) </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>image</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Input image (BGR format) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>confThreshold</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Confidence threshold </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>iouThreshold</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IoU threshold for NMS </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Vector of detections </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="76" column="25" bodyfile="include/yolos/tasks/detection.hpp" bodystart="76" bodyend="98"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1det_1_1YOLODetector_1a05b1fa0932b5f99d5ed42225c32afa02" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::det::YOLODetector::drawDetections</definition>
+        <argsstring>(cv::Mat &amp;image, const std::vector&lt; Detection &gt; &amp;detections) const</argsstring>
+        <name>drawDetections</name>
+        <param>
+          <type>cv::Mat &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; <ref refid="structyolos_1_1det_1_1Detection" kindref="compound">Detection</ref> &gt; &amp;</type>
+          <declname>detections</declname>
+        </param>
+        <briefdescription>
+<para>Draw detections on an image. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>image</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Image to draw on </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>detections</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector of detections </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="103" column="10" bodyfile="include/yolos/tasks/detection.hpp" bodystart="103" bodyend="112"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1det_1_1YOLODetector_1a327075e0788a255e272e91133c9c8e7b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::det::YOLODetector::drawDetectionsWithMask</definition>
+        <argsstring>(cv::Mat &amp;image, const std::vector&lt; Detection &gt; &amp;detections, float alpha=0.4f) const</argsstring>
+        <name>drawDetectionsWithMask</name>
+        <param>
+          <type>cv::Mat &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; <ref refid="structyolos_1_1det_1_1Detection" kindref="compound">Detection</ref> &gt; &amp;</type>
+          <declname>detections</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>alpha</declname>
+          <defval>0.4f</defval>
+        </param>
+        <briefdescription>
+<para>Draw detections with semi-transparent mask fill. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="115" column="10" bodyfile="include/yolos/tasks/detection.hpp" bodystart="115" bodyend="124"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1det_1_1YOLODetector_1ab54b697d497f477590cefd90f1ffdece" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const std::vector&lt; std::string &gt; &amp;</type>
+        <definition>const std::vector&lt;std::string&gt;&amp; yolos::det::YOLODetector::getClassNames</definition>
+        <argsstring>() const</argsstring>
+        <name>getClassNames</name>
+        <briefdescription>
+<para>Get class names. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="127" column="24" bodyfile="include/yolos/tasks/detection.hpp" bodystart="127" bodyend="127"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1det_1_1YOLODetector_1a483005c45462b83ab073c5f6e8ec7f52" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const std::vector&lt; cv::Scalar &gt; &amp;</type>
+        <definition>const std::vector&lt;cv::Scalar&gt;&amp; yolos::det::YOLODetector::getClassColors</definition>
+        <argsstring>() const</argsstring>
+        <name>getClassColors</name>
+        <briefdescription>
+<para>Get class colors. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="130" column="24" bodyfile="include/yolos/tasks/detection.hpp" bodystart="130" bodyend="130"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classyolos_1_1det_1_1YOLODetector_1aba727742e9e518a2eea3903dc4fc8380" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84e" kindref="member">YOLOVersion</ref></type>
+        <definition>YOLOVersion yolos::det::YOLODetector::detectVersion</definition>
+        <argsstring>(const std::vector&lt; Ort::Value &gt; &amp;outputTensors)</argsstring>
+        <name>detectVersion</name>
+        <param>
+          <type>const std::vector&lt; Ort::Value &gt; &amp;</type>
+          <declname>outputTensors</declname>
+        </param>
+        <briefdescription>
+<para>Detect YOLO version from output tensors. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="141" column="17" bodyfile="include/yolos/tasks/detection.hpp" bodystart="141" bodyend="144"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1det_1_1YOLODetector_1a2cb429caf43cfff7944fb9827c61288c" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>std::vector&lt; <ref refid="structyolos_1_1det_1_1Detection" kindref="compound">Detection</ref> &gt;</type>
+        <definition>virtual std::vector&lt;Detection&gt; yolos::det::YOLODetector::postprocess</definition>
+        <argsstring>(const cv::Size &amp;originalSize, const cv::Size &amp;resizedShape, const std::vector&lt; Ort::Value &gt; &amp;outputTensors, YOLOVersion version, float confThreshold, float iouThreshold)</argsstring>
+        <name>postprocess</name>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>originalSize</declname>
+        </param>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>resizedShape</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; Ort::Value &gt; &amp;</type>
+          <declname>outputTensors</declname>
+        </param>
+        <param>
+          <type><ref refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84e" kindref="member">YOLOVersion</ref></type>
+          <declname>version</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>confThreshold</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>iouThreshold</declname>
+        </param>
+        <briefdescription>
+<para>Postprocess based on detected version. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="147" column="25" bodyfile="include/yolos/tasks/detection.hpp" bodystart="147" bodyend="164"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1det_1_1YOLODetector_1a82dcad4ce6768a59a8b12dd59e9966a6" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>std::vector&lt; <ref refid="structyolos_1_1det_1_1Detection" kindref="compound">Detection</ref> &gt;</type>
+        <definition>virtual std::vector&lt;Detection&gt; yolos::det::YOLODetector::postprocessStandard</definition>
+        <argsstring>(const cv::Size &amp;originalSize, const cv::Size &amp;resizedShape, const std::vector&lt; Ort::Value &gt; &amp;outputTensors, float confThreshold, float iouThreshold)</argsstring>
+        <name>postprocessStandard</name>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>originalSize</declname>
+        </param>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>resizedShape</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; Ort::Value &gt; &amp;</type>
+          <declname>outputTensors</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>confThreshold</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>iouThreshold</declname>
+        </param>
+        <briefdescription>
+<para>Standard postprocess for YOLOv8/v11 format [batch, features, boxes] Optimized: single box storage with batched NMS. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="168" column="25" bodyfile="include/yolos/tasks/detection.hpp" bodystart="168" bodyend="246"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1det_1_1YOLODetector_1a344a04c5ea0bb5d32bd83a0328bbe17c" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>std::vector&lt; <ref refid="structyolos_1_1det_1_1Detection" kindref="compound">Detection</ref> &gt;</type>
+        <definition>virtual std::vector&lt;Detection&gt; yolos::det::YOLODetector::postprocessV7</definition>
+        <argsstring>(const cv::Size &amp;originalSize, const cv::Size &amp;resizedShape, const std::vector&lt; Ort::Value &gt; &amp;outputTensors, float confThreshold, float iouThreshold)</argsstring>
+        <name>postprocessV7</name>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>originalSize</declname>
+        </param>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>resizedShape</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; Ort::Value &gt; &amp;</type>
+          <declname>outputTensors</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>confThreshold</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>iouThreshold</declname>
+        </param>
+        <briefdescription>
+<para>Postprocess for YOLOv7 format [batch, boxes, features]. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="249" column="25" bodyfile="include/yolos/tasks/detection.hpp" bodystart="249" bodyend="321"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1det_1_1YOLODetector_1af259ac99b09801575716d9ce19ad0978" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>std::vector&lt; <ref refid="structyolos_1_1det_1_1Detection" kindref="compound">Detection</ref> &gt;</type>
+        <definition>virtual std::vector&lt;Detection&gt; yolos::det::YOLODetector::postprocessV10</definition>
+        <argsstring>(const cv::Size &amp;originalSize, const cv::Size &amp;resizedShape, const std::vector&lt; Ort::Value &gt; &amp;outputTensors, float confThreshold, float)</argsstring>
+        <name>postprocessV10</name>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>originalSize</declname>
+        </param>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>resizedShape</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; Ort::Value &gt; &amp;</type>
+          <declname>outputTensors</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>confThreshold</declname>
+        </param>
+        <param>
+          <type>float</type>
+        </param>
+        <briefdescription>
+<para>Postprocess for YOLOv10 format [batch, boxes, 6] (end-to-end, no NMS needed) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="324" column="25" bodyfile="include/yolos/tasks/detection.hpp" bodystart="324" bodyend="362"/>
+      </memberdef>
+      <memberdef kind="function" id="classyolos_1_1det_1_1YOLODetector_1ac1ca5501d82edf9ce783bfca6bfb3c18" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>std::vector&lt; <ref refid="structyolos_1_1det_1_1Detection" kindref="compound">Detection</ref> &gt;</type>
+        <definition>virtual std::vector&lt;Detection&gt; yolos::det::YOLODetector::postprocessNAS</definition>
+        <argsstring>(const cv::Size &amp;originalSize, const cv::Size &amp;resizedShape, const std::vector&lt; Ort::Value &gt; &amp;outputTensors, float confThreshold, float iouThreshold)</argsstring>
+        <name>postprocessNAS</name>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>originalSize</declname>
+        </param>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>resizedShape</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; Ort::Value &gt; &amp;</type>
+          <declname>outputTensors</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>confThreshold</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>iouThreshold</declname>
+        </param>
+        <briefdescription>
+<para>Postprocess for YOLO-NAS format (two outputs: boxes and scores) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="365" column="25" bodyfile="include/yolos/tasks/detection.hpp" bodystart="365" bodyend="435"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Base YOLO detector with runtime version auto-detection. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="3">
+        <label>yolos::det::YOLO26Detector</label>
+        <link refid="classyolos_1_1det_1_1YOLO26Detector"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>yolos::det::YOLOv11Detector</label>
+        <link refid="classyolos_1_1det_1_1YOLOv11Detector"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>yolos::det::YOLOv10Detector</label>
+        <link refid="classyolos_1_1det_1_1YOLOv10Detector"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>yolos::det::YOLODetector</label>
+        <link refid="classyolos_1_1det_1_1YOLODetector"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>yolos::OrtSessionBase</label>
+        <link refid="classyolos_1_1OrtSessionBase"/>
+      </node>
+      <node id="8">
+        <label>yolos::det::YOLOv8Detector</label>
+        <link refid="classyolos_1_1det_1_1YOLOv8Detector"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>yolos::det::YOLOv7Detector</label>
+        <link refid="classyolos_1_1det_1_1YOLOv7Detector"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>yolos::det::YOLONASDetector</label>
+        <link refid="classyolos_1_1det_1_1YOLONASDetector"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>yolos::det::YOLODetector</label>
+        <link refid="classyolos_1_1det_1_1YOLODetector"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>buffer_</edgelabel>
+        </childnode>
+      </node>
+      <node id="3">
+        <label>yolos::preprocessing::InferenceBuffer</label>
+        <link refid="structyolos_1_1preprocessing_1_1InferenceBuffer"/>
+      </node>
+      <node id="2">
+        <label>yolos::OrtSessionBase</label>
+        <link refid="classyolos_1_1OrtSessionBase"/>
+      </node>
+    </collaborationgraph>
+    <location file="include/yolos/tasks/detection.hpp" line="49" column="41" bodyfile="include/yolos/tasks/detection.hpp" bodystart="49" bodyend="436"/>
+    <listofallmembers>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a095865ebce999d9bd014c08ee34e41ab" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>buffer_</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a13bf703380daecb4d3157afc2849ac75" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>classColors_</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1ad84ca7c01ae1d46d47b1e2da08b64b56" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>classNames_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a4d9b7b6b9923511d7a4df70dc2276581" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>createInputTensor</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a8398c7dc31aefdda49eb026e8847e591" prot="public" virt="virtual"><scope>yolos::det::YOLODetector</scope><name>detect</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1aba727742e9e518a2eea3903dc4fc8380" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>detectVersion</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1aa6698a2700f0f81c7779e7d1b8ed7fdd" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>device_</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a05b1fa0932b5f99d5ed42225c32afa02" prot="public" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>drawDetections</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a327075e0788a255e272e91133c9c8e7b" prot="public" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>drawDetectionsWithMask</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a1c73ea2faea65b4cbde35cc805f1c899" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>env_</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a483005c45462b83ab073c5f6e8ec7f52" prot="public" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>getClassColors</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1ab54b697d497f477590cefd90f1ffdece" prot="public" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>getClassNames</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a11510c00f9adb9fbe4fe1c1fee79f02a" prot="public" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>getDevice</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a4be1237b1a62b4a50a817ce6ef7837f1" prot="public" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>getInputShape</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a36cee1b35ce518f6bba0c7901ad0f596" prot="public" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>getNumInputNodes</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a30a8722c68a2fa1ab0a0ab665afd19d3" prot="public" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>getNumOutputNodes</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a8b263597883f18d2f66fd3f0f598eb9f" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>inputNameAllocs_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a8c46588054da42098c9d5ee54772ee14" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>inputNames_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1abfbb75048b68bfadcfbb5fd29c9be55d" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>inputShape_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a875aafb35cc44916e3b5e153cb2ea404" prot="public" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>isDynamicBatchSize</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ace6a50df18afdc8571368803d9e7dd34" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>isDynamicBatchSize_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1aae5a5a958fabccb91ae9e8d6c394b43a" prot="public" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>isDynamicInputShape</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a15be4c2ddac39ccc90a1170fbae15786" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>isDynamicInputShape_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a424511d525512f4c42733ae1dbfd70ae" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>numInputNodes_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a8397d65ebebd090a4f5079ab1ea93f21" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>numOutputNodes_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ac40efe124490a78e5df4d108a5f19f5c" prot="public" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>operator=</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a97f3227d2f90aed9a79a618dc31c9ffa" prot="public" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>operator=</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ac7dda465eadfec6738e474a07a1c2e4c" prot="public" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>OrtSessionBase</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a41661c634079de533e5ddf7ca5b8f5c6" prot="public" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>OrtSessionBase</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ae64770ff5188681dbe8d6567ccdfbbb6" prot="public" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>OrtSessionBase</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a5ea17351450cfcf4c286138657cd5dcb" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>outputNameAllocs_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a70896c168ab6762c3bf96b60cf77c88b" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>outputNames_</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a2cb429caf43cfff7944fb9827c61288c" prot="protected" virt="virtual"><scope>yolos::det::YOLODetector</scope><name>postprocess</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1ac1ca5501d82edf9ce783bfca6bfb3c18" prot="protected" virt="virtual"><scope>yolos::det::YOLODetector</scope><name>postprocessNAS</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a82dcad4ce6768a59a8b12dd59e9966a6" prot="protected" virt="virtual"><scope>yolos::det::YOLODetector</scope><name>postprocessStandard</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1af259ac99b09801575716d9ce19ad0978" prot="protected" virt="virtual"><scope>yolos::det::YOLODetector</scope><name>postprocessV10</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a344a04c5ea0bb5d32bd83a0328bbe17c" prot="protected" virt="virtual"><scope>yolos::det::YOLODetector</scope><name>postprocessV7</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a8318858109b6bfb9c7ee61b96b1c70c6" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>runInference</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1a0066a883faf4551f54dffd2b4a3495ba" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>session_</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1aedfa3da5fe054f0e2b3b5df4acb768bd" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>sessionOptions_</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a9b2408b9f750ee5ee510472af2360985" prot="protected" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>version_</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a3b73f3d2ef6323fbadf1b6e3f18a74e4" prot="public" virt="non-virtual"><scope>yolos::det::YOLODetector</scope><name>YOLODetector</name></member>
+      <member refid="classyolos_1_1OrtSessionBase_1ad8ee6fae9a5de2944e6e1d79ec26c78e" prot="public" virt="virtual"><scope>yolos::det::YOLODetector</scope><name>~OrtSessionBase</name></member>
+      <member refid="classyolos_1_1det_1_1YOLODetector_1a2a29169871bb49965fd23539a61e3225" prot="public" virt="virtual"><scope>yolos::det::YOLODetector</scope><name>~YOLODetector</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

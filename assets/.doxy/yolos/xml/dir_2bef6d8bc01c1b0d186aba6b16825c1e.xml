@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="dir_2bef6d8bc01c1b0d186aba6b16825c1e" kind="dir">
+    <compoundname>include/yolos/tasks</compoundname>
+    <innerfile refid="classification_8hpp">classification.hpp</innerfile>
+    <innerfile refid="detection_8hpp">detection.hpp</innerfile>
+    <innerfile refid="obb_8hpp">obb.hpp</innerfile>
+    <innerfile refid="pose_8hpp">pose.hpp</innerfile>
+    <innerfile refid="segmentation_8hpp">segmentation.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/yolos/tasks/"/>
+  </compounddef>
+</doxygen>

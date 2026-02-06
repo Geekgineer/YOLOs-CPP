@@ -1,0 +1,434 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="yolos_8hpp" kind="file" language="C++">
+    <compoundname>yolos.hpp</compoundname>
+    <includes refid="types_8hpp" local="yes">yolos/core/types.hpp</includes>
+    <includes refid="version_8hpp" local="yes">yolos/core/version.hpp</includes>
+    <includes refid="utils_8hpp" local="yes">yolos/core/utils.hpp</includes>
+    <includes refid="preprocessing_8hpp" local="yes">yolos/core/preprocessing.hpp</includes>
+    <includes refid="nms_8hpp" local="yes">yolos/core/nms.hpp</includes>
+    <includes refid="drawing_8hpp" local="yes">yolos/core/drawing.hpp</includes>
+    <includes refid="session__base_8hpp" local="yes">yolos/core/session_base.hpp</includes>
+    <includes refid="detection_8hpp" local="yes">yolos/tasks/detection.hpp</includes>
+    <includes refid="segmentation_8hpp" local="yes">yolos/tasks/segmentation.hpp</includes>
+    <includes refid="pose_8hpp" local="yes">yolos/tasks/pose.hpp</includes>
+    <includes refid="obb_8hpp" local="yes">yolos/tasks/obb.hpp</includes>
+    <includes refid="classification_8hpp" local="yes">yolos/tasks/classification.hpp</includes>
+    <incdepgraph>
+      <node id="31">
+        <label>iomanip</label>
+      </node>
+      <node id="21">
+        <label>onnxruntime_cxx_api.h</label>
+      </node>
+      <node id="14">
+        <label>yolos/core/preprocessing.hpp</label>
+        <link refid="preprocessing_8hpp"/>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>cstdint</label>
+      </node>
+      <node id="27">
+        <label>yolos/tasks/pose.hpp</label>
+        <link refid="pose_8hpp"/>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="30">
+        <label>yolos/tasks/classification.hpp</label>
+        <link refid="classification_8hpp"/>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>cmath</label>
+      </node>
+      <node id="17">
+        <label>yolos/core/drawing.hpp</label>
+        <link refid="drawing_8hpp"/>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="12">
+        <label>numeric</label>
+      </node>
+      <node id="29">
+        <label>opencv2/imgproc.hpp</label>
+      </node>
+      <node id="6">
+        <label>yolos/core/version.hpp</label>
+        <link refid="version_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>opencv2/opencv.hpp</label>
+      </node>
+      <node id="8">
+        <label>string</label>
+      </node>
+      <node id="9">
+        <label>yolos/core/utils.hpp</label>
+        <link refid="utils_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="25">
+        <label>cfloat</label>
+      </node>
+      <node id="10">
+        <label>fstream</label>
+      </node>
+      <node id="20">
+        <label>yolos/core/session_base.hpp</label>
+        <link refid="session__base_8hpp"/>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>yolos/tasks/detection.hpp</label>
+        <link refid="detection_8hpp"/>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="18">
+        <label>random</label>
+      </node>
+      <node id="16">
+        <label>yolos/core/nms.hpp</label>
+        <link refid="nms_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>yolos/core/types.hpp</label>
+        <link refid="types_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>vector</label>
+      </node>
+      <node id="32">
+        <label>sstream</label>
+      </node>
+      <node id="11">
+        <label>iostream</label>
+      </node>
+      <node id="19">
+        <label>unordered_map</label>
+      </node>
+      <node id="28">
+        <label>yolos/tasks/obb.hpp</label>
+        <link refid="obb_8hpp"/>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>thread</label>
+      </node>
+      <node id="13">
+        <label>type_traits</label>
+      </node>
+      <node id="4">
+        <label>algorithm</label>
+      </node>
+      <node id="26">
+        <label>yolos/tasks/segmentation.hpp</label>
+        <link refid="segmentation_8hpp"/>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>include/yolos/yolos.hpp</label>
+        <link refid="yolos_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <innernamespace refid="namespaceyolos">yolos</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">//<sp/>YOLOs-CPP<sp/>-<sp/>Unified<sp/>YOLO<sp/>Inference<sp/>Library</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Master<sp/>include<sp/>header<sp/>for<sp/>all<sp/>YOLO<sp/>tasks.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Usage:</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/><sp/>#include<sp/>&quot;yolos/yolos.hpp&quot;<sp/><sp/>//<sp/>Include<sp/>all<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/><sp/>or<sp/>include<sp/>specific<sp/>tasks:</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/><sp/>#include<sp/>&quot;yolos/tasks/detection.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/><sp/>#include<sp/>&quot;yolos/tasks/segmentation.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/><sp/>#include<sp/>&quot;yolos/tasks/pose.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/><sp/>#include<sp/>&quot;yolos/tasks/obb.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/><sp/>#include<sp/>&quot;yolos/tasks/classification.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Author:<sp/>YOLOs-CPP<sp/>Team,<sp/>https://github.com/Geekgineer/YOLOs-CPP</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Core<sp/>components</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="types_8hpp" kindref="compound">yolos/core/types.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="version_8hpp" kindref="compound">yolos/core/version.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="utils_8hpp" kindref="compound">yolos/core/utils.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="preprocessing_8hpp" kindref="compound">yolos/core/preprocessing.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="nms_8hpp" kindref="compound">yolos/core/nms.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="drawing_8hpp" kindref="compound">yolos/core/drawing.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="session__base_8hpp" kindref="compound">yolos/core/session_base.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Task-specific<sp/>implementations</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="detection_8hpp" kindref="compound">yolos/tasks/detection.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="segmentation_8hpp" kindref="compound">yolos/tasks/segmentation.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="pose_8hpp" kindref="compound">yolos/tasks/pose.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="obb_8hpp" kindref="compound">yolos/tasks/obb.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="classification_8hpp" kindref="compound">yolos/tasks/classification.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Namespace<sp/>Aliases<sp/>for<sp/>Convenience</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespaceyolos" kindref="compound">yolos</ref><sp/>{</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Detection<sp/>task<sp/>aliases</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42" refid="namespaceyolos_1aaafe5b42decda86fdf45897ee565dffb" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1det_1_1Detection" kindref="compound">Detection</ref><sp/>=<sp/><ref refid="namespaceyolos_1aaafe5b42decda86fdf45897ee565dffb" kindref="member">det::Detection</ref>;</highlight></codeline>
+<codeline lineno="43" refid="namespaceyolos_1a65b9f499a58fdf87841ea2cf161fc6a7" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classyolos_1_1det_1_1YOLODetector" kindref="compound">YOLODetector</ref><sp/>=<sp/><ref refid="namespaceyolos_1a65b9f499a58fdf87841ea2cf161fc6a7" kindref="member">det::YOLODetector</ref>;</highlight></codeline>
+<codeline lineno="44" refid="namespaceyolos_1afcf09a0104c07b38f6236338ffeb2d81" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classyolos_1_1det_1_1YOLO26Detector" kindref="compound">YOLO26Detector</ref><sp/>=<sp/><ref refid="namespaceyolos_1afcf09a0104c07b38f6236338ffeb2d81" kindref="member">det::YOLO26Detector</ref>;</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Segmentation<sp/>task<sp/>aliases</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="47" refid="namespaceyolos_1a07ac586374c2144fc11f0e8e91541346" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1seg_1_1Segmentation" kindref="compound">Segmentation</ref><sp/>=<sp/><ref refid="namespaceyolos_1a07ac586374c2144fc11f0e8e91541346" kindref="member">seg::Segmentation</ref>;</highlight></codeline>
+<codeline lineno="48" refid="namespaceyolos_1ab5b8210d42792c7fef69bbea6b0b896c" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classyolos_1_1seg_1_1YOLOSegDetector" kindref="compound">YOLOSegDetector</ref><sp/>=<sp/><ref refid="namespaceyolos_1ab5b8210d42792c7fef69bbea6b0b896c" kindref="member">seg::YOLOSegDetector</ref>;</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Pose<sp/>estimation<sp/>task<sp/>aliases</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="51" refid="namespaceyolos_1ad023698f8e2490ff464083b37a17c458" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1pose_1_1PoseResult" kindref="compound">PoseResult</ref><sp/>=<sp/><ref refid="namespaceyolos_1ad023698f8e2490ff464083b37a17c458" kindref="member">pose::PoseResult</ref>;</highlight></codeline>
+<codeline lineno="52" refid="namespaceyolos_1ab86f0e602090b25d6aa4e646577dc1b2" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector" kindref="compound">YOLOPoseDetector</ref><sp/>=<sp/><ref refid="namespaceyolos_1ab86f0e602090b25d6aa4e646577dc1b2" kindref="member">pose::YOLOPoseDetector</ref>;</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight><highlight class="comment">//<sp/>OBB<sp/>detection<sp/>task<sp/>aliases</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="55" refid="namespaceyolos_1afca32cc27ad7b3edb8dcda6cbe23bc6b" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1obb_1_1OBBResult" kindref="compound">OBBResult</ref><sp/>=<sp/><ref refid="namespaceyolos_1afca32cc27ad7b3edb8dcda6cbe23bc6b" kindref="member">obb::OBBResult</ref>;</highlight></codeline>
+<codeline lineno="56" refid="namespaceyolos_1a96dd886ad39f3fbbf085cf1a365c56c5" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classyolos_1_1obb_1_1YOLOOBBDetector" kindref="compound">YOLOOBBDetector</ref><sp/>=<sp/><ref refid="namespaceyolos_1a96dd886ad39f3fbbf085cf1a365c56c5" kindref="member">obb::YOLOOBBDetector</ref>;</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Classification<sp/>task<sp/>aliases</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="59" refid="namespaceyolos_1a61dc6ff5a33767ae269b9d29522fa909" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="structyolos_1_1cls_1_1ClassificationResult" kindref="compound">ClassificationResult</ref><sp/>=<sp/><ref refid="namespaceyolos_1a61dc6ff5a33767ae269b9d29522fa909" kindref="member">cls::ClassificationResult</ref>;</highlight></codeline>
+<codeline lineno="60" refid="namespaceyolos_1a82043b20af3edd58209212b5fe4df577" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classyolos_1_1cls_1_1YOLOClassifier" kindref="compound">YOLOClassifier</ref><sp/>=<sp/><ref refid="namespaceyolos_1a82043b20af3edd58209212b5fe4df577" kindref="member">cls::YOLOClassifier</ref>;</highlight></codeline>
+<codeline lineno="61" refid="namespaceyolos_1a1cf5e2273793e3a858df1401cef2e692" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classyolos_1_1cls_1_1YOLO26Classifier" kindref="compound">YOLO26Classifier</ref><sp/>=<sp/><ref refid="namespaceyolos_1a1cf5e2273793e3a858df1401cef2e692" kindref="member">cls::YOLO26Classifier</ref>;</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>yolos</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="include/yolos/yolos.hpp"/>
+  </compounddef>
+</doxygen>

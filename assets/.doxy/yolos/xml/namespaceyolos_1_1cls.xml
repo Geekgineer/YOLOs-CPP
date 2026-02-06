@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="namespaceyolos_1_1cls" kind="namespace" language="C++">
+    <compoundname>yolos::cls</compoundname>
+    <innerclass refid="structyolos_1_1cls_1_1ClassificationResult" prot="public">yolos::cls::ClassificationResult</innerclass>
+    <innerclass refid="classyolos_1_1cls_1_1YOLO11Classifier" prot="public">yolos::cls::YOLO11Classifier</innerclass>
+    <innerclass refid="classyolos_1_1cls_1_1YOLO12Classifier" prot="public">yolos::cls::YOLO12Classifier</innerclass>
+    <innerclass refid="classyolos_1_1cls_1_1YOLO26Classifier" prot="public">yolos::cls::YOLO26Classifier</innerclass>
+    <innerclass refid="classyolos_1_1cls_1_1YOLOClassifier" prot="public">yolos::cls::YOLOClassifier</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespaceyolos_1_1cls_1a72e2c856052d6cdbb810de0b0c5aa17d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::cls::drawClassificationResult</definition>
+        <argsstring>(cv::Mat &amp;image, const ClassificationResult &amp;result, const cv::Point &amp;position=cv::Point(10, 30), const cv::Scalar &amp;textColor=cv::Scalar(0, 255, 0), const cv::Scalar &amp;bgColor=cv::Scalar(0, 0, 0))</argsstring>
+        <name>drawClassificationResult</name>
+        <param>
+          <type>cv::Mat &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structyolos_1_1cls_1_1ClassificationResult" kindref="compound">ClassificationResult</ref> &amp;</type>
+          <declname>result</declname>
+        </param>
+        <param>
+          <type>const cv::Point &amp;</type>
+          <declname>position</declname>
+          <defval>cv::Point(10, 30)</defval>
+        </param>
+        <param>
+          <type>const cv::Scalar &amp;</type>
+          <declname>textColor</declname>
+          <defval>cv::Scalar(0, 255, 0)</defval>
+        </param>
+        <param>
+          <type>const cv::Scalar &amp;</type>
+          <declname>bgColor</declname>
+          <defval>cv::Scalar(0, 0, 0)</defval>
+        </param>
+        <briefdescription>
+<para>Draw classification result on an image. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>image</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Image to draw on </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>result</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Classification result </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>position</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Position for the text </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>textColor</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Text color </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>bgColor</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Background color </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/classification.hpp" line="57" column="13" bodyfile="include/yolos/tasks/classification.hpp" bodystart="57" bodyend="89"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1cls_1a24b66c8e4b3f314203b72052c7de9722" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::unique_ptr&lt; <ref refid="classyolos_1_1cls_1_1YOLOClassifier" kindref="compound">YOLOClassifier</ref> &gt;</type>
+        <definition>std::unique_ptr&lt;YOLOClassifier&gt; yolos::cls::createClassifier</definition>
+        <argsstring>(const std::string &amp;modelPath, const std::string &amp;labelsPath, YOLOVersion version=YOLOVersion::V11, bool useGPU=false)</argsstring>
+        <name>createClassifier</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>modelPath</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>labelsPath</declname>
+        </param>
+        <param>
+          <type><ref refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84e" kindref="member">YOLOVersion</ref></type>
+          <declname>version</declname>
+          <defval><ref refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84ea9899bd62c7871e70c080ea7235bfc19c" kindref="member">YOLOVersion::V11</ref></defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>useGPU</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>Create a classifier with explicit version selection. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>modelPath</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Path to the ONNX model </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>labelsPath</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Path to the class names file </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>version</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>YOLO version </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>useGPU</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Whether to use GPU </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Unique pointer to classifier </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/classification.hpp" line="344" column="24" bodyfile="include/yolos/tasks/classification.hpp" bodystart="344" bodyend="356"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/yolos/tasks/classification.hpp" line="30" column="13"/>
+  </compounddef>
+</doxygen>

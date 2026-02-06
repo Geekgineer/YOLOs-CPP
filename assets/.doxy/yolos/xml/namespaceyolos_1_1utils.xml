@@ -1,0 +1,199 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="namespaceyolos_1_1utils" kind="namespace" language="C++">
+    <compoundname>yolos::utils</compoundname>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespaceyolos_1_1utils_1a0543823fd9643950db69da37be2f85c8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>std::enable_if&lt; std::is_arithmetic&lt; T &gt;::value, T &gt;::type</type>
+        <definition>std::enable_if&lt;std::is_arithmetic&lt;T&gt;::value, T&gt;::type yolos::utils::clamp</definition>
+        <argsstring>(const T &amp;value, const T &amp;low, const T &amp;high)</argsstring>
+        <name>clamp</name>
+        <param>
+          <type>const T &amp;</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>const T &amp;</type>
+          <declname>low</declname>
+        </param>
+        <param>
+          <type>const T &amp;</type>
+          <declname>high</declname>
+        </param>
+        <briefdescription>
+<para>Clamp a value to a specified range [low, high]. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Arithmetic type (int, float, etc.) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The value to clamp </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>low</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Lower bound </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>high</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Upper bound </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Clamped value </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/utils.hpp" line="36" column="1" bodyfile="include/yolos/core/utils.hpp" bodystart="36" bodyend="44"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1utils_1abde567f83ae1f3ca9b7b682eab3fddbb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t yolos::utils::vectorProduct</definition>
+        <argsstring>(const std::vector&lt; int64_t &gt; &amp;shape)</argsstring>
+        <name>vectorProduct</name>
+        <param>
+          <type>const std::vector&lt; int64_t &gt; &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <briefdescription>
+<para>Compute the product of elements in a vector. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>shape</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector of dimensions </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Product of all elements </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/utils.hpp" line="49" column="15" bodyfile="include/yolos/core/utils.hpp" bodystart="49" bodyend="52"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1utils_1a9b6de69cf5c7dfe837d42ad66a4c75e0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; std::string &gt;</type>
+        <definition>std::vector&lt;std::string&gt; yolos::utils::getClassNames</definition>
+        <argsstring>(const std::string &amp;path)</argsstring>
+        <name>getClassNames</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>path</declname>
+        </param>
+        <briefdescription>
+<para>Load class names from a file (one class name per line) </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Path to the class names file </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Vector of class names </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/utils.hpp" line="61" column="20" bodyfile="include/yolos/core/utils.hpp" bodystart="61" bodyend="82"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1utils_1a7d00278e0386fb49ff3ecac05181a362" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>float</type>
+        <definition>float yolos::utils::sigmoid</definition>
+        <argsstring>(float x)</argsstring>
+        <name>sigmoid</name>
+        <param>
+          <type>float</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+<para>Apply sigmoid activation: 1 / (1 + exp(-x)) </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Input value </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Sigmoid of x </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/utils.hpp" line="91" column="14" bodyfile="include/yolos/core/utils.hpp" bodystart="91" bodyend="93"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1utils_1a4658ca733b9730367b3e9b7f22c5bae6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::utils::sigmoidInplace</definition>
+        <argsstring>(std::vector&lt; float &gt; &amp;values)</argsstring>
+        <name>sigmoidInplace</name>
+        <param>
+          <type>std::vector&lt; float &gt; &amp;</type>
+          <declname>values</declname>
+        </param>
+        <briefdescription>
+<para>Apply sigmoid activation to a vector in-place. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>values</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector of values to transform </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/utils.hpp" line="97" column="13" bodyfile="include/yolos/core/utils.hpp" bodystart="97" bodyend="101"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/yolos/core/utils.hpp" line="22" column="15"/>
+  </compounddef>
+</doxygen>

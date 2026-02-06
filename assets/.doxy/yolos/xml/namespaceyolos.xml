@@ -1,0 +1,275 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="namespaceyolos" kind="namespace" language="C++">
+    <compoundname>yolos</compoundname>
+    <innerclass refid="structyolos_1_1BoundingBox" prot="public">yolos::BoundingBox</innerclass>
+    <innerclass refid="structyolos_1_1KeyPoint" prot="public">yolos::KeyPoint</innerclass>
+    <innerclass refid="structyolos_1_1OrientedBoundingBox" prot="public">yolos::OrientedBoundingBox</innerclass>
+    <innerclass refid="classyolos_1_1OrtSessionBase" prot="public">yolos::OrtSessionBase</innerclass>
+    <innernamespace refid="namespaceyolos_1_1cls">yolos::cls</innernamespace>
+    <innernamespace refid="namespaceyolos_1_1det">yolos::det</innernamespace>
+    <innernamespace refid="namespaceyolos_1_1drawing">yolos::drawing</innernamespace>
+    <innernamespace refid="namespaceyolos_1_1nms">yolos::nms</innernamespace>
+    <innernamespace refid="namespaceyolos_1_1obb">yolos::obb</innernamespace>
+    <innernamespace refid="namespaceyolos_1_1pose">yolos::pose</innernamespace>
+    <innernamespace refid="namespaceyolos_1_1preprocessing">yolos::preprocessing</innernamespace>
+    <innernamespace refid="namespaceyolos_1_1seg">yolos::seg</innernamespace>
+    <innernamespace refid="namespaceyolos_1_1utils">yolos::utils</innernamespace>
+    <innernamespace refid="namespaceyolos_1_1version">yolos::version</innernamespace>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84e" prot="public" static="no" strong="yes">
+        <type></type>
+        <name>YOLOVersion</name>
+        <enumvalue id="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84ea06b9281e396db002010bde1de57262eb" prot="public">
+          <name>Auto</name>
+          <briefdescription>
+<para>Runtime detection from output tensor shape. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84ea01d2f61fa66001f438aa2a65cb0aa9e5" prot="public">
+          <name>V7</name>
+          <briefdescription>
+<para>YOLOv7 format: [batch, num_boxes, num_features]. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84eaea7c1b92ccf2869f7f23c13385782d7c" prot="public">
+          <name>V8</name>
+          <briefdescription>
+<para>YOLOv8 format: [batch, num_features, num_boxes]. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84ea3ffc64fa10df9a884ba82f3e49e8282e" prot="public">
+          <name>V10</name>
+          <briefdescription>
+<para>YOLOv10 format: [batch, num_boxes, 6] (end-to-end, no NMS needed) </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84ea9899bd62c7871e70c080ea7235bfc19c" prot="public">
+          <name>V11</name>
+          <briefdescription>
+<para>YOLOv11 format: same as V8, [batch, num_features, num_boxes]. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84eaac1ce2eaebf8d94f6bb6605bd3b71a65" prot="public">
+          <name>V12</name>
+          <briefdescription>
+<para>YOLOv12 format: for classification. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84ea2881fc13b616c05ba222887376f7858b" prot="public">
+          <name>V26</name>
+          <briefdescription>
+<para>YOLOv26 format: [batch, num_boxes, 6] (end-to-end, no NMS needed) </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84eac07ee5debf5f3a3fef16c1ee5e8e4942" prot="public">
+          <name>NAS</name>
+          <briefdescription>
+<para>YOLO-NAS format: two outputs [boxes, scores]. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/version.hpp" line="21" column="23" bodyfile="include/yolos/core/version.hpp" bodystart="21" bodyend="30"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespaceyolos_1aaafe5b42decda86fdf45897ee565dffb" prot="public" static="no">
+        <type><ref refid="structyolos_1_1det_1_1Detection" kindref="compound">det::Detection</ref></type>
+        <definition>using yolos::Detection = typedef det::Detection</definition>
+        <argsstring></argsstring>
+        <name>Detection</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/yolos.hpp" line="42" column="1" bodyfile="include/yolos/yolos.hpp" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespaceyolos_1a65b9f499a58fdf87841ea2cf161fc6a7" prot="public" static="no">
+        <type><ref refid="classyolos_1_1det_1_1YOLODetector" kindref="compound">det::YOLODetector</ref></type>
+        <definition>using yolos::YOLODetector = typedef det::YOLODetector</definition>
+        <argsstring></argsstring>
+        <name>YOLODetector</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/yolos.hpp" line="43" column="1" bodyfile="include/yolos/yolos.hpp" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespaceyolos_1afcf09a0104c07b38f6236338ffeb2d81" prot="public" static="no">
+        <type><ref refid="classyolos_1_1det_1_1YOLO26Detector" kindref="compound">det::YOLO26Detector</ref></type>
+        <definition>using yolos::YOLO26Detector = typedef det::YOLO26Detector</definition>
+        <argsstring></argsstring>
+        <name>YOLO26Detector</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/yolos.hpp" line="44" column="1" bodyfile="include/yolos/yolos.hpp" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespaceyolos_1a07ac586374c2144fc11f0e8e91541346" prot="public" static="no">
+        <type><ref refid="structyolos_1_1seg_1_1Segmentation" kindref="compound">seg::Segmentation</ref></type>
+        <definition>using yolos::Segmentation = typedef seg::Segmentation</definition>
+        <argsstring></argsstring>
+        <name>Segmentation</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/yolos.hpp" line="47" column="1" bodyfile="include/yolos/yolos.hpp" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespaceyolos_1ab5b8210d42792c7fef69bbea6b0b896c" prot="public" static="no">
+        <type><ref refid="classyolos_1_1seg_1_1YOLOSegDetector" kindref="compound">seg::YOLOSegDetector</ref></type>
+        <definition>using yolos::YOLOSegDetector = typedef seg::YOLOSegDetector</definition>
+        <argsstring></argsstring>
+        <name>YOLOSegDetector</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/yolos.hpp" line="48" column="1" bodyfile="include/yolos/yolos.hpp" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespaceyolos_1ad023698f8e2490ff464083b37a17c458" prot="public" static="no">
+        <type><ref refid="structyolos_1_1pose_1_1PoseResult" kindref="compound">pose::PoseResult</ref></type>
+        <definition>using yolos::PoseResult = typedef pose::PoseResult</definition>
+        <argsstring></argsstring>
+        <name>PoseResult</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/yolos.hpp" line="51" column="1" bodyfile="include/yolos/yolos.hpp" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespaceyolos_1ab86f0e602090b25d6aa4e646577dc1b2" prot="public" static="no">
+        <type><ref refid="classyolos_1_1pose_1_1YOLOPoseDetector" kindref="compound">pose::YOLOPoseDetector</ref></type>
+        <definition>using yolos::YOLOPoseDetector = typedef pose::YOLOPoseDetector</definition>
+        <argsstring></argsstring>
+        <name>YOLOPoseDetector</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/yolos.hpp" line="52" column="1" bodyfile="include/yolos/yolos.hpp" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespaceyolos_1afca32cc27ad7b3edb8dcda6cbe23bc6b" prot="public" static="no">
+        <type><ref refid="structyolos_1_1obb_1_1OBBResult" kindref="compound">obb::OBBResult</ref></type>
+        <definition>using yolos::OBBResult = typedef obb::OBBResult</definition>
+        <argsstring></argsstring>
+        <name>OBBResult</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/yolos.hpp" line="55" column="1" bodyfile="include/yolos/yolos.hpp" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespaceyolos_1a96dd886ad39f3fbbf085cf1a365c56c5" prot="public" static="no">
+        <type><ref refid="classyolos_1_1obb_1_1YOLOOBBDetector" kindref="compound">obb::YOLOOBBDetector</ref></type>
+        <definition>using yolos::YOLOOBBDetector = typedef obb::YOLOOBBDetector</definition>
+        <argsstring></argsstring>
+        <name>YOLOOBBDetector</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/yolos.hpp" line="56" column="1" bodyfile="include/yolos/yolos.hpp" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespaceyolos_1a61dc6ff5a33767ae269b9d29522fa909" prot="public" static="no">
+        <type><ref refid="structyolos_1_1cls_1_1ClassificationResult" kindref="compound">cls::ClassificationResult</ref></type>
+        <definition>using yolos::ClassificationResult = typedef cls::ClassificationResult</definition>
+        <argsstring></argsstring>
+        <name>ClassificationResult</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/yolos.hpp" line="59" column="1" bodyfile="include/yolos/yolos.hpp" bodystart="59" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespaceyolos_1a82043b20af3edd58209212b5fe4df577" prot="public" static="no">
+        <type><ref refid="classyolos_1_1cls_1_1YOLOClassifier" kindref="compound">cls::YOLOClassifier</ref></type>
+        <definition>using yolos::YOLOClassifier = typedef cls::YOLOClassifier</definition>
+        <argsstring></argsstring>
+        <name>YOLOClassifier</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/yolos.hpp" line="60" column="1" bodyfile="include/yolos/yolos.hpp" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespaceyolos_1a1cf5e2273793e3a858df1401cef2e692" prot="public" static="no">
+        <type><ref refid="classyolos_1_1cls_1_1YOLO26Classifier" kindref="compound">cls::YOLO26Classifier</ref></type>
+        <definition>using yolos::YOLO26Classifier = typedef cls::YOLO26Classifier</definition>
+        <argsstring></argsstring>
+        <name>YOLO26Classifier</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/yolos.hpp" line="61" column="1" bodyfile="include/yolos/yolos.hpp" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespaceyolos_1a823fcef4ca2980d2db71f60d4b72231c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>const std::vector&lt; std::pair&lt; int, int &gt; &gt; &amp;</type>
+        <definition>const std::vector&lt;std::pair&lt;int, int&gt; &gt;&amp; yolos::getPoseSkeleton</definition>
+        <argsstring>()</argsstring>
+        <name>getPoseSkeleton</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/types.hpp" line="94" column="26" bodyfile="include/yolos/core/types.hpp" bodystart="94" bodyend="108"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/yolos/core/drawing.hpp" line="21" column="15"/>
+  </compounddef>
+</doxygen>

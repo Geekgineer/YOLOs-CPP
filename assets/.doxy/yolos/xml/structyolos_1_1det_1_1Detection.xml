@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="structyolos_1_1det_1_1Detection" kind="struct" language="C++" prot="public">
+    <compoundname>yolos::det::Detection</compoundname>
+    <includes refid="detection_8hpp" local="no">detection.hpp</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structyolos_1_1det_1_1Detection_1a782dc616d12b7152a1c236a3e3018f26" prot="public" static="no" mutable="no">
+        <type><ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref></type>
+        <definition>BoundingBox yolos::det::Detection::box</definition>
+        <argsstring></argsstring>
+        <name>box</name>
+        <briefdescription>
+<para>Axis-aligned bounding box. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="35" column="17" bodyfile="include/yolos/tasks/detection.hpp" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1det_1_1Detection_1adcd3ebe69c4a48be9b7fe16ef0a76388" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float yolos::det::Detection::conf</definition>
+        <argsstring></argsstring>
+        <name>conf</name>
+        <initializer>{0.0f}</initializer>
+        <briefdescription>
+<para>Confidence score. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="36" column="11" bodyfile="include/yolos/tasks/detection.hpp" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structyolos_1_1det_1_1Detection_1a2a73bc7e2c5192d541f00722e58d4f50" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int yolos::det::Detection::classId</definition>
+        <argsstring></argsstring>
+        <name>classId</name>
+        <initializer>{-1}</initializer>
+        <briefdescription>
+<para>Class ID. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="37" column="9" bodyfile="include/yolos/tasks/detection.hpp" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structyolos_1_1det_1_1Detection_1a93c16340d2b8f618b6ae7fa6d384f33a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>yolos::det::Detection::Detection</definition>
+        <argsstring>()=default</argsstring>
+        <name>Detection</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="39" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="structyolos_1_1det_1_1Detection_1aa2be681c9a8934acb230f3db4f51fbf9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>yolos::det::Detection::Detection</definition>
+        <argsstring>(const BoundingBox &amp;box_, float conf_, int classId_)</argsstring>
+        <name>Detection</name>
+        <param>
+          <type>const <ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref> &amp;</type>
+          <declname>box_</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>conf_</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>classId_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/tasks/detection.hpp" line="40" column="5" bodyfile="include/yolos/tasks/detection.hpp" bodystart="40" bodyend="41"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para><ref refid="structyolos_1_1det_1_1Detection" kindref="compound">Detection</ref> result containing bounding box, confidence, and class ID. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="2">
+        <label>yolos::BoundingBox</label>
+        <link refid="structyolos_1_1BoundingBox"/>
+      </node>
+      <node id="1">
+        <label>yolos::det::Detection</label>
+        <link refid="structyolos_1_1det_1_1Detection"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>box</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="include/yolos/tasks/detection.hpp" line="34" column="16" bodyfile="include/yolos/tasks/detection.hpp" bodystart="34" bodyend="42"/>
+    <listofallmembers>
+      <member refid="structyolos_1_1det_1_1Detection_1a782dc616d12b7152a1c236a3e3018f26" prot="public" virt="non-virtual"><scope>yolos::det::Detection</scope><name>box</name></member>
+      <member refid="structyolos_1_1det_1_1Detection_1a2a73bc7e2c5192d541f00722e58d4f50" prot="public" virt="non-virtual"><scope>yolos::det::Detection</scope><name>classId</name></member>
+      <member refid="structyolos_1_1det_1_1Detection_1adcd3ebe69c4a48be9b7fe16ef0a76388" prot="public" virt="non-virtual"><scope>yolos::det::Detection</scope><name>conf</name></member>
+      <member refid="structyolos_1_1det_1_1Detection_1a93c16340d2b8f618b6ae7fa6d384f33a" prot="public" virt="non-virtual"><scope>yolos::det::Detection</scope><name>Detection</name></member>
+      <member refid="structyolos_1_1det_1_1Detection_1aa2be681c9a8934acb230f3db4f51fbf9" prot="public" virt="non-virtual"><scope>yolos::det::Detection</scope><name>Detection</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

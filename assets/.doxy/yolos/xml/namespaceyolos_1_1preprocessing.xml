@@ -1,0 +1,791 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="namespaceyolos_1_1preprocessing" kind="namespace" language="C++">
+    <compoundname>yolos::preprocessing</compoundname>
+    <innerclass refid="structyolos_1_1preprocessing_1_1InferenceBuffer" prot="public">yolos::preprocessing::InferenceBuffer</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespaceyolos_1_1preprocessing_1a4f1cfd04406c7f1de5aa23dc909a12ad" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::preprocessing::letterBox</definition>
+        <argsstring>(const cv::Mat &amp;image, cv::Mat &amp;outImage, const cv::Size &amp;newShape, const cv::Scalar &amp;color=cv::Scalar(114, 114, 114), bool autoSize=true, bool scaleFill=false, bool scaleUp=true, int stride=32)</argsstring>
+        <name>letterBox</name>
+        <param>
+          <type>const cv::Mat &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>cv::Mat &amp;</type>
+          <declname>outImage</declname>
+        </param>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>newShape</declname>
+        </param>
+        <param>
+          <type>const cv::Scalar &amp;</type>
+          <declname>color</declname>
+          <defval>cv::Scalar(114, 114, 114)</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>autoSize</declname>
+          <defval>true</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>scaleFill</declname>
+          <defval>false</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>scaleUp</declname>
+          <defval>true</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>stride</declname>
+          <defval>32</defval>
+        </param>
+        <briefdescription>
+<para>Resize an image with letterboxing to maintain aspect ratio. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>image</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Input image </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>outImage</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output resized and padded image </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>newShape</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Desired output size </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>color</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Padding color (default is gray 114,114,114) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>autoSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If true, use minimum rectangle to resize </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>scaleFill</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Whether to scale to fill without keeping aspect ratio </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>scaleUp</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Whether to allow scaling up of the image </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>stride</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Stride size for padding alignment </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/preprocessing.hpp" line="56" column="13" bodyfile="include/yolos/core/preprocessing.hpp" bodystart="56" bodyend="110"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1preprocessing_1a982980c8af4d0d9c21317d95697d8311" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::preprocessing::letterBoxCentered</definition>
+        <argsstring>(const cv::Mat &amp;image, cv::Mat &amp;outImage, const cv::Size &amp;newShape=cv::Size(640, 640), bool autoSize=false, bool scaleFill=false, bool scaleUp=true, bool center=true, int stride=32, const cv::Scalar &amp;paddingValue=cv::Scalar(114, 114, 114), int interpolation=cv::INTER_LINEAR)</argsstring>
+        <name>letterBoxCentered</name>
+        <param>
+          <type>const cv::Mat &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>cv::Mat &amp;</type>
+          <declname>outImage</declname>
+        </param>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>newShape</declname>
+          <defval>cv::Size(640, 640)</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>autoSize</declname>
+          <defval>false</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>scaleFill</declname>
+          <defval>false</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>scaleUp</declname>
+          <defval>true</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>center</declname>
+          <defval>true</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>stride</declname>
+          <defval>32</defval>
+        </param>
+        <param>
+          <type>const cv::Scalar &amp;</type>
+          <declname>paddingValue</declname>
+          <defval>cv::Scalar(114, 114, 114)</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>interpolation</declname>
+          <defval>cv::INTER_LINEAR</defval>
+        </param>
+        <briefdescription>
+<para>Alternative letterbox with center option (matches Ultralytics) </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>image</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Input image </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>outImage</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output resized and padded image </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>newShape</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Desired output size (default 640x640) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>autoSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If true, use minimum rectangle to resize </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>scaleFill</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Whether to scale to fill without keeping aspect ratio </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>scaleUp</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Whether to allow scaling up of the image </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>center</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If true, center the placed image </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>stride</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Stride of the model </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>paddingValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Padding value (default is 114) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>interpolation</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Interpolation method </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/preprocessing.hpp" line="123" column="13" bodyfile="include/yolos/core/preprocessing.hpp" bodystart="123" bodyend="176"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1preprocessing_1af89861958b0dce4e1f774edee55bd663" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref></type>
+        <definition>BoundingBox yolos::preprocessing::scaleCoords</definition>
+        <argsstring>(const cv::Size &amp;letterboxShape, const BoundingBox &amp;coords, const cv::Size &amp;originalShape, bool clip=true)</argsstring>
+        <name>scaleCoords</name>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>letterboxShape</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structyolos_1_1BoundingBox" kindref="compound">BoundingBox</ref> &amp;</type>
+          <declname>coords</declname>
+        </param>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>originalShape</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>clip</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+<para>Scale detection coordinates from letterbox space back to original image size. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>letterboxShape</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Shape of the letterboxed image used for inference </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>coords</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Bounding box in letterbox coordinates </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>originalShape</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Original image size before letterboxing </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>clip</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Whether to clip coordinates to image boundaries </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Scaled bounding box in original image coordinates </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/preprocessing.hpp" line="188" column="20" bodyfile="include/yolos/core/preprocessing.hpp" bodystart="188" bodyend="213"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1preprocessing_1a0431dbe86e03173b3c10ec6981eb3fa4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="structyolos_1_1KeyPoint" kindref="compound">KeyPoint</ref></type>
+        <definition>KeyPoint yolos::preprocessing::scaleKeypoint</definition>
+        <argsstring>(const cv::Size &amp;letterboxShape, const KeyPoint &amp;keypoint, const cv::Size &amp;originalShape, bool clip=true)</argsstring>
+        <name>scaleKeypoint</name>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>letterboxShape</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structyolos_1_1KeyPoint" kindref="compound">KeyPoint</ref> &amp;</type>
+          <declname>keypoint</declname>
+        </param>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>originalShape</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>clip</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+<para>Scale keypoint coordinates from letterbox space back to original image size. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>letterboxShape</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Shape of the letterboxed image </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>keypoint</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Keypoint in letterbox coordinates </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>originalShape</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Original image size </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>clip</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Whether to clip coordinates to image boundaries </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Scaled keypoint in original image coordinates </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/preprocessing.hpp" line="221" column="17" bodyfile="include/yolos/core/preprocessing.hpp" bodystart="221" bodyend="243"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1preprocessing_1a3c6b065beef33f0c2be26224d90ddca8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::preprocessing::getLetterboxParams</definition>
+        <argsstring>(const cv::Size &amp;originalShape, const cv::Size &amp;letterboxShape, float &amp;scale, float &amp;padX, float &amp;padY)</argsstring>
+        <name>getLetterboxParams</name>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>originalShape</declname>
+        </param>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>letterboxShape</declname>
+        </param>
+        <param>
+          <type>float &amp;</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>float &amp;</type>
+          <declname>padX</declname>
+        </param>
+        <param>
+          <type>float &amp;</type>
+          <declname>padY</declname>
+        </param>
+        <briefdescription>
+<para>Get letterbox padding and scale parameters. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>originalShape</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Original image size </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>letterboxShape</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Letterboxed image size </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">scale</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Scale factor applied </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">padX</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Horizontal padding </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">padY</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vertical padding </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/preprocessing.hpp" line="251" column="13" bodyfile="include/yolos/core/preprocessing.hpp" bodystart="251" bodyend="260"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1preprocessing_1a489cf4511f0b08f7457401a9acdea75d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::preprocessing::letterBoxToBlob</definition>
+        <argsstring>(const cv::Mat &amp;image, std::vector&lt; float &gt; &amp;blob, const cv::Size &amp;targetSize, cv::Size &amp;actualSize, float padColor=114.0f)</argsstring>
+        <name>letterBoxToBlob</name>
+        <param>
+          <type>const cv::Mat &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; float &gt; &amp;</type>
+          <declname>blob</declname>
+        </param>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>targetSize</declname>
+        </param>
+        <param>
+          <type>cv::Size &amp;</type>
+          <declname>actualSize</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>padColor</declname>
+          <defval>114.0f</defval>
+        </param>
+        <briefdescription>
+<para>Fast letterbox with direct blob output (avoids intermediate copies) </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>image</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Input BGR image </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>blob</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output CHW float blob (pre-allocated) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>targetSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Target size for inference </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">actualSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Actual output size after letterboxing </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>padColor</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Padding color value (0-255, default 114) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/preprocessing.hpp" line="272" column="13" bodyfile="include/yolos/core/preprocessing.hpp" bodystart="272" bodyend="339"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1preprocessing_1a0df6a0ff7f94ae681b39b4311a387162" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::preprocessing::letterBoxToBlob</definition>
+        <argsstring>(const cv::Mat &amp;image, InferenceBuffer &amp;buffer, const cv::Size &amp;targetSize, cv::Size &amp;actualSize, bool dynamicShape=false)</argsstring>
+        <name>letterBoxToBlob</name>
+        <param>
+          <type>const cv::Mat &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type><ref refid="structyolos_1_1preprocessing_1_1InferenceBuffer" kindref="compound">InferenceBuffer</ref> &amp;</type>
+          <declname>buffer</declname>
+        </param>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>targetSize</declname>
+        </param>
+        <param>
+          <type>cv::Size &amp;</type>
+          <declname>actualSize</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>dynamicShape</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>Fast letterbox with buffer reuse. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>image</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Input BGR image </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>buffer</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pre-allocated inference buffer </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>targetSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Target size for inference </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">actualSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Actual output size </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>dynamicShape</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Whether to use dynamic shape </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/preprocessing.hpp" line="347" column="13" bodyfile="include/yolos/core/preprocessing.hpp" bodystart="347" bodyend="417"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1preprocessing_1a06d539e568c7b9bbe5351ad45f9f76cb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::preprocessing::getScalePad</definition>
+        <argsstring>(const cv::Size &amp;originalSize, const cv::Size &amp;letterboxSize, float &amp;scale, float &amp;padX, float &amp;padY)</argsstring>
+        <name>getScalePad</name>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>originalSize</declname>
+        </param>
+        <param>
+          <type>const cv::Size &amp;</type>
+          <declname>letterboxSize</declname>
+        </param>
+        <param>
+          <type>float &amp;</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>float &amp;</type>
+          <declname>padX</declname>
+        </param>
+        <param>
+          <type>float &amp;</type>
+          <declname>padY</declname>
+        </param>
+        <briefdescription>
+<para>Get scale and padding info from letterbox operation. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>originalSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Original image size </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>letterboxSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Letterboxed image size </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">scale</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Scale factor </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">padX</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>X padding </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">padY</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Y padding </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/preprocessing.hpp" line="425" column="13" bodyfile="include/yolos/core/preprocessing.hpp" bodystart="425" bodyend="440"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1preprocessing_1acbde8a06c10caeb7d145ac214c4b0932" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void yolos::preprocessing::descaleCoordsBatch</definition>
+        <argsstring>(float *coords, size_t count, float scale, float padX, float padY)</argsstring>
+        <name>descaleCoordsBatch</name>
+        <param>
+          <type>float *</type>
+          <declname>coords</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>count</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>padX</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>padY</declname>
+        </param>
+        <briefdescription>
+<para>Fast coordinate descaling (batch operation) </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>coords</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Array of x,y coordinates to descale </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>count</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of coordinate pairs </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>scale</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Letterbox scale </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>padX</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>X padding </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>padY</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Y padding </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/preprocessing.hpp" line="448" column="13" bodyfile="include/yolos/core/preprocessing.hpp" bodystart="448" bodyend="455"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/yolos/core/preprocessing.hpp" line="20" column="23"/>
+  </compounddef>
+</doxygen>

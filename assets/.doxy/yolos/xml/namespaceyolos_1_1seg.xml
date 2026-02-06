@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="namespaceyolos_1_1seg" kind="namespace" language="C++">
+    <compoundname>yolos::seg</compoundname>
+    <innerclass refid="structyolos_1_1seg_1_1Segmentation" prot="public">yolos::seg::Segmentation</innerclass>
+    <innerclass refid="classyolos_1_1seg_1_1YOLOSegDetector" prot="public">yolos::seg::YOLOSegDetector</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/yolos/tasks/segmentation.hpp" line="28" column="13"/>
+  </compounddef>
+</doxygen>

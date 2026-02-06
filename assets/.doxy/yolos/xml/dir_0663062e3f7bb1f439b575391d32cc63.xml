@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="dir_0663062e3f7bb1f439b575391d32cc63" kind="dir">
+    <compoundname>include/yolos</compoundname>
+    <innerdir refid="dir_a763ec46eda5c5a329ecdb0f0bec1eed">include/yolos/core</innerdir>
+    <innerdir refid="dir_2bef6d8bc01c1b0d186aba6b16825c1e">include/yolos/tasks</innerdir>
+    <innerfile refid="yolos_8hpp">yolos.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/yolos/"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="namespaceyolos_1_1obb" kind="namespace" language="C++">
+    <compoundname>yolos::obb</compoundname>
+    <innerclass refid="structyolos_1_1obb_1_1OBBResult" prot="public">yolos::obb::OBBResult</innerclass>
+    <innerclass refid="classyolos_1_1obb_1_1YOLOOBBDetector" prot="public">yolos::obb::YOLOOBBDetector</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/yolos/tasks/obb.hpp" line="33" column="13"/>
+  </compounddef>
+</doxygen>

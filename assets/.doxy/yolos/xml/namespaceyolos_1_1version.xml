@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="namespaceyolos_1_1version" kind="namespace" language="C++">
+    <compoundname>yolos::version</compoundname>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespaceyolos_1_1version_1a801646e5ac4c8052e83c3d10582c4410" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string yolos::version::toString</definition>
+        <argsstring>(YOLOVersion version)</argsstring>
+        <name>toString</name>
+        <param>
+          <type><ref refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84e" kindref="member">YOLOVersion</ref></type>
+          <declname>version</declname>
+        </param>
+        <briefdescription>
+<para>Convert YOLOVersion enum to string. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/version.hpp" line="38" column="20" bodyfile="include/yolos/core/version.hpp" bodystart="38" bodyend="50"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1version_1abda229ca93c6851f82dfc671e662376f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84e" kindref="member">YOLOVersion</ref></type>
+        <definition>YOLOVersion yolos::version::detectFromOutputShape</definition>
+        <argsstring>(const std::vector&lt; int64_t &gt; &amp;outputShape, size_t numOutputs=1)</argsstring>
+        <name>detectFromOutputShape</name>
+        <param>
+          <type>const std::vector&lt; int64_t &gt; &amp;</type>
+          <declname>outputShape</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>numOutputs</declname>
+          <defval>1</defval>
+        </param>
+        <briefdescription>
+<para>Detect YOLO version from detection model output tensor shape. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>outputShape</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The shape of the first output tensor [batch, dim1, dim2, ...] </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>numOutputs</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of output tensors from the model </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Detected YOLOVersion </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/version.hpp" line="56" column="20" bodyfile="include/yolos/core/version.hpp" bodystart="56" bodyend="89"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1version_1aa9a27c9b68f69480d90ef29401385bc9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84e" kindref="member">YOLOVersion</ref></type>
+        <definition>YOLOVersion yolos::version::detectClassificationVersion</definition>
+        <argsstring>(const std::vector&lt; int64_t &gt; &amp;outputShape)</argsstring>
+        <name>detectClassificationVersion</name>
+        <param>
+          <type>const std::vector&lt; int64_t &gt; &amp;</type>
+          <declname>outputShape</declname>
+        </param>
+        <briefdescription>
+<para>Detect YOLO version for classification model. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>outputShape</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The shape of the output tensor </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Detected YOLOVersion (V11 or V12 for classification) </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/version.hpp" line="94" column="20" bodyfile="include/yolos/core/version.hpp" bodystart="94" bodyend="98"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceyolos_1_1version_1a83b4be8e14be7b5e469e52cdfb877500" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool yolos::version::requiresNMS</definition>
+        <argsstring>(YOLOVersion version)</argsstring>
+        <name>requiresNMS</name>
+        <param>
+          <type><ref refid="namespaceyolos_1a2f381a959173ac9b1d20b62e1f2ab84e" kindref="member">YOLOVersion</ref></type>
+          <declname>version</declname>
+        </param>
+        <briefdescription>
+<para>Check if version requires NMS post-processing. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/yolos/core/version.hpp" line="101" column="13" bodyfile="include/yolos/core/version.hpp" bodystart="101" bodyend="104"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/yolos/core/version.hpp" line="35" column="17"/>
+  </compounddef>
+</doxygen>
