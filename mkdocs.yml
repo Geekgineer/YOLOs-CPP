@@ -12,15 +12,13 @@ theme:
   name: material
   language: en
   palette:
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
+    - scheme: default
       primary: indigo
       accent: indigo
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
+    - scheme: slate
       primary: indigo
       accent: indigo
       toggle:
@@ -47,84 +45,35 @@ theme:
   icon:
     repo: fontawesome/brands/github
   logo: images/logo.png
-  favicon: images/favicon.png
 
 plugins:
   - search
-  - minify:
-      minify_html: true
+  - mkdoxy:
+      projects:
+        yolos:
+          src-dirs: include/yolos
+          full-doc: True
+          doxy-cfg:
+            FILE_PATTERNS: "*.hpp *.cpp"
+            RECURSIVE: "YES"
+            EXTRACT_ALL: "YES"
+            GENERATE_XML: "YES"
+            GENERATE_HTML: "NO"
+            GENERATE_LATEX: "NO"
 
-markdown_extensions:
-  - abbr
-  - admonition
-  - attr_list
-  - def_list
-  - footnotes
-  - md_in_html
-  - toc:
-      permalink: true
-  - pymdownx.arithmatex:
-      generic: true
-  - pymdownx.betterem:
-      smart_enable: all
-  - pymdownx.caret
-  - pymdownx.details
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
-  - pymdownx.highlight:
-      anchor_linenums: true
-      line_spans: __span
-      pygments_lang_class: true
-  - pymdownx.inlinehilite
-  - pymdownx.keys
-  - pymdownx.magiclink:
-      repo_url_shorthand: true
-      user: motcpp
-      repo: motcpp
-  - pymdownx.mark
-  - pymdownx.smartsymbols
-  - pymdownx.superfences:
-      custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
-  - pymdownx.tabbed:
-      alternate_style: true
-  - pymdownx.tasklist:
-      custom_checkbox: true
-  - pymdownx.tilde
 
 nav:
   - Home: index.md
-  - Getting Started:
-    - Installation: guides/getting-started.md
+  - Installation:
     - Quick Start: guides/getting-started.md
+    - Windows 11 Guide: YOLOs-CPP_on_Windows_11.md
   - Guides:
-    - Models: guides/yolos.md
+    - Models: guides/models.md
     - Architecture: guides/architecture.md
-    - Benchmarking: guides/benchmarking.md
-  - API Reference:
-    - Overview: api/api.md
-  - Tutorials:
-    - Overview: tutorials/tutorials.md
+    - Benchmarks: guides/benchmarks.md
+    - Quantization: guides/quantization.md
+  - API Reference: api/api.md
   - Examples:
     - Code Examples: examples/examples.md
   - Contributing: contributing.md
-
-extra:
-  social:
-    - icon: fontawesome/brands/github
-      link: https://github.com/Geekgineer/YOLOs-CPP
-    - icon: fontawesome/brands/twitter
-  generator: false
-  version:
-    provider: mike
-
-extra_css:
-  - stylesheets/extra.css
-
-extra_javascript:
-  - javascripts/mathjax.js
-  - https://polyfill.io/v3/polyfill.min.js?features=es6
-  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  - Acknowledgments: acknowledgments.md

@@ -14,11 +14,10 @@ Welcome to the official documentation for **YOLOs-CPP** - a high-performance, pr
 |---------|-------------|
 | [Getting Started](guides/getting-started.md) | Installation and first steps |
 | [API Reference](api/api.md) | Complete API documentation |
-| [Tutorials](tutorials/tutorials.md) | Step-by-step tutorials |
 | [Examples](examples/examples.md) | Code examples |
-| [YOLOs](guides/yolos.md) | Available YOLO models |
+| [Models](guides/models.md) | Available YOLO models |
 | [Architecture](guides/architecture.md) | System design |
-| [Benchmarking](guides/benchmarks.md) | Benchmark evaluation |
+| [Benchmarks](guides/benchmarks.md) | Benchmark evaluation |
 | [Contributing](contributing.md) | How to contribute |
 
 ## Features

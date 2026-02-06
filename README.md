@@ -23,7 +23,7 @@
   <a href="#-supported-models">Models</a> · 
   <a href="#-api-reference">API</a> · 
   <a href="#-benchmarks">Benchmarks</a> · 
-  <a href="doc/installation.md">Docs</a>
+  <a href="docs/guides/getting-started.md">Docs</a>
 </p>
 
 ---
@@ -305,12 +305,12 @@ YOLOs-CPP/
 
 | Guide | Description |
 |-------|-------------|
-| [Installation](doc/installation.md) | System requirements, build options, troubleshooting |
-| [Usage Guide](doc/usage.md) | API reference, code examples, best practices |
-| [Model Guide](doc/models.md) | Supported models, ONNX export, quantization |
-| [Development](doc/development.md) | Architecture, extending the library, debugging |
-| [Contributing](doc/contributing.md) | Code style, PR process, testing |
-| [Windows Setup](doc/YOLOs-CPP_on_Windows_11.md) | Windows-specific build instructions |
+| [Installation](docs/guides/getting-started.md) | System requirements, build options, troubleshooting |
+| [Usage Guide](docs/examples/examples.md) | API reference, code examples, best practices |
+| [Model Guide](docs/guides/models.md) | Supported models, ONNX export, quantization |
+| [Development](docs/guides/architecture.md) | Architecture, extending the library, debugging |
+| [Contributing](docs/contributing.md) | Code style, PR process, testing |
+| [Windows Setup](docs/YOLOs-CPP_on_Windows_11.md) | Windows-specific build instructions |
 
 ---
 
@@ -337,7 +337,7 @@ cd tests
 
 ## 🤝 Contributing
 
-We welcome contributions! See our [Contributing Guide](doc/contributing.md) for details.
+We welcome contributions! See our [Contributing Guide](docs/contributing.md) for details.
 
 ```bash
 # Fork, clone, branch
