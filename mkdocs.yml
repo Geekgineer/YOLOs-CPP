@@ -2,7 +2,7 @@
 
 site_name: YOLOs-CPP
 site_description: Modern C++ YOLO Library
-site_url: https://YOLOs-CPP.github.io/YOLOs-CPP
+site_url: https://Geekgineer.github.io/YOLOs-CPP
 repo_url: https://github.com/Geekgineer/YOLOs-CPP
 repo_name: Geekgineer/YOLOs-CPP
 
@@ -48,18 +48,6 @@ theme:
 
 plugins:
   - search
-  - mkdoxy:
-      projects:
-        yolos:
-          src-dirs: include/yolos
-          full-doc: True
-          doxy-cfg:
-            FILE_PATTERNS: "*.hpp *.cpp"
-            RECURSIVE: "YES"
-            EXTRACT_ALL: "YES"
-            GENERATE_XML: "YES"
-            GENERATE_HTML: "NO"
-            GENERATE_LATEX: "NO"
 
 
 nav:

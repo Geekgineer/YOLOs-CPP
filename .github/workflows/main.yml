@@ -10,12 +10,14 @@ on:
       run_gpu_tests:
         description: 'Run GPU tests (requires self-hosted runner)'
         required: false
-        default: 'false'
+        default: false
         type: boolean
 
 permissions:
   contents: read
   packages: read
+  pages: write
+  id-token: write
 
 env:
   ONNXRUNTIME_VERSION: "1.20.1"
@@ -195,3 +197,42 @@ jobs:
           # Check for TODO/FIXME comments
           echo "TODOs found in codebase:"
           grep -r "TODO\|FIXME\|XXX\|HACK" include/ src/ --include="*.cpp" --include="*.hpp" || echo "No TODOs found"
+
+  # ==========================================================================
+  # Build and Deploy Docs to GitHub Pages
+  # ==========================================================================
+  deploy-docs:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    concurrency:
+      group: pages
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install MkDocs dependencies
+        run: pip install mkdocs-material
+
+      - name: Build documentation
+        run: mkdocs build --strict --site-dir site
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
