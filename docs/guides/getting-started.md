@@ -38,7 +38,7 @@ cd YOLOs-CPP
 
 ### Windows
 
-See [Windows Setup Guide](YOLOs-CPP_on_Windows_11.md) for detailed Windows instructions.
+See [Windows Setup Guide](../YOLOs-CPP_on_Windows_11.md) for detailed Windows instructions.
 
 ## Manual Build
 
@@ -124,11 +124,11 @@ ls $ONNXRUNTIME_DIR/include/onnxruntime_cxx_api.h
 
 ### Build fails on Windows
 
-See [Windows Setup Guide](YOLOs-CPP_on_Windows_11.md).
+See [Windows Setup Guide](../YOLOs-CPP_on_Windows_11.md).
 
 ## Next Steps
 
-- [Usage Guide](usage.md) — Learn the API
+- [Usage Guide](../examples/examples.md) — Learn the API
 - [Model Guide](models.md) — Export and use models
 
 ## Windows Quick Start
@@ -187,7 +187,7 @@ vcpkg install opencv4:x64-windows
 cmake .. -DCMAKE_TOOLCHAIN_FILE="[vcpkg]/scripts/buildsystems/vcpkg.cmake"
 ```
 
-See [Windows Setup Guide](YOLOs-CPP_on_Windows_11.md) for complete instructions.
+See [Windows Setup Guide](../YOLOs-CPP_on_Windows_11.md) for complete instructions.
 
 ## macOS Quick Start
 

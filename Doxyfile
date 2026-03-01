@@ -1,0 +1,19 @@
+# Doxygen configuration for mkdoxy integration
+PROJECT_NAME           = "YOLOs-CPP"
+OUTPUT_DIRECTORY       = .
+INPUT                  = include/yolos
+RECURSIVE              = YES
+GENERATE_XML           = YES
+GENERATE_HTML          = NO
+GENERATE_LATEX         = NO
+XML_OUTPUT             = xml
+# Optimize for C++
+OPTIMIZE_OUTPUT_FOR_C  = NO
+# Extract all members
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+# Handle modern C++
+BUILTIN_STL_SUPPORT    = YES
+# Quiet mode
+QUIET                  = YES

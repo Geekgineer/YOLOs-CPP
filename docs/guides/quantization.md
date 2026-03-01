@@ -110,4 +110,4 @@ See `quantized_models/yolos_quantization.py` for a complete example.
 ## Next Steps
 
 - [Model Guide](models.md) — ONNX export
-- [Benchmarks](../benchmarks/README.md) — Performance testing
+- [Benchmarks](benchmarks.md) — Performance testing

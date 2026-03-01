@@ -8,6 +8,11 @@ build/
 **/build/
 cmake-build-*/
 
+# MkDocs
+/site
+/site_raw
+/xml
+
 # CMake generated files
 CMakeCache.txt
 CMakeFiles/

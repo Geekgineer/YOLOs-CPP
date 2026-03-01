@@ -149,5 +149,5 @@ try {
 
 ## Next Steps
 
-- [Model Guide](models.md) — Export and optimize models
-- [Development](development.md) — Extend the library
+- [Model Guide](../guides/models.md) — Export and optimize models
+- [Development](../guides/architecture.md) — Extend the library

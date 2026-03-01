@@ -146,8 +146,3 @@ yolos::det::YOLODetector detector(
     true
 );
 ```
-
-## Next Steps
-
-- [Usage Guide](usage.md) — API reference
-- [Development](development.md) — Extend the library

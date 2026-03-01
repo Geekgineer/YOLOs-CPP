@@ -188,5 +188,5 @@ cd benchmarks
 
 ## Next Steps
 
-- [Contributing](contributing.md) — Submit changes
+- [Contributing](../contributing.md) — Submit changes
 - [Model Guide](models.md) — Model compatibility

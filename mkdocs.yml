@@ -1,0 +1,67 @@
+# MkDocs configuration for YOLOs-CPP documentation
+
+site_name: YOLOs-CPP
+site_description: Modern C++ YOLO Library
+site_url: https://Geekgineer.github.io/YOLOs-CPP
+repo_url: https://github.com/Geekgineer/YOLOs-CPP
+repo_name: Geekgineer/YOLOs-CPP
+
+copyright: Copyright &copy; 2026 YOLOs-CPP contributors
+
+theme:
+  name: material
+  language: en
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.tooltips
+    - toc.integrate
+  icon:
+    repo: fontawesome/brands/github
+  logo: images/logo.png
+
+plugins:
+  - search
+
+
+nav:
+  - Home: index.md
+  - Installation:
+    - Quick Start: guides/getting-started.md
+    - Windows 11 Guide: YOLOs-CPP_on_Windows_11.md
+  - Guides:
+    - Models: guides/models.md
+    - Architecture: guides/architecture.md
+    - Benchmarks: guides/benchmarks.md
+    - Quantization: guides/quantization.md
+  - API Reference: api/api.md
+  - Examples:
+    - Code Examples: examples/examples.md
+  - Contributing: contributing.md
+  - Acknowledgments: acknowledgments.md
