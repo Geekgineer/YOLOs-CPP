@@ -68,7 +68,7 @@ public:
         classColors_ = drawing::generateColors(classNames_);
         
         // Pre-allocate inference buffer
-        buffer_.ensureCapacity(inputShape_.height, inputShape_.width, 3);
+        buffer_.ensureCapacity(inputShape_.height, inputShape_.width, inputChannels_);
     }
 
     virtual ~YOLOPoseDetector() = default;
@@ -83,10 +83,10 @@ public:
                                    float iouThreshold = 0.5f) {
         // Optimized preprocessing with buffer reuse
         cv::Size actualSize;
-        preprocessing::letterBoxToBlob(image, buffer_, inputShape_, actualSize, isDynamicInputShape_);
+        preprocessing::letterBoxToBlob(image, buffer_, inputChannels_, inputShape_, actualSize, isDynamicInputShape_);
 
         // Create input tensor (uses pre-allocated blob)
-        std::vector<int64_t> inputTensorShape = {1, 3, actualSize.height, actualSize.width};
+        std::vector<int64_t> inputTensorShape = {1, static_cast<int64_t>(inputChannels_), actualSize.height, actualSize.width};
         Ort::Value inputTensor = createInputTensor(buffer_.blob.data(), inputTensorShape);
 
         // Run inference
