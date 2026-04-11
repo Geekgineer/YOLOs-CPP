@@ -30,7 +30,7 @@
 
 ## 📰 Latest News
 
-* **[2026.04.11]** [YOLOE](https://arxiv.org/abs/2503.07465) open-vocabulary detection and segmentation in C++ — see [Model Guide](docs/guides/models.md#yoloe-open-vocabulary-detection--segmentation), `image_yoloe_seg` / `video_yoloe_seg`.
+* **[2026.04.11]** [YOLOE](https://arxiv.org/abs/2503.07465) open-vocabulary detection and segmentation in C++ see [Model Guide](docs/guides/models.md#yoloe-open-vocabulary-detection--segmentation)
 * **[2026.01.22]** YOLOs-CPP-TensorRT released achive 530+ fps using NVIDIA GPUs and Jetson Boards. [YOLOs-CPP-TensorRT](https://github.com/Geekgineer/YOLOs-CPP-TensorRT)
 * **[2026.01.22]** CPP Implementation of popular MOT trackers released. [motcpp](https://github.com/Geekgineer/motcpp)
 * **[2026.01.22]** ROS 2 integration released. [ros2_yolos_cpp](https://github.com/Geekgineer/ros2_yolos_cpp)
