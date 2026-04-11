@@ -266,11 +266,13 @@ inline void getLetterboxParams(const cv::Size& originalShape,
 /// @brief Fast letterbox with direct blob output (avoids intermediate copies)
 /// @param image Input BGR image
 /// @param blob Output CHW float blob (pre-allocated)
+/// @param targetChannels Target channels for inference
 /// @param targetSize Target size for inference
 /// @param[out] actualSize Actual output size after letterboxing
 /// @param padColor Padding color value (0-255, default 114)
 inline void letterBoxToBlob(const cv::Mat& image,
                             std::vector<float>& blob,
+                            int targetChannels,
                             const cv::Size& targetSize,
                             cv::Size& actualSize,
                             float padColor = 114.0f) {
@@ -297,7 +299,7 @@ inline void letterBoxToBlob(const cv::Mat& image,
     actualSize = cv::Size(dstW, dstH);
     
     // Ensure blob capacity
-    const size_t totalSize = static_cast<size_t>(dstH * dstW * 3);
+    const size_t totalSize = static_cast<size_t>(dstH * dstW * targetChannels);
     if (blob.size() < totalSize) {
         blob.resize(totalSize);
     }
@@ -314,26 +316,42 @@ inline void letterBoxToBlob(const cv::Mat& image,
         resized = image;
     }
     
-    // Convert BGR to RGB and normalize directly into blob (CHW format)
-    float* rChannel = blob.data();
-    float* gChannel = blob.data() + dstH * dstW;
-    float* bChannel = blob.data() + 2 * dstH * dstW;
-    
     constexpr float scale255 = 1.0f / 255.0f;
-    
-    for (int y = 0; y < newH; ++y) {
-        const int dstY = y + padTop;
-        const uchar* row = resized.ptr<uchar>(y);
+    if (targetChannels == 3) {
+        // Convert BGR to RGB and normalize directly into blob (CHW format)
+        float* rChannel = blob.data();
+        float* gChannel = blob.data() + dstH * dstW;
+        float* bChannel = blob.data() + 2 * dstH * dstW;
         
-        for (int x = 0; x < newW; ++x) {
-            const int dstX = x + padLeft;
-            const int dstIdx = dstY * dstW + dstX;
-            const int srcIdx = x * 3;
+        for (int y = 0; y < newH; ++y) {
+            const int dstY = y + padTop;
+            const uchar* row = resized.ptr<uchar>(y);
             
-            // BGR to RGB conversion + normalization
-            bChannel[dstIdx] = row[srcIdx + 0] * scale255;
-            gChannel[dstIdx] = row[srcIdx + 1] * scale255;
-            rChannel[dstIdx] = row[srcIdx + 2] * scale255;
+            for (int x = 0; x < newW; ++x) {
+                const int dstX = x + padLeft;
+                const int dstIdx = dstY * dstW + dstX;
+                const int srcIdx = x * 3;
+                
+                // BGR to RGB conversion + normalization
+                bChannel[dstIdx] = row[srcIdx + 0] * scale255;
+                gChannel[dstIdx] = row[srcIdx + 1] * scale255;
+                rChannel[dstIdx] = row[srcIdx + 2] * scale255;
+            }
+        }
+    } else {
+        // normalize directly into blob (single channel)
+        float *channel = blob.data();
+
+        for (int y = 0; y < newH; ++y) {
+            const int    dstY = y + padTop;
+            const uchar *row  = resized.ptr<uchar>(y);
+
+            for (int x = 0; x < newW; ++x) {
+                const int dstX   = x + padLeft;
+                const int dstIdx = dstY * dstW + dstX;
+
+                channel[dstIdx] = static_cast<float>(row[x]) * scale255;
+            }
         }
     }
 }
@@ -341,11 +359,13 @@ inline void letterBoxToBlob(const cv::Mat& image,
 /// @brief Fast letterbox with buffer reuse
 /// @param image Input BGR image
 /// @param buffer Pre-allocated inference buffer
+/// @param targetChannels Target channels for inference
 /// @param targetSize Target size for inference
 /// @param[out] actualSize Actual output size
 /// @param dynamicShape Whether to use dynamic shape
 inline void letterBoxToBlob(const cv::Mat& image,
                             InferenceBuffer& buffer,
+                            int targetChannels,
                             const cv::Size& targetSize,
                             cv::Size& actualSize,
                             bool dynamicShape = false) {
@@ -371,7 +391,7 @@ inline void letterBoxToBlob(const cv::Mat& image,
     }
     
     actualSize = cv::Size(dstW, dstH);
-    buffer.ensureCapacity(dstH, dstW, 3);
+    buffer.ensureCapacity(dstH, dstW, targetChannels);
     
     // Ultralytics uses asymmetric padding with -0.1/+0.1 adjustment
     const float dh = (dstH - newH) / 2.0f;
@@ -381,7 +401,7 @@ inline void letterBoxToBlob(const cv::Mat& image,
     
     // Fill with padding (normalized 114/255)
     constexpr float padNorm = 114.0f / 255.0f;
-    std::fill(buffer.blob.begin(), buffer.blob.begin() + dstH * dstW * 3, padNorm);
+    std::fill(buffer.blob.begin(), buffer.blob.begin() + dstH * dstW * targetChannels, padNorm);
     
     // Resize if needed
     if (newW != srcW || newH != srcH) {
@@ -390,28 +410,41 @@ inline void letterBoxToBlob(const cv::Mat& image,
         buffer.resized = image;  // Reference, no copy
     }
     
-    // Direct BGR->RGB + normalize to CHW blob
-    float* rChannel = buffer.blob.data();
-    float* gChannel = buffer.blob.data() + dstH * dstW;
-    float* bChannel = buffer.blob.data() + 2 * dstH * dstW;
-    
     constexpr float scale255 = 1.0f / 255.0f;
-    
-    for (int y = 0; y < newH; ++y) {
-        const int dstY = y + padTop;
-        const uchar* row = buffer.resized.ptr<uchar>(y);
-        const int rowOffset = dstY * dstW + padLeft;
+    if (targetChannels == 3) {
+        // Direct BGR->RGB + normalize to CHW blob
+        float* rChannel = buffer.blob.data();
+        float* gChannel = buffer.blob.data() + dstH * dstW;
+        float* bChannel = buffer.blob.data() + 2 * dstH * dstW;
         
-        for (int x = 0; x < newW; ++x) {
-            const int dstIdx = rowOffset + x;
-            const int srcIdx = x * 3;
+        for (int y = 0; y < newH; ++y) {
+            const int dstY = y + padTop;
+            const uchar* row = buffer.resized.ptr<uchar>(y);
+            const int rowOffset = dstY * dstW + padLeft;
             
-            bChannel[dstIdx] = row[srcIdx + 0] * scale255;
-            gChannel[dstIdx] = row[srcIdx + 1] * scale255;
-            rChannel[dstIdx] = row[srcIdx + 2] * scale255;
+            for (int x = 0; x < newW; ++x) {
+                const int dstIdx = rowOffset + x;
+                const int srcIdx = x * 3;
+                
+                bChannel[dstIdx] = row[srcIdx + 0] * scale255;
+                gChannel[dstIdx] = row[srcIdx + 1] * scale255;
+                rChannel[dstIdx] = row[srcIdx + 2] * scale255;
+            }
+        }
+    } else {
+        // normalize directly into blob (single channel)
+        float* blobPtr = buffer.blob.data();
+        for (int y = 0; y < newH; ++y) {
+            const int dstY = y + padTop;
+            const uchar* row = buffer.resized.ptr<uchar>(y);
+            const int rowOffset = dstY * dstW + padLeft;
+            
+            for (int x = 0; x < newW; ++x) {
+                blobPtr[rowOffset + x] = static_cast<float>(row[x]) * scale255;
+            }
         }
     }
-    
+
     buffer.lastInputSize = cv::Size(srcW, srcH);
     buffer.lastTargetSize = actualSize;
 }
