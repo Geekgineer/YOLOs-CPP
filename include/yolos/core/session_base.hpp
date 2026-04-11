@@ -83,6 +83,7 @@ protected:
     size_t numInputNodes_{0};
     size_t numOutputNodes_{0};
 
+    int inputChannels_{3};
     cv::Size inputShape_;
     bool isDynamicInputShape_{false};
     bool isDynamicBatchSize_{false};
@@ -181,6 +182,7 @@ private:
             isDynamicBatchSize_ = (inputTensorShape[0] == -1);
             isDynamicInputShape_ = (inputTensorShape[2] == -1 || inputTensorShape[3] == -1);
 
+            inputChannels_ = (inputTensorShape[1] == -1) ? 3 : static_cast<int>(inputTensorShape[1]);
             int height = (inputTensorShape[2] == -1) ? 640 : static_cast<int>(inputTensorShape[2]);
             int width = (inputTensorShape[3] == -1) ? 640 : static_cast<int>(inputTensorShape[3]);
             inputShape_ = cv::Size(width, height);
