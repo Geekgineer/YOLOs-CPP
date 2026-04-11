@@ -1,0 +1,90 @@
+{
+    "yoloe-26n-seg": {
+        "weights_path": "models/yoloe-26n-seg.onnx",
+        "task": "segment",
+        "results": [
+            {
+                "image_path": "data/images/bus.jpg",
+                "inference_results": [
+                    {
+                        "class_id": 0,
+                        "confidence": 0.9125971794128418,
+                        "bbox": {
+                            "left": 226,
+                            "top": 407,
+                            "width": 115,
+                            "height": 453
+                        }
+                    },
+                    {
+                        "class_id": 0,
+                        "confidence": 0.9056978225708008,
+                        "bbox": {
+                            "left": 52,
+                            "top": 396,
+                            "width": 185,
+                            "height": 502
+                        }
+                    },
+                    {
+                        "class_id": 2,
+                        "confidence": 0.8798678517341614,
+                        "bbox": {
+                            "left": 16,
+                            "top": 232,
+                            "width": 784,
+                            "height": 507
+                        }
+                    },
+                    {
+                        "class_id": 0,
+                        "confidence": 0.8599843978881836,
+                        "bbox": {
+                            "left": 670,
+                            "top": 392,
+                            "width": 138,
+                            "height": 481
+                        }
+                    },
+                    {
+                        "class_id": 5,
+                        "confidence": 0.4174221158027649,
+                        "bbox": {
+                            "left": 16,
+                            "top": 232,
+                            "width": 784,
+                            "height": 507
+                        }
+                    }
+                ],
+                "mask_path": "results/masks/ultralytics/yoloe-26n-seg_bus_mask.png"
+            },
+            {
+                "image_path": "data/images/zidane.jpg",
+                "inference_results": [
+                    {
+                        "class_id": 0,
+                        "confidence": 0.8486865758895874,
+                        "bbox": {
+                            "left": 124,
+                            "top": 203,
+                            "width": 970,
+                            "height": 513
+                        }
+                    },
+                    {
+                        "class_id": 0,
+                        "confidence": 0.8350578546524048,
+                        "bbox": {
+                            "left": 752,
+                            "top": 43,
+                            "width": 395,
+                            "height": 673
+                        }
+                    }
+                ],
+                "mask_path": "results/masks/ultralytics/yoloe-26n-seg_zidane_mask.png"
+            }
+        ]
+    }
+}

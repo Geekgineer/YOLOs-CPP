@@ -63,16 +63,17 @@ jobs:
           ./build/image_inference --help || true
 
   # ==========================================================================
-  # Test Suite (Detection, Segmentation, Pose, OBB, Classification)
+  # Test Suite (Detection, Segmentation, Pose, OBB, Classification, YOLOE)
   # ==========================================================================
   test-suite:
     runs-on: ubuntu-latest
     needs: build-cpu
-    
+    timeout-minutes: 60
+
     strategy:
       fail-fast: false
       matrix:
-        task: [detection, segmentation, pose, obb, classification]
+        task: [detection, segmentation, pose, obb, classification, yoloe]
     
     steps:
       - name: Checkout repository

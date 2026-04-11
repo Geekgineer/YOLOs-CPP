@@ -11,7 +11,8 @@ Comprehensive test suite validating C++ YOLO implementations against Python Ultr
 | Pose | 7/7 | YOLOv8, v11, YOLO26 | ✅ Pass |
 | Segmentation | 8/8 | YOLOv8, v11, YOLO26 | ✅ Pass |
 | OBB | 7/7 | YOLOv8, v11, YOLO26 | ✅ Pass |
-| **Total** | **36/36** | | **100%** |
+| YOLOE | 8/8 | yoloe-26n-seg (open-vocab, export + ONNX parity) | ✅ Pass |
+| **Total** | **44/44** parity | | **100%** |
 
 ## Requirements
 
@@ -32,6 +33,10 @@ Comprehensive test suite validating C++ YOLO implementations against Python Ultr
 ./test_pose.sh
 ./test_segmentation.sh
 ./test_obb.sh
+./test_yoloe.sh
+
+# Build only the YOLOE parity suite (after Python reference exists under yoloe/results/)
+./build_test.sh 6
 ```
 
 ## How Tests Work
@@ -54,8 +59,18 @@ tests/
 ├── test_segmentation.sh    # Segmentation task runner
 ├── test_pose.sh            # Pose estimation task runner
 ├── test_obb.sh             # OBB detection task runner
+├── test_yoloe.sh           # YOLOE open-vocabulary segmentation parity
 ├── build_test.sh           # CMake build script
 ├── CMakeLists.txt          # Test suite CMake config
+├── yoloe/
+│   ├── inference_config.json       # conf, iou, and `classes` (must match export)
+│   ├── inference_yoloe_cpp.cpp
+│   ├── inference_yoloe_ultralytics.py
+│   ├── compare_results.cpp
+│   ├── models/
+│   │   └── export_yoloe_test_onnx.py   # Exports yoloe-26n-seg.onnx for tests
+│   ├── data/images/
+│   └── results/                      # JSON + masks (generated)
 │
 ├── detection/
 │   ├── models/             # .pt and .onnx models
@@ -80,7 +95,7 @@ The comparison tests use configurable error margins:
 | Confidence | ±0.2 | Accounts for preprocessing differences |
 | Bounding Box | ±50px | Pixel coordinate tolerance |
 | Keypoints | ±20px | Pose keypoint position tolerance |
-| Mask Pixels | 20% | Segmentation mask difference |
+| Mask Pixels | 10% | Segmentation mask difference (invalid pixel ratio) |
 | OBB Center | ±50px | Oriented box center tolerance |
 | OBB Angle | ±0.2 rad | Rotation angle tolerance |
 
@@ -93,8 +108,10 @@ The test scripts are designed for CI/CD pipelines:
 - Exports models with compatible opset (12)
 - Returns proper exit codes (0 = pass, non-zero = fail)
 
+**GitHub Actions** (`.github/workflows/main.yml`) runs each task in parallel: `detection`, `segmentation`, `pose`, `obb`, `classification`, and **`yoloe`** (`tests/test_yoloe.sh`). Artifacts upload `tests/<task>/results/` per matrix job.
+
 ```yaml
-# Example GitHub Actions
+# Example: run full suite locally (same tasks as CI matrix combined)
 - name: Run YOLOs-CPP Tests
   run: |
     cd tests
@@ -106,6 +123,7 @@ The test scripts are designed for CI/CD pipelines:
 1. **Model size**: Uses smaller input (320x320) for faster testing
 2. **YOLO26 models**: Feature end-to-end NMS-free architecture
 3. **VOC dataset**: Detection models are fine-tuned on Pascal VOC (20 classes)
+4. **YOLOE**: `tests/yoloe/inference_config.json` lists the same `classes` as `models/export_yoloe_test_onnx.py` and C++ `YOLOESegDetector`. Python reference uses the exported ONNX (no `set_classes` on ONNX). Inference enumerates images in **sorted** order so JSON matches C++. C++ tests bundle ONNX Runtime 1.20.x; Ultralytics may install a different Python `onnxruntime` for ONNX inference—outputs should still match within tolerances.
 
 ## Troubleshooting
 

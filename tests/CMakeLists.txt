@@ -20,6 +20,7 @@ add_compile_definitions("BASE_PATH_CLASSIFICATION=${CMAKE_SOURCE_DIR}/classifica
 add_compile_definitions("BASE_PATH_SEGMENTATION=${CMAKE_SOURCE_DIR}/segmentation/")
 add_compile_definitions("BASE_PATH_POSE=${CMAKE_SOURCE_DIR}/pose/")
 add_compile_definitions("BASE_PATH_OBB=${CMAKE_SOURCE_DIR}/obb/")
+add_compile_definitions("BASE_PATH_YOLOE=${CMAKE_SOURCE_DIR}/yoloe/")
 
 message(STATUS "Test Base Path: ${CMAKE_SOURCE_DIR}")
 
@@ -115,7 +116,7 @@ endif()
 # ============================================================================
 # Test Task Selection
 # ============================================================================
-option(testTask "Specify test task: 0=detection, 1=classification, 2=segmentation, 3=pose, 4=obb, 5=all" STRING)
+option(testTask "Specify test task: 0=detection, 1=classification, 2=segmentation, 3=pose, 4=obb, 5=all, 6=yoloe" STRING)
 message(STATUS "Selected test task: ${testTask}")
 
 set(detection_path "${CMAKE_SOURCE_DIR}/detection")
@@ -123,6 +124,7 @@ set(classification_path "${CMAKE_SOURCE_DIR}/classification")
 set(segmentation_path "${CMAKE_SOURCE_DIR}/segmentation")
 set(pose_path "${CMAKE_SOURCE_DIR}/pose")
 set(obb_path "${CMAKE_SOURCE_DIR}/obb")
+set(yoloe_path "${CMAKE_SOURCE_DIR}/yoloe")
 
 set(INFERENCE_EXES)
 set(TEST_EXES)
@@ -190,6 +192,17 @@ if(testTask STREQUAL "4" OR testTask STREQUAL "5")
     
     list(APPEND INFERENCE_EXES inference_obb_cpp)
     list(APPEND TEST_EXES compare_obb_results)
+endif()
+
+# ============================================================================
+# YOLOE (open-vocabulary segmentation parity vs Ultralytics)
+# ============================================================================
+if(testTask STREQUAL "5" OR testTask STREQUAL "6")
+    add_executable(inference_yoloe_cpp ${yoloe_path}/inference_yoloe_cpp.cpp)
+    add_executable(compare_yoloe_results ${yoloe_path}/compare_results.cpp)
+
+    list(APPEND INFERENCE_EXES inference_yoloe_cpp)
+    list(APPEND TEST_EXES compare_yoloe_results)
 endif()
 
 # ============================================================================

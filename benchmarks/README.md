@@ -13,15 +13,17 @@ A comprehensive benchmarking tool that combines **performance metrics** (FPS, la
 - `image`: Single image performance benchmarking
 - `video`: Video file performance benchmarking
 - `camera`: Real-time camera performance benchmarking
-- `evaluate`: Accuracy evaluation on dataset with ground truth
-- `comprehensive`: Automated multi-model/config testing
+- `quick`: Minimal-args benchmark (`quick <model.onnx> <image> [--gpu]`)
+- `comprehensive`: Discovers ONNX models under a directory, runs each, appends CSV, prints FPS-ranked table (includes YOLOE when `yoloe-*.onnx` is present)
+- `evaluate`: *Not implemented in the current binary* — accuracy evaluation would require extending [`yolo_unified_benchmark.cpp`](yolo_unified_benchmark.cpp); use `tests/` Python parity scripts for mAP workflows
 
 ### Task Support
-- **Detection**: Object detection models (YOLOv5-v12, YOLO26)
-- **Segmentation**: Instance segmentation models
-- **Pose**: Human pose estimation models
-- **OBB**: Oriented bounding box detection
-- **Classification**: Image classification models
+- **Detection**: Object detection models (YOLOv5–v12, YOLO26). Task: `detection` or `det`
+- **Segmentation**: Instance segmentation models. Task: `segmentation` or `seg`
+- **Pose**: Human pose estimation models. Task: `pose`
+- **OBB**: Oriented bounding box detection. Task: `obb`
+- **Classification**: Image classification models. Task: `classification` or `cls`
+- **YOLOE (open-vocabulary)**: Same tensor layouts as the backbone after export; use **`yoloe-seg`** or **`yoloe-det`**. Pass **comma-separated class names** (no spaces) in the argument that is normally `labels_path`, e.g. `person,car,bus` — must match `model.set_classes([...])` **before** ONNX export. Arbitrary new prompts are not injected at ORT runtime; see [Model Guide](../docs/guides/models.md#yoloe-and-onnx-runtime-ultralytics).
 
 ### Dataset Support
 - **COCOVal2017**: Standard COCO validation dataset
@@ -115,6 +117,26 @@ cd /path/to/YOLOs-CPP
   --iterations=100 --gpu
 ```
 
+#### YOLOE Open-Vocabulary Segmentation
+```bash
+# Classes must match export: model.set_classes([...]) then export(..., nms=False)
+./benchmarks/build/yolo_unified_benchmark image yoloe-26n-seg yoloe-seg \
+  models/yoloe-26n-seg.onnx \
+  person,car,bus,bicycle,motorcycle,truck \
+  data/dog.jpg --iterations=200 --warmup=30 --gpu
+```
+
+For prompt-free exports, pass a `.names` file whose line count matches that PF ONNX (e.g. `models/yoloe_pf.names`) and use task `yoloe-seg` (same as file-based closed-set labels).
+
+#### YOLOE Open-Vocabulary Detection
+```bash
+./benchmarks/build/yolo_unified_benchmark image yoloe_export yoloe-det \
+  models/yoloe-det.onnx \
+  person,car,bus \
+  data/dog.jpg --gpu
+```
+Replace `models/yoloe-det.onnx` with your exported YOLOE detection ONNX; the first `yoloe_export` string is a label for logs/CSV only.
+
 ### Accuracy Evaluation (Requires Ground Truth)
 
 #### COCOVal2017 Evaluation
@@ -133,17 +155,21 @@ cd /path/to/YOLOs-CPP
   --gpu --dataset-type=custom
 ```
 
-### Comprehensive Automated Testing
+### Comprehensive Multi-Model Run
 ```bash
-# Tests all configured models on CPU and GPU
-./benchmarks/build/yolo_unified_benchmark comprehensive
+cd /path/to/YOLOs-CPP
+
+# Args: comprehensive <image> [models_dir] [options]
+./benchmarks/build/yolo_unified_benchmark comprehensive data/dog.jpg models \
+  --iterations=150 --warmup=20 --gpu
 ```
 
 This will:
-- Test all models in the configuration list
-- Run on both CPU and GPU
-- Generate CSV results file
-- Display tabular comparison summary
+- Look for `models/*.onnx` covering detection (`yolo26n`, `yolo11n`, …), segmentation, pose, and **YOLOE** (`yoloe-*-seg.onnx`) when present
+- Append rows to `results/comprehensive_results.csv` (created under the current working directory unless `--output-dir` is set)
+- Print a terminal table sorted by FPS (YOLOE rows marked with `*`)
+
+`auto_bench.sh` invokes `comprehensive` after build; ensure `data/dog.jpg` exists or pass a valid image path.
 
 ## Command-Line Options
 

@@ -17,9 +17,23 @@
 #include <vector>
 #include <type_traits>
 #include <cstdint>
+#include <cctype>
 
 namespace yolos {
 namespace utils {
+
+/// @brief Trim leading/trailing ASCII whitespace (for optional label paths)
+inline std::string trimString(const std::string& s) {
+    size_t a = 0;
+    while (a < s.size() && std::isspace(static_cast<unsigned char>(s[a]))) {
+        ++a;
+    }
+    size_t b = s.size();
+    while (b > a && std::isspace(static_cast<unsigned char>(s[b - 1]))) {
+        --b;
+    }
+    return s.substr(a, b - a);
+}
 
 // ============================================================================
 // Math Utilities
@@ -60,10 +74,14 @@ inline size_t vectorProduct(const std::vector<int64_t>& shape) {
 /// @return Vector of class names
 inline std::vector<std::string> getClassNames(const std::string& path) {
     std::vector<std::string> classNames;
-    std::ifstream infile(path);
+    const std::string p = trimString(path);
+    if (p.empty()) {
+        return classNames;
+    }
+    std::ifstream infile(p);
     
     if (!infile) {
-        std::cerr << "[ERROR] Failed to open class names file: " << path << std::endl;
+        std::cerr << "[ERROR] Failed to open class names file: " << p << std::endl;
         return classNames;
     }
     

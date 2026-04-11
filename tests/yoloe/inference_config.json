@@ -1,0 +1,12 @@
+{
+  "conf": 0.40,
+  "iou": 0.50,
+  "classes": [
+    "person",
+    "car",
+    "bus",
+    "bicycle",
+    "motorcycle",
+    "truck"
+  ]
+}

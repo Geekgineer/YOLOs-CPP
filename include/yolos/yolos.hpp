@@ -13,6 +13,7 @@
 //   #include "yolos/tasks/pose.hpp"
 //   #include "yolos/tasks/obb.hpp"
 //   #include "yolos/tasks/classification.hpp"
+//   #include "yolos/tasks/yoloe.hpp"
 //
 // Author: YOLOs-CPP Team, https://github.com/Geekgineer/YOLOs-CPP
 // ============================================================================
@@ -32,6 +33,7 @@
 #include "yolos/tasks/pose.hpp"
 #include "yolos/tasks/obb.hpp"
 #include "yolos/tasks/classification.hpp"
+#include "yolos/tasks/yoloe.hpp"
 
 // ============================================================================
 // Namespace Aliases for Convenience
@@ -59,5 +61,9 @@ using YOLOOBBDetector = obb::YOLOOBBDetector;
 using ClassificationResult = cls::ClassificationResult;
 using YOLOClassifier = cls::YOLOClassifier;
 using YOLO26Classifier = cls::YOLO26Classifier;
+
+// YOLOE open-vocabulary task aliases
+using YOLOEDetector    = yoloe::YOLOEDetector;
+using YOLOESegDetector = yoloe::YOLOESegDetector;
 
 } // namespace yolos

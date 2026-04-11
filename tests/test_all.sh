@@ -47,6 +47,7 @@ run_test "Classification" "$SCRIPT_DIR/test_classification.sh"
 run_test "Segmentation" "$SCRIPT_DIR/test_segmentation.sh"
 run_test "Pose" "$SCRIPT_DIR/test_pose.sh"
 run_test "OBB" "$SCRIPT_DIR/test_obb.sh"
+run_test "YOLOE" "$SCRIPT_DIR/test_yoloe.sh"
 
 # ============================================================================
 # Summary

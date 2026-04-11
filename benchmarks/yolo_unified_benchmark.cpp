@@ -447,8 +447,84 @@ private:
     cls::ClassificationResult result_;
 };
 
+// ============================================================================
+// YOLOE Open-Vocabulary Wrappers
+// ============================================================================
+
+/// @brief Benchmark wrapper for YOLOE open-vocabulary detection.
+class YOLOEDetectionWrapper : public UnifiedDetector {
+public:
+    YOLOEDetectionWrapper(const std::string& model_path,
+                          const std::vector<std::string>& class_names,
+                          bool use_gpu)
+        : detector_(std::make_unique<yoloe::YOLOEDetector>(model_path, class_names, use_gpu)) {}
+    
+    std::string getDevice() const override { return detector_->getDevice(); }
+    cv::Size getInputShape() const override { return detector_->getInputShape(); }
+    TaskType getTaskType() const override { return TaskType::Detection; }
+    
+    int runInference(const cv::Mat& image, float conf, float nms) override {
+        results_ = detector_->detect(image, conf, nms);
+        return static_cast<int>(results_.size());
+    }
+    
+    void drawResults(cv::Mat& image) const override {
+        detector_->drawDetections(image, results_);
+    }
+    
+private:
+    std::unique_ptr<yoloe::YOLOEDetector> detector_;
+    std::vector<det::Detection> results_;
+};
+
+/// @brief Benchmark wrapper for YOLOE open-vocabulary instance segmentation.
+class YOLOESegWrapper : public UnifiedDetector {
+public:
+    YOLOESegWrapper(const std::string& model_path,
+                    const std::vector<std::string>& class_names,
+                    bool use_gpu)
+        : detector_(std::make_unique<yoloe::YOLOESegDetector>(model_path, class_names, use_gpu)) {}
+    
+    std::string getDevice() const override { return detector_->getDevice(); }
+    cv::Size getInputShape() const override { return detector_->getInputShape(); }
+    TaskType getTaskType() const override { return TaskType::Segmentation; }
+    
+    int runInference(const cv::Mat& image, float conf, float nms) override {
+        results_ = detector_->segment(image, conf, nms);
+        return static_cast<int>(results_.size());
+    }
+    
+    void drawResults(cv::Mat& image) const override {
+        detector_->drawSegmentations(image, results_);
+    }
+    
+private:
+    std::unique_ptr<yoloe::YOLOESegDetector> detector_;
+    std::vector<seg::Segmentation> results_;
+};
+
 std::unique_ptr<UnifiedDetector> createDetector(const BenchmarkConfig& config) {
-    if (config.task_type == "detection" || config.task_type == "det") {
+    // YOLOE open-vocabulary tasks use inline class names stored in labels_path as
+    // a comma-separated string (prefix "yoloe:") for the benchmark driver.
+    if (config.task_type == "yoloe-seg" || config.task_type == "yoloe_seg") {
+        std::vector<std::string> cls;
+        std::istringstream ss(config.labels_path);
+        std::string tok;
+        while (std::getline(ss, tok, ',')) {
+            if (!tok.empty()) cls.push_back(tok);
+        }
+        if (cls.empty()) cls = {"person", "car", "bus"};
+        return std::make_unique<YOLOESegWrapper>(config.model_path, cls, config.use_gpu);
+    } else if (config.task_type == "yoloe-det" || config.task_type == "yoloe_det") {
+        std::vector<std::string> cls;
+        std::istringstream ss(config.labels_path);
+        std::string tok;
+        while (std::getline(ss, tok, ',')) {
+            if (!tok.empty()) cls.push_back(tok);
+        }
+        if (cls.empty()) cls = {"person", "car", "bus"};
+        return std::make_unique<YOLOEDetectionWrapper>(config.model_path, cls, config.use_gpu);
+    } else if (config.task_type == "detection" || config.task_type == "det") {
         return std::make_unique<DetectionWrapper>(config.model_path, config.labels_path, config.use_gpu);
     } else if (config.task_type == "segmentation" || config.task_type == "seg") {
         return std::make_unique<SegmentationWrapper>(config.model_path, config.labels_path, config.use_gpu);
@@ -854,17 +930,20 @@ void printUsage(const char* prog) {
     std::cout << colors::colorize("YOLO Unified Benchmark v" + std::string(BENCHMARK_VERSION), colors::BOLD) << "\n\n";
     std::cout << "Usage: " << prog << " <mode> [arguments...]\n\n";
     std::cout << colors::colorize("Modes:", colors::YELLOW) << "\n";
-    std::cout << "  image     Benchmark on a single image\n";
-    std::cout << "  video     Benchmark on a video file\n";
-    std::cout << "  camera    Benchmark using camera input\n";
-    std::cout << "  quick     Quick benchmark with default settings\n\n";
+    std::cout << "  image          Benchmark on a single image\n";
+    std::cout << "  video          Benchmark on a video file\n";
+    std::cout << "  camera         Benchmark using camera input\n";
+    std::cout << "  quick          Quick benchmark with default settings\n";
+    std::cout << "  comprehensive  Run all available models including YOLOE and export CSV report\n\n";
     std::cout << colors::colorize("Arguments:", colors::YELLOW) << "\n";
     std::cout << "  image <model_type> <task_type> <model_path> <labels_path> <image_path> [options]\n";
     std::cout << "  video <model_type> <task_type> <model_path> <labels_path> <video_path> [options]\n";
     std::cout << "  camera <model_type> <task_type> <model_path> <labels_path> <camera_id> [options]\n";
-    std::cout << "  quick <model_path> <image_path>\n\n";
+    std::cout << "  quick <model_path> <image_path>\n";
+    std::cout << "  comprehensive <image_path> [models_dir] [options]\n\n";
     std::cout << colors::colorize("Task Types:", colors::YELLOW) << "\n";
-    std::cout << "  detection (det), segmentation (seg), pose, obb, classification (cls)\n\n";
+    std::cout << "  detection (det), segmentation (seg), pose, obb, classification (cls)\n";
+    std::cout << "  yoloe-seg, yoloe-det  (open-vocabulary YOLOE tasks)\n\n";
     std::cout << colors::colorize("Options:", colors::YELLOW) << "\n";
     std::cout << "  --gpu                   Use GPU for inference\n";
     std::cout << "  --cpu                   Use CPU for inference (default)\n";
@@ -881,6 +960,8 @@ void printUsage(const char* prog) {
     std::cout << "  " << prog << " quick models/yolo11n.onnx data/dog.jpg\n";
     std::cout << "  " << prog << " image yolo11 det models/yolo11n.onnx models/coco.names data/dog.jpg --gpu\n";
     std::cout << "  " << prog << " video yolo11 det models/yolo11n.onnx models/coco.names data/video.mp4 --iterations=500\n";
+    std::cout << "  " << prog << " image yoloe-26n yoloe-seg models/yoloe-26n-seg.onnx \"person,car,bus\" data/dog.jpg\n";
+    std::cout << "  " << prog << " comprehensive data/dog_bike_car.jpg models --gpu\n";
 }
 
 BenchmarkConfig parseArgs(int argc, char** argv) {
@@ -1010,6 +1091,154 @@ int main(int argc, char** argv) {
             return 0;
         }
         
+        // ----------------------------------------------------------------
+        // Comprehensive mode: run all available models, print comparison table
+        // ----------------------------------------------------------------
+        if (mode == "comprehensive") {
+            if (argc < 3) {
+                std::cerr << "Usage: " << argv[0] << " comprehensive <image_path> [models_dir] [options]\n";
+                return 1;
+            }
+            
+            BenchmarkConfig base_cfg = parseArgs(argc, argv);
+            std::string image_path  = argv[2];
+            std::string models_dir  = (argc > 3 && argv[3][0] != '-') ? argv[3] : "models";
+
+            fs::create_directories(base_cfg.output_dir);
+
+            // Model suite: {model_type, task_type, model_path, labels_or_classes}
+            struct ModelEntry {
+                std::string type, task, path, labels;
+            };
+
+            const std::string yoloe_classes = "person,car,bus,bicycle,motorcycle,truck";
+
+            std::vector<ModelEntry> suite;
+            // Standard detection models
+            for (const auto& m : {"yolo26n", "yolo11n", "yolov8n"}) {
+                std::string p = models_dir + "/" + std::string(m) + ".onnx";
+                if (fs::exists(p))
+                    suite.push_back({m, "detection", p, models_dir + "/coco.names"});
+            }
+            // Segmentation models (YOLO26)
+            for (const auto& m : {"yolo26n-seg", "yolo26m-seg"}) {
+                std::string p = models_dir + "/" + std::string(m) + ".onnx";
+                if (fs::exists(p))
+                    suite.push_back({m, "segmentation", p, models_dir + "/coco.names"});
+            }
+            // YOLOE open-vocabulary segmentation
+            for (const auto& m : {"yoloe-26n-seg", "yoloe-26s-seg"}) {
+                std::string p = models_dir + "/" + std::string(m) + ".onnx";
+                if (fs::exists(p))
+                    suite.push_back({m, "yoloe-seg", p, yoloe_classes});
+            }
+            // Pose estimation
+            for (const auto& m : {"yolo26n-pose", "yolo26m-pose"}) {
+                std::string p = models_dir + "/" + std::string(m) + ".onnx";
+                if (fs::exists(p))
+                    suite.push_back({m, "pose", p, models_dir + "/coco.names"});
+            }
+
+            if (suite.empty()) {
+                std::cerr << "No models found in: " << models_dir << "\n";
+                return 1;
+            }
+
+            std::cout << colors::colorize("\n╔══════════════════════════════════════════════════════════════════════════════╗\n", colors::CYAN);
+            std::cout << colors::colorize("║         YOLOs-CPP Comprehensive Benchmark  (including YOLOE)               ║\n", colors::CYAN);
+            std::cout << colors::colorize("╚══════════════════════════════════════════════════════════════════════════════╝\n\n", colors::CYAN);
+            std::cout << "  Image:   " << image_path << "\n";
+            std::cout << "  Models:  " << models_dir << "\n";
+            std::cout << "  Device:  " << (base_cfg.use_gpu ? "GPU (CUDA)" : "CPU") << "\n";
+            std::cout << "  Iters:   " << base_cfg.iterations << " (+" << base_cfg.warmup_iterations << " warmup)\n\n";
+
+            struct Result {
+                std::string model, task;
+                double fps, latency_avg, latency_p99, mem_mb;
+                std::string onnx_size;
+            };
+            std::vector<Result> results;
+
+            std::string csv_path = base_cfg.output_dir + "/comprehensive_results.csv";
+            
+            for (size_t i = 0; i < suite.size(); ++i) {
+                const auto& entry = suite[i];
+                std::cout << colors::colorize(
+                    "  [" + std::to_string(i+1) + "/" + std::to_string(suite.size()) + "] " + entry.type + " (" + entry.task + ")",
+                    colors::BOLD) << "\n";
+                
+                BenchmarkConfig cfg     = base_cfg;
+                cfg.model_type          = entry.type;
+                cfg.task_type           = entry.task;
+                cfg.model_path          = entry.path;
+                cfg.labels_path         = entry.labels;
+
+                // Compute ONNX file size
+                std::string onnx_size = "N/A";
+                try {
+                    auto sz = fs::file_size(entry.path);
+                    std::ostringstream oss;
+                    oss << std::fixed << std::setprecision(1) << (sz / 1048576.0) << " MB";
+                    onnx_size = oss.str();
+                } catch (...) {}
+
+                try {
+                    auto m = benchmarkImage(cfg, image_path);
+                    exportCSV(csv_path, cfg, m, "Image");
+
+                    results.push_back({entry.type, entry.task,
+                                       m.fps, m.latency.avg, m.latency.p99,
+                                       m.peak_memory_mb, onnx_size});
+                    
+                    std::cout << "     FPS=" << colors::colorize(std::to_string(static_cast<int>(m.fps)), colors::GREEN)
+                              << "  lat_avg=" << std::fixed << std::setprecision(2) << m.latency.avg << "ms"
+                              << "  mem=" << std::setprecision(0) << m.peak_memory_mb << "MB\n\n";
+                } catch (const std::exception& ex) {
+                    std::cerr << "     " << colors::colorize("FAILED: ", colors::RED) << ex.what() << "\n\n";
+                }
+            }
+
+            // Print comparison table
+            if (!results.empty()) {
+                std::cout << "\n" << colors::colorize(std::string(80, '='), colors::CYAN) << "\n";
+                std::cout << colors::colorize("  COMPREHENSIVE RESULTS — " + (base_cfg.use_gpu ? std::string("GPU") : std::string("CPU")) + " @ 640×640\n", colors::BOLD);
+                std::cout << colors::colorize(std::string(80, '='), colors::CYAN) << "\n\n";
+
+                // Header
+                std::cout << std::left
+                          << std::setw(22) << "Model"
+                          << std::setw(14) << "Task"
+                          << std::setw(8)  << "FPS"
+                          << std::setw(12) << "Avg(ms)"
+                          << std::setw(12) << "P99(ms)"
+                          << std::setw(12) << "Mem(MB)"
+                          << std::setw(10) << "Size"
+                          << "\n";
+                std::cout << std::string(90, '-') << "\n";
+
+                // Sort by FPS descending
+                std::sort(results.begin(), results.end(),
+                          [](const Result& a, const Result& b){ return a.fps > b.fps; });
+
+                for (const auto& r : results) {
+                    const bool isYoloe = r.task.find("yoloe") != std::string::npos;
+                    std::string row = (isYoloe ? "* " : "  ") +
+                        std::string(r.model).substr(0, 18);
+                    std::cout << std::left << std::setw(22) << row
+                              << std::setw(14) << r.task
+                              << std::setw(8)  << static_cast<int>(r.fps)
+                              << std::setw(12) << std::fixed << std::setprecision(2) << r.latency_avg
+                              << std::setw(12) << std::setprecision(2) << r.latency_p99
+                              << std::setw(12) << std::setprecision(0) << r.mem_mb
+                              << std::setw(10) << r.onnx_size
+                              << "\n";
+                }
+                std::cout << "\n  * = YOLOE open-vocabulary model\n";
+                std::cout << "\nResults saved to: " << csv_path << "\n\n";
+            }
+            return 0;
+        }
+
         std::cerr << "Unknown mode: " << mode << "\n";
         printUsage(argv[0]);
         return 1;

@@ -131,3 +131,9 @@ coverage/
 
 # Dev
 .cursor/
+
+# Pip / local caches (never commit)
+.pip_cache/
+
+# Ultralytics may download large MobileCLIP weights next to test exports
+tests/yoloe/models/mobileclip2_b.ts

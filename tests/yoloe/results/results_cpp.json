@@ -1,0 +1,90 @@
+{
+  "yoloe-26n-seg": {
+    "results": [
+      {
+        "image_path": "data/images/zidane.jpg",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 513,
+              "left": 124,
+              "top": 203,
+              "width": 970
+            },
+            "class_id": 0,
+            "confidence": 0.8486863374710083
+          },
+          {
+            "bbox": {
+              "height": 673,
+              "left": 752,
+              "top": 43,
+              "width": 395
+            },
+            "class_id": 0,
+            "confidence": 0.8350579738616943
+          }
+        ],
+        "mask_path": "results/masks/cpp//yoloe-26n-seg_zidane_mask.png"
+      },
+      {
+        "image_path": "data/images/bus.jpg",
+        "inference_results": [
+          {
+            "bbox": {
+              "height": 453,
+              "left": 226,
+              "top": 407,
+              "width": 115
+            },
+            "class_id": 0,
+            "confidence": 0.9125970602035522
+          },
+          {
+            "bbox": {
+              "height": 502,
+              "left": 52,
+              "top": 396,
+              "width": 185
+            },
+            "class_id": 0,
+            "confidence": 0.9056978225708008
+          },
+          {
+            "bbox": {
+              "height": 507,
+              "left": 16,
+              "top": 232,
+              "width": 784
+            },
+            "class_id": 2,
+            "confidence": 0.8798677921295166
+          },
+          {
+            "bbox": {
+              "height": 481,
+              "left": 670,
+              "top": 392,
+              "width": 138
+            },
+            "class_id": 0,
+            "confidence": 0.8599843978881836
+          },
+          {
+            "bbox": {
+              "height": 507,
+              "left": 16,
+              "top": 232,
+              "width": 784
+            },
+            "class_id": 5,
+            "confidence": 0.41742128133773804
+          }
+        ],
+        "mask_path": "results/masks/cpp//yoloe-26n-seg_bus_mask.png"
+      }
+    ],
+    "task": "segment",
+    "weights_path": "models/yoloe-26n-seg.onnx"
+  }
+}

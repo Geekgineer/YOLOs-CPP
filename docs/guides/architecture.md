@@ -19,7 +19,8 @@ include/yolos/
 │   ├── segmentation.hpp    # YOLOSegDetector
 │   ├── pose.hpp            # YOLOPoseDetector
 │   ├── obb.hpp             # YOLOOBBDetector
-│   └── classification.hpp  # YOLOClassifier
+│   ├── classification.hpp  # YOLOClassifier
+│   └── yoloe.hpp           # YOLOEDetector, YOLOESegDetector (open-vocabulary)
 └── yolos.hpp               # Master include
 ```
 
@@ -95,6 +96,18 @@ switch (version) {
 // tests/detection/compare_results.cpp
 // Add model to test suite
 ```
+
+## Open-Vocabulary (YOLOE)
+
+YOLOE is not a new output-tensor layout: exports match the same postprocessing as the backbone
+(YOLO11 → standard detection/seg; YOLO26 → end-to-end seg). Integration lives in
+[`include/yolos/tasks/yoloe.hpp`](../include/yolos/tasks/yoloe.hpp) as thin wrappers over
+`YOLODetector` / `YOLOSegDetector` with inline class names, `setClasses()`, and agnostic NMS defaults.
+
+- **ONNX semantics:** Ultralytics documents `set_classes()` **before** `export(format="onnx")` for text-prompt models; that bakes the vocabulary into the graph. C++ supplies matching strings for labeling—see [Model Guide — YOLOE and ONNX runtime](models.md#yoloe-and-onnx-runtime-ultralytics). Prompt-free `*-pf` models use a large fixed vocabulary; the `.names` file line count must match the export.
+- **Export:** [`scripts/export_yoloe_onnx.py`](../scripts/export_yoloe_onnx.py) (Ultralytics `YOLOE`, `set_classes`, `export(..., nms=False)`).
+- **Parity tests:** [`tests/test_yoloe.sh`](../tests/test_yoloe.sh) — Ultralytics `YOLOE` vs C++ `YOLOESegDetector` (JSON + mask comparison, same workflow as segmentation tests). ONNX for CI is produced by [`tests/yoloe/models/export_yoloe_test_onnx.py`](../tests/yoloe/models/export_yoloe_test_onnx.py); class names live in [`tests/yoloe/inference_config.json`](../tests/yoloe/inference_config.json).
+- **Docs / benchmarks:** [Model Guide](models.md#yoloe-open-vocabulary-detection--segmentation), [`benchmarks/README.md`](../benchmarks/README.md).
 
 ## ONNX Runtime Integration
 

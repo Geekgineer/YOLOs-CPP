@@ -129,8 +129,16 @@ public:
     /// @brief Get class colors
     [[nodiscard]] const std::vector<cv::Scalar>& getClassColors() const { return classColors_; }
 
+    /// @brief Enable or disable class-agnostic NMS (recommended for large vocabularies)
+    /// When true, NMS ignores class IDs and suppresses overlapping boxes across classes.
+    void setAgnosticNMS(bool enable) { agnosticNms_ = enable; }
+
+    /// @brief Check whether agnostic NMS is enabled
+    [[nodiscard]] bool isAgnosticNMS() const { return agnosticNms_; }
+
 protected:
     YOLOVersion version_{YOLOVersion::Auto};
+    bool agnosticNms_{false};
     std::vector<std::string> classNames_;
     std::vector<cv::Scalar> classColors_;
     
@@ -233,9 +241,14 @@ protected:
             }
         }
 
-        // Batched NMS (handles class offsets internally)
+        // Class-agnostic NMS merges overlapping boxes across all classes (for large vocabularies).
+        // Class-aware batched NMS uses per-class offsets to prevent cross-class suppression.
         std::vector<int> indices;
-        nms::NMSBoxesBatched(boxes, confs, classIds, confThreshold, iouThreshold, indices);
+        if (agnosticNms_) {
+            nms::NMSBoxes(boxes, confs, confThreshold, iouThreshold, indices);
+        } else {
+            nms::NMSBoxesBatched(boxes, confs, classIds, confThreshold, iouThreshold, indices);
+        }
 
         detections.reserve(indices.size());
         for (int idx : indices) {
