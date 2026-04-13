@@ -204,6 +204,8 @@ jobs:
   # ==========================================================================
   # Build and Deploy Docs to GitHub Pages
   # ==========================================================================
+  # Requires repo Settings → Pages → Source: GitHub Actions. If Pages is not
+  # enabled, deploy-pages returns 404; the deploy step is non-blocking so CI stays green.
   deploy-docs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -238,4 +240,12 @@ jobs:
 
       - name: Deploy to GitHub Pages
         id: deployment
+        continue-on-error: true
         uses: actions/deploy-pages@v4
+
+      - name: Pages deploy status
+        if: always()
+        run: |
+          if [ "${{ steps.deployment.outcome }}" != "success" ]; then
+            echo "::warning::GitHub Pages was not deployed (MkDocs build still succeeded). Enable Pages and set the source to GitHub Actions: https://github.com/${{ github.repository }}/settings/pages"
+          fi
