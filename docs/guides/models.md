@@ -59,7 +59,7 @@ runtime text path matching Ultralytics’ export.
 
 † Paper numbers (Ultralytics, T4 GPU, full LVIS evaluation).  
 ‡ **Measured on Intel i7-1185G7 CPU, ONNX Runtime 1.20.1, 6-class text-prompt export, 200 iterations.**  
-  See [`benchmarks/results/BENCHMARK_REPORT.md`](../benchmarks/results/BENCHMARK_REPORT.md) for full statistics.
+  See [`benchmarks/results/BENCHMARK_REPORT.md`](https://github.com/Geekgineer/YOLOs-CPP/blob/main/benchmarks/results/BENCHMARK_REPORT.md) for full statistics.
 
 #### CPU Benchmark — YOLOE vs Closed-Set Baseline
 
@@ -201,7 +201,7 @@ Use **`image_yoloe_seg`** for still images (image → image) and **`video_yoloe_
     comprehensive data/dog.jpg models --gpu --iterations=500 --warmup=50
 ```
 
-See [`benchmarks/results/BENCHMARK_REPORT.md`](../benchmarks/results/BENCHMARK_REPORT.md) for the
+See [`benchmarks/results/BENCHMARK_REPORT.md`](https://github.com/Geekgineer/YOLOs-CPP/blob/main/benchmarks/results/BENCHMARK_REPORT.md) for the
 full report including latency percentiles, memory usage, and comparative analysis.
 
 #### Label Files

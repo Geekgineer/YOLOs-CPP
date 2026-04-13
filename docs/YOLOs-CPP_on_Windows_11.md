@@ -8,7 +8,7 @@ YOLOs-CPP is a C++ implementation for running YOLO models (v5, v7, v8, v9, v10, 
 - [Installation](#installation)
   - [Windows-Specific Instructions](#windows-specific-instructions)
 - [Building the Project](#building-the-project)
-- [Usage Instructions](#usage)
+- [Usage Instructions](#usage-instructions)
 - [Python Scripts for Model Export](#python-scripts-for-model-export)
 - [Modifications Made](#modifications-made)
 - [Troubleshooting](#troubleshooting)

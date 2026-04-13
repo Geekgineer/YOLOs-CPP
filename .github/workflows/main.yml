@@ -117,6 +117,7 @@ jobs:
           name: test-results-${{ matrix.task }}
           path: tests/${{ matrix.task }}/results/
           retention-days: 7
+          if-no-files-found: warn
 
   # ==========================================================================
   # Benchmark (Optional - Manual Trigger)
@@ -167,6 +168,7 @@ jobs:
           name: benchmark-results
           path: benchmarks/results/
           retention-days: 30
+          if-no-files-found: warn
 
   # ==========================================================================
   # Code Quality Checks

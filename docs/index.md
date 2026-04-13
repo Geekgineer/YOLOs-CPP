@@ -160,7 +160,7 @@ int main(int argc, char* argv[]) {
 
 ## License
 
-YOLOs-CPP is licensed under the [GNU Affero General Public License v3.0](../LICENSE).
+YOLOs-CPP is licensed under the [GNU Affero General Public License v3.0](https://github.com/Geekgineer/YOLOs-CPP/blob/main/LICENSE).
 
 ## Citation
 
