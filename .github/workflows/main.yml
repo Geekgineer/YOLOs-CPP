@@ -21,6 +21,9 @@ permissions:
 
 env:
   ONNXRUNTIME_VERSION: "1.20.1"
+  # Single Pages artifact name per run (avoids deploy-pages error when multiple default
+  # "github-pages" artifacts exist in the same workflow run).
+  PAGES_ARTIFACT_NAME: site-${{ github.run_id }}-${{ github.run_attempt }}
 
 jobs:
   # ==========================================================================
@@ -237,11 +240,14 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: site
+          name: ${{ env.PAGES_ARTIFACT_NAME }}
 
       - name: Deploy to GitHub Pages
         id: deployment
         continue-on-error: true
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: ${{ env.PAGES_ARTIFACT_NAME }}
 
       - name: Pages deploy status
         if: always()
