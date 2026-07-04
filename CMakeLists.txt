@@ -127,7 +127,10 @@ endif()
 # ============================================================================
 function(add_yolo_executable name source)
     add_executable(${name} ${source})
-    target_include_directories(${name} PRIVATE "${ONNXRUNTIME_DIR}/include")
+    target_include_directories(${name} PRIVATE 
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+        "${ONNXRUNTIME_DIR}/include"    
+    )
     target_link_libraries(${name} PRIVATE 
         ${OpenCV_LIBS}
         ${ONNXRUNTIME_LIB}
