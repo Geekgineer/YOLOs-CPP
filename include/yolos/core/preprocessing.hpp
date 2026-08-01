@@ -521,8 +521,11 @@ inline void cropLetterboxAndResize(const cv::Mat& map,
 
     const double gain = std::min(static_cast<double>(mapH) / dstH,
                                  static_cast<double>(mapW) / dstW);
-    const double padW = (mapW - std::round(dstW * gain)) / 2.0;
-    const double padH = (mapH - std::round(dstH * gain)) / 2.0;
+    // Python round() is round-half-to-even here too, not just below: for a 320x320 map
+    // and a 640x241 target, dstH * gain is exactly 120.5, and half-away-from-zero would
+    // shift the crop by one row (121 rows instead of 120).
+    const double padW = (mapW - std::nearbyint(dstW * gain)) / 2.0;
+    const double padH = (mapH - std::nearbyint(dstH * gain)) / 2.0;
 
     // Ultralytics uses Python round(), which breaks ties to even: std::nearbyint
     // does the same under the default rounding mode.

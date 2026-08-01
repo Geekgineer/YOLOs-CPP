@@ -90,6 +90,22 @@ TEST(CropLetterboxAndResize, UpscalesReducedResolutionMap) {
     EXPECT_EQ(640, out.cols);
 }
 
+TEST(CropLetterboxAndResize, RoundsHalfToEvenWhenScalingTheTargetSize) {
+    // 320x320 map, 640x241 target: gain = 0.5 so dstH * gain is exactly 120.5.
+    // Python round() gives 120 (half-to-even), so padH = 100 and the crop is rows
+    // [100, 220) -> 120 rows. Half-away-from-zero rounding would give 121 rows and
+    // shift every value in the rescaled map.
+    cv::Mat out;
+    yolos::preprocessing::cropLetterboxAndResize(rampMap(320, 320), out, cv::Size(640, 241));
+
+    ASSERT_EQ(241, out.rows);
+    ASSERT_EQ(640, out.cols);
+
+    // Row 0 must come from map row 100 (value 1000*100), not row 99.
+    // cv::resize maps output row 0 to a source row < 0.5, which clamps to source row 0.
+    EXPECT_NEAR(100000.0f, out.at<float>(0, 0), 1.0f);
+}
+
 TEST(CropLetterboxAndResize, DegenerateGeometryDoesNotThrowOrEmpty) {
     // A 1x1 map is pathological; the helper must clamp rather than build an invalid ROI.
     cv::Mat out;
