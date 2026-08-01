@@ -23,12 +23,19 @@ using json = nlohmann::json;
 
 namespace {
 
-// Thresholds. Tighten after the first CI run records the real residual; loosen
-// only with a recorded reason. Issue #137 is the precedent: a tolerance loose
-// enough to hide a real bug is worse than no test.
-constexpr double ABS_REL_MAX = 0.01;    // mean |d_cpp - d_ref| / d_ref
+// Measured residual against Ultralytics on the real yolo26n-depth export is
+// AbsRel ~1.8e-06 with delta1 = 1.0 (zero pixels outside the 1% band), so these
+// thresholds carry ~500x headroom while still being tight enough to catch a real
+// regression. They are deliberately NOT set at 3x the observed residual: the C++
+// and Python sides run different ONNX Runtime builds, and cv::resize and
+// torch F.interpolate are independent bilinear implementations, so some
+// cross-platform and cross-version drift is expected and must not be flaky.
+// Issue #137 is the cautionary precedent - a tolerance loose enough to hide a
+// real defect is worse than no test, so do not loosen these without measuring
+// first and recording why.
+constexpr double ABS_REL_MAX = 1e-3;    // mean |d_cpp - d_ref| / d_ref
 constexpr double DELTA1_MIN = 0.99;     // fraction of pixels within 1%
-constexpr double RANGE_REL_MAX = 0.01;  // min/max agreement
+constexpr double RANGE_REL_MAX = 1e-3;  // min/max agreement
 
 json readJson(const std::string& path) {
     std::ifstream f(path);
