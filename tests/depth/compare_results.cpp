@@ -23,18 +23,26 @@ using json = nlohmann::json;
 
 namespace {
 
-// Measured residual against Ultralytics on the real yolo26n-depth export is
-// AbsRel ~1.8e-06 with delta1 = 1.0 (zero pixels outside the 1% band), so these
-// thresholds carry ~500x headroom while still being tight enough to catch a real
-// regression. They are deliberately NOT set at 3x the observed residual: the C++
-// and Python sides run different ONNX Runtime builds, and cv::resize and
-// torch F.interpolate are independent bilinear implementations, so some
-// cross-platform and cross-version drift is expected and must not be flaky.
-// Issue #137 is the cautionary precedent - a tolerance loose enough to hide a
-// real defect is worse than no test, so do not loosen these without measuring
-// first and recording why.
-constexpr double ABS_REL_MAX = 1e-3;    // mean |d_cpp - d_ref| / d_ref
-constexpr double DELTA1_MIN = 0.99;     // fraction of pixels within 1%
+// Thresholds are set from measurement, and specifically so they still catch the class of
+// bug this pipeline is prone to. Measured on the real yolo26n-depth export:
+//
+//                        mean AbsRel      max relative error
+//   real residual        ~1.8e-06         ~5.2e-06
+//   one-row crop shift   ~9.9e-04         ~1.8e-02
+//   one-col crop shift   ~2.8e-03         ~1.3e-01
+//
+// A one-pixel crop shift is exactly what a rounding mistake in cropLetterboxAndResize
+// produces. Note a mean AbsRel limit of 1e-3 would NOT catch a row shift - the mean
+// washes it out - which is why the max-relative-error check exists alongside it.
+// Headroom over the real residual is ~55x on the mean and ~190x on the max, absorbing
+// expected cross-version drift: the two sides run different ONNX Runtime builds, and
+// cv::resize and torch F.interpolate are independent bilinear implementations.
+//
+// Issue #137 is the precedent: a tolerance loose enough to hide a real defect is worse
+// than no test. Do not loosen these without measuring first and recording why.
+constexpr double ABS_REL_MAX = 1e-4;    // mean |d_cpp - d_ref| / d_ref
+constexpr double MAX_REL_MAX = 1e-3;    // worst-pixel |d_cpp - d_ref| / d_ref
+constexpr double DELTA1_MIN = 0.99;     // fraction within 1% (saturated at 1.0 in practice)
 constexpr double RANGE_REL_MAX = 1e-3;  // min/max agreement
 
 json readJson(const std::string& path) {
@@ -155,12 +163,15 @@ TEST_F(ResultsFixtureDepth, ComparePerPixelDepth) {
             ASSERT_NO_THROW(got = readRaw(basePath + c[i].value("depth_file", ""), count));
 
             double sumAbsRel = 0.0;
+            double maxRel = 0.0;
             size_t valid = 0;
             size_t within = 0;
             for (size_t p = 0; p < count; ++p) {
                 if (!(ref[p] > 0.0f) || !(got[p] > 0.0f)) continue;
                 ++valid;
-                sumAbsRel += std::abs(static_cast<double>(got[p]) - ref[p]) / ref[p];
+                const double rel = std::abs(static_cast<double>(got[p]) - ref[p]) / ref[p];
+                sumAbsRel += rel;
+                if (rel > maxRel) maxRel = rel;
                 const double ratio = std::max(static_cast<double>(got[p]) / ref[p],
                                               static_cast<double>(ref[p]) / got[p]);
                 if (ratio < 1.01) ++within;
@@ -174,11 +185,15 @@ TEST_F(ResultsFixtureDepth, ComparePerPixelDepth) {
             // Always print, not just on failure: the thresholds above are meant to be
             // pinned from observed values, which requires seeing them on a passing run.
             std::cout << "[metrics] " << el.key() << " " << u[i].value("image_path", "")
-                      << " AbsRel=" << absRel << " delta1=" << delta1 << std::endl;
+                      << " AbsRel=" << absRel << " delta1=" << delta1
+                      << " MaxRel=" << maxRel << std::endl;
 
             EXPECT_LE(absRel, ABS_REL_MAX)
                 << el.key() << " image " << i << " (" << u[i].value("image_path", "")
                 << "): AbsRel " << absRel;
+            EXPECT_LE(maxRel, MAX_REL_MAX)
+                << el.key() << " image " << i << " (" << u[i].value("image_path", "")
+                << "): MaxRel " << maxRel;
             EXPECT_GE(delta1, DELTA1_MIN)
                 << el.key() << " image " << i << " (" << u[i].value("image_path", "")
                 << "): delta1 " << delta1;

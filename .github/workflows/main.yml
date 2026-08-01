@@ -118,7 +118,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-results-${{ matrix.task }}
-          path: tests/${{ matrix.task }}/results/
+          path: |
+            tests/${{ matrix.task }}/results/
+            !tests/${{ matrix.task }}/results/**/*.bin
           retention-days: 7
           if-no-files-found: warn
 
