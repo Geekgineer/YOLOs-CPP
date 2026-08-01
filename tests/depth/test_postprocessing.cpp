@@ -12,7 +12,6 @@
 #include <opencv2/opencv.hpp>
 
 #include <cmath>
-#include <vector>
 
 #include "yolos/core/preprocessing.hpp"
 
@@ -88,6 +87,9 @@ TEST(CropLetterboxAndResize, UpscalesReducedResolutionMap) {
 
     EXPECT_EQ(480, out.rows);
     EXPECT_EQ(640, out.cols);
+    // Pins that gain/padding came from the map's own 160x160 dims: crop is rows
+    // [20, 140), so output row 0 must come from map row 20 (ramp value 1000*20).
+    EXPECT_NEAR(20000.0f, out.at<float>(0, 0), 1.0f);
 }
 
 TEST(CropLetterboxAndResize, RoundsHalfToEvenWhenScalingTheTargetSize) {
