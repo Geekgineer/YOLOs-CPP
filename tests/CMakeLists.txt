@@ -210,14 +210,15 @@ endif()
 # ============================================================================
 # Depth Tests
 # ============================================================================
-# The parity sources (inference_depth_cpp.cpp, compare_results.cpp) are added
-# in Task 6. Listing them here would force placeholder stub files, which is
-# worse than adding them when they exist.
 set(DEPTH_TEST_EXES)
 if(testTask STREQUAL "5" OR testTask STREQUAL "8")
+    add_executable(inference_depth_cpp
+        ${depth_path}/inference_depth_cpp.cpp)
     add_executable(compare_depth_results
-        ${depth_path}/test_postprocessing.cpp)
+        ${depth_path}/test_postprocessing.cpp
+        ${depth_path}/compare_results.cpp)
 
+    list(APPEND INFERENCE_EXES inference_depth_cpp)
     list(APPEND DEPTH_TEST_EXES compare_depth_results)
 endif()
 
