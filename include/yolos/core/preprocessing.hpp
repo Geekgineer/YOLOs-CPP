@@ -487,5 +487,59 @@ inline void descaleCoordsBatch(float* coords, size_t count,
     }
 }
 
+// ============================================================================
+// Dense Map Rescaling
+// ============================================================================
+
+/// @brief Crop letterbox padding from a dense map and rescale to the original size
+/// @param map Dense single-channel map in letterbox space (CV_32FC1)
+/// @param out Result, sized to @p originalSize; always a fresh buffer, never a view
+/// @param originalSize Target size (the un-letterboxed image)
+/// @param interpolation Resize interpolation (INTER_LINEAR matches Ultralytics)
+/// @note Port of ultralytics.utils.ops.scale_masks(). Gain and padding are derived
+///       from @p map's own dimensions rather than from the letterbox size, so this
+///       stays correct for maps emitted at reduced resolution.
+/// @note segmentation.hpp inlines equivalent logic for mask prototypes; it is left
+///       alone deliberately, but this is the natural helper to fold it onto next
+///       time that path is touched.
+inline void cropLetterboxAndResize(const cv::Mat& map,
+                                   cv::Mat& out,
+                                   const cv::Size& originalSize,
+                                   int interpolation = cv::INTER_LINEAR) {
+    CV_Assert(!map.empty() && map.type() == CV_32FC1);
+    CV_Assert(originalSize.width > 0 && originalSize.height > 0);
+
+    const int mapH = map.rows;
+    const int mapW = map.cols;
+    const int dstH = originalSize.height;
+    const int dstW = originalSize.width;
+
+    if (mapH == dstH && mapW == dstW) {
+        out = map.clone();
+        return;
+    }
+
+    const double gain = std::min(static_cast<double>(mapH) / dstH,
+                                 static_cast<double>(mapW) / dstW);
+    const double padW = (mapW - std::round(dstW * gain)) / 2.0;
+    const double padH = (mapH - std::round(dstH * gain)) / 2.0;
+
+    // Ultralytics uses Python round(), which breaks ties to even: std::nearbyint
+    // does the same under the default rounding mode.
+    int top    = static_cast<int>(std::nearbyint(padH - 0.1));
+    int left   = static_cast<int>(std::nearbyint(padW - 0.1));
+    int bottom = mapH - static_cast<int>(std::nearbyint(padH + 0.1));
+    int right  = mapW - static_cast<int>(std::nearbyint(padW + 0.1));
+
+    // Clamp so a pathological map size cannot produce an invalid ROI
+    top    = std::max(0, std::min(top, mapH - 1));
+    left   = std::max(0, std::min(left, mapW - 1));
+    bottom = std::max(top + 1, std::min(bottom, mapH));
+    right  = std::max(left + 1, std::min(right, mapW));
+
+    const cv::Mat cropped = map(cv::Rect(left, top, right - left, bottom - top));
+    cv::resize(cropped, out, originalSize, 0, 0, interpolation);
+}
+
 } // namespace preprocessing
 } // namespace yolos
