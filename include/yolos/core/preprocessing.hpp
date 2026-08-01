@@ -487,5 +487,160 @@ inline void descaleCoordsBatch(float* coords, size_t count,
     }
 }
 
+// ============================================================================
+// Antialiased Bilinear Resize (PIL-compatible)
+// ============================================================================
+// Ultralytics preprocesses classification images with torchvision's
+// T.Resize(size, BILINEAR) applied to a PIL image, and PIL's BILINEAR filter is
+// *antialiased*: its support widens with the downscale factor so every source
+// pixel contributes. cv::resize(INTER_LINEAR) always samples a 2x2 neighborhood
+// and therefore aliases when downscaling, which shifted classification
+// confidences noticeably and could even change the top-1 class.
+//
+// The functions below reproduce Pillow's algorithm (src/libImaging/Resample.c).
+
+namespace detail {
+
+/// @brief Per-output-pixel filter weights for one axis
+struct ResampleCoeffs {
+    int ksize{0};                  ///< Stride between per-pixel weight runs
+    std::vector<float> weights;    ///< outSize * ksize weights
+    std::vector<int> starts;       ///< First contributing source index
+    std::vector<int> counts;       ///< Number of contributing source pixels
+};
+
+/// @brief Round-half-up then clamp to a byte, matching Pillow's clip8()
+inline uchar clip8(double value) {
+    const int rounded = static_cast<int>(std::floor(value + 0.5));
+    return static_cast<uchar>(rounded < 0 ? 0 : (rounded > 255 ? 255 : rounded));
+}
+
+/// @brief Compute Pillow's triangle-filter weights for one axis
+/// @param inSize Source length along the axis
+/// @param outSize Destination length along the axis
+/// @note The support scales with the downscale factor, which is what produces
+///       the antialiasing. When upscaling, filterscale clamps to 1.0 and this
+///       degenerates to ordinary bilinear interpolation.
+inline ResampleCoeffs computeBilinearCoeffs(int inSize, int outSize) {
+    constexpr double filterSupport = 1.0;  // Pillow's BILINEAR support
+
+    const double scale = static_cast<double>(inSize) / outSize;
+    const double filterscale = (scale < 1.0) ? 1.0 : scale;
+    const double support = filterSupport * filterscale;
+    const double invFilterscale = 1.0 / filterscale;
+
+    ResampleCoeffs coeffs;
+    coeffs.ksize = static_cast<int>(std::ceil(support)) * 2 + 1;
+    coeffs.weights.assign(static_cast<size_t>(outSize) * coeffs.ksize, 0.0f);
+    coeffs.starts.resize(outSize);
+    coeffs.counts.resize(outSize);
+
+    for (int i = 0; i < outSize; ++i) {
+        const double center = (i + 0.5) * scale;
+
+        int start = static_cast<int>(center - support + 0.5);
+        if (start < 0) start = 0;
+        int end = static_cast<int>(center + support + 0.5);
+        if (end > inSize) end = inSize;
+        const int count = end - start;
+
+        float* w = &coeffs.weights[static_cast<size_t>(i) * coeffs.ksize];
+        double total = 0.0;
+        for (int k = 0; k < count; ++k) {
+            const double x = std::abs((k + start - center + 0.5) * invFilterscale);
+            const double weight = (x < 1.0) ? (1.0 - x) : 0.0;
+            w[k] = static_cast<float>(weight);
+            total += weight;
+        }
+        if (total != 0.0) {
+            for (int k = 0; k < count; ++k) {
+                w[k] = static_cast<float>(w[k] / total);
+            }
+        }
+
+        coeffs.starts[i] = start;
+        coeffs.counts[i] = count;
+    }
+
+    return coeffs;
+}
+
+} // namespace detail
+
+/// @brief Antialiased bilinear resize matching PIL/Pillow (8-bit input)
+/// @param src Source image, CV_8U with any channel count
+/// @param dst Destination image, same type as @p src
+/// @param dstSize Target size
+/// @note Two separable passes with an 8-bit intermediate, exactly like Pillow:
+///       the horizontal result is rounded to bytes before the vertical pass, so
+///       carrying float accumulators across both passes would NOT match.
+inline void resizeAntialiasBilinear(const cv::Mat& src, cv::Mat& dst, const cv::Size& dstSize) {
+    CV_Assert(src.depth() == CV_8U && !src.empty());
+    CV_Assert(dstSize.width > 0 && dstSize.height > 0);
+
+    const int channels = src.channels();
+
+    // Horizontal pass
+    cv::Mat temp;
+    if (src.cols != dstSize.width) {
+        temp.create(src.rows, dstSize.width, src.type());
+        const detail::ResampleCoeffs cx = detail::computeBilinearCoeffs(src.cols, dstSize.width);
+
+        for (int y = 0; y < src.rows; ++y) {
+            const uchar* srcRow = src.ptr<uchar>(y);
+            uchar* dstRow = temp.ptr<uchar>(y);
+
+            for (int x = 0; x < dstSize.width; ++x) {
+                const float* w = &cx.weights[static_cast<size_t>(x) * cx.ksize];
+                const int start = cx.starts[x];
+                const int count = cx.counts[x];
+
+                for (int c = 0; c < channels; ++c) {
+                    double acc = 0.0;
+                    for (int k = 0; k < count; ++k) {
+                        acc += static_cast<double>(w[k]) * srcRow[(start + k) * channels + c];
+                    }
+                    dstRow[x * channels + c] = detail::clip8(acc);
+                }
+            }
+        }
+    } else {
+        temp = src;
+    }
+
+    // Vertical pass
+    if (temp.rows != dstSize.height) {
+        cv::Mat out(dstSize.height, temp.cols, src.type());
+        const detail::ResampleCoeffs cy = detail::computeBilinearCoeffs(temp.rows, dstSize.height);
+
+        for (int y = 0; y < dstSize.height; ++y) {
+            const float* w = &cy.weights[static_cast<size_t>(y) * cy.ksize];
+            const int start = cy.starts[y];
+            const int count = cy.counts[y];
+            uchar* dstRow = out.ptr<uchar>(y);
+
+            // Hoist the contributing row pointers out of the per-pixel loop
+            std::vector<const uchar*> srcRows(static_cast<size_t>(count));
+            for (int k = 0; k < count; ++k) {
+                srcRows[static_cast<size_t>(k)] = temp.ptr<uchar>(start + k);
+            }
+
+            for (int x = 0; x < temp.cols; ++x) {
+                for (int c = 0; c < channels; ++c) {
+                    const int offset = x * channels + c;
+                    double acc = 0.0;
+                    for (int k = 0; k < count; ++k) {
+                        acc += static_cast<double>(w[k]) * srcRows[static_cast<size_t>(k)][offset];
+                    }
+                    dstRow[offset] = detail::clip8(acc);
+                }
+            }
+        }
+        dst = out;
+    } else {
+        dst = temp.clone();  // temp may alias src, so never hand back a view
+    }
+}
+
 } // namespace preprocessing
 } // namespace yolos

@@ -13,6 +13,8 @@
 #include <onnxruntime_cxx_api.h>
 
 #include <algorithm>
+#include <cmath>
+#include <cstring>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -25,6 +27,7 @@
 
 #include "yolos/core/version.hpp"
 #include "yolos/core/utils.hpp"
+#include "yolos/core/preprocessing.hpp"
 
 namespace yolos {
 namespace cls {
@@ -233,6 +236,11 @@ protected:
     }
 
     /// @brief Preprocess image for classification (Ultralytics-style)
+    ///
+    /// Mirrors ultralytics.data.augment.classify_transforms(), which is
+    ///     T.Resize(size, BILINEAR) -> T.CenterCrop(size) -> T.ToTensor()
+    ///       -> T.Normalize(mean=0, std=1)   [a no-op]
+    /// applied to a PIL image.
     void preprocess(const cv::Mat& image, std::vector<int64_t>& inputTensorShape) {
         int targetSize = inputImageShape_.width;
         int h = image.rows;
@@ -252,12 +260,17 @@ protected:
         cv::Mat rgbImage;
         cv::cvtColor(image, rgbImage, cv::COLOR_BGR2RGB);
 
+        // Ultralytics resizes through PIL, whose BILINEAR filter antialiases.
+        // cv::resize(INTER_LINEAR) does not, which inflated confidences and could
+        // flip the top-1 class relative to Ultralytics (issue #137).
         cv::Mat resized;
-        cv::resize(rgbImage, resized, cv::Size(newW, newH), 0, 0, cv::INTER_LINEAR);
+        preprocessing::resizeAntialiasBilinear(rgbImage, resized, cv::Size(newW, newH));
 
-        // Center crop to target_size x target_size
-        int yStart = std::max(0, (newH - targetSize) / 2);
-        int xStart = std::max(0, (newW - targetSize) / 2);
+        // Center crop to target_size x target_size.
+        // torchvision uses int(round(diff / 2.0)); Python's round() breaks ties to
+        // even, which is what std::nearbyint does under the default rounding mode.
+        int yStart = std::max(0, static_cast<int>(std::nearbyint((newH - targetSize) / 2.0)));
+        int xStart = std::max(0, static_cast<int>(std::nearbyint((newW - targetSize) / 2.0)));
         cv::Mat cropped = resized(cv::Rect(xStart, yStart, targetSize, targetSize));
 
         // Normalize to [0, 1]

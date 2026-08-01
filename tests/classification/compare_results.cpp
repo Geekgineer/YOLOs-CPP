@@ -10,7 +10,12 @@
 
 using json = nlohmann::json;
 
-constexpr double CONF_ERROR_MARGIN = 0.1; // +-0.1 difference allowed in confidence scores
+// Measured residual against Ultralytics after the antialiased-resize fix (#137)
+// is <= 0.004: the preprocessed tensors differ by at most 1/255 on a fraction of
+// pixels (Pillow accumulates in fixed point, we accumulate in floating point),
+// plus ~1e-5 from the Python and C++ ONNX Runtime builds differing. The old
+// margin of 0.1 was loose enough to hide preprocessing mismatches of 0.12-0.22.
+constexpr double CONF_ERROR_MARGIN = 0.02;
 
 json read_json(const std::string& path) {
     std::ifstream f(path);
