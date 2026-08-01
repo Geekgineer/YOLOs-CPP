@@ -40,6 +40,12 @@ int main(int argc, char* argv[]) {
     cv::VideoWriter writer(outputPath, cv::VideoWriter::fourcc('m', 'p', '4', 'v'),
                            fps, cv::Size(width, height));
 
+    if (!writer.isOpened()) {
+        std::cerr << "❌ Could not open video writer for: " << outputPath << std::endl;
+        cap.release();
+        return -1;
+    }
+
     bool useGPU = false;
     std::cout << "🔄 Loading depth model: " << modelPath << std::endl;
 
@@ -51,6 +57,7 @@ int main(int argc, char* argv[]) {
         // the first frame and reuse it, so the colours stay stable across the video.
         float vmin = std::numeric_limits<float>::quiet_NaN();
         float vmax = std::numeric_limits<float>::quiet_NaN();
+        bool pinFailed = false;   // first frame was degenerate; use per-frame normalization
 
         cv::Mat frame;
         long frameIndex = 0;
@@ -60,13 +67,23 @@ int main(int argc, char* argv[]) {
             auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::high_resolution_clock::now() - start);
 
-            if (std::isnan(vmin)) {
+            if (std::isnan(vmin) && !pinFailed) {
                 double lo = 0.0, hi = 0.0;
                 cv::minMaxLoc(depth, &lo, &hi);
-                // Disparity range: near objects have the largest 1/d
-                vmin = static_cast<float>(1.0 / std::max(hi, 1e-6));
-                vmax = static_cast<float>(1.0 / std::max(lo, 1e-6));
-                std::cout << "📊 Pinned disparity range: " << vmin << " - " << vmax << std::endl;
+                // Disparity: near objects have the largest 1/d, so the range is [1/hi, 1/lo].
+                // Pin only a sane first frame. A non-positive or degenerate minimum would
+                // pin a range of ~1e6 and flatten everything into one end of the colormap,
+                // so fall back to per-frame percentiles instead: it flickers, but it stays
+                // readable and it is honest about what happened.
+                if (lo > 0.0 && hi > lo) {
+                    vmin = static_cast<float>(1.0 / hi);
+                    vmax = static_cast<float>(1.0 / lo);
+                    std::cout << "📊 Pinned disparity range: " << vmin << " - " << vmax << std::endl;
+                } else {
+                    std::cout << "⚠️  First frame depth range (" << lo << " - " << hi
+                              << " m) is degenerate; using per-frame normalization." << std::endl;
+                    pinFailed = true;
+                }
             }
 
             yolos::drawing::drawDepthMap(frame, depth, 0.6f,
