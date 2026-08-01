@@ -15,6 +15,8 @@
 #include <random>
 #include <unordered_map>
 #include <cmath>
+#include <algorithm>
+#include <limits>
 
 #include "yolos/core/types.hpp"
 
@@ -293,6 +295,162 @@ inline void drawSegmentationMask(cv::Mat& image,
     coloredMask.setTo(color, maskBinary);
 
     cv::addWeighted(image, 1.0, coloredMask, alpha, 0, image);
+}
+
+// ============================================================================
+// Depth Visualization
+// ============================================================================
+
+/// @brief Colormap for depth visualization
+/// @note Ultralytics also offers "spectral" (matplotlib Spectral_r). It has no OpenCV
+///       equivalent and would need a hand-embedded 256x3 LUT, so it is not supported.
+enum class DepthColormap {
+    Jet,      ///< Ultralytics default
+    Inferno
+};
+
+/// @brief How depth values are mapped onto the colormap range
+enum class DepthNorm {
+    Disparity,  ///< Normalize 1/depth between the 2nd and 98th percentile (Ultralytics default)
+    Metric      ///< Normalize depth linearly between its min and max
+};
+
+namespace detail {
+
+/// @brief numpy.percentile with linear interpolation, over a mutable pool
+/// @param pool Values to summarize; partially reordered in place
+/// @param q Percentile in [0, 100]
+inline float percentileInPlace(std::vector<float>& pool, double q) {
+    if (pool.empty()) return 0.0f;
+    if (pool.size() == 1) return pool[0];
+
+    const double pos = (static_cast<double>(pool.size()) - 1.0) * q / 100.0;
+    const size_t lo = static_cast<size_t>(std::floor(pos));
+    const size_t hi = static_cast<size_t>(std::ceil(pos));
+    const double frac = pos - static_cast<double>(lo);
+
+    std::nth_element(pool.begin(), pool.begin() + static_cast<std::ptrdiff_t>(lo), pool.end());
+    const double loVal = pool[lo];
+    if (hi == lo) return static_cast<float>(loVal);
+
+    // The hi-th element is now somewhere in [lo, end); the smallest of that tail.
+    const double hiVal = *std::min_element(pool.begin() + static_cast<std::ptrdiff_t>(lo) + 1, pool.end());
+    return static_cast<float>(loVal * (1.0 - frac) + hiVal * frac);
+}
+
+} // namespace detail
+
+/// @brief Colorize a metric depth map
+/// @param depth Depth in meters (CV_32FC1); values <= 0 are treated as invalid
+/// @param cmap Colormap to apply
+/// @param mode Disparity or metric normalization
+/// @param vmin Lower bound of the colour range; NaN derives it as Ultralytics does
+/// @param vmax Upper bound of the colour range; NaN derives it as Ultralytics does
+/// @return BGR CV_8UC3 image at @p depth's size, invalid pixels black
+/// @note Port of ultralytics.utils.plotting.colorize_depth(). Pass explicit bounds for
+///       video: per-frame percentiles make the overlay flicker between frames.
+inline cv::Mat colorizeDepth(const cv::Mat& depth,
+                             DepthColormap cmap = DepthColormap::Jet,
+                             DepthNorm mode = DepthNorm::Disparity,
+                             float vmin = std::numeric_limits<float>::quiet_NaN(),
+                             float vmax = std::numeric_limits<float>::quiet_NaN()) {
+    CV_Assert(!depth.empty() && depth.type() == CV_32FC1);
+
+    const int rows = depth.rows;
+    const int cols = depth.cols;
+
+    // Build the normalization source: disparity (1/d) or metric depth, 0 where invalid
+    cv::Mat values(rows, cols, CV_32FC1, cv::Scalar(0.0f));
+    std::vector<float> pool;
+    pool.reserve(static_cast<size_t>(rows) * cols);
+
+    for (int y = 0; y < rows; ++y) {
+        const float* dRow = depth.ptr<float>(y);
+        float* vRow = values.ptr<float>(y);
+        for (int x = 0; x < cols; ++x) {
+            if (dRow[x] > 0.0f) {
+                vRow[x] = (mode == DepthNorm::Disparity) ? (1.0f / dRow[x]) : dRow[x];
+                pool.push_back(vRow[x]);
+            }
+        }
+    }
+
+    float lo = vmin;
+    float hi = vmax;
+    if (std::isnan(lo) || std::isnan(hi)) {
+        float derivedLo = 0.0f;
+        float derivedHi = 1.0f;
+        if (!pool.empty()) {
+            if (mode == DepthNorm::Disparity) {
+                derivedLo = detail::percentileInPlace(pool, 2.0);
+                derivedHi = detail::percentileInPlace(pool, 98.0);
+            } else {
+                const auto minMax = std::minmax_element(pool.begin(), pool.end());
+                derivedLo = *minMax.first;
+                derivedHi = *minMax.second;
+            }
+        }
+        if (std::isnan(lo)) lo = derivedLo;
+        if (std::isnan(hi)) hi = derivedHi;
+    }
+    if (hi <= lo) hi = lo + 1e-6f;
+
+    // numpy does (dn * 255).astype(uint8), which truncates rather than rounds
+    cv::Mat indices(rows, cols, CV_8UC1);
+    const float span = hi - lo;
+    for (int y = 0; y < rows; ++y) {
+        const float* vRow = values.ptr<float>(y);
+        uchar* iRow = indices.ptr<uchar>(y);
+        for (int x = 0; x < cols; ++x) {
+            float dn = (vRow[x] - lo) / span;
+            dn = std::min(1.0f, std::max(0.0f, dn));
+            iRow[x] = static_cast<uchar>(dn * 255.0f);
+        }
+    }
+
+    cv::Mat colored;
+    cv::applyColorMap(indices,
+                      colored,
+                      (cmap == DepthColormap::Inferno) ? cv::COLORMAP_INFERNO : cv::COLORMAP_JET);
+
+    // Invalid pixels are black, not whatever the colormap maps index 0 to
+    for (int y = 0; y < rows; ++y) {
+        const float* dRow = depth.ptr<float>(y);
+        cv::Vec3b* cRow = colored.ptr<cv::Vec3b>(y);
+        for (int x = 0; x < cols; ++x) {
+            if (!(dRow[x] > 0.0f)) cRow[x] = cv::Vec3b(0, 0, 0);
+        }
+    }
+
+    return colored;
+}
+
+/// @brief Blend a colorized depth map over an image
+/// @param image Image to draw on, modified in place (CV_8UC3)
+/// @param depth Depth in meters (CV_32FC1); resized to @p image if sizes differ
+/// @param alpha Blend factor for the heatmap
+/// @param cmap Colormap to apply
+/// @param mode Disparity or metric normalization
+/// @param vmin Lower bound of the colour range; NaN derives it
+/// @param vmax Upper bound of the colour range; NaN derives it
+/// @note Port of ultralytics.utils.plotting.Annotator.depth_map().
+inline void drawDepthMap(cv::Mat& image,
+                         const cv::Mat& depth,
+                         float alpha = 0.6f,
+                         DepthColormap cmap = DepthColormap::Jet,
+                         DepthNorm mode = DepthNorm::Disparity,
+                         float vmin = std::numeric_limits<float>::quiet_NaN(),
+                         float vmax = std::numeric_limits<float>::quiet_NaN()) {
+    if (image.empty() || depth.empty()) {
+        return;
+    }
+
+    cv::Mat heat = colorizeDepth(depth, cmap, mode, vmin, vmax);
+    if (heat.size() != image.size()) {
+        cv::resize(heat, heat, image.size(), 0, 0, cv::INTER_LINEAR);
+    }
+
+    cv::addWeighted(image, 1.0 - alpha, heat, alpha, 0.0, image);
 }
 
 } // namespace drawing

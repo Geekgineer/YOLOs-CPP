@@ -117,3 +117,136 @@ TEST(CropLetterboxAndResize, DegenerateGeometryDoesNotThrowOrEmpty) {
     EXPECT_EQ(32, out.rows);
     EXPECT_EQ(32, out.cols);
 }
+
+#include "yolos/core/drawing.hpp"
+
+namespace {
+
+/// @brief Depth map ramping 1..10 m left to right, with one invalid column
+cv::Mat depthRamp(int rows = 16, int cols = 32) {
+    cv::Mat d(rows, cols, CV_32FC1);
+    for (int y = 0; y < rows; ++y) {
+        for (int x = 0; x < cols; ++x) {
+            d.at<float>(y, x) = 1.0f + 9.0f * static_cast<float>(x) / (cols - 1);
+        }
+    }
+    d.col(0).setTo(0.0f);  // invalid pixels
+    return d;
+}
+
+} // namespace
+
+// ============================================================================
+// colorizeDepth
+// ============================================================================
+
+TEST(ColorizeDepth, ReturnsBgrImageAtInputSize) {
+    const cv::Mat colored = yolos::drawing::colorizeDepth(depthRamp());
+
+    EXPECT_EQ(16, colored.rows);
+    EXPECT_EQ(32, colored.cols);
+    EXPECT_EQ(CV_8UC3, colored.type());
+}
+
+TEST(ColorizeDepth, NonPositivePixelsAreBlack) {
+    const cv::Mat colored = yolos::drawing::colorizeDepth(depthRamp());
+
+    for (int y = 0; y < colored.rows; ++y) {
+        EXPECT_EQ(cv::Vec3b(0, 0, 0), colored.at<cv::Vec3b>(y, 0))
+            << "invalid pixel at row " << y << " must be black";
+    }
+}
+
+TEST(ColorizeDepth, ValidPixelsAreNotAllBlack) {
+    const cv::Mat colored = yolos::drawing::colorizeDepth(depthRamp());
+
+    int nonBlack = 0;
+    for (int y = 0; y < colored.rows; ++y) {
+        for (int x = 1; x < colored.cols; ++x) {
+            if (colored.at<cv::Vec3b>(y, x) != cv::Vec3b(0, 0, 0)) ++nonBlack;
+        }
+    }
+    EXPECT_GT(nonBlack, 0);
+}
+
+TEST(ColorizeDepth, ConstantDepthDoesNotDivideByZero) {
+    // vmax == vmin must be guarded, exactly as Ultralytics does with a 1e-6 bump.
+    cv::Mat flat(8, 8, CV_32FC1, cv::Scalar(3.0f));
+
+    cv::Mat colored;
+    ASSERT_NO_THROW(colored = yolos::drawing::colorizeDepth(flat));
+    EXPECT_EQ(CV_8UC3, colored.type());
+}
+
+TEST(ColorizeDepth, AllInvalidDepthIsAllBlack) {
+    cv::Mat zeros(8, 8, CV_32FC1, cv::Scalar(0.0f));
+
+    cv::Mat colored;
+    ASSERT_NO_THROW(colored = yolos::drawing::colorizeDepth(zeros));
+    EXPECT_EQ(0, cv::countNonZero(colored.reshape(1)));
+}
+
+TEST(ColorizeDepth, ExplicitRangeBypassesPercentiles) {
+    // With a fixed range, two maps differing only in an outlier must colorize the
+    // shared region identically. This is what keeps video overlays from flickering.
+    cv::Mat a = depthRamp();
+    cv::Mat b = a.clone();
+    b.at<float>(0, 5) = 500.0f;  // far outlier
+
+    const cv::Mat ca = yolos::drawing::colorizeDepth(
+        a, yolos::drawing::DepthColormap::Jet, yolos::drawing::DepthNorm::Disparity, 0.1f, 1.0f);
+    const cv::Mat cb = yolos::drawing::colorizeDepth(
+        b, yolos::drawing::DepthColormap::Jet, yolos::drawing::DepthNorm::Disparity, 0.1f, 1.0f);
+
+    EXPECT_EQ(ca.at<cv::Vec3b>(8, 20), cb.at<cv::Vec3b>(8, 20));
+}
+
+TEST(ColorizeDepth, MetricModeDiffersFromDisparityMode) {
+    const cv::Mat disp = yolos::drawing::colorizeDepth(
+        depthRamp(), yolos::drawing::DepthColormap::Jet, yolos::drawing::DepthNorm::Disparity);
+    const cv::Mat metric = yolos::drawing::colorizeDepth(
+        depthRamp(), yolos::drawing::DepthColormap::Jet, yolos::drawing::DepthNorm::Metric);
+
+    cv::Mat diff;
+    cv::absdiff(disp, metric, diff);
+    EXPECT_GT(cv::sum(diff)[0] + cv::sum(diff)[1] + cv::sum(diff)[2], 0.0);
+}
+
+// ============================================================================
+// drawDepthMap
+// ============================================================================
+
+TEST(DrawDepthMap, BlendsInPlaceKeepingSizeAndType) {
+    cv::Mat image(16, 32, CV_8UC3, cv::Scalar(10, 20, 30));
+    const cv::Mat before = image.clone();
+
+    yolos::drawing::drawDepthMap(image, depthRamp());
+
+    EXPECT_EQ(16, image.rows);
+    EXPECT_EQ(32, image.cols);
+    EXPECT_EQ(CV_8UC3, image.type());
+
+    cv::Mat diff;
+    cv::absdiff(before, image, diff);
+    EXPECT_GT(cv::sum(diff)[0] + cv::sum(diff)[1] + cv::sum(diff)[2], 0.0)
+        << "overlay must change the image";
+}
+
+TEST(DrawDepthMap, ResizesDepthToImageWhenSizesDiffer) {
+    cv::Mat image(32, 64, CV_8UC3, cv::Scalar(10, 20, 30));
+
+    ASSERT_NO_THROW(yolos::drawing::drawDepthMap(image, depthRamp(16, 32)));
+    EXPECT_EQ(32, image.rows);
+    EXPECT_EQ(64, image.cols);
+}
+
+TEST(DrawDepthMap, EmptyDepthLeavesImageUnchanged) {
+    cv::Mat image(16, 32, CV_8UC3, cv::Scalar(10, 20, 30));
+    const cv::Mat before = image.clone();
+
+    yolos::drawing::drawDepthMap(image, cv::Mat());
+
+    cv::Mat diff;
+    cv::absdiff(before, image, diff);
+    EXPECT_EQ(0, cv::countNonZero(diff.reshape(1)));
+}
