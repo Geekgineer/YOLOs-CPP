@@ -99,6 +99,38 @@ inline std::vector<std::string> getClassNames(const std::string& path) {
     return classNames;
 }
 
+/// @brief Read a whole file into memory
+/// @param path Path to the file
+/// @return File contents; empty vector on failure
+/// @note Convenience helper for the in-memory model-loading constructors. Real
+///       callers typically get their bytes from an encrypted store, a network
+///       stream or an embedded resource instead.
+inline std::vector<uint8_t> readFileBytes(const std::string& path) {
+    std::vector<uint8_t> bytes;
+    std::ifstream file(path, std::ios::binary | std::ios::ate);
+
+    if (!file) {
+        std::cerr << "[ERROR] Failed to open file: " << path << std::endl;
+        return bytes;
+    }
+
+    const std::streamsize size = file.tellg();
+    if (size <= 0) {
+        std::cerr << "[ERROR] File is empty: " << path << std::endl;
+        return bytes;
+    }
+
+    file.seekg(0, std::ios::beg);
+    bytes.resize(static_cast<size_t>(size));
+
+    if (!file.read(reinterpret_cast<char*>(bytes.data()), size)) {
+        std::cerr << "[ERROR] Failed to read file: " << path << std::endl;
+        bytes.clear();
+    }
+
+    return bytes;
+}
+
 // ============================================================================
 // Sigmoid Activation
 // ============================================================================

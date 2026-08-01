@@ -263,51 +263,45 @@ inline void getLetterboxParams(const cv::Size& originalShape,
 // Optimized Single-Pass Preprocessing
 // ============================================================================
 
-/// @brief Fast letterbox with direct blob output (avoids intermediate copies)
+/// @brief Fast letterbox writing directly into a caller-owned CHW float slice
 /// @param image Input BGR image
-/// @param blob Output CHW float blob (pre-allocated)
+/// @param dst Destination CHW slice; must hold at least
+///            targetChannels * targetSize.height * targetSize.width floats
 /// @param targetChannels Target channels for inference
-/// @param targetSize Target size for inference
-/// @param[out] actualSize Actual output size after letterboxing
+/// @param targetSize Target size for inference (used verbatim, no stride alignment)
 /// @param padColor Padding color value (0-255, default 114)
-inline void letterBoxToBlob(const cv::Mat& image,
-                            std::vector<float>& blob,
-                            int targetChannels,
-                            const cv::Size& targetSize,
-                            cv::Size& actualSize,
-                            float padColor = 114.0f) {
-    
+/// @note Only the requested slice is written, so this is safe to use for one
+///       image of a batched N*C*H*W blob.
+inline void letterBoxToBlobPtr(const cv::Mat& image,
+                               float* dst,
+                               int targetChannels,
+                               const cv::Size& targetSize,
+                               float padColor = 114.0f) {
+
     const int srcH = image.rows;
     const int srcW = image.cols;
     const int dstH = targetSize.height;
     const int dstW = targetSize.width;
-    
+
     // Calculate scale and padding (match Ultralytics exactly)
     const float scale = std::min(static_cast<float>(dstH) / srcH,
                                   static_cast<float>(dstW) / srcW);
-    
+
     // Ultralytics uses round() for new dimensions
     const int newH = static_cast<int>(std::round(srcH * scale));
     const int newW = static_cast<int>(std::round(srcW * scale));
-    
+
     // Ultralytics uses asymmetric padding with -0.1/+0.1 adjustment
     const float dh = (dstH - newH) / 2.0f;
     const float dw = (dstW - newW) / 2.0f;
     const int padTop = static_cast<int>(std::round(dh - 0.1f));
     const int padLeft = static_cast<int>(std::round(dw - 0.1f));
-    
-    actualSize = cv::Size(dstW, dstH);
-    
-    // Ensure blob capacity
-    const size_t totalSize = static_cast<size_t>(dstH * dstW * targetChannels);
-    if (blob.size() < totalSize) {
-        blob.resize(totalSize);
-    }
-    
-    // Fill with padding color (normalized)
+
+    // Fill this slice with padding color (normalized)
+    const size_t sliceSize = static_cast<size_t>(dstH) * dstW * targetChannels;
     const float padNorm = padColor / 255.0f;
-    std::fill(blob.begin(), blob.end(), padNorm);
-    
+    std::fill(dst, dst + sliceSize, padNorm);
+
     // Resize image
     cv::Mat resized;
     if (newW != srcW || newH != srcH) {
@@ -315,23 +309,23 @@ inline void letterBoxToBlob(const cv::Mat& image,
     } else {
         resized = image;
     }
-    
+
     constexpr float scale255 = 1.0f / 255.0f;
     if (targetChannels == 3) {
         // Convert BGR to RGB and normalize directly into blob (CHW format)
-        float* rChannel = blob.data();
-        float* gChannel = blob.data() + dstH * dstW;
-        float* bChannel = blob.data() + 2 * dstH * dstW;
-        
+        float* rChannel = dst;
+        float* gChannel = dst + dstH * dstW;
+        float* bChannel = dst + 2 * dstH * dstW;
+
         for (int y = 0; y < newH; ++y) {
             const int dstY = y + padTop;
             const uchar* row = resized.ptr<uchar>(y);
-            
+
             for (int x = 0; x < newW; ++x) {
                 const int dstX = x + padLeft;
                 const int dstIdx = dstY * dstW + dstX;
                 const int srcIdx = x * 3;
-                
+
                 // BGR to RGB conversion + normalization
                 bChannel[dstIdx] = row[srcIdx + 0] * scale255;
                 gChannel[dstIdx] = row[srcIdx + 1] * scale255;
@@ -340,7 +334,7 @@ inline void letterBoxToBlob(const cv::Mat& image,
         }
     } else {
         // normalize directly into blob (single channel)
-        float *channel = blob.data();
+        float *channel = dst;
 
         for (int y = 0; y < newH; ++y) {
             const int    dstY = y + padTop;
@@ -353,6 +347,57 @@ inline void letterBoxToBlob(const cv::Mat& image,
                 channel[dstIdx] = static_cast<float>(row[x]) * scale255;
             }
         }
+    }
+}
+
+/// @brief Fast letterbox with direct blob output (avoids intermediate copies)
+/// @param image Input BGR image
+/// @param blob Output CHW float blob (resized if too small)
+/// @param targetChannels Target channels for inference
+/// @param targetSize Target size for inference
+/// @param[out] actualSize Actual output size after letterboxing
+/// @param padColor Padding color value (0-255, default 114)
+inline void letterBoxToBlob(const cv::Mat& image,
+                            std::vector<float>& blob,
+                            int targetChannels,
+                            const cv::Size& targetSize,
+                            cv::Size& actualSize,
+                            float padColor = 114.0f) {
+
+    actualSize = targetSize;
+
+    // Ensure blob capacity
+    const size_t totalSize = static_cast<size_t>(targetSize.height) * targetSize.width * targetChannels;
+    if (blob.size() < totalSize) {
+        blob.resize(totalSize);
+    }
+
+    letterBoxToBlobPtr(image, blob.data(), targetChannels, targetSize, padColor);
+}
+
+/// @brief Letterbox a batch of images into a single contiguous N*C*H*W blob
+/// @param images Input BGR images
+/// @param blob Output N*C*H*W float blob (resized if too small)
+/// @param targetChannels Target channels for inference
+/// @param targetSize Target size shared by every image in the batch
+/// @param padColor Padding color value (0-255, default 114)
+/// @note All images share one letterbox target, which is what a batched tensor
+///       requires. Per-image scale/padding still differ and must be recovered
+///       with getScalePad(images[i].size(), targetSize, ...) during postprocessing.
+inline void letterBoxToBatchBlob(const std::vector<cv::Mat>& images,
+                                 std::vector<float>& blob,
+                                 int targetChannels,
+                                 const cv::Size& targetSize,
+                                 float padColor = 114.0f) {
+
+    const size_t sliceSize = static_cast<size_t>(targetSize.height) * targetSize.width * targetChannels;
+    const size_t totalSize = sliceSize * images.size();
+    if (blob.size() < totalSize) {
+        blob.resize(totalSize);
+    }
+
+    for (size_t i = 0; i < images.size(); ++i) {
+        letterBoxToBlobPtr(images[i], blob.data() + i * sliceSize, targetChannels, targetSize, padColor);
     }
 }
 

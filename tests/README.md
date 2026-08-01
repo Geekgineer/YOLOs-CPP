@@ -12,7 +12,8 @@ Comprehensive test suite validating C++ YOLO implementations against Python Ultr
 | Segmentation | 8/8 | YOLOv8, v11, YOLO26 | ✅ Pass |
 | OBB | 7/7 | YOLOv8, v11, YOLO26 | ✅ Pass |
 | YOLOE | 8/8 | yoloe-26n-seg (open-vocab, export + ONNX parity) | ✅ Pass |
-| **Total** | **44/44** parity | | **100%** |
+| API (batch + in-memory) | 22/22 | synthetic ONNX (no weights needed) | ✅ Pass |
+| **Total** | **44/44** parity + **22/22** API | | **100%** |
 
 ## Requirements
 
@@ -34,12 +35,19 @@ Comprehensive test suite validating C++ YOLO implementations against Python Ultr
 ./test_segmentation.sh
 ./test_obb.sh
 ./test_yoloe.sh
+./test_api.sh
 
 # Build only the YOLOE parity suite (after Python reference exists under yoloe/results/)
 ./build_test.sh 6
+
+# Build only the API suite (batch inference + in-memory loading)
+./build_test.sh 7
 ```
 
 ## How Tests Work
+
+The parity suites (detection, classification, segmentation, pose, OBB, YOLOE) compare
+against Ultralytics:
 
 1. **Model Download**: Downloads pretrained `.pt` files from Ultralytics
 2. **ONNX Export**: Exports models to ONNX format (opset 12)
@@ -47,6 +55,16 @@ Comprehensive test suite validating C++ YOLO implementations against Python Ultr
 4. **C++ Build**: Builds C++ inference executables
 5. **C++ Inference**: Runs C++ implementation
 6. **Comparison**: Compares results using GoogleTest
+
+The **API suite** (`test_api.sh`) is different: it tests library behavior rather than
+numeric parity, so it generates tiny synthetic ONNX models with
+`api/make_synthetic_models.py` (needs only `onnx` and `numpy`) and asserts that
+
+- `batchDetect` / `batchSegment` / `batchClassify` return exactly what a per-image loop returns
+- each batch slice is postprocessed against its own image, not against batch element 0
+- fixed-batch exports — and exports that declare a batch dim their graph cannot
+  actually run — transparently fall back to the per-image loop
+- loading a model from memory behaves identically to loading it from disk
 
 ## Directory Structure
 
@@ -60,8 +78,14 @@ tests/
 ├── test_pose.sh            # Pose estimation task runner
 ├── test_obb.sh             # OBB detection task runner
 ├── test_yoloe.sh           # YOLOE open-vocabulary segmentation parity
+├── test_api.sh             # Batch inference + in-memory loading (no weights needed)
 ├── build_test.sh           # CMake build script
 ├── CMakeLists.txt          # Test suite CMake config
+├── api/
+│   ├── make_synthetic_models.py    # Generates tiny ONNX models (shapes only)
+│   ├── test_batch_and_memory.cpp
+│   └── models/                     # Synthetic .onnx files (generated)
+│
 ├── yoloe/
 │   ├── inference_config.json       # conf, iou, and `classes` (must match export)
 │   ├── inference_yoloe_cpp.cpp
@@ -108,7 +132,7 @@ The test scripts are designed for CI/CD pipelines:
 - Exports models with compatible opset (12)
 - Returns proper exit codes (0 = pass, non-zero = fail)
 
-**GitHub Actions** (`.github/workflows/main.yml`) runs each task in parallel: `detection`, `segmentation`, `pose`, `obb`, `classification`, and **`yoloe`** (`tests/test_yoloe.sh`). Artifacts upload `tests/<task>/results/` per matrix job.
+**GitHub Actions** (`.github/workflows/main.yml`) runs each task in parallel: `detection`, `segmentation`, `pose`, `obb`, `classification`, **`yoloe`** (`tests/test_yoloe.sh`), and **`api`** (`tests/test_api.sh`). Artifacts upload `tests/<task>/results/` per matrix job.
 
 ```yaml
 # Example: run full suite locally (same tasks as CI matrix combined)

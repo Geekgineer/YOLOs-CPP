@@ -73,8 +73,10 @@ YOLOs-CPP unifies everything under one roof:
 |--------------|-------------|
 | **Unified API** | Same interface for YOLOv5 through YOLO26 |
 | **All Tasks** | Detection, Segmentation, Pose, OBB, Classification, [YOLOE](docs/guides/models.md#yoloe-open-vocabulary-detection-segmentation) open-vocabulary |
-| **Battle-Tested** | 36 automated tests, CI/CD pipeline |
+| **Battle-Tested** | 44 Ultralytics-parity tests + 22 API tests, CI/CD pipeline |
 | **Optimized** | Zero-copy preprocessing, batched NMS, GPU acceleration |
+| **Batch Inference** | `batchDetect` / `batchSegment` / `batchClassify` in one ONNX call, [with fallback](docs/api/api.md#batch-inference) |
+| **Flexible Loading** | Models from a file path or [straight from memory](docs/api/api.md#in-memory-model-loading) (encrypted stores, network streams, embedded resources) |
 | **Cross-Platform** | Linux, Windows, macOS, Docker |
 
 ---
@@ -187,10 +189,12 @@ Open-vocabulary [YOLOE](docs/guides/models.md#yoloe-open-vocabulary-detection-se
 ### Core Capabilities
 
 - **🚀 High Performance**: Zero-copy preprocessing, optimized NMS, GPU acceleration
-- **🎯 Precision Matched**: Identical results to Ultralytics Python (validated by 36 automated tests)
+- **🎯 Precision Matched**: Identical results to Ultralytics Python (validated by 44 parity tests)
 - **📦 Self-Contained**: No Python runtime, no external dependencies at runtime
 - **🔌 Easy Integration**: Header-based library, modern C++17 API
 - **⚙️ Flexible**: CPU/GPU, dynamic/static input shapes, configurable thresholds
+- **📚 Batch Inference**: Multiple images per ONNX Runtime call, with automatic per-image fallback for fixed-batch exports
+- **🔐 In-Memory Models**: Load ONNX bytes directly — no file on disk required
 
 ---
 
@@ -249,6 +253,45 @@ detector.drawOBBs(frame, boxes);
 yolos::cls::YOLOClassifier classifier("yolo11n-cls.onnx", "imagenet.names", true);
 auto result = classifier.classify(frame);
 std::cout << "Predicted: " << result.className << " (" << result.confidence * 100 << "%)" << std::endl;
+```
+
+### Batch Inference
+
+One ONNX Runtime call for many images — the throughput win on GPU. Requires a model
+exported with `dynamic=True`; fixed-batch exports fall back to a per-image loop
+automatically, so the call works either way. See
+[Batch Inference](docs/api/api.md#batch-inference).
+
+```cpp
+std::vector<cv::Mat> images = {cv::imread("a.jpg"), cv::imread("b.jpg"), cv::imread("c.jpg")};
+
+yolos::det::YOLODetector detector("yolo11n.onnx", "coco.names", /*gpu=*/true);
+
+// One result vector per input image, in input order
+auto results = detector.batchDetect(images, /*conf=*/0.25f, /*iou=*/0.45f);
+
+// Also: batchSegment(), batchClassify(), and batchDetect() for pose and OBB
+```
+
+```bash
+./build/batch_image_inference models/yolo11n.onnx data/ models/coco.names
+```
+
+### In-Memory Model Loading
+
+For encrypted stores, network streams and resources embedded in the binary — the model
+never needs to exist as a file. See
+[In-Memory Model Loading](docs/api/api.md#in-memory-model-loading).
+
+```cpp
+// Bytes from anywhere: decryption, download, embedded array
+std::vector<uint8_t> bytes = yolos::utils::readFileBytes("yolo11n.onnx");
+
+// Class names come in as a vector, so no labels file is needed either
+yolos::det::YOLODetector detector(bytes.data(), bytes.size(), {"person", "bicycle", "car"});
+
+// ONNX Runtime copied the buffer during construction — safe to wipe it now
+auto detections = detector.detect(frame);
 ```
 
 ### YOLOE (open-vocabulary segmentation)

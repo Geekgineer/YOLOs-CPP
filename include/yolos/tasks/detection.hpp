@@ -61,7 +61,30 @@ public:
           version_(version) {
         classNames_ = utils::getClassNames(labelsPath);
         classColors_ = drawing::generateColors(classNames_);
-        
+
+        // Pre-allocate inference buffer
+        buffer_.ensureCapacity(inputShape_.height, inputShape_.width, inputChannels_);
+    }
+
+    /// @brief Constructor loading the model from memory instead of a file
+    /// @param modelData Pointer to the serialized ONNX model bytes
+    /// @param modelSize Size of the buffer in bytes
+    /// @param classNames Class names in class-id order; when empty, the
+    ///        Ultralytics `names` entry from the ONNX metadata is used
+    /// @param useGPU Whether to use GPU for inference
+    /// @param version YOLO version (Auto for runtime detection)
+    /// @note ONNX Runtime copies the buffer during session creation, so
+    ///       @p modelData may be freed once the constructor returns.
+    YOLODetector(const void* modelData,
+                 size_t modelSize,
+                 const std::vector<std::string>& classNames,
+                 bool useGPU = false,
+                 YOLOVersion version = YOLOVersion::Auto)
+        : OrtSessionBase(modelData, modelSize, useGPU),
+          version_(version) {
+        classNames_ = classNames.empty() ? getExportedClassNamesFromMetadata() : classNames;
+        classColors_ = drawing::generateColors(classNames_);
+
         // Pre-allocate inference buffer
         buffer_.ensureCapacity(inputShape_.height, inputShape_.width, inputChannels_);
     }
@@ -95,6 +118,43 @@ public:
 
         // Postprocess based on version
         return postprocess(image.size(), actualSize, outputTensors, effectiveVersion, confThreshold, iouThreshold);
+    }
+
+    /// @brief Run detection on several images with a single ONNX Runtime call
+    /// @param images Input images (BGR format)
+    /// @param confThreshold Confidence threshold
+    /// @param iouThreshold IoU threshold for NMS
+    /// @return One detection vector per input image, in input order
+    /// @note Packs the batch into one N*C*H*W tensor when the model accepts the
+    ///       batch size (dynamic batch dimension, or a fixed one that matches
+    ///       images.size()), which is what improves GPU throughput. Otherwise it
+    ///       falls back to calling detect() per image, so the results are always
+    ///       produced regardless of how the model was exported.
+    /// @note Batched runs letterbox every image to the model input shape, so a
+    ///       dynamic-input-shape model can return slightly different boxes than
+    ///       detect(), which picks a per-image stride-aligned shape.
+    virtual std::vector<std::vector<Detection>> batchDetect(const std::vector<cv::Mat>& images,
+                                                            float confThreshold = 0.4f,
+                                                            float iouThreshold = 0.45f) {
+        std::vector<std::vector<Detection>> results;
+        if (images.empty()) return results;
+
+        if (supportsBatchSize(images.size()) && allOutputsAreFloat()) {
+            try {
+                return batchDetectPacked(images, confThreshold, iouThreshold);
+            } catch (const Ort::Exception& e) {
+                // Some exports declare a dynamic batch dimension the graph cannot
+                // actually run (hard-coded Reshape targets, for instance).
+                std::cerr << "[WARNING] Batched inference failed (" << e.what()
+                          << "). Falling back to per-image inference." << std::endl;
+            }
+        }
+
+        results.reserve(images.size());
+        for (const auto& image : images) {
+            results.push_back(detect(image, confThreshold, iouThreshold));
+        }
+        return results;
     }
 
     /// @brief Draw detections on an image
@@ -144,6 +204,37 @@ protected:
     
     // Pre-allocated buffer for inference (avoids per-frame allocations)
     mutable preprocessing::InferenceBuffer buffer_;
+
+    // Pre-allocated N*C*H*W buffer reused across batchDetect() calls
+    std::vector<float> batchBlob_;
+
+    /// @brief Single batched ONNX call plus per-image postprocessing
+    /// Throws Ort::Exception if the model cannot run the requested batch size.
+    std::vector<std::vector<Detection>> batchDetectPacked(const std::vector<cv::Mat>& images,
+                                                          float confThreshold,
+                                                          float iouThreshold) {
+        const int64_t batchSize = static_cast<int64_t>(images.size());
+
+        cv::Size letterboxSize;
+        std::vector<Ort::Value> outputTensors = runBatchInference(images, batchBlob_, letterboxSize);
+
+        // Determine version once from the batched output shape
+        YOLOVersion effectiveVersion = version_;
+        if (effectiveVersion == YOLOVersion::Auto) {
+            effectiveVersion = detectVersion(outputTensors);
+        }
+
+        std::vector<std::vector<Detection>> results;
+        results.reserve(images.size());
+        for (int64_t i = 0; i < batchSize; ++i) {
+            // Zero-copy [1, ...] views so the regular postprocessing runs unchanged
+            std::vector<Ort::Value> itemTensors = sliceOutputBatch(outputTensors, i, batchSize);
+            results.push_back(postprocess(images[static_cast<size_t>(i)].size(), letterboxSize,
+                                          itemTensors, effectiveVersion, confThreshold, iouThreshold));
+        }
+
+        return results;
+    }
 
     /// @brief Detect YOLO version from output tensors
     YOLOVersion detectVersion(const std::vector<Ort::Value>& outputTensors) {
@@ -457,6 +548,10 @@ class YOLOv7Detector : public YOLODetector {
 public:
     YOLOv7Detector(const std::string& modelPath, const std::string& labelsPath, bool useGPU = false)
         : YOLODetector(modelPath, labelsPath, useGPU, YOLOVersion::V7) {}
+
+    YOLOv7Detector(const void* modelData, size_t modelSize,
+                   const std::vector<std::string>& classNames, bool useGPU = false)
+        : YOLODetector(modelData, modelSize, classNames, useGPU, YOLOVersion::V7) {}
 };
 
 /// @brief YOLOv8 detector (forces standard postprocessing)
@@ -464,6 +559,10 @@ class YOLOv8Detector : public YOLODetector {
 public:
     YOLOv8Detector(const std::string& modelPath, const std::string& labelsPath, bool useGPU = false)
         : YOLODetector(modelPath, labelsPath, useGPU, YOLOVersion::V8) {}
+
+    YOLOv8Detector(const void* modelData, size_t modelSize,
+                   const std::vector<std::string>& classNames, bool useGPU = false)
+        : YOLODetector(modelData, modelSize, classNames, useGPU, YOLOVersion::V8) {}
 };
 
 /// @brief YOLOv10 detector (forces V10 end-to-end postprocessing)
@@ -471,6 +570,10 @@ class YOLOv10Detector : public YOLODetector {
 public:
     YOLOv10Detector(const std::string& modelPath, const std::string& labelsPath, bool useGPU = false)
         : YOLODetector(modelPath, labelsPath, useGPU, YOLOVersion::V10) {}
+
+    YOLOv10Detector(const void* modelData, size_t modelSize,
+                    const std::vector<std::string>& classNames, bool useGPU = false)
+        : YOLODetector(modelData, modelSize, classNames, useGPU, YOLOVersion::V10) {}
 };
 
 /// @brief YOLOv11 detector (forces standard postprocessing)
@@ -478,6 +581,10 @@ class YOLOv11Detector : public YOLODetector {
 public:
     YOLOv11Detector(const std::string& modelPath, const std::string& labelsPath, bool useGPU = false)
         : YOLODetector(modelPath, labelsPath, useGPU, YOLOVersion::V11) {}
+
+    YOLOv11Detector(const void* modelData, size_t modelSize,
+                    const std::vector<std::string>& classNames, bool useGPU = false)
+        : YOLODetector(modelData, modelSize, classNames, useGPU, YOLOVersion::V11) {}
 };
 
 /// @brief YOLO-NAS detector (forces NAS postprocessing)
@@ -485,6 +592,10 @@ class YOLONASDetector : public YOLODetector {
 public:
     YOLONASDetector(const std::string& modelPath, const std::string& labelsPath, bool useGPU = false)
         : YOLODetector(modelPath, labelsPath, useGPU, YOLOVersion::NAS) {}
+
+    YOLONASDetector(const void* modelData, size_t modelSize,
+                    const std::vector<std::string>& classNames, bool useGPU = false)
+        : YOLODetector(modelData, modelSize, classNames, useGPU, YOLOVersion::NAS) {}
 };
 
 /// @brief YOLOv26 detector (forces V26 end-to-end postprocessing)
@@ -492,6 +603,10 @@ class YOLO26Detector : public YOLODetector {
 public:
     YOLO26Detector(const std::string& modelPath, const std::string& labelsPath, bool useGPU = false)
         : YOLODetector(modelPath, labelsPath, useGPU, YOLOVersion::V26) {}
+
+    YOLO26Detector(const void* modelData, size_t modelSize,
+                   const std::vector<std::string>& classNames, bool useGPU = false)
+        : YOLODetector(modelData, modelSize, classNames, useGPU, YOLOVersion::V26) {}
 };
 
 // ============================================================================
@@ -523,6 +638,36 @@ inline std::unique_ptr<YOLODetector> createDetector(const std::string& modelPath
             return std::make_unique<YOLONASDetector>(modelPath, labelsPath, useGPU);
         default:
             return std::make_unique<YOLODetector>(modelPath, labelsPath, useGPU, YOLOVersion::Auto);
+    }
+}
+
+/// @brief Create a detector from a model held in memory
+/// @param modelData Pointer to the serialized ONNX model bytes
+/// @param modelSize Size of the buffer in bytes
+/// @param classNames Class names in class-id order (empty = read ONNX metadata)
+/// @param version YOLO version (Auto for runtime detection)
+/// @param useGPU Whether to use GPU
+/// @return Unique pointer to detector
+inline std::unique_ptr<YOLODetector> createDetectorFromMemory(const void* modelData,
+                                                              size_t modelSize,
+                                                              const std::vector<std::string>& classNames,
+                                                              YOLOVersion version = YOLOVersion::Auto,
+                                                              bool useGPU = false) {
+    switch (version) {
+        case YOLOVersion::V7:
+            return std::make_unique<YOLOv7Detector>(modelData, modelSize, classNames, useGPU);
+        case YOLOVersion::V8:
+            return std::make_unique<YOLOv8Detector>(modelData, modelSize, classNames, useGPU);
+        case YOLOVersion::V10:
+            return std::make_unique<YOLOv10Detector>(modelData, modelSize, classNames, useGPU);
+        case YOLOVersion::V11:
+            return std::make_unique<YOLOv11Detector>(modelData, modelSize, classNames, useGPU);
+        case YOLOVersion::V26:
+            return std::make_unique<YOLO26Detector>(modelData, modelSize, classNames, useGPU);
+        case YOLOVersion::NAS:
+            return std::make_unique<YOLONASDetector>(modelData, modelSize, classNames, useGPU);
+        default:
+            return std::make_unique<YOLODetector>(modelData, modelSize, classNames, useGPU, YOLOVersion::Auto);
     }
 }
 
