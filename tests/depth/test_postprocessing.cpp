@@ -169,13 +169,24 @@ TEST(ColorizeDepth, ValidPixelsAreNotAllBlack) {
     EXPECT_GT(nonBlack, 0);
 }
 
-TEST(ColorizeDepth, ConstantDepthDoesNotDivideByZero) {
-    // vmax == vmin must be guarded, exactly as Ultralytics does with a 1e-6 bump.
+TEST(ColorizeDepth, ConstantDepthProducesUniformColour) {
+    // vmax == vmin is guarded with a 1e-6 bump, exactly as Ultralytics does. The guard
+    // itself is not directly observable (the [0,1] clamp launders the 0/0 NaN to 0), so
+    // what this pins is the observable consequence: a constant-depth map must colorize
+    // to a single uniform colour. A NaN leaking through per-pixel would break that.
     cv::Mat flat(8, 8, CV_32FC1, cv::Scalar(3.0f));
 
     cv::Mat colored;
     ASSERT_NO_THROW(colored = yolos::drawing::colorizeDepth(flat));
-    EXPECT_EQ(CV_8UC3, colored.type());
+    ASSERT_EQ(CV_8UC3, colored.type());
+
+    const cv::Vec3b first = colored.at<cv::Vec3b>(0, 0);
+    for (int y = 0; y < colored.rows; ++y) {
+        for (int x = 0; x < colored.cols; ++x) {
+            ASSERT_EQ(first, colored.at<cv::Vec3b>(y, x))
+                << "non-uniform colour at (" << y << "," << x << ") for constant depth";
+        }
+    }
 }
 
 TEST(ColorizeDepth, AllInvalidDepthIsAllBlack) {
@@ -186,19 +197,36 @@ TEST(ColorizeDepth, AllInvalidDepthIsAllBlack) {
     EXPECT_EQ(0, cv::countNonZero(colored.reshape(1)));
 }
 
-TEST(ColorizeDepth, ExplicitRangeBypassesPercentiles) {
-    // With a fixed range, two maps differing only in an outlier must colorize the
-    // shared region identically. This is what keeps video overlays from flickering.
-    cv::Mat a = depthRamp();
-    cv::Mat b = a.clone();
-    b.at<float>(0, 5) = 500.0f;  // far outlier
+TEST(ColorizeDepth, ExplicitRangeIsHonoured) {
+    using yolos::drawing::DepthColormap;
+    using yolos::drawing::DepthNorm;
+    const cv::Mat d = depthRamp();
 
-    const cv::Mat ca = yolos::drawing::colorizeDepth(
-        a, yolos::drawing::DepthColormap::Jet, yolos::drawing::DepthNorm::Disparity, 0.1f, 1.0f);
-    const cv::Mat cb = yolos::drawing::colorizeDepth(
-        b, yolos::drawing::DepthColormap::Jet, yolos::drawing::DepthNorm::Disparity, 0.1f, 1.0f);
+    // Two different explicit ranges must colorize the same map differently. If vmin/vmax
+    // were ignored and the percentiles recomputed, both calls would return the same image.
+    const cv::Mat narrow = yolos::drawing::colorizeDepth(
+        d, DepthColormap::Jet, DepthNorm::Disparity, 0.10f, 0.20f);
+    const cv::Mat wide = yolos::drawing::colorizeDepth(
+        d, DepthColormap::Jet, DepthNorm::Disparity, 0.10f, 1.00f);
 
-    EXPECT_EQ(ca.at<cv::Vec3b>(8, 20), cb.at<cv::Vec3b>(8, 20));
+    cv::Mat diff;
+    cv::absdiff(narrow, wide, diff);
+    EXPECT_GT(cv::sum(diff)[0] + cv::sum(diff)[1] + cv::sum(diff)[2], 0.0)
+        << "vmin/vmax appear to be ignored";
+
+    // And a narrow explicit range must differ from the derived (percentile) range.
+    const cv::Mat derived = yolos::drawing::colorizeDepth(d);
+    cv::absdiff(narrow, derived, diff);
+    EXPECT_GT(cv::sum(diff)[0] + cv::sum(diff)[1] + cv::sum(diff)[2], 0.0)
+        << "explicit range produced the same result as the derived range";
+
+    // Secondary property, and the reason the parameters exist: with a pinned range, a
+    // far outlier in one frame cannot shift the colours of the rest of the image.
+    cv::Mat outlier = d.clone();
+    outlier.at<float>(0, 5) = 500.0f;
+    const cv::Mat pinned = yolos::drawing::colorizeDepth(
+        outlier, DepthColormap::Jet, DepthNorm::Disparity, 0.10f, 1.00f);
+    EXPECT_EQ(wide.at<cv::Vec3b>(8, 20), pinned.at<cv::Vec3b>(8, 20));
 }
 
 TEST(ColorizeDepth, MetricModeDiffersFromDisparityMode) {
