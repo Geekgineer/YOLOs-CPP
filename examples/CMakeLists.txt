@@ -13,6 +13,7 @@ add_executable(example_image_seg example_image_seg.cpp)
 add_executable(example_image_obb example_image_obb.cpp)
 add_executable(example_image_class example_image_class.cpp)
 add_executable(example_image_pose example_image_pose.cpp)
+add_executable(example_image_depth example_image_depth.cpp)
 # ============================================================================
 # VIDEO EXAMPLES
 # ============================================================================
@@ -21,6 +22,7 @@ add_executable(example_video_seg example_video_seg.cpp)
 add_executable(example_video_obb example_video_obb.cpp)
 add_executable(example_video_class example_video_class.cpp)
 add_executable(example_video_pose example_video_pose.cpp)
+add_executable(example_video_depth example_video_depth.cpp)
 # ============================================================================
 # CAMERA EXAMPLES
 # ============================================================================
@@ -29,13 +31,14 @@ add_executable(example_camera_seg example_camera_seg.cpp)
 add_executable(example_camera_obb example_camera_obb.cpp)
 add_executable(example_camera_class example_camera_class.cpp)
 add_executable(example_camera_pose example_camera_pose.cpp)
+add_executable(example_camera_depth example_camera_depth.cpp)
 
 # ============================================================================
 # ============================================================================
 set(ALL_EXAMPLES
-    example_image_det example_image_seg example_image_obb example_image_class example_image_pose
-    example_video_det example_video_seg example_video_obb example_video_class example_video_pose
-    example_camera_det example_camera_seg example_camera_obb example_camera_class example_camera_pose
+    example_image_det example_image_seg example_image_obb example_image_class example_image_pose example_image_depth
+    example_video_det example_video_seg example_video_obb example_video_class example_video_pose example_video_depth
+    example_camera_det example_camera_seg example_camera_obb example_camera_class example_camera_pose example_camera_depth
 )
 
 foreach(example ${ALL_EXAMPLES})
