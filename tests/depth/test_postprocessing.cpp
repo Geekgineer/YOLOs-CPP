@@ -278,3 +278,144 @@ TEST(DrawDepthMap, EmptyDepthLeavesImageUnchanged) {
     cv::absdiff(before, image, diff);
     EXPECT_EQ(0, cv::countNonZero(diff.reshape(1)));
 }
+
+#include <filesystem>
+#include <string>
+
+#include "yolos/tasks/depth.hpp"
+
+#define STRING(x) #x
+#define XSTRING(x) STRING(x)
+
+namespace {
+
+const std::string kDepthModelDir = std::string(XSTRING(BASE_PATH_DEPTH)) + "models/";
+
+std::string depthModelPath(const std::string& name) { return kDepthModelDir + name; }
+
+} // namespace
+
+// ============================================================================
+// YOLODepthEstimator
+// ============================================================================
+
+class SyntheticDepthTest : public ::testing::Test {
+protected:
+    static void SetUpTestSuite() {
+        ASSERT_TRUE(std::filesystem::exists(depthModelPath("depth_synthetic.onnx")))
+            << "Synthetic models missing from " << kDepthModelDir
+            << "\nRun: python3 tests/depth/make_synthetic_models.py tests/depth/models";
+    }
+};
+
+TEST_F(SyntheticDepthTest, EstimateReturnsMetricDepthAtOriginalSize) {
+    yolos::depth::YOLODepthEstimator estimator(depthModelPath("depth_synthetic.onnx"), false);
+
+    const cv::Mat image(480, 640, CV_8UC3, cv::Scalar(50, 100, 150));
+    const cv::Mat depth = estimator.estimate(image);
+
+    ASSERT_FALSE(depth.empty());
+    EXPECT_EQ(480, depth.rows);
+    EXPECT_EQ(640, depth.cols);
+    EXPECT_EQ(CV_32FC1, depth.type());
+}
+
+TEST_F(SyntheticDepthTest, EstimatePassesMetresThroughUnscaled) {
+    // The synthetic model emits a 1..10 m ramp. Cropping vertical letterbox padding
+    // and rescaling must not change the value range, so a stray /255 or exp() shows up.
+    yolos::depth::YOLODepthEstimator estimator(depthModelPath("depth_synthetic.onnx"), false);
+
+    const cv::Mat image(480, 640, CV_8UC3, cv::Scalar(50, 100, 150));
+    const cv::Mat depth = estimator.estimate(image);
+
+    double lo = 0.0;
+    double hi = 0.0;
+    cv::minMaxLoc(depth, &lo, &hi);
+    EXPECT_NEAR(1.0, lo, 0.05);
+    EXPECT_NEAR(10.0, hi, 0.05);
+}
+
+TEST_F(SyntheticDepthTest, EstimateIncreasesLeftToRight) {
+    yolos::depth::YOLODepthEstimator estimator(depthModelPath("depth_synthetic.onnx"), false);
+
+    const cv::Mat image(480, 640, CV_8UC3, cv::Scalar(50, 100, 150));
+    const cv::Mat depth = estimator.estimate(image);
+
+    EXPECT_LT(depth.at<float>(240, 10), depth.at<float>(240, 320));
+    EXPECT_LT(depth.at<float>(240, 320), depth.at<float>(240, 630));
+}
+
+TEST_F(SyntheticDepthTest, EstimateHandlesPortraitAndSquareImages) {
+    yolos::depth::YOLODepthEstimator estimator(depthModelPath("depth_synthetic.onnx"), false);
+
+    // The synthetic ramp runs 1..10 m across the width of the 320x320 model output.
+    // cropLetterboxAndResize derives gain/padding from the map's own dimensions, so a
+    // portrait image (horizontal letterbox padding) crops columns out of the ramp and
+    // must see a genuinely narrower range, not just "still inside [1, 10]" -- a crop
+    // window hardcoded to the full map width would also pass a loose [1,10] bound, so
+    // the portrait case pins concrete numbers computed from the actual crop geometry:
+    // gain = min(320/900, 320/300) = 0.3556, crop columns [106, 213) -> ramp values
+    // [1 + 9*106/319, 1 + 9*212/319] = [3.99, 6.98].
+    struct Case {
+        cv::Size size;
+        double expectLo;
+        double expectHi;
+        double tol;
+    };
+    const Case cases[] = {
+        {cv::Size(300, 900), 3.99, 6.98, 0.15},   // portrait: horizontal padding narrows the range
+        {cv::Size(500, 500), 1.0, 10.0, 0.05},    // square: no padding, full range
+        {cv::Size(1280, 720), 1.0, 10.0, 0.05},   // landscape: vertical padding, columns untouched
+    };
+
+    for (const Case& c : cases) {
+        const cv::Mat image(c.size, CV_8UC3, cv::Scalar(50, 100, 150));
+        const cv::Mat depth = estimator.estimate(image);
+
+        ASSERT_FALSE(depth.empty()) << c.size.width << "x" << c.size.height;
+        EXPECT_EQ(c.size.height, depth.rows);
+        EXPECT_EQ(c.size.width, depth.cols);
+
+        double lo = 0.0;
+        double hi = 0.0;
+        cv::minMaxLoc(depth, &lo, &hi);
+        EXPECT_NEAR(c.expectLo, lo, c.tol) << c.size.width << "x" << c.size.height;
+        EXPECT_NEAR(c.expectHi, hi, c.tol) << c.size.width << "x" << c.size.height;
+        EXPECT_LT(lo, hi) << c.size.width << "x" << c.size.height;
+    }
+}
+
+TEST_F(SyntheticDepthTest, EstimateOnEmptyImageReturnsEmpty) {
+    yolos::depth::YOLODepthEstimator estimator(depthModelPath("depth_synthetic.onnx"), false);
+    EXPECT_TRUE(estimator.estimate(cv::Mat()).empty());
+}
+
+TEST_F(SyntheticDepthTest, RejectsNonDepthModel) {
+    // Pointing the estimator at a detection export must fail loudly at construction,
+    // not silently produce garbage depth.
+    EXPECT_THROW(
+        yolos::depth::YOLODepthEstimator(depthModelPath("not_depth.onnx"), false),
+        std::runtime_error);
+}
+
+TEST_F(SyntheticDepthTest, DrawDepthBlendsOntoImage) {
+    yolos::depth::YOLODepthEstimator estimator(depthModelPath("depth_synthetic.onnx"), false);
+
+    cv::Mat image(480, 640, CV_8UC3, cv::Scalar(50, 100, 150));
+    const cv::Mat depth = estimator.estimate(image);
+    const cv::Mat before = image.clone();
+
+    estimator.drawDepth(image, depth);
+
+    cv::Mat diff;
+    cv::absdiff(before, image, diff);
+    EXPECT_GT(cv::sum(diff)[0] + cv::sum(diff)[1] + cv::sum(diff)[2], 0.0);
+}
+
+TEST_F(SyntheticDepthTest, FactoryReturnsUsableEstimator) {
+    auto estimator = yolos::depth::createDepthEstimator(depthModelPath("depth_synthetic.onnx"), false);
+
+    ASSERT_NE(nullptr, estimator);
+    const cv::Mat image(480, 640, CV_8UC3, cv::Scalar(50, 100, 150));
+    EXPECT_FALSE(estimator->estimate(image).empty());
+}
