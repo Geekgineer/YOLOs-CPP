@@ -52,9 +52,18 @@ std::vector<std::string> collectImageFiles(const std::string& inputPath) {
 /// @brief Write a depth map as raw float32, for downstream numeric use
 void saveRawDepth(const cv::Mat& depth, const std::string& path) {
     std::ofstream out(path, std::ios::binary);
+    if (!out) {
+        std::cerr << "Could not open " << path << " for writing" << std::endl;
+        return;
+    }
     for (int y = 0; y < depth.rows; ++y) {
         out.write(reinterpret_cast<const char*>(depth.ptr<float>(y)),
                   static_cast<std::streamsize>(depth.cols * sizeof(float)));
+    }
+    out.close();
+    if (!out) {
+        std::cerr << "Failed writing raw depth to " << path << std::endl;
+        return;
     }
     std::cout << "Wrote raw float32 depth (" << depth.cols << "x" << depth.rows
               << ") to: " << path << std::endl;

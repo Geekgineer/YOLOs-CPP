@@ -12,8 +12,8 @@ Comprehensive test suite validating C++ YOLO implementations against Python Ultr
 | Segmentation | 8/8 | YOLOv8, v11, YOLO26 | ✅ Pass |
 | OBB | 7/7 | YOLOv8, v11, YOLO26 | ✅ Pass |
 | YOLOE | 8/8 | yoloe-26n-seg (open-vocab, export + ONNX parity) | ✅ Pass |
-| Depth | parity + self-contained | yolo26n-depth (metric depth, dense-map parity) | ✅ Pass |
-| **Total** | **44/44** parity | | **100%** |
+| Depth | 32/32 (27 self-contained + 5 parity) | yolo26n-depth (metric depth, dense-map parity) | ✅ Pass |
+| **Total** | **76/76** (49 parity + 27 self-contained) | | **100%** |
 
 ## Requirements
 
