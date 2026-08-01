@@ -90,6 +90,15 @@ TEST_F(ResultsFixtureDepth, CompareImagesCounts) {
     }
 }
 
+TEST_F(ResultsFixtureDepth, EachModelHasAtLeastOneResult) {
+    // Without this, an empty results array would make ComparePerPixelDepth — the only
+    // test that actually compares depth values — pass vacuously.
+    for (auto& el : ultra.items()) {
+        ASSERT_FALSE(el.value()["results"].empty())
+            << "Model " << el.key() << " produced no results";
+    }
+}
+
 TEST_F(ResultsFixtureDepth, CompareDepthMapShapes) {
     for (auto& el : ultra.items()) {
         auto& u = el.value()["results"];
@@ -126,6 +135,7 @@ TEST_F(ResultsFixtureDepth, ComparePerPixelDepth) {
     for (auto& el : ultra.items()) {
         auto& u = el.value()["results"];
         auto& c = cpp[el.key()]["results"];
+        ASSERT_FALSE(u.empty()) << "no results to compare for " << el.key();
 
         for (size_t i = 0; i < u.size(); ++i) {
             const int h = u[i].value("height", 0);
