@@ -12,6 +12,7 @@ Comprehensive test suite validating C++ YOLO implementations against Python Ultr
 | Segmentation | 8/8 | YOLOv8, v11, YOLO26 | ✅ Pass |
 | OBB | 7/7 | YOLOv8, v11, YOLO26 | ✅ Pass |
 | YOLOE | 8/8 | yoloe-26n-seg (open-vocab, export + ONNX parity) | ✅ Pass |
+| Depth | parity + self-contained | yolo26n-depth (metric depth, dense-map parity) | ✅ Pass |
 | **Total** | **44/44** parity | | **100%** |
 
 ## Requirements
@@ -34,6 +35,7 @@ Comprehensive test suite validating C++ YOLO implementations against Python Ultr
 ./test_segmentation.sh
 ./test_obb.sh
 ./test_yoloe.sh
+./test_depth.sh
 
 # Build only the YOLOE parity suite (after Python reference exists under yoloe/results/)
 ./build_test.sh 6
@@ -72,6 +74,17 @@ tests/
 │   ├── data/images/
 │   └── results/                      # JSON + masks (generated)
 │
+├── test_depth.sh           # Depth estimation parity + self-contained tests
+├── depth/
+│   ├── make_synthetic_models.py     # Tiny ONNX models, no weights needed
+│   ├── inference_depth_cpp.cpp
+│   ├── inference_depth_ultralytics.py
+│   ├── compare_results.cpp          # Per-pixel AbsRel / delta-1 parity
+│   ├── test_postprocessing.cpp      # Crop, rescale and colormap unit tests
+│   ├── inference_config.json
+│   ├── models/
+│   └── results/                     # JSON index + raw float32 maps (generated)
+│
 ├── detection/
 │   ├── models/             # .pt and .onnx models
 │   ├── data/images/        # Test images
@@ -98,6 +111,10 @@ The comparison tests use configurable error margins:
 | Mask Pixels | 10% | Segmentation mask difference (invalid pixel ratio) |
 | OBB Center | ±50px | Oriented box center tolerance |
 | OBB Angle | ±0.2 rad | Rotation angle tolerance |
+| Depth mean AbsRel | 1e-4 | Mean relative depth error vs Ultralytics (measured: ~1.8e-06) |
+| Depth max relative error | 1e-3 | Worst-pixel relative depth error vs Ultralytics (measured: ~5.2e-06) |
+| Depth range | 1e-3 | Agreement on the map's min and max depth |
+| Depth δ1 | 0.99 | Fraction of pixels within 1% of the reference (measured: 1.00) |
 
 ## CI/CD Integration
 
@@ -108,7 +125,7 @@ The test scripts are designed for CI/CD pipelines:
 - Exports models with compatible opset (12)
 - Returns proper exit codes (0 = pass, non-zero = fail)
 
-**GitHub Actions** (`.github/workflows/main.yml`) runs each task in parallel: `detection`, `segmentation`, `pose`, `obb`, `classification`, and **`yoloe`** (`tests/test_yoloe.sh`). Artifacts upload `tests/<task>/results/` per matrix job.
+**GitHub Actions** (`.github/workflows/main.yml`) runs each task in parallel: `detection`, `segmentation`, `pose`, `obb`, `classification`, `yoloe`, and **`depth`** (`tests/test_depth.sh`). Artifacts upload `tests/<task>/results/` per matrix job.
 
 ```yaml
 # Example: run full suite locally (same tasks as CI matrix combined)
@@ -124,6 +141,21 @@ The test scripts are designed for CI/CD pipelines:
 2. **YOLO26 models**: Feature end-to-end NMS-free architecture
 3. **VOC dataset**: Detection models are fine-tuned on Pascal VOC (20 classes)
 4. **YOLOE**: `tests/yoloe/inference_config.json` lists the same `classes` as `models/export_yoloe_test_onnx.py` and C++ `YOLOESegDetector`. Python reference uses the exported ONNX (no `set_classes` on ONNX). Inference enumerates images in **sorted** order so JSON matches C++. C++ tests bundle ONNX Runtime 1.20.x; Ultralytics may install a different Python `onnxruntime` for ONNX inference—outputs should still match within tolerances.
+5. **Depth**: the reference comes from Ultralytics' own `DepthPredictor`, so its
+   `LetterBox` preprocessing and `ops.scale_masks` postprocessing are ground truth.
+   Measured agreement on `yolo26n-depth` is mean AbsRel ~1.8e-06 with 100% of pixels
+   inside the 1% band, i.e. effectively bit-level. The suite checks both a mean and a
+   max relative error: a one-pixel letterbox-crop shift (the failure mode a rounding
+   mistake produces) yields a mean AbsRel of only ~9.9e-04 — the mean averages the
+   defect away over ~100k pixels — while the max relative error jumps to ~1.8e-02.
+   Thresholds sit ~55x (mean) and ~190x (max) above that real residual rather than at
+   the measured value, so cross-version drift is not flaky: the two sides run different
+   ONNX Runtime builds, and `cv::resize` and `torch.nn.functional.interpolate` are
+   independent bilinear implementations. Dense maps are written as raw `float32` with a
+   JSON index and compared per pixel — summary statistics alone would pass a map that is
+   wrong everywhere but has the right range. `make_synthetic_models.py` also builds a
+   constant-depth ONNX, which needs no weights and is the strictest check of the
+   crop-and-rescale path.
 
 ## Troubleshooting
 

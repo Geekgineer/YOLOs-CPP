@@ -340,6 +340,93 @@ classifier.drawResult(frame, result);
 
 ---
 
+## Depth Estimation — `yolos::depth`
+
+Defined in `yolos/tasks/depth.hpp`. Requires a YOLO26 `-depth` model.
+
+### `yolos::depth::YOLODepthEstimator`
+
+```cpp
+YOLODepthEstimator(
+    const std::string& modelPath,
+    bool               useGPU = false
+);
+
+// Per-pixel metric depth in meters, CV_32FC1, sized to `image`
+cv::Mat estimate(const cv::Mat& image);
+
+// Blend a colorized depth map over the image
+void drawDepth(cv::Mat& image, const cv::Mat& depth, float alpha = 0.6f,
+               drawing::DepthColormap cmap = drawing::DepthColormap::Jet,
+               drawing::DepthNorm mode = drawing::DepthNorm::Disparity) const;
+```
+
+No `labelsPath`, no confidence and no IoU threshold: depth models emit a single dense
+map and have no classes. The constructor throws `std::runtime_error` if the model's
+output is not shaped `[1, 1, H, W]`, so pointing it at a detection export fails
+immediately rather than producing meaningless depth.
+
+**Factory function:**
+
+```cpp
+std::unique_ptr<YOLODepthEstimator> yolos::depth::createDepthEstimator(
+    const std::string& modelPath,
+    bool               useGPU = false
+);
+```
+
+**Example:**
+
+```cpp
+yolos::depth::YOLODepthEstimator estimator("yolo26n-depth.onnx");
+cv::Mat depth = estimator.estimate(frame);      // CV_32FC1, meters
+
+float metres = depth.at<float>(y, x);
+double lo, hi;
+cv::minMaxLoc(depth, &lo, &hi);
+
+estimator.drawDepth(frame, depth);
+```
+
+**Units.** Values are **metric depth in meters**, straight from the model. The exported
+graph already applies the `clamp`/`exp`, the log-affine calibration and the 4× upsample
+from Ultralytics' `Depth` head, so nothing needs undoing on this side. The library never
+normalizes depth — only the visualization helpers do.
+
+### Depth visualization — `yolos::drawing`
+
+```cpp
+enum class DepthColormap { Jet, Inferno };
+enum class DepthNorm { Disparity, Metric };
+
+cv::Mat colorizeDepth(const cv::Mat& depth,
+                      DepthColormap cmap = DepthColormap::Jet,
+                      DepthNorm mode = DepthNorm::Disparity,
+                      float vmin = NaN, float vmax = NaN);
+
+void drawDepthMap(cv::Mat& image, const cv::Mat& depth, float alpha = 0.6f,
+                  DepthColormap cmap = DepthColormap::Jet,
+                  DepthNorm mode = DepthNorm::Disparity,
+                  float vmin = NaN, float vmax = NaN);
+```
+
+Defaults match Ultralytics: disparity (`1/d`) normalization between the 2nd and 98th
+percentile, JET colormap, non-positive pixels black, `alpha = 0.6`.
+
+**For video, pass explicit `vmin`/`vmax`.** Recomputing percentiles per frame makes the
+overlay flicker; the video and camera examples derive the range from the first frame and
+reuse it. Ultralytics' third colormap, `spectral`, is a custom matplotlib LUT with no
+OpenCV equivalent and is not supported.
+
+**Exporting a depth model:**
+
+```python
+from ultralytics import YOLO
+YOLO("yolo26n-depth.pt").export(format="onnx")
+```
+
+---
+
 ## Base Session — `yolos::OrtSessionBase`
 
 Defined in `yolos/core/session_base.hpp`. All detectors inherit from this — you normally don't need to use it directly.
