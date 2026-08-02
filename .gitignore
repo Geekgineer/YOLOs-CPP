@@ -35,8 +35,9 @@ compile_commands.json
 *.lib
 *.dSYM/
 
-# ONNX Runtime (downloaded separately)
-onnxruntime*/
+# ONNX Runtime (downloaded separately). Matches the extracted directory, the
+# downloaded archive, and the aarch64 -> arm64 symlink some macOS setups need.
+onnxruntime*
 
 # Model files (download separately)
 *.onnx
@@ -118,13 +119,11 @@ benchmark_unified/results/*.json
 !results/.gitkeep
 !benchmark_unified/results/.gitkeep
 
-# Test artifacts
-test/*/results/*.json
-test/*/results/*.png
-test/*/data/videos/*
-
-# Depth parity artefacts: raw float32 depth maps are megabytes per image
-tests/depth/results/
+# Test artifacts. Every parity suite regenerates results/ from scratch — the
+# Ultralytics script rmtree's and recreates it before the C++ side runs — so a
+# checked-in copy only ever goes stale against the installed Ultralytics version.
+tests/*/results/
+tests/*/data/videos/*
 
 # Coverage and profiling
 *.gcda

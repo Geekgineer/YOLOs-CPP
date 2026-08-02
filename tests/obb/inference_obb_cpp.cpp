@@ -161,6 +161,9 @@ int main(int argc, char* argv[]) {
     std::string weightsPath = basePath + "models/";
     std::string labelsPath = weightsPath + "Dota.names";
     std::string resultsPath = basePath + "results/";
+    // results/ is an output and is not version-controlled; create it so this binary
+    // can run standalone on a fresh clone, not only after the Ultralytics script.
+    if (!fs::exists(resultsPath)) fs::create_directories(resultsPath);
 
     std::unordered_map<std::string, std::string> paths_map = {
         {"images", imagesPath}, {"weights", weightsPath}, {"labels", labelsPath}, {"results", resultsPath}

@@ -30,6 +30,9 @@
 
 ## 📰 Latest News
 
+* **[2026.08.02]** v1.1.0 released — depth estimation, batch inference, in-memory models, and Ultralytics parity fixes. [Release notes](https://github.com/Geekgineer/YOLOs-CPP/releases/tag/v1.1.0)
+* **[2026.08.02]** Monocular metric depth estimation for YOLO26 — `yolos::depth::YOLODepthEstimator`, `image_depth_inference`.
+* **[2026.08.02]** Batch inference (`batchDetect` / `batchSegment` / `batchClassify`) and in-memory model loading on every task.
 * **[2026.04.11]** [YOLOE](https://arxiv.org/abs/2503.07465) open-vocabulary detection and segmentation in C++ — see [Model Guide](docs/guides/models.md#yoloe-open-vocabulary-detection-segmentation), `image_yoloe_seg` / `video_yoloe_seg`.
 * **[2026.01.22]** YOLOs-CPP-TensorRT released achive 530+ fps using NVIDIA GPUs and Jetson Boards. [YOLOs-CPP-TensorRT](https://github.com/Geekgineer/YOLOs-CPP-TensorRT)
 * **[2026.01.22]** CPP Implementation of popular MOT trackers released. [motcpp](https://github.com/Geekgineer/motcpp)
@@ -73,7 +76,7 @@ YOLOs-CPP unifies everything under one roof:
 |--------------|-------------|
 | **Unified API** | Same interface for YOLOv5 through YOLO26 |
 | **All Tasks** | Detection, Segmentation, Pose, OBB, Classification, Depth, [YOLOE](docs/guides/models.md#yoloe-open-vocabulary-detection-segmentation) open-vocabulary |
-| **Battle-Tested** | 49 Ultralytics-parity tests + 56 self-contained tests, CI/CD pipeline |
+| **Battle-Tested** | 50 Ultralytics-parity tests + 57 self-contained tests, CI/CD pipeline |
 | **Optimized** | Zero-copy preprocessing, batched NMS, GPU acceleration |
 | **Batch Inference** | `batchDetect` / `batchSegment` / `batchClassify` in one ONNX call, [with fallback](docs/api/api.md#batch-inference) |
 | **Flexible Loading** | Models from a file path or [straight from memory](docs/api/api.md#in-memory-model-loading) (encrypted stores, network streams, embedded resources) |
@@ -171,18 +174,18 @@ docker run --gpus all --rm -it yolos-cpp:gpu
 
 ### Supported Models
 
-| Version | Detection | Segmentation | Pose | OBB | Classification |
-|---------|:---------:|:------------:|:----:|:---:|:--------------:|
-| YOLOv5  | ✅ | — | — | — | — |
-| YOLOv6  | ✅ | — | — | — | — |
-| YOLOv7  | ✅ | — | — | — | — |
-| YOLOv8  | ✅ | ✅ | ✅ | ✅ | ✅ |
-| YOLOv9  | ✅ | — | — | — | — |
-| YOLOv10 | ✅ | — | — | — | — |
-| YOLOv11 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| YOLOv12 | ✅ | — | — | — | — |
-| **YOLO26** | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **[YOLOE](docs/guides/models.md#yoloe-open-vocabulary-detection-segmentation)** (open-vocab) | ✅ | ✅ | — | — | — |
+| Version | Detection | Segmentation | Pose | OBB | Classification | Depth |
+|---------|:---------:|:------------:|:----:|:---:|:--------------:|:-----:|
+| YOLOv5  | ✅ | — | — | — | — | — |
+| YOLOv6  | ✅ | — | — | — | — | — |
+| YOLOv7  | ✅ | — | — | — | — | — |
+| YOLOv8  | ✅ | ✅ | ✅ | ✅ | ✅ | — |
+| YOLOv9  | ✅ | — | — | — | — | — |
+| YOLOv10 | ✅ | — | — | — | — | — |
+| YOLOv11 | ✅ | ✅ | ✅ | ✅ | ✅ | — |
+| YOLOv12 | ✅ | — | — | — | — | — |
+| **YOLO26** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **[YOLOE](docs/guides/models.md#yoloe-open-vocabulary-detection-segmentation)** (open-vocab) | ✅ | ✅ | — | — | — | — |
 
 Open-vocabulary [YOLOE](docs/guides/models.md#yoloe-open-vocabulary-detection-segmentation) uses ONNX exported after `set_classes()` (text) or prompt-free `*-pf` checkpoints; see the guide for how that differs from interactive Python prompts. Export with [`scripts/export_yoloe_onnx.py`](scripts/export_yoloe_onnx.py), then run `./build/image_yoloe_seg` or `./build/video_yoloe_seg`, or the [benchmarks](benchmarks/README.md) `yoloe-seg` task.
 
@@ -191,13 +194,14 @@ Open-vocabulary [YOLOE](docs/guides/models.md#yoloe-open-vocabulary-detection-se
 ### Core Capabilities
 
 - **🚀 High Performance**: Zero-copy preprocessing, optimized NMS, GPU acceleration
-- **🎯 Precision Matched**: Identical results to Ultralytics Python (validated by 49 parity tests)
+- **🎯 Precision Matched**: Identical results to Ultralytics Python (validated by 50 parity tests)
 - **📦 Self-Contained**: No Python runtime, no external dependencies at runtime
 - **🔌 Easy Integration**: Header-based library, modern C++17 API
 - **⚙️ Flexible**: CPU/GPU, dynamic/static input shapes, configurable thresholds
 - **📚 Batch Inference**: Multiple images per ONNX Runtime call, with automatic per-image fallback for fixed-batch exports
 - **🔐 In-Memory Models**: Load ONNX bytes directly — no file on disk required
 - **📐 Metric Depth**: YOLO26 monocular depth estimation returning per-pixel meters
+- **⬜ Grayscale Inputs**: Single-channel models are detected from the input tensor and preprocessed accordingly
 
 ---
 
@@ -413,18 +417,29 @@ YOLOs-CPP includes a comprehensive test suite that validates C++ inference again
 
 ```bash
 cd tests
-./test_all.sh    # Run all tests
-./test_detection.sh  # Run detection tests only
+./test_all.sh        # Run all suites
+./test_detection.sh  # Run detection only
 ```
 
-| Task | Tests | Status |
-|------|------:|:------:|
-| Detection | 8 | ✅ |
-| Segmentation | 8 | ✅ |
-| Pose | 7 | ✅ |
-| OBB | 7 | ✅ |
-| Classification | 6 | ✅ |
-| **Total** | **36** | ✅ |
+Two kinds of test run in every suite. **Parity** tests compare C++ output against a
+fresh Ultralytics Python run on the same weights and images. **Self-contained** tests
+assert library behaviour directly against synthetic ONNX models or fixed reference
+values — no downloaded weights and no Ultralytics reference run. 27 of the 57 need
+nothing but the compiler; the other 30 use Python only to generate a synthetic model.
+
+| Task | Parity | Self-contained | Total | Status |
+|------|-------:|---------------:|------:|:------:|
+| Detection | 7 | 3 | 10 | ✅ |
+| Segmentation | 8 | — | 8 | ✅ |
+| Pose | 7 | — | 7 | ✅ |
+| OBB | 7 | — | 7 | ✅ |
+| Classification | 6 | 7 | 13 | ✅ |
+| Depth | 7 | 25 | 32 | ✅ |
+| YOLOE | 8 | — | 8 | ✅ |
+| API (batch + in-memory) | — | 22 | 22 | ✅ |
+| **Total** | **50** | **57** | **107** | ✅ |
+
+Each suite runs as its own CI job across the eight tasks above.
 
 ---
 

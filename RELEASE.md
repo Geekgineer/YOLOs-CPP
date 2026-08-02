@@ -11,7 +11,8 @@ cd tests
 ./test_all.sh
 ```
 
-Expected output: All 36 tests should pass (100%).
+Expected output: all eight suites pass — 107 tests total (50 Ultralytics-parity,
+57 self-contained). CI runs the same eight suites as a matrix, one job per task.
 
 ### 2. Run Benchmarks (Optional)
 
@@ -22,13 +23,34 @@ cd benchmarks
 
 ### 3. Update Version Numbers
 
-Update version in:
-- `benchmarks/yolo_unified_benchmark.cpp` (line ~54: `BENCHMARK_VERSION`)
-- `README.md` (badges and documentation)
+Update the library version in:
+- `CMakeLists.txt` (line 5: `project(YOLOs-CPP VERSION ...)`)
+- `tests/CMakeLists.txt` (line 5: `project(yolos_cpp_tests VERSION ...)`)
+
+Leave `benchmarks/` alone unless the benchmark tool itself changed —
+`BENCHMARK_VERSION` in `benchmarks/yolo_unified_benchmark.cpp` versions the
+benchmark suite, not the library, and the two are deliberately independent.
+
+The README release badge is `shields.io/github/v/release`, which reads the latest
+tag from the GitHub API. It needs no edit; it updates itself once the tag is pushed.
+
+Do update the README **Latest News** list and, if the test counts changed, the
+**Testing** table — those are hand-maintained.
 
 ### 4. Prepare Model Assets
 
-The test scripts need pre-trained models. To avoid depending on external repos, host models in your own releases:
+Most parity suites need pre-trained weights. Where they come from differs by task,
+and only the first group needs a release asset:
+
+| Task | Source |
+|------|--------|
+| Detection, Segmentation, Pose, OBB, Classification | `v1.0.0-models` release assets, via `tests/*/models/download_test_models.sh` |
+| Depth | Ultralytics assets directly (`YOLO('yolo26n-depth.pt')`) |
+| YOLOE | Exported on the fly by `tests/yoloe/models/export_yoloe_test_onnx.py` |
+| API (batch + in-memory) | Synthetic ONNX built at test time by `tests/api/models/make_synthetic_models.py` |
+
+So a new model-assets release is only needed when the **detection, segmentation,
+pose, OBB or classification** weight sets change. To build one:
 
 ```bash
 ./scripts/prepare_release.sh
@@ -75,42 +97,54 @@ RELEASE_TAG="v1.0.0-models"  # Update this to your actual tag
 
 ### Step 3: Create Main Release
 
-1. Go to GitHub → Releases → "Create new release"
-2. **Tag:** `v1.0.0` (follow semantic versioning)
-3. **Title:** "YOLOs-CPP v1.0.0"
-4. **Description:** Use the template below
-5. Generate release notes automatically or write manually
-6. Publish release
+Start from GitHub's generated notes so every contributor in the range is credited,
+then edit them into the shape below:
+
+```bash
+gh release create vX.Y.Z --title "YOLOs-CPP vX.Y.Z" --generate-notes --draft
+```
+
+Review the draft, replace the body with the template below, then publish.
+
+Pick the version with semantic versioning applied to the **public headers** in
+`include/`. The check that decides major vs minor:
+
+```bash
+git diff <previous-tag>..HEAD -- include/
+```
+
+A removed or re-signatured public declaration is a major bump — including in the
+low-level `yolos::preprocessing` and `yolos::core` utilities, not just the task
+classes. Purely additive constructors and methods are a minor bump. Note that a
+change to output *values* (preprocessing, coordinate math) is not an API break, but
+it does belong under **Behavior changes** below, because it can move a downstream
+user's numbers without any compile error to warn them.
 
 ## Release Notes Template
 
 ```markdown
-## What's New in v1.0.0
+## What's New in vX.Y.Z
 
 ### Features
-- Support for YOLO26 (end-to-end NMS-free architecture)
-- All 5 task types: Detection, Segmentation, Pose, OBB, Classification
-- Comprehensive benchmark suite
-- 100% test coverage (36/36 tests passing)
+- <new tasks, new APIs, new model support>
+
+### Behavior changes
+- <changes that move output values without breaking compilation — preprocessing
+  fixes, coordinate math, threshold defaults. Say what moved and by how much.>
+
+### Breaking changes
+- <removed or re-signatured public declarations, with the old and new signature>
 
 ### Supported Models
-| Version | Detection | Segmentation | Pose | OBB | Classification |
-|---------|-----------|--------------|------|-----|----------------|
-| YOLOv5  | ✅ | - | - | - | - |
-| YOLOv6  | ✅ | - | - | - | - |
-| YOLOv8  | ✅ | ✅ | ✅ | ✅ | ✅ |
-| YOLOv9  | ✅ | - | - | - | - |
-| YOLOv10 | ✅ | - | - | - | - |
-| YOLOv11 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| YOLOv12 | ✅ | - | - | - | - |
-| YOLO26  | ✅ | ✅ | ✅ | ✅ | ✅ |
+<copy the table from README.md — it is the single source of truth>
 
-### Performance (CPU - Intel i7-1185G7)
-| Model | FPS | Latency (avg) |
-|-------|-----|---------------|
-| YOLOv11n | 97 | 10.3 ms |
-| YOLOv8n | 86 | 11.7 ms |
-| YOLO26n | 78 | 12.8 ms |
+### Performance
+<copy from README.md "Benchmarks", or regenerate with benchmarks/auto_bench.sh.
+Keep the device label attached to each number: the README figures are RTX 3060
+GPU except where the row says CPU.>
+
+### Testing
+- <N> tests across <M> suites (<parity> Ultralytics-parity, <self> self-contained)
 
 ### Requirements
 - CMake 3.16+
@@ -118,12 +152,8 @@ RELEASE_TAG="v1.0.0-models"  # Update this to your actual tag
 - OpenCV 4.5+
 - ONNX Runtime 1.16+
 
-### Breaking Changes
-- `test/` renamed to `tests/`
-- `benchmark_unified/` renamed to `benchmarks/`
-
 ### Contributors
-- @Geekgineer
+<keep the list gh --generate-notes produced; it catches external contributors>
 ```
 
 ## Post-Release
