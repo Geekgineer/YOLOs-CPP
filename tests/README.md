@@ -6,8 +6,8 @@ Comprehensive test suite validating C++ YOLO implementations against Python Ultr
 
 **Parity** tests compare C++ output against a fresh Ultralytics Python run on the
 same weights and images. **Self-contained** tests assert library behaviour against
-synthetic ONNX models or fixed reference values, so they need no downloaded weights
-and no Python.
+synthetic ONNX models or fixed reference values — no downloaded weights and no
+Ultralytics reference run.
 
 | Task | Parity | Self-contained | Total | Models | Status |
 |------|-------:|---------------:|------:|--------|--------|
@@ -21,8 +21,25 @@ and no Python.
 | Depth | 7 | 25 (postprocessing + synthetic) | 32 | yolo26n-depth (metric depth, dense-map parity) | ✅ Pass |
 | **Total** | **50** | **57** | **107** | | **100%** |
 
-Counts are gtest cases. The self-contained tests are compiled into the same
-`compare_*` binaries as the parity tests, so both run in every CI job.
+Counts are gtest cases, read off `--gtest_list_tests` of the built binaries.
+
+Detection, classification and depth compile their self-contained tests into the same
+`compare_*` binary as their parity tests, so both halves run in one job. The API
+suite is its own binary, `test_api_batch_and_memory`, with no parity half.
+
+Of the 57 self-contained tests, 27 need nothing but the compiler and can be run
+directly after a build:
+
+```bash
+cd build
+./compare_detection_results     --gtest_filter='LetterboxConsistency.*'   #  3
+./compare_classification_results --gtest_filter='AntialiasResize.*'        #  7
+./compare_depth_results --gtest_filter='CropLetterboxAndResize.*:ColorizeDepth.*:DrawDepthMap.*'  # 17
+```
+
+The remaining 30 — the 22 API tests and the 8 `SyntheticDepthTest` cases — need
+Python to generate their synthetic ONNX models first (`make_synthetic_models.py`),
+but never run Ultralytics inference.
 
 ## Requirements
 

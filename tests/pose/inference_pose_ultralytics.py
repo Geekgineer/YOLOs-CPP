@@ -119,11 +119,13 @@ def main():
     images_path =  os.path.join(data_path, "images")
     weights_path = "models" #os.path.join(base_path, "models")
     results_path = "results" # os.path.join(base_path, "results")
+    # results/ is an output, not an input: it is recreated three lines below and is
+    # not version-controlled, so validating it here would fail on a fresh clone.
+    # The other five suites already omit it.
     paths_to_validate = {
         "data": data_path,
         "images": images_path,
         "weights": weights_path,
-        "results": results_path
     }
     if not validate_paths(paths_to_validate):
         print("Path validation failed, exiting.")

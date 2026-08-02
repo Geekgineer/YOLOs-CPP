@@ -423,8 +423,9 @@ cd tests
 
 Two kinds of test run in every suite. **Parity** tests compare C++ output against a
 fresh Ultralytics Python run on the same weights and images. **Self-contained** tests
-assert library behaviour directly, using synthetic ONNX models or fixed reference
-values, so they need no downloaded weights and no Python.
+assert library behaviour directly against synthetic ONNX models or fixed reference
+values — no downloaded weights and no Ultralytics reference run. 27 of the 57 need
+nothing but the compiler; the other 30 use Python only to generate a synthetic model.
 
 | Task | Parity | Self-contained | Total | Status |
 |------|-------:|---------------:|------:|:------:|
