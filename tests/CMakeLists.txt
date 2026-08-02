@@ -139,8 +139,9 @@ set(TEST_EXES)
 if(testTask STREQUAL "0" OR testTask STREQUAL "5")
     add_executable(inference_detection_cpp 
         ${detection_path}/inference_detection_cpp.cpp)
-    add_executable(compare_detection_results 
-        ${detection_path}/compare_results.cpp)
+    add_executable(compare_detection_results
+        ${detection_path}/compare_results.cpp
+        ${detection_path}/test_letterbox_consistency.cpp)
     
     list(APPEND INFERENCE_EXES inference_detection_cpp)
     list(APPEND TEST_EXES compare_detection_results)

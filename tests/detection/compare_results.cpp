@@ -12,7 +12,13 @@
 using json = nlohmann::json;
 
 constexpr double CONF_ERROR_MARGIN = 0.1; // +-0.1 difference allowed in confidence scores
-constexpr int BBOX_ERROR_MARGIN = 50;     // +-50 pixels difference allowed in bounding box coordinates
+// Measured C++ vs Ultralytics box agreement after the getScalePad rounding fix is
+// EXACTLY 0 px across 35 boxes and 7 models; before it, the worst coordinate was 5 px
+// out. The old +-50 px margin was therefore ten times too loose to see the defect it
+// was meant to guard. 3 px leaves room for a 1 px integer-quantisation difference
+// across platforms while still failing on a regression of the size just fixed.
+// Do not loosen this without measuring first and recording why (cf. issue #137).
+constexpr int BBOX_ERROR_MARGIN = 3;
 
 json read_json(const std::string& path) {
     std::ifstream f(path);

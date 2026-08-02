@@ -72,8 +72,8 @@ inline void letterBox(const cv::Mat& image,
     }
 
     // Calculate new dimensions after scaling (use round to match Ultralytics)
-    int newUnpadW = static_cast<int>(std::round(image.cols * ratio));
-    int newUnpadH = static_cast<int>(std::round(image.rows * ratio));
+    int newUnpadW = static_cast<int>(std::nearbyint(image.cols * ratio));
+    int newUnpadH = static_cast<int>(std::nearbyint(image.rows * ratio));
 
     // Calculate padding needed to reach the desired shape
     int dw = newShape.width - newUnpadW;
@@ -288,14 +288,14 @@ inline void letterBoxToBlobPtr(const cv::Mat& image,
                                   static_cast<float>(dstW) / srcW);
 
     // Ultralytics uses round() for new dimensions
-    const int newH = static_cast<int>(std::round(srcH * scale));
-    const int newW = static_cast<int>(std::round(srcW * scale));
+    const int newH = static_cast<int>(std::nearbyint(srcH * scale));
+    const int newW = static_cast<int>(std::nearbyint(srcW * scale));
 
     // Ultralytics uses asymmetric padding with -0.1/+0.1 adjustment
     const float dh = (dstH - newH) / 2.0f;
     const float dw = (dstW - newW) / 2.0f;
-    const int padTop = static_cast<int>(std::round(dh - 0.1f));
-    const int padLeft = static_cast<int>(std::round(dw - 0.1f));
+    const int padTop = static_cast<int>(std::nearbyint(dh - 0.1f));
+    const int padLeft = static_cast<int>(std::nearbyint(dw - 0.1f));
 
     // Fill this slice with padding color (normalized)
     const size_t sliceSize = static_cast<size_t>(dstH) * dstW * targetChannels;
@@ -425,8 +425,8 @@ inline void letterBoxToBlob(const cv::Mat& image,
                                   static_cast<float>(dstW) / srcW);
     
     // Ultralytics uses round() for new dimensions
-    int newH = static_cast<int>(std::round(srcH * scale));
-    int newW = static_cast<int>(std::round(srcW * scale));
+    int newH = static_cast<int>(std::nearbyint(srcH * scale));
+    int newW = static_cast<int>(std::nearbyint(srcW * scale));
     
     // For dynamic shape, adjust to stride-aligned minimum size
     if (dynamicShape) {
@@ -441,8 +441,8 @@ inline void letterBoxToBlob(const cv::Mat& image,
     // Ultralytics uses asymmetric padding with -0.1/+0.1 adjustment
     const float dh = (dstH - newH) / 2.0f;
     const float dw = (dstW - newW) / 2.0f;
-    const int padTop = static_cast<int>(std::round(dh - 0.1f));
-    const int padLeft = static_cast<int>(std::round(dw - 0.1f));
+    const int padTop = static_cast<int>(std::nearbyint(dh - 0.1f));
+    const int padLeft = static_cast<int>(std::nearbyint(dw - 0.1f));
     
     // Fill with padding (normalized 114/255)
     constexpr float padNorm = 114.0f / 255.0f;
@@ -507,14 +507,22 @@ inline void getScalePad(const cv::Size& originalSize,
                         float& padY) {
     scale = std::min(static_cast<float>(letterboxSize.height) / originalSize.height,
                      static_cast<float>(letterboxSize.width) / originalSize.width);
-    
-    // Use round() for new dimensions (matches Ultralytics)
-    int newW = static_cast<int>(std::round(originalSize.width * scale));
-    int newH = static_cast<int>(std::round(originalSize.height * scale));
-    
-    // For descaling, use UNROUNDED padding values (matches Ultralytics behavior)
-    padX = (letterboxSize.width - newW) / 2.0f;
-    padY = (letterboxSize.height - newH) / 2.0f;
+
+    // Python round() breaks ties to even; std::nearbyint does the same under the
+    // default rounding mode, std::round does not.
+    const int newW = static_cast<int>(std::nearbyint(originalSize.width * scale));
+    const int newH = static_cast<int>(std::nearbyint(originalSize.height * scale));
+
+    // Return the padding the letterbox ACTUALLY applied, which is an integer:
+    // letterBoxToBlob pads by nearbyint(dw - 0.1). Returning the unrounded dw instead
+    // descales against padding that was never there, biasing every box by up to half a
+    // letterbox pixel - which the gain then magnifies into original-image pixels.
+    // This mirrors ultralytics.utils.ops.scale_boxes():
+    //     pad_x = round((img1_w - round(img0_w * gain)) / 2 - 0.1)
+    const float dw = (letterboxSize.width - newW) / 2.0f;
+    const float dh = (letterboxSize.height - newH) / 2.0f;
+    padX = std::nearbyint(dw - 0.1f);
+    padY = std::nearbyint(dh - 0.1f);
 }
 
 /// @brief Fast coordinate descaling (batch operation)
