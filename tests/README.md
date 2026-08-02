@@ -7,7 +7,7 @@ Comprehensive test suite validating C++ YOLO implementations against Python Ultr
 | Task | Tests | Models | Status |
 |------|-------|--------|--------|
 | Detection | 8/8 | YOLOv5, v6, v8, v9, v10, v11, v12, YOLO26 | ✅ Pass |
-| Classification | 6/6 | YOLOv8, v11, YOLO26 | ✅ Pass |
+| Classification | 6/6 parity + 7 preprocessing | YOLOv8, v11, YOLO26 | ✅ Pass |
 | Pose | 7/7 | YOLOv8, v11, YOLO26 | ✅ Pass |
 | Segmentation | 8/8 | YOLOv8, v11, YOLO26 | ✅ Pass |
 | OBB | 7/7 | YOLOv8, v11, YOLO26 | ✅ Pass |
@@ -123,6 +123,13 @@ The test scripts are designed for CI/CD pipelines:
 1. **Model size**: Uses smaller input (320x320) for faster testing
 2. **YOLO26 models**: Feature end-to-end NMS-free architecture
 3. **VOC dataset**: Detection models are fine-tuned on Pascal VOC (20 classes)
+5. **Classification preprocessing**: `inference_classification_ultralytics.py` calls
+   `ultralytics.data.augment.classify_transforms()` for the reference tensor, so the
+   comparison is against Ultralytics itself. It previously re-implemented the C++ OpenCV
+   preprocessing, which meant the suite compared YOLOs-CPP against a Python transcription
+   of itself and could not detect a mismatch (issue #137). `classification/test_preprocessing.cpp`
+   additionally pins the antialiased resize to golden Pillow output, so it is guarded even
+   without a Python run.
 4. **YOLOE**: `tests/yoloe/inference_config.json` lists the same `classes` as `models/export_yoloe_test_onnx.py` and C++ `YOLOESegDetector`. Python reference uses the exported ONNX (no `set_classes` on ONNX). Inference enumerates images in **sorted** order so JSON matches C++. C++ tests bundle ONNX Runtime 1.20.x; Ultralytics may install a different Python `onnxruntime` for ONNX inference—outputs should still match within tolerances.
 
 ## Troubleshooting

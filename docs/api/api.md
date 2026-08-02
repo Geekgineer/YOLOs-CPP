@@ -338,6 +338,16 @@ auto result = classifier.classify(frame);
 classifier.drawResult(frame, result);
 ```
 
+**Preprocessing.** `classify()` reproduces `ultralytics.data.augment.classify_transforms()`:
+resize the shortest edge to the model input size, centre-crop to a square, scale to
+`[0, 1]`. Ultralytics resizes through PIL, whose bilinear filter is **antialiased**, so
+YOLOs-CPP uses `preprocessing::resizeAntialiasBilinear()` rather than
+`cv::resize(INTER_LINEAR)`. Using a plain bilinear resize here inflates confidences and
+can change the top-1 class on downscaled images.
+
+This differs from the other tasks on purpose: Ultralytics' `LetterBox` (detection,
+segmentation, pose, OBB) really does use `cv2.INTER_LINEAR`, so those paths keep it.
+
 ---
 
 ## Base Session — `yolos::OrtSessionBase`

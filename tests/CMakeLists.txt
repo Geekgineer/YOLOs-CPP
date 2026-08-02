@@ -148,8 +148,9 @@ endif()
 if(testTask STREQUAL "1" OR testTask STREQUAL "5")
     add_executable(inference_classification_cpp 
         ${classification_path}/inference_classification_cpp.cpp)
-    add_executable(compare_classification_results 
-        ${classification_path}/compare_results.cpp)
+    add_executable(compare_classification_results
+        ${classification_path}/compare_results.cpp
+        ${classification_path}/test_preprocessing.cpp)
     
     list(APPEND INFERENCE_EXES inference_classification_cpp)
     list(APPEND TEST_EXES compare_classification_results)
