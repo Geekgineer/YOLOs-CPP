@@ -160,7 +160,7 @@ print_error() {
 # ============================================================================
 download_test_images() {
     local images_dir="$1"
-    local test_type="$2"  # detection, pose, obb, segmentation, classification
+    local test_type="$2"  # detection, pose, obb, segmentation, classification, depth
     local original_dir="$(pwd)"
     
     mkdir -p "$images_dir"
@@ -199,6 +199,11 @@ download_test_images() {
         "classification")
             # Any image works for classification
             curl -sL "https://ultralytics.com/images/bus.jpg" -o "bus.jpg" 2>/dev/null || true
+            ;;
+        "depth")
+            # Scenes with varied distance so the depth map has real structure
+            curl -sL "https://ultralytics.com/images/bus.jpg" -o "bus.jpg" 2>/dev/null || true
+            curl -sL "https://ultralytics.com/images/zidane.jpg" -o "zidane.jpg" 2>/dev/null || true
             ;;
         *)
             echo -e "${YELLOW}Unknown test type: $test_type${NC}"

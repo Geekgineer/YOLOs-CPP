@@ -24,3 +24,9 @@ model.export(format="onnx", dynamic=True, opset=11)
 # This will create an ONNX model with dynamic batch dimension (batch size = -1)
 # Useful for batch processing multiple images at once
 
+# Monocular depth estimation (YOLO26 only).
+# The exported graph already contains the clamp/exp, the log-affine calibration and the
+# 4x upsample, so output0 is dense metric depth in meters at shape (1, 1, H, W).
+# model = YOLO("yolo26n-depth.pt")
+# model.export(format="onnx")
+

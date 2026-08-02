@@ -100,6 +100,39 @@ auto result = classifier.classify(image);
 std::cout << result.className << ": " << result.confidence * 100 << "%" << std::endl;
 ```
 
+## Depth Estimation
+
+```cpp
+#include "yolos/yolos.hpp"
+
+yolos::depth::YOLODepthEstimator estimator("yolo26n-depth.onnx", /*gpu=*/true);
+
+cv::Mat depth = estimator.estimate(frame);   // CV_32FC1, meters
+
+// Read a distance directly
+std::cout << depth.at<float>(frame.rows / 2, frame.cols / 2) << " m" << std::endl;
+
+// Visualize
+estimator.drawDepth(frame, depth);
+```
+
+Depth needs no labels file and has no confidence threshold — the model emits one dense
+map. See [Depth Estimation](../api/api.md#depth-estimation-yolosdepth) for the units and
+the colormap options.
+
+For video, pin the colour range so the overlay does not flicker frame to frame:
+
+```cpp
+double lo, hi;
+cv::minMaxLoc(firstDepth, &lo, &hi);
+const float vmin = 1.0f / hi;   // disparity: near objects have the largest 1/d
+const float vmax = 1.0f / lo;
+
+yolos::drawing::drawDepthMap(frame, depth, 0.6f,
+                             yolos::drawing::DepthColormap::Jet,
+                             yolos::drawing::DepthNorm::Disparity, vmin, vmax);
+```
+
 ## Video Processing
 
 ```cpp

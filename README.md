@@ -72,8 +72,8 @@ YOLOs-CPP unifies everything under one roof:
 | What You Get | Description |
 |--------------|-------------|
 | **Unified API** | Same interface for YOLOv5 through YOLO26 |
-| **All Tasks** | Detection, Segmentation, Pose, OBB, Classification, [YOLOE](docs/guides/models.md#yoloe-open-vocabulary-detection-segmentation) open-vocabulary |
-| **Battle-Tested** | 44 Ultralytics-parity tests + 22 API tests, CI/CD pipeline |
+| **All Tasks** | Detection, Segmentation, Pose, OBB, Classification, Depth, [YOLOE](docs/guides/models.md#yoloe-open-vocabulary-detection-segmentation) open-vocabulary |
+| **Battle-Tested** | 49 Ultralytics-parity tests + 56 self-contained tests, CI/CD pipeline |
 | **Optimized** | Zero-copy preprocessing, batched NMS, GPU acceleration |
 | **Batch Inference** | `batchDetect` / `batchSegment` / `batchClassify` in one ONNX call, [with fallback](docs/api/api.md#batch-inference) |
 | **Flexible Loading** | Models from a file path or [straight from memory](docs/api/api.md#in-memory-model-loading) (encrypted stores, network streams, embedded resources) |
@@ -186,15 +186,18 @@ docker run --gpus all --rm -it yolos-cpp:gpu
 
 Open-vocabulary [YOLOE](docs/guides/models.md#yoloe-open-vocabulary-detection-segmentation) uses ONNX exported after `set_classes()` (text) or prompt-free `*-pf` checkpoints; see the guide for how that differs from interactive Python prompts. Export with [`scripts/export_yoloe_onnx.py`](scripts/export_yoloe_onnx.py), then run `./build/image_yoloe_seg` or `./build/video_yoloe_seg`, or the [benchmarks](benchmarks/README.md) `yoloe-seg` task.
 
+> **Depth estimation** is YOLO26-only (`yolo26{n,s,m,l,x}-depth`). See [Depth Estimation](docs/api/api.md#depth-estimation--yolosdepth).
+
 ### Core Capabilities
 
 - **🚀 High Performance**: Zero-copy preprocessing, optimized NMS, GPU acceleration
-- **🎯 Precision Matched**: Identical results to Ultralytics Python (validated by 44 parity tests)
+- **🎯 Precision Matched**: Identical results to Ultralytics Python (validated by 49 parity tests)
 - **📦 Self-Contained**: No Python runtime, no external dependencies at runtime
 - **🔌 Easy Integration**: Header-based library, modern C++17 API
 - **⚙️ Flexible**: CPU/GPU, dynamic/static input shapes, configurable thresholds
 - **📚 Batch Inference**: Multiple images per ONNX Runtime call, with automatic per-image fallback for fixed-batch exports
 - **🔐 In-Memory Models**: Load ONNX bytes directly — no file on disk required
+- **📐 Metric Depth**: YOLO26 monocular depth estimation returning per-pixel meters
 
 ---
 
@@ -294,6 +297,25 @@ yolos::det::YOLODetector detector(bytes.data(), bytes.size(), {"person", "bicycl
 auto detections = detector.detect(frame);
 ```
 
+### Depth Estimation
+
+```cpp
+yolos::depth::YOLODepthEstimator estimator("yolo26n-depth.onnx", true);
+cv::Mat depth = estimator.estimate(frame);          // CV_32FC1, meters
+std::cout << depth.at<float>(y, x) << " m" << std::endl;
+estimator.drawDepth(frame, depth);
+```
+
+```bash
+./build/image_depth_inference models/yolo26n-depth.onnx data/dog.jpg
+```
+
+Unlike the tasks above, depth takes no labels file and no confidence/IoU thresholds —
+the model outputs a single dense per-pixel map, not classes to filter. See [Depth
+Estimation](docs/api/api.md#depth-estimation--yolosdepth) for the units and colormap
+options.
+
+
 ### YOLOE (open-vocabulary segmentation)
 
 See [Model Guide — YOLOE](docs/guides/models.md#yoloe-open-vocabulary-detection-segmentation) for export and benchmarks.
@@ -360,6 +382,7 @@ YOLOs-CPP/
 │   │   ├── pose.hpp         # Pose estimation
 │   │   ├── obb.hpp          # Oriented bounding boxes
 │   │   ├── classification.hpp
+│   │   ├── depth.hpp        # Monocular metric depth (YOLO26)
 │   │   └── yoloe.hpp        # YOLOE open-vocabulary (det/seg)
 │   └── yolos.hpp            # Main include (includes all)
 ├── src/                     # Example applications

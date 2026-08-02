@@ -123,6 +123,9 @@ test/*/results/*.json
 test/*/results/*.png
 test/*/data/videos/*
 
+# Depth parity artefacts: raw float32 depth maps are megabytes per image
+tests/depth/results/
+
 # Coverage and profiling
 *.gcda
 *.gcno

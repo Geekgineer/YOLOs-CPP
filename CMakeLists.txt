@@ -175,6 +175,7 @@ add_yolo_executable(image_yoloe_seg src/image_yoloe_seg.cpp)
 add_yolo_executable(camera_inference src/camera_inference.cpp)
 add_yolo_executable(class_image_inference src/class_image_inference.cpp)
 add_yolo_executable(batch_image_inference src/batch_image_inference.cpp)
+add_yolo_executable(image_depth_inference src/image_depth_inference.cpp)
 
 # ============================================================================
 # Examples (optional)

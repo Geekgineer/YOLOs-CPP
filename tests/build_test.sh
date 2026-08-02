@@ -7,7 +7,7 @@ set -euo pipefail
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 
 # Default values
-TEST_TASK="${1:-0}"           # 0=detection, 1=classification, 2=segmentation, 3=pose, 4=obb, 5=all, 6=yoloe, 7=api
+TEST_TASK="${1:-0}"           # 0=detection, 1=classification, 2=segmentation, 3=pose, 4=obb, 5=all, 6=yoloe, 7=api, 8=depth
 ONNXRUNTIME_VERSION="${2:-1.20.1}"
 ONNXRUNTIME_GPU="${3:-0}"     # 0=CPU, 1=GPU
 
@@ -33,6 +33,7 @@ usage() {
     echo "                        5 = All tasks"
     echo "                        6 = YOLOE open-vocabulary segmentation parity (vs Ultralytics)"
     echo "                        7 = API tests (batch inference + in-memory model loading)"
+    echo "                        8 = Depth estimation (batch of dense-map tests)"
     echo "  ONNXRUNTIME_VERSION Version of ONNX Runtime (default: 1.20.1)"
     echo "  ONNXRUNTIME_GPU     0 = CPU, 1 = GPU (default: 0)"
     echo ""

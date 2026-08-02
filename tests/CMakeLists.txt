@@ -22,6 +22,7 @@ add_compile_definitions("BASE_PATH_POSE=${CMAKE_SOURCE_DIR}/pose/")
 add_compile_definitions("BASE_PATH_OBB=${CMAKE_SOURCE_DIR}/obb/")
 add_compile_definitions("BASE_PATH_YOLOE=${CMAKE_SOURCE_DIR}/yoloe/")
 add_compile_definitions("BASE_PATH_API=${CMAKE_SOURCE_DIR}/api/")
+add_compile_definitions("BASE_PATH_DEPTH=${CMAKE_SOURCE_DIR}/depth/")
 
 message(STATUS "Test Base Path: ${CMAKE_SOURCE_DIR}")
 
@@ -117,7 +118,7 @@ endif()
 # ============================================================================
 # Test Task Selection
 # ============================================================================
-option(testTask "Specify test task: 0=detection, 1=classification, 2=segmentation, 3=pose, 4=obb, 5=all, 6=yoloe, 7=api" STRING)
+option(testTask "Specify test task: 0=detection, 1=classification, 2=segmentation, 3=pose, 4=obb, 5=all, 6=yoloe, 7=api, 8=depth" STRING)
 message(STATUS "Selected test task: ${testTask}")
 
 set(detection_path "${CMAKE_SOURCE_DIR}/detection")
@@ -127,6 +128,7 @@ set(pose_path "${CMAKE_SOURCE_DIR}/pose")
 set(obb_path "${CMAKE_SOURCE_DIR}/obb")
 set(yoloe_path "${CMAKE_SOURCE_DIR}/yoloe")
 set(api_path "${CMAKE_SOURCE_DIR}/api")
+set(depth_path "${CMAKE_SOURCE_DIR}/depth")
 
 set(INFERENCE_EXES)
 set(TEST_EXES)
@@ -221,6 +223,21 @@ if(testTask STREQUAL "5" OR testTask STREQUAL "7")
 endif()
 
 # ============================================================================
+# Depth Tests
+# ============================================================================
+set(DEPTH_TEST_EXES)
+if(testTask STREQUAL "5" OR testTask STREQUAL "8")
+    add_executable(inference_depth_cpp
+        ${depth_path}/inference_depth_cpp.cpp)
+    add_executable(compare_depth_results
+        ${depth_path}/test_postprocessing.cpp
+        ${depth_path}/compare_results.cpp)
+
+    list(APPEND INFERENCE_EXES inference_depth_cpp)
+    list(APPEND DEPTH_TEST_EXES compare_depth_results)
+endif()
+
+# ============================================================================
 # Configure Inference Executables
 # ============================================================================
 foreach(target ${INFERENCE_EXES})
@@ -297,6 +314,41 @@ foreach(target ${API_TEST_EXES})
 endforeach()
 
 # ============================================================================
+# Configure Depth Test Executables (need ONNX Runtime for the estimator tests)
+# ============================================================================
+foreach(target ${DEPTH_TEST_EXES})
+    message(STATUS "Adding depth test target: ${target}")
+
+    target_include_directories(${target} PRIVATE
+        "${CMAKE_SOURCE_DIR}/../include"
+        "${ONNXRUNTIME_DIR}/include"
+    )
+
+    target_link_libraries(${target} PRIVATE
+        ${OpenCV_LIBS}
+        ${ONNXRUNTIME_LIB}
+        nlohmann_json::nlohmann_json
+        GTest::gtest_main
+        Threads::Threads
+    )
+
+    if(UNIX AND NOT APPLE)
+        set_target_properties(${target} PROPERTIES
+            BUILD_RPATH "${ONNXRUNTIME_DIR}/lib"
+            INSTALL_RPATH "${ONNXRUNTIME_DIR}/lib"
+        )
+    elseif(APPLE)
+        set_target_properties(${target} PROPERTIES
+            BUILD_RPATH "@executable_path;${ONNXRUNTIME_DIR}/lib"
+            INSTALL_RPATH "@executable_path;${ONNXRUNTIME_DIR}/lib"
+        )
+    endif()
+
+    # Loading ONNX Runtime makes test enumeration slower than the 5s default
+    gtest_discover_tests(${target} DISCOVERY_TIMEOUT 120)
+endforeach()
+
+# ============================================================================
 # Summary
 # ============================================================================
 message(STATUS "")
@@ -304,4 +356,5 @@ message(STATUS "=== Test Suite Configuration ===")
 message(STATUS "  Inference executables: ${INFERENCE_EXES}")
 message(STATUS "  Test executables: ${TEST_EXES}")
 message(STATUS "  API test executables: ${API_TEST_EXES}")
+message(STATUS "  Depth test executables: ${DEPTH_TEST_EXES}")
 message(STATUS "")
