@@ -4,17 +4,25 @@ Comprehensive test suite validating C++ YOLO implementations against Python Ultr
 
 ## Test Status
 
-| Task | Tests | Models | Status |
-|------|-------|--------|--------|
-| Detection | 8/8 | YOLOv5, v6, v8, v9, v10, v11, v12, YOLO26 | ✅ Pass |
-| Classification | 6/6 parity + 7 preprocessing | YOLOv8, v11, YOLO26 | ✅ Pass |
-| Pose | 7/7 | YOLOv8, v11, YOLO26 | ✅ Pass |
-| Segmentation | 8/8 | YOLOv8, v11, YOLO26 | ✅ Pass |
-| OBB | 7/7 | YOLOv8, v11, YOLO26 | ✅ Pass |
-| YOLOE | 8/8 | yoloe-26n-seg (open-vocab, export + ONNX parity) | ✅ Pass |
-| API (batch + in-memory) | 22/22 | synthetic ONNX (no weights needed) | ✅ Pass |
-| Depth | 32/32 (27 self-contained + 5 parity) | yolo26n-depth (metric depth, dense-map parity) | ✅ Pass |
-| **Total** | **105/105** (49 parity + 56 self-contained) | | **100%** |
+**Parity** tests compare C++ output against a fresh Ultralytics Python run on the
+same weights and images. **Self-contained** tests assert library behaviour against
+synthetic ONNX models or fixed reference values, so they need no downloaded weights
+and no Python.
+
+| Task | Parity | Self-contained | Total | Models | Status |
+|------|-------:|---------------:|------:|--------|--------|
+| Detection | 7 | 3 (letterbox geometry) | 10 | YOLOv5, v6, v8, v9, v10, v11, v12, YOLO26 | ✅ Pass |
+| Classification | 6 | 7 (Pillow-parity resize) | 13 | YOLOv8, v11, YOLO26 | ✅ Pass |
+| Pose | 7 | — | 7 | YOLOv8, v11, YOLO26 | ✅ Pass |
+| Segmentation | 8 | — | 8 | YOLOv8, v11, YOLO26 | ✅ Pass |
+| OBB | 7 | — | 7 | YOLOv8, v11, YOLO26 | ✅ Pass |
+| YOLOE | 8 | — | 8 | yoloe-26n-seg (open-vocab, export + ONNX parity) | ✅ Pass |
+| API (batch + in-memory) | — | 22 | 22 | synthetic ONNX (no weights needed) | ✅ Pass |
+| Depth | 7 | 25 (postprocessing + synthetic) | 32 | yolo26n-depth (metric depth, dense-map parity) | ✅ Pass |
+| **Total** | **50** | **57** | **107** | | **100%** |
+
+Counts are gtest cases. The self-contained tests are compiled into the same
+`compare_*` binaries as the parity tests, so both run in every CI job.
 
 ## Requirements
 

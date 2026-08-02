@@ -2,7 +2,7 @@
 # YOLOs-CPP Test Suite
 # ============================================================================
 cmake_minimum_required(VERSION 3.16)
-project(yolos_cpp_tests VERSION 2.0.0 LANGUAGES CXX)
+project(yolos_cpp_tests VERSION 1.1.0 LANGUAGES CXX)
 
 # ============================================================================
 # C++ Standard

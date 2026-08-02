@@ -2,7 +2,7 @@
 # YOLOs-CPP - High-Performance C++ Inference for YOLO Models
 # ============================================================================
 cmake_minimum_required(VERSION 3.16)
-project(YOLOs-CPP VERSION 2.0.0 LANGUAGES CXX)
+project(YOLOs-CPP VERSION 1.1.0 LANGUAGES CXX)
 
 # ============================================================================
 # C++ Standard
