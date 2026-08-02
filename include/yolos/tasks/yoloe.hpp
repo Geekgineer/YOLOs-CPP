@@ -114,6 +114,28 @@ public:
         agnosticNms_ = agnosticNms;
     }
 
+    /// @brief Construct from a model held in memory plus inline class names
+    /// @param modelData Pointer to the serialized ONNX model bytes
+    /// @param modelSize Size of the buffer in bytes
+    /// @param classNames Class names that were used during model.set_classes() in Python
+    /// @param useGPU Whether to use CUDA GPU for inference
+    /// @param agnosticNms Use class-agnostic NMS (recommended; suppresses across classes)
+    /// @note ONNX Runtime copies the buffer during session creation, so
+    ///       @p modelData may be freed once the constructor returns.
+    YOLOEDetector(const void* modelData,
+                  size_t modelSize,
+                  const std::vector<std::string>& classNames,
+                  bool useGPU = false,
+                  bool agnosticNms = true)
+        : det::YOLODetector(modelData, modelSize, classNames, useGPU, YOLOVersion::Auto)
+    {
+        if (classNames.empty()) {
+            throw std::invalid_argument("YOLOEDetector: classNames must not be empty");
+        }
+        detail::validateInlineClassesMatchOnnxExport(classNames, getExportedClassNamesFromMetadata());
+        agnosticNms_ = agnosticNms;
+    }
+
     virtual ~YOLOEDetector() = default;
 
     /// @brief Relabel fixed output channels without reloading the model.
@@ -176,6 +198,28 @@ public:
                      bool agnosticNms = true)
         : seg::YOLOSegDetector(modelPath, labelsPath, useGPU)
     {
+        agnosticNms_ = agnosticNms;
+    }
+
+    /// @brief Construct from a model held in memory plus inline class names
+    /// @param modelData Pointer to the serialized ONNX model bytes
+    /// @param modelSize Size of the buffer in bytes
+    /// @param classNames Class names that were used during model.set_classes() in Python
+    /// @param useGPU Whether to use CUDA GPU for inference
+    /// @param agnosticNms Use class-agnostic NMS (recommended; suppresses across classes)
+    /// @note ONNX Runtime copies the buffer during session creation, so
+    ///       @p modelData may be freed once the constructor returns.
+    YOLOESegDetector(const void* modelData,
+                     size_t modelSize,
+                     const std::vector<std::string>& classNames,
+                     bool useGPU = false,
+                     bool agnosticNms = true)
+        : seg::YOLOSegDetector(modelData, modelSize, classNames, useGPU)
+    {
+        if (classNames.empty()) {
+            throw std::invalid_argument("YOLOESegDetector: classNames must not be empty");
+        }
+        detail::validateInlineClassesMatchOnnxExport(classNames, getExportedClassNamesFromMetadata());
         agnosticNms_ = agnosticNms;
     }
 
@@ -257,6 +301,40 @@ inline std::unique_ptr<YOLOESegDetector> createYOLOESegDetector(
     bool agnosticNms = true)
 {
     return std::make_unique<YOLOESegDetector>(modelPath, labelsPath, useGPU, agnosticNms);
+}
+
+/// @brief Create a YOLOE open-vocabulary detector from a model held in memory.
+/// @param modelData Pointer to the serialized ONNX model bytes
+/// @param modelSize Size of the buffer in bytes
+/// @param classNames Class names used when exporting the model
+/// @param useGPU Whether to use CUDA GPU
+/// @param agnosticNms Use class-agnostic NMS (default true)
+/// @return Unique pointer to YOLOEDetector
+inline std::unique_ptr<YOLOEDetector> createYOLOEDetectorFromMemory(
+    const void* modelData,
+    size_t modelSize,
+    const std::vector<std::string>& classNames,
+    bool useGPU = false,
+    bool agnosticNms = true)
+{
+    return std::make_unique<YOLOEDetector>(modelData, modelSize, classNames, useGPU, agnosticNms);
+}
+
+/// @brief Create a YOLOE open-vocabulary segmentation detector from a model held in memory.
+/// @param modelData Pointer to the serialized ONNX model bytes
+/// @param modelSize Size of the buffer in bytes
+/// @param classNames Class names used when exporting the model
+/// @param useGPU Whether to use CUDA GPU
+/// @param agnosticNms Use class-agnostic NMS (default true)
+/// @return Unique pointer to YOLOESegDetector
+inline std::unique_ptr<YOLOESegDetector> createYOLOESegDetectorFromMemory(
+    const void* modelData,
+    size_t modelSize,
+    const std::vector<std::string>& classNames,
+    bool useGPU = false,
+    bool agnosticNms = true)
+{
+    return std::make_unique<YOLOESegDetector>(modelData, modelSize, classNames, useGPU, agnosticNms);
 }
 
 } // namespace yoloe

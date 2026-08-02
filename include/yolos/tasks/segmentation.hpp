@@ -66,7 +66,33 @@ public:
         
         classNames_ = utils::getClassNames(labelsPath);
         classColors_ = drawing::generateColors(classNames_);
-        
+
+        // Pre-allocate inference buffer
+        buffer_.ensureCapacity(inputShape_.height, inputShape_.width, inputChannels_);
+    }
+
+    /// @brief Constructor loading the model from memory instead of a file
+    /// @param modelData Pointer to the serialized ONNX model bytes
+    /// @param modelSize Size of the buffer in bytes
+    /// @param classNames Class names in class-id order; when empty, the
+    ///        Ultralytics `names` entry from the ONNX metadata is used
+    /// @param useGPU Whether to use GPU for inference
+    /// @note ONNX Runtime copies the buffer during session creation, so
+    ///       @p modelData may be freed once the constructor returns.
+    YOLOSegDetector(const void* modelData,
+                    size_t modelSize,
+                    const std::vector<std::string>& classNames,
+                    bool useGPU = false)
+        : OrtSessionBase(modelData, modelSize, useGPU) {
+
+        // Validate output count for segmentation models
+        if (numOutputNodes_ != 2) {
+            throw std::runtime_error("Expected 2 output nodes for segmentation model (output0 and output1)");
+        }
+
+        classNames_ = classNames.empty() ? getExportedClassNamesFromMetadata() : classNames;
+        classColors_ = drawing::generateColors(classNames_);
+
         // Pre-allocate inference buffer
         buffer_.ensureCapacity(inputShape_.height, inputShape_.width, inputChannels_);
     }
@@ -94,6 +120,41 @@ public:
 
         // Postprocess
         return postprocess(image.size(), actualSize, outputTensors, confThreshold, iouThreshold);
+    }
+
+    /// @brief Run segmentation on several images with a single ONNX Runtime call
+    /// @param images Input images (BGR format)
+    /// @param confThreshold Confidence threshold
+    /// @param iouThreshold IoU threshold for NMS
+    /// @return One segmentation vector per input image, in input order
+    /// @note Packs the batch into one N*C*H*W tensor when the model accepts the
+    ///       batch size (dynamic batch dimension, or a fixed one that matches
+    ///       images.size()); otherwise falls back to segment() per image.
+    /// @note Batched runs letterbox every image to the model input shape, so a
+    ///       dynamic-input-shape model can return slightly different masks than
+    ///       segment(), which picks a per-image stride-aligned shape.
+    virtual std::vector<std::vector<Segmentation>> batchSegment(const std::vector<cv::Mat>& images,
+                                                                float confThreshold = 0.4f,
+                                                                float iouThreshold = 0.45f) {
+        std::vector<std::vector<Segmentation>> results;
+        if (images.empty()) return results;
+
+        if (supportsBatchSize(images.size()) && allOutputsAreFloat()) {
+            try {
+                return batchSegmentPacked(images, confThreshold, iouThreshold);
+            } catch (const Ort::Exception& e) {
+                // Some exports declare a dynamic batch dimension the graph cannot
+                // actually run (hard-coded Reshape targets, for instance).
+                std::cerr << "[WARNING] Batched inference failed (" << e.what()
+                          << "). Falling back to per-image inference." << std::endl;
+            }
+        }
+
+        results.reserve(images.size());
+        for (const auto& image : images) {
+            results.push_back(segment(image, confThreshold, iouThreshold));
+        }
+        return results;
     }
 
     /// @brief Draw segmentations with boxes and labels on an image
@@ -158,6 +219,32 @@ protected:
     
     // Pre-allocated buffer for inference (avoids per-frame allocations)
     mutable preprocessing::InferenceBuffer buffer_;
+
+    // Pre-allocated N*C*H*W buffer reused across batchSegment() calls
+    std::vector<float> batchBlob_;
+
+    /// @brief Single batched ONNX call plus per-image postprocessing
+    /// Throws Ort::Exception if the model cannot run the requested batch size.
+    std::vector<std::vector<Segmentation>> batchSegmentPacked(const std::vector<cv::Mat>& images,
+                                                             float confThreshold,
+                                                             float iouThreshold) {
+        const int64_t batchSize = static_cast<int64_t>(images.size());
+
+        cv::Size letterboxSize;
+        std::vector<Ort::Value> outputTensors = runBatchInference(images, batchBlob_, letterboxSize);
+
+        std::vector<std::vector<Segmentation>> results;
+        results.reserve(images.size());
+        for (int64_t i = 0; i < batchSize; ++i) {
+            // Zero-copy [1, ...] views (detections and mask prototypes) so the
+            // regular postprocessing runs unchanged
+            std::vector<Ort::Value> itemTensors = sliceOutputBatch(outputTensors, i, batchSize);
+            results.push_back(postprocess(images[static_cast<size_t>(i)].size(), letterboxSize,
+                                          itemTensors, confThreshold, iouThreshold));
+        }
+
+        return results;
+    }
 
     /// @brief Postprocess segmentation outputs
     std::vector<Segmentation> postprocess(const cv::Size& originalSize,

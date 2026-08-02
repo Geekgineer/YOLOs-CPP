@@ -21,6 +21,7 @@ add_compile_definitions("BASE_PATH_SEGMENTATION=${CMAKE_SOURCE_DIR}/segmentation
 add_compile_definitions("BASE_PATH_POSE=${CMAKE_SOURCE_DIR}/pose/")
 add_compile_definitions("BASE_PATH_OBB=${CMAKE_SOURCE_DIR}/obb/")
 add_compile_definitions("BASE_PATH_YOLOE=${CMAKE_SOURCE_DIR}/yoloe/")
+add_compile_definitions("BASE_PATH_API=${CMAKE_SOURCE_DIR}/api/")
 
 message(STATUS "Test Base Path: ${CMAKE_SOURCE_DIR}")
 
@@ -116,7 +117,7 @@ endif()
 # ============================================================================
 # Test Task Selection
 # ============================================================================
-option(testTask "Specify test task: 0=detection, 1=classification, 2=segmentation, 3=pose, 4=obb, 5=all, 6=yoloe" STRING)
+option(testTask "Specify test task: 0=detection, 1=classification, 2=segmentation, 3=pose, 4=obb, 5=all, 6=yoloe, 7=api" STRING)
 message(STATUS "Selected test task: ${testTask}")
 
 set(detection_path "${CMAKE_SOURCE_DIR}/detection")
@@ -125,6 +126,7 @@ set(segmentation_path "${CMAKE_SOURCE_DIR}/segmentation")
 set(pose_path "${CMAKE_SOURCE_DIR}/pose")
 set(obb_path "${CMAKE_SOURCE_DIR}/obb")
 set(yoloe_path "${CMAKE_SOURCE_DIR}/yoloe")
+set(api_path "${CMAKE_SOURCE_DIR}/api")
 
 set(INFERENCE_EXES)
 set(TEST_EXES)
@@ -207,6 +209,18 @@ if(testTask STREQUAL "5" OR testTask STREQUAL "6")
 endif()
 
 # ============================================================================
+# API Tests (batch inference + in-memory model loading)
+# Self-contained: runs against tiny synthetic ONNX models, no weights needed.
+# ============================================================================
+set(API_TEST_EXES)
+if(testTask STREQUAL "5" OR testTask STREQUAL "7")
+    add_executable(test_api_batch_and_memory
+        ${api_path}/test_batch_and_memory.cpp)
+
+    list(APPEND API_TEST_EXES test_api_batch_and_memory)
+endif()
+
+# ============================================================================
 # Configure Inference Executables
 # ============================================================================
 foreach(target ${INFERENCE_EXES})
@@ -249,10 +263,45 @@ foreach(target ${TEST_EXES})
 endforeach()
 
 # ============================================================================
+# Configure API Test Executables (need ONNX Runtime and OpenCV at link time)
+# ============================================================================
+foreach(target ${API_TEST_EXES})
+    message(STATUS "Adding API test target: ${target}")
+
+    target_include_directories(${target} PRIVATE
+        "${CMAKE_SOURCE_DIR}/../include"
+        "${ONNXRUNTIME_DIR}/include"
+    )
+
+    target_link_libraries(${target} PRIVATE
+        ${OpenCV_LIBS}
+        ${ONNXRUNTIME_LIB}
+        GTest::gtest_main
+        Threads::Threads
+    )
+
+    if(UNIX AND NOT APPLE)
+        set_target_properties(${target} PROPERTIES
+            BUILD_RPATH "${ONNXRUNTIME_DIR}/lib"
+            INSTALL_RPATH "${ONNXRUNTIME_DIR}/lib"
+        )
+    elseif(APPLE)
+        set_target_properties(${target} PROPERTIES
+            BUILD_RPATH "@executable_path;${ONNXRUNTIME_DIR}/lib"
+            INSTALL_RPATH "@executable_path;${ONNXRUNTIME_DIR}/lib"
+        )
+    endif()
+
+    # Loading ONNX Runtime makes test enumeration slower than the 5s default
+    gtest_discover_tests(${target} DISCOVERY_TIMEOUT 120)
+endforeach()
+
+# ============================================================================
 # Summary
 # ============================================================================
 message(STATUS "")
 message(STATUS "=== Test Suite Configuration ===")
 message(STATUS "  Inference executables: ${INFERENCE_EXES}")
 message(STATUS "  Test executables: ${TEST_EXES}")
+message(STATUS "  API test executables: ${API_TEST_EXES}")
 message(STATUS "")
