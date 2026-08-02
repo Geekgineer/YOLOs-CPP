@@ -64,7 +64,27 @@ public:
         : OrtSessionBase(modelPath, useGPU) {
         classNames_ = utils::getClassNames(labelsPath);
         classColors_ = drawing::generateColors(classNames_);
-        
+
+        // Pre-allocate inference buffer
+        buffer_.ensureCapacity(inputShape_.height, inputShape_.width, inputChannels_);
+    }
+
+    /// @brief Constructor loading the model from memory instead of a file
+    /// @param modelData Pointer to the serialized ONNX model bytes
+    /// @param modelSize Size of the buffer in bytes
+    /// @param classNames Class names in class-id order; when empty, the
+    ///        Ultralytics `names` entry from the ONNX metadata is used
+    /// @param useGPU Whether to use GPU for inference
+    /// @note ONNX Runtime copies the buffer during session creation, so
+    ///       @p modelData may be freed once the constructor returns.
+    YOLOOBBDetector(const void* modelData,
+                    size_t modelSize,
+                    const std::vector<std::string>& classNames,
+                    bool useGPU = false)
+        : OrtSessionBase(modelData, modelSize, useGPU) {
+        classNames_ = classNames.empty() ? getExportedClassNamesFromMetadata() : classNames;
+        classColors_ = drawing::generateColors(classNames_);
+
         // Pre-allocate inference buffer
         buffer_.ensureCapacity(inputShape_.height, inputShape_.width, inputChannels_);
     }
@@ -96,6 +116,43 @@ public:
         return postprocess(image.size(), actualSize, outputTensors, confThreshold, iouThreshold, maxDet);
     }
 
+    /// @brief Run OBB detection on several images with a single ONNX Runtime call
+    /// @param images Input images (BGR format)
+    /// @param confThreshold Confidence threshold
+    /// @param iouThreshold IoU threshold for NMS
+    /// @param maxDet Maximum number of detections to return per image
+    /// @return One OBB-result vector per input image, in input order
+    /// @note Packs the batch into one N*C*H*W tensor when the model accepts the
+    ///       batch size (dynamic batch dimension, or a fixed one that matches
+    ///       images.size()); otherwise falls back to detect() per image.
+    /// @note Batched runs letterbox every image to the model input shape, so a
+    ///       dynamic-input-shape model can return slightly different boxes than
+    ///       detect(), which picks a per-image stride-aligned shape.
+    virtual std::vector<std::vector<OBBResult>> batchDetect(const std::vector<cv::Mat>& images,
+                                                            float confThreshold = 0.25f,
+                                                            float iouThreshold = 0.45f,
+                                                            int maxDet = 300) {
+        std::vector<std::vector<OBBResult>> results;
+        if (images.empty()) return results;
+
+        if (supportsBatchSize(images.size()) && allOutputsAreFloat()) {
+            try {
+                return batchDetectPacked(images, confThreshold, iouThreshold, maxDet);
+            } catch (const Ort::Exception& e) {
+                // Some exports declare a dynamic batch dimension the graph cannot
+                // actually run (hard-coded Reshape targets, for instance).
+                std::cerr << "[WARNING] Batched inference failed (" << e.what()
+                          << "). Falling back to per-image inference." << std::endl;
+            }
+        }
+
+        results.reserve(images.size());
+        for (const auto& image : images) {
+            results.push_back(detect(image, confThreshold, iouThreshold, maxDet));
+        }
+        return results;
+    }
+
     /// @brief Draw OBB detections on an image
     /// @param image Image to draw on
     /// @param results Vector of OBB detection results
@@ -125,6 +182,32 @@ protected:
     
     // Pre-allocated buffer for inference
     mutable preprocessing::InferenceBuffer buffer_;
+
+    // Pre-allocated N*C*H*W buffer reused across batchDetect() calls
+    std::vector<float> batchBlob_;
+
+    /// @brief Single batched ONNX call plus per-image postprocessing
+    /// Throws Ort::Exception if the model cannot run the requested batch size.
+    std::vector<std::vector<OBBResult>> batchDetectPacked(const std::vector<cv::Mat>& images,
+                                                          float confThreshold,
+                                                          float iouThreshold,
+                                                          int maxDet) {
+        const int64_t batchSize = static_cast<int64_t>(images.size());
+
+        cv::Size letterboxSize;
+        std::vector<Ort::Value> outputTensors = runBatchInference(images, batchBlob_, letterboxSize);
+
+        std::vector<std::vector<OBBResult>> results;
+        results.reserve(images.size());
+        for (int64_t i = 0; i < batchSize; ++i) {
+            // Zero-copy [1, ...] views so the regular postprocessing runs unchanged
+            std::vector<Ort::Value> itemTensors = sliceOutputBatch(outputTensors, i, batchSize);
+            results.push_back(postprocess(images[static_cast<size_t>(i)].size(), letterboxSize,
+                                          itemTensors, confThreshold, iouThreshold, maxDet));
+        }
+
+        return results;
+    }
 
     /// @brief Postprocess OBB detection outputs
     std::vector<OBBResult> postprocess(const cv::Size& originalSize,

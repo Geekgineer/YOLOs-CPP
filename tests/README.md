@@ -7,13 +7,14 @@ Comprehensive test suite validating C++ YOLO implementations against Python Ultr
 | Task | Tests | Models | Status |
 |------|-------|--------|--------|
 | Detection | 8/8 | YOLOv5, v6, v8, v9, v10, v11, v12, YOLO26 | ✅ Pass |
-| Classification | 6/6 | YOLOv8, v11, YOLO26 | ✅ Pass |
+| Classification | 6/6 parity + 7 preprocessing | YOLOv8, v11, YOLO26 | ✅ Pass |
 | Pose | 7/7 | YOLOv8, v11, YOLO26 | ✅ Pass |
 | Segmentation | 8/8 | YOLOv8, v11, YOLO26 | ✅ Pass |
 | OBB | 7/7 | YOLOv8, v11, YOLO26 | ✅ Pass |
 | YOLOE | 8/8 | yoloe-26n-seg (open-vocab, export + ONNX parity) | ✅ Pass |
+| API (batch + in-memory) | 22/22 | synthetic ONNX (no weights needed) | ✅ Pass |
 | Depth | 32/32 (27 self-contained + 5 parity) | yolo26n-depth (metric depth, dense-map parity) | ✅ Pass |
-| **Total** | **76/76** (49 parity + 27 self-contained) | | **100%** |
+| **Total** | **105/105** (49 parity + 56 self-contained) | | **100%** |
 
 ## Requirements
 
@@ -35,13 +36,20 @@ Comprehensive test suite validating C++ YOLO implementations against Python Ultr
 ./test_segmentation.sh
 ./test_obb.sh
 ./test_yoloe.sh
+./test_api.sh
 ./test_depth.sh
 
 # Build only the YOLOE parity suite (after Python reference exists under yoloe/results/)
 ./build_test.sh 6
+
+# Build only the API suite (batch inference + in-memory loading)
+./build_test.sh 7
 ```
 
 ## How Tests Work
+
+The parity suites (detection, classification, segmentation, pose, OBB, YOLOE) compare
+against Ultralytics:
 
 1. **Model Download**: Downloads pretrained `.pt` files from Ultralytics
 2. **ONNX Export**: Exports models to ONNX format (opset 12)
@@ -49,6 +57,16 @@ Comprehensive test suite validating C++ YOLO implementations against Python Ultr
 4. **C++ Build**: Builds C++ inference executables
 5. **C++ Inference**: Runs C++ implementation
 6. **Comparison**: Compares results using GoogleTest
+
+The **API suite** (`test_api.sh`) is different: it tests library behavior rather than
+numeric parity, so it generates tiny synthetic ONNX models with
+`api/make_synthetic_models.py` (needs only `onnx` and `numpy`) and asserts that
+
+- `batchDetect` / `batchSegment` / `batchClassify` return exactly what a per-image loop returns
+- each batch slice is postprocessed against its own image, not against batch element 0
+- fixed-batch exports — and exports that declare a batch dim their graph cannot
+  actually run — transparently fall back to the per-image loop
+- loading a model from memory behaves identically to loading it from disk
 
 ## Directory Structure
 
@@ -62,8 +80,14 @@ tests/
 ├── test_pose.sh            # Pose estimation task runner
 ├── test_obb.sh             # OBB detection task runner
 ├── test_yoloe.sh           # YOLOE open-vocabulary segmentation parity
+├── test_api.sh             # Batch inference + in-memory loading (no weights needed)
 ├── build_test.sh           # CMake build script
 ├── CMakeLists.txt          # Test suite CMake config
+├── api/
+│   ├── make_synthetic_models.py    # Generates tiny ONNX models (shapes only)
+│   ├── test_batch_and_memory.cpp
+│   └── models/                     # Synthetic .onnx files (generated)
+│
 ├── yoloe/
 │   ├── inference_config.json       # conf, iou, and `classes` (must match export)
 │   ├── inference_yoloe_cpp.cpp
@@ -125,7 +149,7 @@ The test scripts are designed for CI/CD pipelines:
 - Exports models with compatible opset (12)
 - Returns proper exit codes (0 = pass, non-zero = fail)
 
-**GitHub Actions** (`.github/workflows/main.yml`) runs each task in parallel: `detection`, `segmentation`, `pose`, `obb`, `classification`, `yoloe`, and **`depth`** (`tests/test_depth.sh`). Artifacts upload `tests/<task>/results/` per matrix job.
+**GitHub Actions** (`.github/workflows/main.yml`) runs each task in parallel: `detection`, `segmentation`, `pose`, `obb`, `classification`, **`yoloe`** (`tests/test_yoloe.sh`), **`api`** (`tests/test_api.sh`), and **`depth`** (`tests/test_depth.sh`). Artifacts upload `tests/<task>/results/` per matrix job, excluding depth's raw `.bin` maps.
 
 ```yaml
 # Example: run full suite locally (same tasks as CI matrix combined)
@@ -140,6 +164,13 @@ The test scripts are designed for CI/CD pipelines:
 1. **Model size**: Uses smaller input (320x320) for faster testing
 2. **YOLO26 models**: Feature end-to-end NMS-free architecture
 3. **VOC dataset**: Detection models are fine-tuned on Pascal VOC (20 classes)
+5. **Classification preprocessing**: `inference_classification_ultralytics.py` calls
+   `ultralytics.data.augment.classify_transforms()` for the reference tensor, so the
+   comparison is against Ultralytics itself. It previously re-implemented the C++ OpenCV
+   preprocessing, which meant the suite compared YOLOs-CPP against a Python transcription
+   of itself and could not detect a mismatch (issue #137). `classification/test_preprocessing.cpp`
+   additionally pins the antialiased resize to golden Pillow output, so it is guarded even
+   without a Python run.
 4. **YOLOE**: `tests/yoloe/inference_config.json` lists the same `classes` as `models/export_yoloe_test_onnx.py` and C++ `YOLOESegDetector`. Python reference uses the exported ONNX (no `set_classes` on ONNX). Inference enumerates images in **sorted** order so JSON matches C++. C++ tests bundle ONNX Runtime 1.20.x; Ultralytics may install a different Python `onnxruntime` for ONNX inference—outputs should still match within tolerances.
 5. **Depth**: the reference comes from Ultralytics' own `DepthPredictor`, so its
    `LetterBox` preprocessing and `ops.scale_masks` postprocessing are ground truth.

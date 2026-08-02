@@ -79,9 +79,25 @@ YOLODetector(
     YOLOVersion        version = YOLOVersion::Auto
 );
 
+// Load the model from memory instead of a file (see In-Memory Model Loading)
+YOLODetector(
+    const void*                     modelData,
+    size_t                          modelSize,
+    const std::vector<std::string>& classNames,  // empty = read ONNX metadata
+    bool                            useGPU = false,
+    YOLOVersion                     version = YOLOVersion::Auto
+);
+
 // Run detection on a BGR image
 std::vector<Detection> detect(
     const cv::Mat& image,
+    float confThreshold = 0.4f,
+    float iouThreshold  = 0.45f
+);
+
+// Run detection on many images in one ONNX Runtime call (see Batch Inference)
+std::vector<std::vector<Detection>> batchDetect(
+    const std::vector<cv::Mat>& images,
     float confThreshold = 0.4f,
     float iouThreshold  = 0.45f
 );
@@ -108,7 +124,7 @@ const std::vector<cv::Scalar>&  getClassColors() const;
 | `yolos::det::YOLO26Detector` | v26 |
 | `yolos::det::YOLONASDetector` | NAS |
 
-**Factory function:**
+**Factory functions:**
 
 ```cpp
 std::unique_ptr<YOLODetector> yolos::det::createDetector(
@@ -116,6 +132,14 @@ std::unique_ptr<YOLODetector> yolos::det::createDetector(
     const std::string& labelsPath,
     YOLOVersion        version = YOLOVersion::Auto,
     bool               useGPU = false
+);
+
+std::unique_ptr<YOLODetector> yolos::det::createDetectorFromMemory(
+    const void*                     modelData,
+    size_t                          modelSize,
+    const std::vector<std::string>& classNames,
+    YOLOVersion                     version = YOLOVersion::Auto,
+    bool                            useGPU = false
 );
 ```
 
@@ -155,9 +179,24 @@ YOLOSegDetector(
     bool               useGPU = false
 );
 
+// Load the model from memory instead of a file (see In-Memory Model Loading)
+YOLOSegDetector(
+    const void*                     modelData,
+    size_t                          modelSize,
+    const std::vector<std::string>& classNames,  // empty = read ONNX metadata
+    bool                            useGPU = false
+);
+
 // Returns detections with per-instance binary masks
 std::vector<Segmentation> segment(
     const cv::Mat& image,
+    float confThreshold = 0.4f,
+    float iouThreshold  = 0.45f
+);
+
+// Segment many images in one ONNX Runtime call (see Batch Inference)
+std::vector<std::vector<Segmentation>> batchSegment(
+    const std::vector<cv::Mat>& images,
     float confThreshold = 0.4f,
     float iouThreshold  = 0.45f
 );
@@ -206,8 +245,23 @@ YOLOPoseDetector(
     bool               useGPU = false
 );
 
+// Load the model from memory instead of a file (see In-Memory Model Loading)
+YOLOPoseDetector(
+    const void*                     modelData,
+    size_t                          modelSize,
+    const std::vector<std::string>& classNames = {},  // empty = metadata, then "person"
+    bool                            useGPU = false
+);
+
 std::vector<PoseResult> detect(
     const cv::Mat& image,
+    float confThreshold = 0.4f,
+    float iouThreshold  = 0.5f
+);
+
+// Detect on many images in one ONNX Runtime call (see Batch Inference)
+std::vector<std::vector<PoseResult>> batchDetect(
+    const std::vector<cv::Mat>& images,
     float confThreshold = 0.4f,
     float iouThreshold  = 0.5f
 );
@@ -256,8 +310,24 @@ YOLOOBBDetector(
     bool               useGPU = false
 );
 
+// Load the model from memory instead of a file (see In-Memory Model Loading)
+YOLOOBBDetector(
+    const void*                     modelData,
+    size_t                          modelSize,
+    const std::vector<std::string>& classNames,  // empty = read ONNX metadata
+    bool                            useGPU = false
+);
+
 std::vector<OBBResult> detect(
     const cv::Mat& image,
+    float confThreshold = 0.25f,
+    float iouThreshold  = 0.45f,
+    int   maxDet = 300
+);
+
+// Detect on many images in one ONNX Runtime call (see Batch Inference)
+std::vector<std::vector<OBBResult>> batchDetect(
+    const std::vector<cv::Mat>& images,
     float confThreshold = 0.25f,
     float iouThreshold  = 0.45f,
     int   maxDet = 300
@@ -303,7 +373,19 @@ YOLOClassifier(
     const cv::Size&    targetInputShape = cv::Size(224, 224)
 );
 
+// Load the model from memory instead of a file (see In-Memory Model Loading)
+YOLOClassifier(
+    const void*                     modelData,
+    size_t                          modelSize,
+    const std::vector<std::string>& classNames,
+    bool                            useGPU = false,
+    const cv::Size&                 targetInputShape = cv::Size(224, 224)
+);
+
 ClassificationResult classify(const cv::Mat& image);
+
+// Classify many images in one ONNX Runtime call (see Batch Inference)
+std::vector<ClassificationResult> batchClassify(const std::vector<cv::Mat>& images);
 
 void drawResult(cv::Mat& image, const ClassificationResult& result,
                 const cv::Point& position = cv::Point(10, 30)) const;
@@ -319,7 +401,7 @@ const std::vector<std::string>& getClassNames() const;
 | `yolos::cls::YOLO12Classifier` | v12 |
 | `yolos::cls::YOLO26Classifier` | v26 |
 
-**Factory function:**
+**Factory functions:**
 
 ```cpp
 std::unique_ptr<YOLOClassifier> yolos::cls::createClassifier(
@@ -327,6 +409,14 @@ std::unique_ptr<YOLOClassifier> yolos::cls::createClassifier(
     const std::string& labelsPath,
     YOLOVersion        version = YOLOVersion::V11,
     bool               useGPU = false
+);
+
+std::unique_ptr<YOLOClassifier> yolos::cls::createClassifierFromMemory(
+    const void*                     modelData,
+    size_t                          modelSize,
+    const std::vector<std::string>& classNames,
+    YOLOVersion                     version = YOLOVersion::V11,
+    bool                            useGPU = false
 );
 ```
 
@@ -337,6 +427,16 @@ yolos::cls::YOLOClassifier classifier("yolo11n-cls.onnx", "imagenet.names");
 auto result = classifier.classify(frame);
 classifier.drawResult(frame, result);
 ```
+
+**Preprocessing.** `classify()` reproduces `ultralytics.data.augment.classify_transforms()`:
+resize the shortest edge to the model input size, centre-crop to a square, scale to
+`[0, 1]`. Ultralytics resizes through PIL, whose bilinear filter is **antialiased**, so
+YOLOs-CPP uses `preprocessing::resizeAntialiasBilinear()` rather than
+`cv::resize(INTER_LINEAR)`. Using a plain bilinear resize here inflates confidences and
+can change the top-1 class on downscaled images.
+
+This differs from the other tasks on purpose: Ultralytics' `LetterBox` (detection,
+segmentation, pose, OBB) really does use `cv2.INTER_LINEAR`, so those paths keep it.
 
 ---
 
@@ -432,12 +532,103 @@ YOLO("yolo26n-depth.pt").export(format="onnx")
 Defined in `yolos/core/session_base.hpp`. All detectors inherit from this — you normally don't need to use it directly.
 
 ```cpp
-cv::Size    getInputShape()     const noexcept;
+cv::Size    getInputShape()       const noexcept;
 bool        isDynamicInputShape() const noexcept;
-std::string getDevice()         const noexcept;  // "cpu" or "gpu"
-size_t      getNumInputNodes()  const noexcept;
-size_t      getNumOutputNodes() const noexcept;
+bool        isDynamicBatchSize()  const noexcept;  // true if the ONNX batch dim is dynamic
+int         getModelBatchSize()   const noexcept;  // fixed batch size, or -1 if dynamic
+bool        supportsBatchSize(size_t count) const noexcept;  // can one call take `count` images?
+std::string getDevice()           const noexcept;  // "cpu" or "gpu"
+size_t      getNumInputNodes()    const noexcept;
+size_t      getNumOutputNodes()   const noexcept;
 ```
+
+---
+
+## In-Memory Model Loading
+
+Every task class has a constructor that takes the serialized ONNX bytes instead of a
+file path, for encrypted stores, network streams and resources embedded in the binary.
+Class names are passed as a `std::vector<std::string>` in class-id order, so no labels
+file is needed either.
+
+```cpp
+// Whatever produces the bytes — decryption, download, embedded array — only the
+// buffer reaches the detector.
+std::vector<uint8_t> bytes = yolos::utils::readFileBytes("yolo11n.onnx");
+
+yolos::det::YOLODetector detector(
+    bytes.data(), bytes.size(),
+    {"person", "bicycle", "car" /* ... */});
+
+auto results = detector.detect(frame);
+```
+
+Notes:
+
+- ONNX Runtime **copies** the buffer while creating the session, so the caller may
+  free or wipe it as soon as the constructor returns.
+- Passing an empty `classNames` falls back to the Ultralytics `names` entry in the
+  ONNX metadata, when the export carries one.
+- A null pointer or zero size throws `std::invalid_argument`.
+- `yolos::utils::readFileBytes(path)` is a convenience helper for testing this path;
+  production callers normally supply their own bytes.
+
+Constructors and matching `create*FromMemory()` factories exist for detection,
+segmentation, pose, OBB, classification and YOLOE.
+
+---
+
+## Batch Inference
+
+`batchDetect` / `batchSegment` / `batchClassify` pack several images into a single
+`N × C × H × W` tensor and run one ONNX Runtime call, which is what improves GPU
+throughput over calling the single-image method in a loop.
+
+```cpp
+std::vector<cv::Mat> images = {cv::imread("a.jpg"), cv::imread("b.jpg"), cv::imread("c.jpg")};
+
+yolos::det::YOLODetector detector("yolo11n.onnx", "coco.names", /*useGPU=*/true);
+
+// One result vector per input image, in input order
+std::vector<std::vector<yolos::det::Detection>> results = detector.batchDetect(images);
+```
+
+| Task | Method | Returns |
+|---|---|---|
+| Detection | `batchDetect(images, conf, iou)` | `std::vector<std::vector<Detection>>` |
+| Segmentation | `batchSegment(images, conf, iou)` | `std::vector<std::vector<Segmentation>>` |
+| Pose | `batchDetect(images, conf, iou)` | `std::vector<std::vector<PoseResult>>` |
+| OBB | `batchDetect(images, conf, iou, maxDet)` | `std::vector<std::vector<OBBResult>>` |
+| Classification | `batchClassify(images)` | `std::vector<ClassificationResult>` |
+
+**Automatic fallback.** True batching needs a model whose batch dimension accepts the
+batch size — either a dynamic batch dim, or a fixed one equal to `images.size()`. When
+it does not, the batch methods loop over the single-image path instead, so the call
+still returns one result per image with any export. The same recovery covers exports
+that *declare* a dynamic batch dimension the graph cannot actually run (hard-coded
+`Reshape` targets, for example): the failure is reported as a warning and the per-image
+loop takes over. Check up front with:
+
+```cpp
+detector.isDynamicBatchSize();               // was the model exported with dynamic=True?
+detector.getModelBatchSize();                // fixed batch size, or -1 when dynamic
+detector.supportsBatchSize(images.size());   // will this call actually batch?
+```
+
+Export a dynamic-batch model from Ultralytics with:
+
+```python
+model.export(format="onnx", dynamic=True)
+```
+
+**Behavioral note.** A batched tensor requires one shared letterbox target, so batched
+runs letterbox every image to the model input shape. For a model with a *dynamic input
+shape*, the single-image methods instead pick a per-image stride-aligned shape, so the
+two paths can differ slightly for such models. Fixed-input-shape models — the common
+case — produce identical results either way.
+
+Runnable demo: `src/batch_image_inference.cpp` (`--in-memory` also exercises the
+in-memory loader).
 
 ---
 

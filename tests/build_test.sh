@@ -7,7 +7,7 @@ set -euo pipefail
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 
 # Default values
-TEST_TASK="${1:-0}"           # 0=detection, 1=classification, 2=segmentation, 3=pose, 4=obb, 5=all, 6=yoloe, 8=depth
+TEST_TASK="${1:-0}"           # 0=detection, 1=classification, 2=segmentation, 3=pose, 4=obb, 5=all, 6=yoloe, 7=api, 8=depth
 ONNXRUNTIME_VERSION="${2:-1.20.1}"
 ONNXRUNTIME_GPU="${3:-0}"     # 0=CPU, 1=GPU
 
@@ -32,6 +32,7 @@ usage() {
     echo "                        4 = OBB"
     echo "                        5 = All tasks"
     echo "                        6 = YOLOE open-vocabulary segmentation parity (vs Ultralytics)"
+    echo "                        7 = API tests (batch inference + in-memory model loading)"
     echo "                        8 = Depth estimation (batch of dense-map tests)"
     echo "  ONNXRUNTIME_VERSION Version of ONNX Runtime (default: 1.20.1)"
     echo "  ONNXRUNTIME_GPU     0 = CPU, 1 = GPU (default: 0)"
@@ -68,6 +69,16 @@ detect_platform() {
         i*86)          ONNXRUNTIME_ARCH="x86" ;;
         *) echo -e "${RED}Unsupported architecture: $arch${NC}"; exit 1 ;;
     esac
+
+    # macOS release assets use different arch names than Linux/Windows ones
+    # (onnxruntime-osx-arm64 / onnxruntime-osx-x86_64), and CMakeLists.txt
+    # searches for exactly those directory names.
+    if [[ "$ONNXRUNTIME_PLATFORM" == "osx" ]]; then
+        case "$arch" in
+            aarch64|arm64) ONNXRUNTIME_ARCH="arm64" ;;
+            x86_64)        ONNXRUNTIME_ARCH="x86_64" ;;
+        esac
+    fi
 
     # Build ONNX Runtime paths
     ONNXRUNTIME_FILE="onnxruntime-${ONNXRUNTIME_PLATFORM}-${ONNXRUNTIME_ARCH}"

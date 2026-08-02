@@ -1,6 +1,15 @@
 """
-Classification inference using ONNX Runtime with OpenCV preprocessing.
-Matches C++ implementation exactly for fair comparison.
+Classification ground truth using Ultralytics' own preprocessing.
+
+The reference tensor comes from ultralytics.data.augment.classify_transforms(),
+i.e. torchvision T.Resize(size, BILINEAR) -> T.CenterCrop(size) -> T.ToTensor()
+-> T.Normalize(mean=0, std=1), applied to a PIL image. PIL's bilinear filter is
+antialiased, so this is NOT the same as cv2.resize(INTER_LINEAR).
+
+That distinction matters: an earlier version of this script re-implemented the
+C++ OpenCV preprocessing instead, which meant the suite compared YOLOs-CPP
+against a Python transcription of itself and could not detect a mismatch with
+Ultralytics (issue #137).
 """
 import sys
 import os
@@ -9,8 +18,14 @@ import json
 import cv2
 import numpy as np
 import onnxruntime as ort
+from PIL import Image
 from typing import Union
 from tqdm.auto import tqdm
+
+try:
+    from ultralytics.data.augment import classify_transforms
+except ImportError:  # pragma: no cover - the test runner installs ultralytics
+    classify_transforms = None
 
 
 def validate_paths(paths: dict) -> bool:
@@ -41,50 +56,39 @@ def validate_paths(paths: dict) -> bool:
 
 def preprocess_image(image_path: str, target_size: int = 224) -> np.ndarray:
     """
-    Preprocess image using OpenCV to match C++ implementation exactly.
-    - Load BGR
-    - Convert to RGB
-    - Resize shortest side to target_size (using integer division like C++)
-    - Center crop to target_size x target_size
-    - Normalize to [0, 1]
-    - Convert to CHW format
+    Preprocess an image exactly as Ultralytics does for classification.
+
+    Uses ultralytics' own classify_transforms() when available so the reference
+    cannot drift from the library under test. The fallback reproduces the same
+    torchvision pipeline with PIL directly, for environments without torch.
     """
-    # Load image
-    img = cv2.imread(image_path)
-    if img is None:
+    bgr = cv2.imread(image_path)
+    if bgr is None:
         raise ValueError(f"Failed to load image: {image_path}")
-    
-    h, w = img.shape[:2]
-    
-    # Resize: shortest side to target_size, using integer division (C++ style)
-    if h < w:
-        new_h = target_size
-        new_w = (w * target_size) // h  # Integer division to match C++
-    else:
-        new_w = target_size
-        new_h = (h * target_size) // w
-    
-    # Convert BGR to RGB
-    rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    
-    # Resize
-    resized = cv2.resize(rgb, (new_w, new_h), interpolation=cv2.INTER_LINEAR)
-    
-    # Center crop
-    y_start = max(0, (new_h - target_size) // 2)
-    x_start = max(0, (new_w - target_size) // 2)
-    cropped = resized[y_start:y_start+target_size, x_start:x_start+target_size]
-    
-    # Normalize to [0, 1]
-    normalized = cropped.astype(np.float32) / 255.0
-    
-    # Convert HWC to CHW
-    chw = np.transpose(normalized, (2, 0, 1))
-    
-    # Add batch dimension
-    batch = np.expand_dims(chw, 0)
-    
-    return batch
+
+    pil = Image.fromarray(cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB))
+
+    if classify_transforms is not None:
+        arr = classify_transforms(size=target_size)(pil).unsqueeze(0).numpy()
+        assert arr.dtype == np.float32, f"expected float32 tensor, got {arr.dtype}"
+        return arr
+
+    # torchvision T.Resize(int): shortest edge -> target_size, aspect preserved
+    w, h = pil.size
+    short, long_ = (w, h) if w <= h else (h, w)
+    new_short, new_long = target_size, int(target_size * long_ / short)
+    new_w, new_h = (new_short, new_long) if w <= h else (new_long, new_short)
+    pil = pil.resize((new_w, new_h), Image.BILINEAR)  # antialiased, like PIL
+
+    # torchvision T.CenterCrop(int): offsets are int(round(diff / 2))
+    top = int(round((new_h - target_size) / 2.0))
+    left = int(round((new_w - target_size) / 2.0))
+    arr = np.asarray(pil)[top:top + target_size, left:left + target_size]
+
+    chw = np.transpose(arr.astype(np.float32) / 255.0, (2, 0, 1))
+    out = np.expand_dims(chw, 0)
+    assert out.dtype == np.float32, f"expected float32 tensor, got {out.dtype}"
+    return out
 
 
 def run_inference(model_path: str, images_path: str) -> list:
@@ -115,7 +119,7 @@ def run_inference(model_path: str, images_path: str) -> list:
         returned_results.append(image_results)
 
         try:
-            # Preprocess using OpenCV (matches C++ exactly)
+            # Preprocess exactly as Ultralytics does
             input_tensor = preprocess_image(image_path, target_size)
             
             # Run inference

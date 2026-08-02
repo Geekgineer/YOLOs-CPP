@@ -147,6 +147,45 @@ while (cap.read(frame)) {
 }
 ```
 
+## Batch Inference
+
+One ONNX Runtime call for a whole batch instead of one call per image — the throughput
+win on GPU. See [Batch Inference](../api/api.md#batch-inference) for the fallback rules.
+
+```cpp
+std::vector<cv::Mat> images = {cv::imread("a.jpg"), cv::imread("b.jpg"), cv::imread("c.jpg")};
+
+// One result vector per input image, in input order
+auto results = detector.batchDetect(images, /*conf=*/0.25f, /*iou=*/0.45f);
+
+for (size_t i = 0; i < images.size(); ++i) {
+    detector.drawDetections(images[i], results[i]);
+}
+```
+
+Requires a model exported with `model.export(format="onnx", dynamic=True)`. Fixed-batch
+exports fall back to a per-image loop automatically — check with
+`detector.supportsBatchSize(images.size())`.
+
+The same pattern applies to `batchSegment()`, `batchClassify()`, and `batchDetect()` on
+the pose and OBB detectors.
+
+## Loading a Model From Memory
+
+For encrypted stores, network streams and resources embedded in the binary. See
+[In-Memory Model Loading](../api/api.md#in-memory-model-loading).
+
+```cpp
+// Bytes from anywhere; readFileBytes() is just a convenience helper
+std::vector<uint8_t> bytes = yolos::utils::readFileBytes("yolo11n.onnx");
+
+// Class names as a vector, so no labels file is needed either
+yolos::det::YOLODetector detector(bytes.data(), bytes.size(), {"person", "bicycle", "car"});
+
+// ONNX Runtime copied the buffer during construction — safe to wipe it now
+auto detections = detector.detect(frame);
+```
+
 ## Camera Stream
 
 ```cpp
@@ -169,6 +208,7 @@ while (cap.read(frame)) {
 2. **Use GPU when available** — 5-10x faster than CPU
 3. **Adjust thresholds** — Higher confidence = fewer detections, faster NMS
 4. **Match input resolution** — Use model's expected size (640x640)
+5. **Batch when you have several images** — `batchDetect()` amortizes one ONNX call across the batch (needs a `dynamic=True` export)
 
 ## Error Handling
 
